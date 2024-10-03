@@ -1,21 +1,22 @@
-import { BoxProps } from '@mui/material/Box'
-import MuiModal from '@mui/material/Modal'
+import { BoxProps } from '@mui/material/Box';
+import MuiModal from '@mui/material/Modal';
+
 // STYLED COMPONENT
-import { StyledScrollbar, Wrapper } from './styles'
+import { StyledScrollbar, Wrapper } from './styles';
 
 // ===========================================================================
-interface ModalProps extends BoxProps {
-  open: boolean
-  handleClose: () => void
+export interface ModalProps extends BoxProps {
+  open: boolean;
+  onClose: () => void;
 }
 // ===========================================================================
 
-export default function Modal({ children, open, handleClose, ...props }: ModalProps) {
+export default function Modal({ children, open, onClose, ...props }: ModalProps) {
   return (
-    <MuiModal open={open} onClose={handleClose}>
-      <Wrapper {...props}>
-        <StyledScrollbar>{children}</StyledScrollbar>
-      </Wrapper>
+    <MuiModal open={open} onClose={onClose}>
+      <Wrapper {...props}>{children}</Wrapper>
     </MuiModal>
-  )
+  );
 }
+
+Modal.Scroll = StyledScrollbar;

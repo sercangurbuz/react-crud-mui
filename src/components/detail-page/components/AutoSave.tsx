@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useFormState, useWatch } from 'react-hook-form';
 
-import { useDebounce } from '../../../hooks';
+import { useDebounce } from '../../hooks';
 
 interface AutoSaveProps {
   onValuesChange: () => void;

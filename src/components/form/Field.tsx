@@ -9,7 +9,9 @@ import {
 } from 'react-hook-form';
 
 import isNil from '../misc/isNil';
-import { useFormDisabled } from './hooks';
+import usePage from '../page/hooks/usePage';
+import FormTextField from './controls/FormTextField';
+import useValidationOptionsContext from './hooks/useValidationOptionsContext';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -57,6 +59,8 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
+  const { fields, callOutVisibility } = useValidationOptionsContext();
+
   /* ------------------------- RHF controller register ------------------------ */
 
   const {
@@ -71,15 +75,21 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
     rules,
   });
 
-  /* ------------------------------- Is disabled ------------------------------ */
+  /* -------------------------------------------------------------------------- */
+  /*                                   States                                   */
+  /* -------------------------------------------------------------------------- */
 
-  const { disabled: formDisable } = useFormDisabled();
+  const { disabled: pageDisable } = usePage();
 
   const disabledProp = isNil(fieldDisabled)
-    ? formDisable === true
+    ? pageDisable === true
       ? { disabled: true }
       : undefined
     : { disabled: fieldDisabled };
+
+  const isEnabledFieldCallout =
+    callOutVisibility === 'all' ||
+    (callOutVisibility === 'selected-fields' && fields?.includes(name));
 
   /* -------------------------------------------------------------------------- */
   /*                               Control Render                               */
@@ -91,7 +101,10 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
     throw new Error(`missing render function in field ${name}`);
   }
 
-  const controlNode = renderControl?.({ ...field, ...disabledProp }, fieldState);
+  const controlNode = renderControl?.(
+    { ...field, ...disabledProp },
+    { ...fieldState, ...(!isEnabledFieldCallout && { error: undefined }) },
+  );
 
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
@@ -101,3 +114,5 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default Field;
+
+Field.Input = FormTextField;

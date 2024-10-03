@@ -31,7 +31,7 @@ function Alerts({ messages, defaultType = 'error' }: AlertsProps) {
 
   for (const type in alerts) {
     nodes.push(
-      <Alert key={type} severity={type as AlertProps['severity']}>
+      <Alert variant='filled' key={type} severity={type as AlertProps['severity']} sx={{ borderRadius: 0 }}>
         <Messages>
           {alerts[type].map((msg, index) => (
             <li key={index}>{msg.message}</li>

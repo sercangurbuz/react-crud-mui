@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useFormState } from 'react-hook-form';
 
-import { DetailPageCommandsOptions } from '../pages/components/DetailPageCommands';
+import { DetailPageCommandsOptions } from '../components/DetailPageCommands';
 import useDetailPage from './useDetailPage';
 
 /**
@@ -27,6 +27,7 @@ function useDetailPageStates() {
   const formStates = useFormState();
   // Flags
   const { isValid, isDirty } = formStates;
+
   const isNewMode = reason !== 'fetch';
   const isDisabled = disabled;
 

@@ -1,10 +1,5 @@
 export type ServerError = {
-  messages?: string[];
   message?: string;
-  exceptionMessage?: string;
-  exceptionType?: string;
-  stackTrace?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
 

@@ -207,8 +207,8 @@ const componentsOverride = (theme: Theme): Components => {
     MuiLinearProgress: {
       styleOverrides: {
         root: {
-          height: 6,
           flexGrow: 1,
+          height: 6,
           borderRadius: 16,
           backgroundColor: isDark(theme) ? grey[700] : grey[200],
         },
@@ -264,8 +264,6 @@ const componentsOverride = (theme: Theme): Components => {
       },
     },
 
-
-
     MuiPaper: {
       styleOverrides: {
         root: {
@@ -279,6 +277,29 @@ const componentsOverride = (theme: Theme): Components => {
         root: {
           borderRadius: 16,
           backgroundColor: grey[800],
+        },
+      },
+    },
+
+    MuiDrawer: {
+      styleOverrides: {
+        // make drawer overlap modal overlay
+        root: {
+          zIndex: 1300,
+          '& .MuiDrawer-paper': {
+            [theme.breakpoints.down('md')]: {
+              height: 'calc(100vh - 30px)',
+              top: '15px',
+              right: '15px',
+              borderRadius: '4px',
+            },
+            [theme.breakpoints.up('md')]: {
+              height: 'calc(100vh - 50px)',
+              top: '25px',
+              right: '25px',
+              borderRadius: '8px',
+            },
+          },
         },
       },
     },

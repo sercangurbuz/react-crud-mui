@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, styled } from '@mui/material';
 
-import { NeedDataReason } from '../DetailPageContent';
+import { NeedDataReason } from '../pages/DetailPageContent';
 
 export type DetailPageLayoutOptions = {
   loading?: boolean;
@@ -15,6 +15,12 @@ export type DetailPageLayoutProps = {
   options: DetailPageLayoutOptions;
 };
 
+const LoadingProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 1.5,
+  borderRadius: 0,
+  marginBottom: theme.spacing(2),
+}));
+
 interface DetailPageDefaultLayoutProps extends DetailPageLayoutProps {}
 
 function DetailPageDefaultLayout({
@@ -24,7 +30,7 @@ function DetailPageDefaultLayout({
 }: DetailPageDefaultLayoutProps) {
   return (
     <>
-      <LinearProgress style={{ visibility: loading ? 'visible' : 'hidden' }} />
+      <LoadingProgress style={{ visibility: loading ? 'visible' : 'hidden' }} />
       {content}
       {autoSaveContent}
     </>

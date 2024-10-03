@@ -1,5 +1,5 @@
-import useHotKeysSingleScope from '../../../hooks/useHotKeysSingleScope';
-import useDetailPageHotKeys, { UseDetailPageHotKeysProps } from '../../hooks/useDetailPageHotKeys';
+import useHotKeysSingleScope from '../../hooks/useHotKeysSingleScope';
+import useDetailPageHotKeys, { UseDetailPageHotKeysProps } from '../hooks/useDetailPageHotKeys';
 
 interface DetailPageShortCutsProps extends UseDetailPageHotKeysProps {}
 

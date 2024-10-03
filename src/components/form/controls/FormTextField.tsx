@@ -10,17 +10,21 @@ export interface FormTextFieldProps<TFieldValues extends FieldValues = FieldValu
 
 function FormTextField<TFieldValues extends FieldValues = FieldValues>({
   name,
-  label,
   fieldProps,
   ...inputProps
 }: FormTextFieldProps<TFieldValues>) {
   return (
     <Field
       name={name}
-      render={(field) => (
+      render={(field, { invalid, error }) => (
         <TextField
+          sx={{
+            width: '100%',
+          }}
           {...inputProps}
           {...field}
+          error={invalid}
+          helperText={error?.message}
           onChange={(e) => {
             field.onChange(e);
             inputProps?.onChange?.(e);

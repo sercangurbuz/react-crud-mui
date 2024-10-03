@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 import { UseFormOptions, UseFormReturn } from '../../form/hooks/useForm';
-import { useUpdateEffect } from '../../hooks';
+import { useRunAsync, useUpdateEffect } from '../../hooks';
 import useTranslation from '../../i18n/hooks/useTranslation';
+import { isPromise } from '../../misc/isPromise';
+import { Message } from '../../page/hooks/useNormalizeMessages';
+import { ServerError } from '../../utils';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -77,13 +80,19 @@ export interface DetailPageDataProps<TModel extends FieldValues>
    * Enable to show success messages (Default true)
    */
   showSuccessMessages?: boolean;
+  /**
+   * External error indicator
+   */
+  error?: ServerError;
 }
 
 function DetailPageData<TModel extends FieldValues>({
   activeSegmentIndex = 0,
+  alerts,
   autoSave,
   data,
   defaultValues,
+  error,
   form,
   loading,
   onClose,
@@ -94,7 +103,6 @@ function DetailPageData<TModel extends FieldValues>({
   onSave,
   reason = 'create',
   schema,
-  error,
   showSuccessMessages = true,
   ...dpProps
 }: DetailPageDataProps<TModel>) {
@@ -104,6 +112,9 @@ function DetailPageData<TModel extends FieldValues>({
 
   const prevDataRef = useRef<TModel | undefined>();
   const { t } = useTranslation();
+  const [runAsync, { loading: loadingState, error: errorState, reset: resetState }] = useRunAsync<
+    TModel | void | undefined
+  >();
 
   /* -------------------------------------------------------------------------- */
   /*                                Form Methods                                */
@@ -128,6 +139,15 @@ function DetailPageData<TModel extends FieldValues>({
     [reset, trigger],
   );
 
+  /**
+   * run onNeedData when reason and id changes.Be aware that onNeedData must be memoized
+   */
+  useEffect(() => {
+    if (reason === 'create' && defaultValues) {
+      updateForm(defaultValues as TModel);
+    }
+  }, [defaultValues, updateForm, reason]);
+
   useEffect(() => {
     if (data) {
       updateForm(data);
@@ -143,11 +163,34 @@ function DetailPageData<TModel extends FieldValues>({
   }, [schema, trigger]);
 
   /* -------------------------------------------------------------------------- */
+  /*                                   Alerts                                   */
+  /* -------------------------------------------------------------------------- */
+
+  const messages = useMemo<Message[]>(() => {
+    const result: Message[] = [];
+
+    if (alerts) {
+      result.push(...alerts);
+    }
+
+    if (error?.message) {
+      result.push(error.message);
+    }
+
+    if (errorState?.message) {
+      result.push(errorState.message);
+    }
+
+    return result;
+  }, [error, alerts, errorState]);
+
+  /* -------------------------------------------------------------------------- */
   /*                                Model Methods                               */
   /* -------------------------------------------------------------------------- */
 
   const save = useCallback(
     async (mode: SaveMode = 'save') => {
+      resetState();
       // get data thru submission
       const model = await getFormModel();
 
@@ -158,7 +201,11 @@ function DetailPageData<TModel extends FieldValues>({
         mode,
       };
 
-      await onSave?.(variables);
+      const result = onSave?.(variables);
+
+      if (isPromise(result)) {
+        await runAsync(result);
+      }
 
       if (showSuccessMessages && !autoSave) {
         toast.success(t('savedsuccesfully'));
@@ -185,10 +232,12 @@ function DetailPageData<TModel extends FieldValues>({
 
   const handleSaveClose = async () => {
     await save('save-close');
-    onClose?.();
+    onClose?.('action');
   };
 
   const handleDelete = async () => {
+    resetState();
+
     const model = getValues();
 
     const variables: DeletePayload<TModel> = {
@@ -197,7 +246,11 @@ function DetailPageData<TModel extends FieldValues>({
       model,
     };
 
-    await onDelete?.(variables);
+    const result = onDelete?.(variables);
+
+    if (isPromise(result)) {
+      await runAsync(result);
+    }
 
     if (showSuccessMessages) {
       toast.success(t('deletedsuccesfully'));
@@ -212,6 +265,7 @@ function DetailPageData<TModel extends FieldValues>({
 
   const handleCreate = (reason: NeedDataReason = 'create') => {
     onReasonChange?.(reason);
+    resetState();
   };
 
   /* -------------------------------------------------------------------------- */
@@ -221,11 +275,11 @@ function DetailPageData<TModel extends FieldValues>({
   return (
     <DetailPageContent
       {...dpProps}
+      alerts={messages}
       data={prevDataRef.current}
-      error={error}
       activeSegmentIndex={activeSegmentIndex}
       autoSave={autoSave}
-      loading={loading}
+      loading={loading || loadingState}
       reason={reason}
       onCreate={() => handleCreate()}
       onCopy={() => handleCreate('copy')}

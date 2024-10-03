@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import {
+  FieldPath,
   FieldValues,
   UseFormReturn as ReactHookFormUseFormReturn,
   UseFormProps,
@@ -8,6 +9,21 @@ import {
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+
+export type ValidationCallOutType = 'tooltip' | 'label' | 'none';
+export type ValidationVisibilityOptions =
+  | 'selected-fields'
+  | 'only-unbound-fields'
+  | 'all'
+  | 'invisible';
+
+export type CallOutVisibilityOptions = 'selected-fields' | 'all' | 'invisible';
+
+export type ValidationOptions<TFieldValues extends FieldValues = FieldValues> = {
+  alertVisibility?: ValidationVisibilityOptions;
+  callOutVisibility?: CallOutVisibilityOptions;
+  fields?: FieldPath<TFieldValues>[];
+};
 
 export interface UseFormOptions<TFieldValues extends FieldValues>
   extends UseFormProps<TFieldValues> {

@@ -2,24 +2,21 @@ import React, { ReactNode, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import ValidationAlerts from '../../form/components/ValidationAlerts';
-import Form from '../../form/Form';
 import { HeaderProps } from '../../header/Header';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Edit from '../../icons/Edit';
 import Alerts from '../../page/components/Alerts';
-import ErrorNotification from '../../page/components/ErrorNotification';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
-import { ServerError } from '../../utils';
-import { DetailPageContext, DetailPageContextType } from '../hooks/useDetailPage';
-import { DETAILPAGE_HOTKEYS_SCOPE } from '../hooks/useDetailPageHotKeys';
-import AutoSave from './components/AutoSave';
-import DetailPageCommands, { DetailPageCommandsProps } from './components/DetailPageCommands';
+import AutoSave from '../components/AutoSave';
+import DetailPageCommands, { DetailPageCommandsProps } from '../components/DetailPageCommands';
 import DetailPageDefaultLayout, {
   DetailPageLayoutProps,
-} from './components/DetailPageDefaultLayout';
-import DetailPageHeader, { DetailPageHeaderProps } from './components/DetailPageHeader';
-import DetailPageShortCuts from './components/DetailPageShortCuts';
+} from '../components/DetailPageDefaultLayout';
+import DetailPageHeader, { DetailPageHeaderProps } from '../components/DetailPageHeader';
+import DetailPageShortCuts from '../components/DetailPageShortCuts';
+import { DetailPageContext, DetailPageContextType } from '../hooks/useDetailPage';
+import { DETAILPAGE_HOTKEYS_SCOPE } from '../hooks/useDetailPageHotKeys';
 import { SaveMode } from './DetailPageData';
 
 /* -------------------------------------------------------------------------- */
@@ -54,10 +51,6 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    * Event that fired with current index when active segment is changed
    */
   onSegmentChanged?: (current: number) => void;
-  /**
-   * External error indicator
-   */
-  error?: ServerError;
   /**
    * Content component
    */
@@ -154,7 +147,6 @@ function DetailPageContent<TModel extends FieldValues>({
   loading,
   reason = 'create',
   alerts,
-  error,
   onCommands,
   defaultSaveMode = 'save',
   hotkeyScopes = DETAILPAGE_HOTKEYS_SCOPE,
@@ -169,7 +161,7 @@ function DetailPageContent<TModel extends FieldValues>({
   enableCopy = true,
   enableCreate = true,
   enableDelete,
-  enableDiscardChanges = true,
+  enableDiscardChanges,
   enableSave = true,
   activeSegmentIndex,
   ...pageProps
@@ -254,7 +246,6 @@ function DetailPageContent<TModel extends FieldValues>({
     return (
       <>
         <Alerts messages={alerts} />
-        <ErrorNotification error={error} />
         <ValidationAlerts />
       </>
     );
@@ -276,6 +267,7 @@ function DetailPageContent<TModel extends FieldValues>({
       saveCommandMode: defaultSaveMode,
       onExtraCommands,
       createCommandLabel,
+      onClose,
     };
 
     return <DetailPageCommands {...commandProps} />;
@@ -339,6 +331,7 @@ function DetailPageContent<TModel extends FieldValues>({
         icon={<Edit />}
         title={reason === 'fetch' ? t('edit') : t('newitem')}
         {...pageProps}
+        disabled={disabled || loading}
         commandsContent={commands}
         onHeader={renderPageHeader}
         onClose={onClose}

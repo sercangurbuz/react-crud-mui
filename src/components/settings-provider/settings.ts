@@ -1,9 +1,9 @@
 import { RawAxiosRequestHeaders } from 'axios';
 
+import { ValidationOptions } from '../form/hooks/useForm';
 import { ThemeSettings } from '../theme';
 import { THEMES } from '../theme/theme.constants';
 
-export type MatchedParams = { [index: string]: string };
 export interface CommonHotKeys {
   save: string;
   saveAndNewItem: string;
@@ -29,9 +29,7 @@ export interface CommonHotKeys {
 
 export type Settings = {
   requestCommonHeaders?: RawAxiosRequestHeaders;
-  responsePropName?: string;
   enableDevTool?: boolean;
-  enableFloatingLabel?: boolean;
   appTitle?: string;
   uniqueIdParamName: string;
   segmentParamName: string;
@@ -39,7 +37,6 @@ export type Settings = {
   hotkeys: CommonHotKeys;
   pageSize: number;
   storedFilterLimit: number;
-  removeFalsyFilterValues: boolean;
   rowKey: string;
   pageSizes: number[] | ((count: number) => number[]);
   newItemParamValue: string;
@@ -54,15 +51,14 @@ export type Settings = {
   thousandSeparator?: string;
   decimalSeparator?: string;
   disableValidationTooltip?: boolean;
+  validationOptions?: ValidationOptions;
 } & ThemeSettings;
 
 export default (): Settings => ({
   theme: THEMES.LIGHT,
   direction: 'ltr',
   responsiveFontSizes: true,
-  enableFloatingLabel: false,
   enableDevTool: true,
-  removeFalsyFilterValues: false,
   appTitle: 'Arkas React Starter',
   dateFormat: 'DD.MM.YYYY',
   dateLongFormat: 'dddd, DD MMMM YYYY',

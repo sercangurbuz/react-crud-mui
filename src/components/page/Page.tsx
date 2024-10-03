@@ -7,12 +7,13 @@ import PageContent from './components/PageContent';
 import PageDivider from './components/PageDivider';
 import PageProvider, { PaddingSize } from './components/PageProvider';
 
+export type CloseReason = 'backdrop' | 'close-button' | 'action';
 export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
   commandsContent?: ReactNode;
   commandsPosition?: 'header' | 'footer';
   onHeader?: (props: HeaderProps) => ReactNode;
   onLayout?: (props: PageLayoutProps) => ReactNode;
-  onClose?: () => void;
+  onClose?: (reason?: CloseReason) => void;
   showHeader?: boolean;
   footerContent?: ReactNode;
   alertsContent?: ReactNode;
@@ -36,6 +37,7 @@ function Page({
   onLayout,
   showHeader = true,
   size = 'small',
+  style,
   ...headerProps
 }: PageProps) {
   /* -------------------------------------------------------------------------- */
@@ -51,10 +53,9 @@ function Page({
       ...headerProps,
       headerProps: {
         fontSize: 16,
-        fontWeight: 400,
+        fontWeight: 600,
       },
-      px: PagePadding[size],
-      pt: PagePadding[size],
+      p: PagePadding[size],
       rightContent: commandsPosition === 'header' ? commandsContent : null,
     };
 
@@ -62,6 +63,10 @@ function Page({
   };
 
   const renderFooter = () => {
+    if (!footerContent && commandsPosition !== 'footer') {
+      return null;
+    }
+
     return (
       <FlexBox justifyContent="flex-end" p={PagePadding[size]}>
         {footerContent}
@@ -81,6 +86,7 @@ function Page({
         size,
         disabled,
         loading,
+        style
       },
     };
 
@@ -98,3 +104,4 @@ export default Page;
 
 Page.Content = PageContent;
 Page.Divider = PageDivider;
+Page.Layout = DefaultLayout;

@@ -1,26 +1,25 @@
-import {
-  DeepPartial,
-  DefaultValues,
-  FieldValues,
-  FormProvider,
-  UseFormReturn,
-} from 'react-hook-form';
+import { DeepPartial, DefaultValues, FieldValues } from 'react-hook-form';
 
 import { z } from 'zod';
 
+import FormProvider from '../../form/components/FormProvider';
 import { useForm } from '../../form/hooks';
+import { UseFormReturn, ValidationOptions } from '../../form/hooks/useForm';
 import DetailPageData, { DetailPageDataProps } from './DetailPageData';
 
 export interface DetailPageFormProps<TModel extends FieldValues>
   extends Omit<DetailPageDataProps<TModel>, 'form' | 'defaultValues' | 'schema'> {
   form?: UseFormReturn<TModel>;
-
   schema?: z.ZodType<Partial<TModel>> | z.ZodType<Partial<TModel>>[];
   defaultValues?: DeepPartial<TModel> | DeepPartial<TModel>[];
+  /**
+   * Optional validation options
+   */
+  validationOptions?: ValidationOptions<TModel>;
 }
 
 function DetailPageForm<TModel extends FieldValues>(props: DetailPageFormProps<TModel>) {
-  const { activeSegmentIndex = 0, schema, defaultValues } = props;
+  const { activeSegmentIndex = 0, schema, defaultValues, validationOptions } = props;
   /* -------------------------------------------------------------------------- */
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */
@@ -44,7 +43,7 @@ function DetailPageForm<TModel extends FieldValues>(props: DetailPageFormProps<T
   const formMethods = props.form ?? form;
 
   return (
-    <FormProvider {...formMethods}>
+    <FormProvider<TModel> form={formMethods} validationOptions={validationOptions}>
       <DetailPageData<TModel>
         {...props}
         form={formMethods}

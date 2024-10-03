@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 import { Card } from '@mui/material';
 
@@ -8,6 +8,7 @@ export type PageLayoutOptions = {
   size: PaddingSize;
   loading?: boolean;
   disabled?: boolean;
+  style?: CSSProperties;
 };
 
 export type PageLayoutProps = {
@@ -19,9 +20,15 @@ export type PageLayoutProps = {
   options: PageLayoutOptions;
 };
 
-function DefaultLayout({ content, pageHeader, footerContent, alertsContent }: PageLayoutProps) {
+function DefaultLayout({
+  content,
+  pageHeader,
+  footerContent,
+  alertsContent,
+  options,
+}: PageLayoutProps) {
   return (
-    <Card>
+    <Card style={options?.style}>
       {pageHeader}
       {alertsContent}
       {content}

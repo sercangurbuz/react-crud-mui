@@ -23,7 +23,8 @@ function useFormErrors<TFieldValues extends FieldValues = FieldValues>({
   name,
   disabled,
 }: UseFormErrors<TFieldValues>) {
-  const { errors } = useFormState({ disabled, name });
+  const { errors } = useFormState();
+
   /**
    * Create message from Error object
    */

@@ -7,7 +7,7 @@ export type TypeMessage = {
   message: React.ReactNode;
   type: AlertProps['severity'];
 };
-export type Message = React.ReactNode | TypeMessage;
+export type Message = string | TypeMessage;
 
 interface useNormalizeMessagesOptions {
   messages?: Message[];

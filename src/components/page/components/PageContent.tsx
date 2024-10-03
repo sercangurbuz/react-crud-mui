@@ -6,10 +6,11 @@ import { PagePadding } from '../Page';
 function PageContent({ children, ...boxProps }: BoxProps) {
   const { size } = usePage();
   return (
-    <Box p={PagePadding[size]} {...boxProps}>
+    <Box px={PagePadding[size]} pb={PagePadding[size]} {...boxProps}>
       {children}
     </Box>
   );
 }
+
 
 export default PageContent;

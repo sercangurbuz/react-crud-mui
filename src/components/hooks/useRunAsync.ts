@@ -13,7 +13,7 @@ interface UseWaitAsyncEvents<TData> {
   failed?: (err: ServerError) => void;
 }
 
-function useWaitAsync<TData>({
+function useRunAsync<TData>({
   error: initialError,
   loading: initialLoading,
 }: UseWaitAsyncOptions = {}) {
@@ -25,6 +25,11 @@ function useWaitAsync<TData>({
   const lastFetchId = useRef(0);
   const [loading, setLoading] = useState<boolean | undefined>(initialLoading);
   const [error, setError] = useState<ServerError | undefined>(initialError);
+
+  const reset = useCallback(() => {
+    setLoading(undefined);
+    setError(undefined);
+  }, []);
 
   const wait = useCallback(
     async (effect: Promise<TData>, events?: UseWaitAsyncEvents<TData>) => {
@@ -57,12 +62,7 @@ function useWaitAsync<TData>({
     [isMounted],
   );
 
-  const reset = useCallback(() => {
-    setLoading(undefined);
-    setError(undefined);
-  }, []);
-
-  return [wait, loading, error, reset, setLoading, setError] as const;
+  return [wait, { loading, error, reset, setLoading, setError }] as const;
 }
 
-export default useWaitAsync;
+export default useRunAsync;

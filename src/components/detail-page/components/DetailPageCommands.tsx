@@ -3,14 +3,15 @@ import { ReactNode } from 'react';
 import { Close, Save, Undo } from '@mui/icons-material';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
 
-import { FlexBox } from '../../../flexbox';
-import useTranslation from '../../../i18n/hooks/useTranslation';
-import Add from '../../../icons/Add';
-import Delete from '../../../icons/Delete';
-import MoreButton, { MoreButtonItem } from '../../../more-button/MoreButton';
-import useSettings from '../../../settings-provider/hooks/useSettings';
-import useDetailPageStates from '../../hooks/useDetailPageCommandStates';
-import { SaveMode } from '../DetailPageData';
+import { FlexBox } from '../../flexbox';
+import useTranslation from '../../i18n/hooks/useTranslation';
+import Add from '../../icons/Add';
+import Delete from '../../icons/Delete';
+import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
+import { CloseReason } from '../../page/Page';
+import useSettings from '../../settings-provider/hooks/useSettings';
+import useDetailPageStates from '../hooks/useDetailPageStates';
+import { SaveMode } from '../pages/DetailPageData';
 
 /* ---------------------------------- Types --------------------------------- */
 
@@ -50,7 +51,7 @@ export type DetailPageCommandsState = {
   onCopy?: () => void;
   onDiscardChanges?: () => void;
   onDelete?: () => void;
-  onClose?: () => void;
+  onClose?: (reason?: CloseReason) => void;
   onSaveClose?: () => void;
   saveCommandMode?: SaveMode;
   createCommandLabel?: ReactNode;
@@ -182,6 +183,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     return (
       <LoadingButton
         key="create"
+        color="success"
         startIcon={<Add />}
         title={`${createCommandLabel ?? t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
         disabled={disabled.create}
@@ -228,6 +230,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
 
     return (
       <LoadingButton
+        key="delete"
         disabled={disabled.delete}
         color="error"
         loading={loading}
@@ -248,9 +251,11 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     return (
       <LoadingButton
         key="close"
+        variant="outlined"
+        color="secondary"
         disabled={disabled.close}
         startIcon={<Close />}
-        onClick={() => onClose?.()}
+        onClick={() => onClose?.('close-button')}
         children={t('close')}
         {...commandsExtraProps['close']}
       />
@@ -262,7 +267,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
       return null;
     }
 
-    return <MoreButton options={options} />;
+    return <MoreButton options={options} key="more-options" />;
   };
 
   const renderCommands = () => {
@@ -280,7 +285,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
       closeContent,
     ];
     const layoutContent = (
-      <FlexBox justifyContent="flex-end" gap={2}>
+      <FlexBox justifyContent="flex-end" gap={1}>
         {extra}
         {content}
       </FlexBox>

@@ -1,9 +1,8 @@
-import TextField from '@mui/material/TextField'
-import { Theme } from '@mui/material/styles/createTheme'
-import { Components } from '@mui/material/styles/components'
+import { Components } from '@mui/material/styles/components';
+import { Theme } from '@mui/material/styles/createTheme';
 
 const DataGrid = (theme: Theme): Components['MuiDataGrid'] => {
-  const { grey } = theme.palette
+  const { grey } = theme.palette;
 
   return {
     defaultProps: {
@@ -62,7 +61,7 @@ const DataGrid = (theme: Theme): Components['MuiDataGrid'] => {
       toolbarContainer: { paddingBottom: 12 },
       filterFormDeleteIcon: { justifyContent: 'center' },
     },
-  }
-}
+  };
+};
 
-export default DataGrid
+export default DataGrid;

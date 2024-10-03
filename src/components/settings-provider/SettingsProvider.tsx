@@ -10,9 +10,12 @@ import '../dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
+import ValidationOptionsProvider from '../form/components/ValidationOptionsProvider';
 import ThemeProvider from '../theme/provider/ThemeProvider';
 import getDefaultSettings, { type Settings } from './settings';
 import SettingsContext from './SettingsContext';
+
+import 'simplebar-react/dist/simplebar.min.css';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -29,7 +32,11 @@ const queryClient = new QueryClient({
  * All Providers needed for @arkas/ui components.This is client component obviously
  * @description Respectively Antd ConfigProvider => Emotion themeProvider => App =>
  */
-function SettingsProvider({ children, ...rest }: PropsWithChildren<SettingsProviderProps>) {
+function SettingsProvider({
+  children,
+  validationOptions,
+  ...rest
+}: PropsWithChildren<SettingsProviderProps>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -47,7 +54,11 @@ function SettingsProvider({ children, ...rest }: PropsWithChildren<SettingsProvi
           direction={direction}
         >
           <QueryClientProvider client={queryClient}>
-            <HotkeysProvider>{children}</HotkeysProvider>
+            <HotkeysProvider>
+              <ValidationOptionsProvider {...validationOptions}>
+                {children}
+              </ValidationOptionsProvider>
+            </HotkeysProvider>
             <ReactQueryDevtools
               initialIsOpen={false}
               buttonPosition="bottom-right"
