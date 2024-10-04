@@ -18,10 +18,12 @@ export type PageLayoutProps = {
   footerContent?: React.ReactNode;
   alertsContent?: ReactNode;
   options: PageLayoutOptions;
+  tabsContent?: ReactNode;
 };
 
 function DefaultLayout({
   content,
+  tabsContent,
   pageHeader,
   footerContent,
   alertsContent,
@@ -32,6 +34,7 @@ function DefaultLayout({
       {pageHeader}
       {alertsContent}
       {content}
+      {tabsContent}
       {footerContent}
     </Card>
   );

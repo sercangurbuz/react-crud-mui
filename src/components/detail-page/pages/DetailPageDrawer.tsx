@@ -1,10 +1,10 @@
-import React from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { Box, Drawer, DrawerProps } from '@mui/material';
 
 import FormDirtyTracker from '../../form/components/FormDirtyTracker';
 import Scrollbar from '../../scrollbar';
+import DetailPageDrawerCommands from '../components/DetailPageDrawerCommands';
 import useFormConfirmDirtyChange from '../hooks/useFormConfirmDirtyChange';
 import DetailPage from './DetailPage';
 import { DetailPageModalProps } from './DetailPageModal';
@@ -41,29 +41,24 @@ function DetailPageDrawer<TModel extends FieldValues>({
       {...drawerProps}
     >
       <DetailPage<TModel>
-        style={{ width: 450, display: 'flex', flexDirection: 'column' }}
+        style={{ width: 450, flex: 1, display: 'flex', flexDirection: 'column' }}
         defaultSaveMode="save-close"
-        
-        //onCommands={(props) => <DetailPageDrawerCommands {...props} />}
+        onCommands={(props) => <DetailPageDrawerCommands {...props} />}
         onContentLayout={(props) => (
-          <Box
-            sx={{
-              flex: 1,
-            }}
-          >
-            <Scrollbar style={{ maxHeight: '100%' }}>
+          <Box sx={{ flex: 1, position: 'relative' }}>
+            <Scrollbar
+              style={{ top: 0, bottom: 0, left: 0, right: 0, position: 'absolute' }}
+              autoHide={false}
+            >
               <FormDirtyTracker onDirtyStateChange={setFormDirtyChange} />
               <DetailPage.Layout {...props} />
             </Scrollbar>
           </Box>
         )}
-        {...dpProps}
-        /*  pageHeader={(props) => {
-          return <DetailPageDrawerHeader {...props} />;
-        }} */
+        enableCreate={false}
         enableClose={false}
-        showHeader
-        commandsPosition="footer"
+        enableDelete={false}
+        {...dpProps}
         onClose={handleCloseEvent}
       />
     </Drawer>
@@ -71,3 +66,4 @@ function DetailPageDrawer<TModel extends FieldValues>({
 }
 
 export default DetailPageDrawer;
+DetailPageDrawer.Commands = DetailPageDrawerCommands;

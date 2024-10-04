@@ -16,9 +16,10 @@ export type DetailPageContextType<TModel extends FieldValues = FieldValues> = Pi
   | 'reason'
   | 'disabled'
   | 'data'
+  | 'activeSegmentValue'
 > & {
-  activeSegmentIndex?: number;
   onSave: () => void;
+  setActiveSegment: (value: string) => void;
 };
 
 //https://stackoverflow.com/questions/60725621/react-context-with-generics

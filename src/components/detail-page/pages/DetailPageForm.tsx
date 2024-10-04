@@ -19,7 +19,7 @@ export interface DetailPageFormProps<TModel extends FieldValues>
 }
 
 function DetailPageForm<TModel extends FieldValues>(props: DetailPageFormProps<TModel>) {
-  const { activeSegmentIndex = 0, schema, defaultValues, validationOptions } = props;
+  const { activeSegmentValue: activeSegmentIndex = 0, schema, defaultValues, validationOptions } = props;
   /* -------------------------------------------------------------------------- */
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */

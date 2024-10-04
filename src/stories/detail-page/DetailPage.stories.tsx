@@ -1,19 +1,24 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { Assignment, Done, Pending } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 
 import DetailPage from '../../components/detail-page';
 import { useZodRefine } from '../../components/hooks';
+import Add from '../../components/icons/Add';
 import Edit from '../../components/icons/Edit';
 import GroupSenior from '../../components/icons/GroupSenior';
 import User from '../../components/icons/User';
+import Page from '../../components/page/Page';
 import { useAppQuery } from '../../components/query';
+import { H2 } from '../../components/typography';
 import { ServerError } from '../../components/utils';
 import mockData from '../../test-setup/mockUsers.json';
 import { handleDeleteUser, handleSaveUser, UserDefaultValues } from '../utils/api';
 import { userSchema, type UserSchema } from '../utils/schema';
 import CustomCommands from './components/CustomCommands';
+import CustomTabs from './components/CustomTabs';
 import CustomTitle from './components/CustomTitle';
 import DisableStateButtons from './components/DisableStateButtons';
 import FormContent from './components/FormContent';
@@ -228,6 +233,7 @@ export const OpenInModal: DetailPageModalStory = {
     data: mockData[0],
     defaultValues: UserDefaultValues,
     schema: userSchema,
+    enableDelete: false,
   },
   render: (args) => {
     const [visible, setVisible] = useState<boolean>(true);
@@ -240,8 +246,8 @@ export const OpenInModal: DetailPageModalStory = {
   },
 };
 
-export const OpenInDrawer: DetailPageStory = {
-  args: {},
+export const OpenInDrawer: DetailPageModalStory = {
+  args: OpenInModal.args,
   render: (args) => {
     const [visible, setVisible] = useState<boolean>(true);
     return (
@@ -249,6 +255,7 @@ export const OpenInDrawer: DetailPageStory = {
         <Button onClick={() => setVisible(true)}>Toggle DetailPage Drawer</Button>
         <DetailPage.Drawer
           {...args}
+          enableDelete={false}
           open={visible}
           schema={userSchema}
           onClose={() => {
@@ -257,5 +264,82 @@ export const OpenInDrawer: DetailPageStory = {
         />
       </>
     );
+  },
+};
+
+export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
+  args: OpenInModal.args,
+  render: (args) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    return (
+      <>
+        <Button onClick={() => setVisible(true)}>Toggle DetailPage Drawer</Button>
+        <DetailPage.Drawer
+          {...args}
+          enableDelete={false}
+          commandsPosition="bottom"
+          onCommands={({ props }) => (
+            <Button onClick={props.onSaveClose} startIcon={<Add />} fullWidth>
+              Save User
+            </Button>
+          )}
+          open={visible}
+          schema={userSchema}
+          onClose={() => {
+            setVisible(false);
+          }}
+        />
+      </>
+    );
+  },
+};
+
+export const WithTabs: DetailPageStory = {
+  args: {
+    component: undefined,
+    defaultSegmentValue: 'assigned',
+    tabs: [
+      {
+        key: 'tab1',
+        value: 'assigned',
+        label: 'Assigned',
+        icon: <Assignment />,
+        children: (
+          <Page.Content>
+            <H2>Tab 1 content</H2>
+          </Page.Content>
+        ),
+      },
+      {
+        key: 'tab2',
+        value: 'pending',
+        label: 'Pending',
+        icon: <Pending />,
+        children: (
+          <Page.Content>
+            <H2>Tab 2 content</H2>
+          </Page.Content>
+        ),
+      },
+      {
+        key: 'tab3',
+        value: 'done',
+        label: 'Done',
+        icon: <Done />,
+        children: (
+          <Page.Content>
+            <H2>Tab 3 content</H2>
+          </Page.Content>
+        ),
+      },
+    ],
+  },
+};
+
+//TODO: finish tabs with custom
+export const WithCustomTabs: DetailPageStory = {
+  args: {
+    ...WithTabs.args,
+    customTabs: CustomTabs,
   },
 };

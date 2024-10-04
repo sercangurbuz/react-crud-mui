@@ -10,12 +10,12 @@ import DetailPageModal from './DetailPageModal';
 
 export interface DetailPageProps<TModel extends FieldValues> extends DetailPageFormProps<TModel> {
   defaultReason?: NeedDataReason;
-  defaultSegmentIndex?: number;
+  defaultSegmentValue?: string;
 }
 
 function DetailPage<TModel extends FieldValues>({
   defaultReason = 'create',
-  defaultSegmentIndex = 0,
+  defaultSegmentValue = '',
   onReasonChange,
   ...dpProps
 }: DetailPageProps<TModel>) {
@@ -26,7 +26,7 @@ function DetailPage<TModel extends FieldValues>({
   // controlled reason state
   const [reason, setReason] = useState<NeedDataReason>(defaultReason);
   // keep segment indicators here to manage in context
-  const [activeSegmentIndex, setActiveSegmentIndex] = useState<number>(defaultSegmentIndex);
+  const [activeSegmentValue, setActiveSegmentValue] = useState<string>(defaultSegmentValue);
 
   const handleReasonChange = useCallback(
     (reason: NeedDataReason) => {
@@ -40,8 +40,8 @@ function DetailPage<TModel extends FieldValues>({
     <DetailPageForm<TModel>
       reason={reason}
       onReasonChange={handleReasonChange}
-      activeSegmentIndex={activeSegmentIndex}
-      onSegmentChanged={setActiveSegmentIndex}
+      activeSegmentValue={activeSegmentValue}
+      onSegmentChanged={setActiveSegmentValue}
       {...dpProps}
     />
   );

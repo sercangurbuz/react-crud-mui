@@ -86,8 +86,10 @@ export interface DetailPageDataProps<TModel extends FieldValues>
   error?: ServerError;
 }
 
+/**
+ * Page component that all data manupulation is handled
+ */
 function DetailPageData<TModel extends FieldValues>({
-  activeSegmentIndex = 0,
   alerts,
   autoSave,
   data,
@@ -201,17 +203,21 @@ function DetailPageData<TModel extends FieldValues>({
         mode,
       };
 
-      const result = onSave?.(variables);
+      let result = onSave?.(variables);
 
       if (isPromise(result)) {
-        await runAsync(result);
+        result = await runAsync(result);
+      }
+
+      if (result) {
+        updateForm(result);
       }
 
       if (showSuccessMessages && !autoSave) {
         toast.success(t('savedsuccesfully'));
       }
     },
-    [getFormModel, reason, showSuccessMessages, autoSave, onSave, t],
+    [getFormModel, reason, showSuccessMessages, autoSave, onSave, t, updateForm],
   );
 
   const handleSave = async () => {
@@ -277,7 +283,6 @@ function DetailPageData<TModel extends FieldValues>({
       {...dpProps}
       alerts={messages}
       data={prevDataRef.current}
-      activeSegmentIndex={activeSegmentIndex}
       autoSave={autoSave}
       loading={loading || loadingState}
       reason={reason}

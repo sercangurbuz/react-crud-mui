@@ -1,10 +1,9 @@
 import React, { ReactNode } from 'react';
 
-import { Badge, Box, BoxProps, Stack } from '@mui/material';
+import { Box, BoxProps, Stack } from '@mui/material';
 
 import { FlexBetween, FlexBox } from '../flexbox';
 import IconWrapper from '../icon-wrapper';
-import Add from '../icons/Add';
 import MoreButton, { MoreButtonProps } from '../more-button/MoreButton';
 import { H6, Small } from '../typography';
 
@@ -29,7 +28,7 @@ function Header({
   ...flexProps
 }: HeaderProps) {
   return (
-    <FlexBetween flexWrap="wrap" p={3} {...flexProps}>
+    <FlexBetween flexWrap="wrap" p={3} gap={1} {...flexProps}>
       <Box>
         <FlexBox alignItems="center">
           {icon ? <IconWrapper>{icon}</IconWrapper> : null}

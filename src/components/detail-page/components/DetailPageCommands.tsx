@@ -8,7 +8,7 @@ import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
 import Delete from '../../icons/Delete';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
-import { CloseReason } from '../../page/Page';
+import { CloseReason, CommandsPosition } from '../../page/Page';
 import useSettings from '../../settings-provider/hooks/useSettings';
 import useDetailPageStates from '../hooks/useDetailPageStates';
 import { SaveMode } from '../pages/DetailPageData';
@@ -55,6 +55,7 @@ export type DetailPageCommandsState = {
   onSaveClose?: () => void;
   saveCommandMode?: SaveMode;
   createCommandLabel?: ReactNode;
+  commandsPosition?: CommandsPosition;
 };
 
 export type DetailPageCommandsLayoutContents = {
@@ -108,6 +109,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     onExtraCommands,
     createCommandLabel,
     commandsExtraProps = {},
+    commandsPosition = 'top-right',
   } = props;
   /* -------------------------------------------------------------------------- */
   /*                                   Hooks                                    */
@@ -284,11 +286,12 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
       deleteContent,
       closeContent,
     ];
+
     const layoutContent = (
-      <FlexBox justifyContent="flex-end" gap={1}>
+      <>
         {extra}
         {content}
-      </FlexBox>
+      </>
     );
 
     const layoutParams: DetailPageCommandsLayoutContents = {
@@ -316,6 +319,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
       disabled,
       loading,
       isNew,
+      commandsPosition,
     };
 
     if (onCommands) {

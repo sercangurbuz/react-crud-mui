@@ -1,3 +1,4 @@
+import { Assignment, Done, Pending } from '@mui/icons-material';
 import { Button, Switch } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 
@@ -5,7 +6,6 @@ import { FlexBetween } from '../../components/flexbox';
 import Add from '../../components/icons/Add';
 import GroupSenior from '../../components/icons/GroupSenior';
 import Page from '../../components/page/Page';
-import Tags from '../../components/tag/Tags';
 import { Paragraph, Small } from '../../components/typography';
 
 const meta: Meta<typeof Page> = {
@@ -54,6 +54,32 @@ export const Simple: PageStory = {};
 
 export const CommandsOnFooter: PageStory = {
   args: {
-    commandsPosition: 'footer',
+    commandsPosition: 'bottom-right',
+  },
+};
+
+export const WithTabs: PageStory = {
+  args: {
+    selectedTabValue: 'assigned',
+    tabs: [
+      {
+        key: 'tab1',
+        value: 'assigned',
+        label: 'Assigned',
+        icon: <Assignment />,
+      },
+      {
+        key: 'tab2',
+        value: 'pending',
+        label: 'Pending',
+        icon: <Pending />,
+      },
+      {
+        key: 'tab3',
+        value: 'done',
+        label: 'Done',
+        icon: <Done />,
+      },
+    ],
   },
 };

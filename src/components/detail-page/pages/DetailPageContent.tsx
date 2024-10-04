@@ -46,11 +46,11 @@ export interface DetailPageContentProps<TModel extends FieldValues>
   /**
    * Active segment index (tab of step)
    */
-  activeSegmentIndex?: number;
+  activeSegmentValue?: string;
   /**
    * Event that fired with current index when active segment is changed
    */
-  onSegmentChanged?: (current: number) => void;
+  onSegmentChanged?: (value: string) => void;
   /**
    * Content component
    */
@@ -131,39 +131,41 @@ export interface DetailPageContentProps<TModel extends FieldValues>
 }
 
 function DetailPageContent<TModel extends FieldValues>({
-  children,
-  component: RenderComponent,
-  autoSave,
-  onCopy,
-  onCreate,
-  onClose,
-  onDelete,
-  onDiscardChanges,
-  onExtraCommands,
-  onSave,
-  onSaveCreate,
-  onSaveClose,
-  onContentLayout,
-  loading,
-  reason = 'create',
+  activeSegmentValue,
   alerts,
-  onCommands,
-  defaultSaveMode = 'save',
-  hotkeyScopes = DETAILPAGE_HOTKEYS_SCOPE,
+  autoSave,
+  children,
+  commandsPosition,
+  component: RenderComponent,
   createCommandLabel,
-  showHeader = true,
-  onHeader,
-  disableShortCuts,
-  disabled,
-  onWrapperLayout,
   data,
+  defaultSaveMode = 'save',
+  disabled,
+  disableShortCuts,
   enableClose,
   enableCopy = true,
   enableCreate = true,
   enableDelete,
   enableDiscardChanges,
   enableSave = true,
-  activeSegmentIndex,
+  hotkeyScopes = DETAILPAGE_HOTKEYS_SCOPE,
+  loading,
+  onClose,
+  onCommands,
+  onContentLayout,
+  onCopy,
+  onCreate,
+  onDelete,
+  onDiscardChanges,
+  onSegmentChanged,
+  onExtraCommands,
+  onHeader,
+  onSave,
+  onSaveClose,
+  onSaveCreate,
+  onWrapperLayout,
+  reason = 'create',
+  showHeader = true,
   ...pageProps
 }: DetailPageContentProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -268,6 +270,7 @@ function DetailPageContent<TModel extends FieldValues>({
       onExtraCommands,
       createCommandLabel,
       onClose,
+      commandsPosition,
     };
 
     return <DetailPageCommands {...commandProps} />;
@@ -333,10 +336,13 @@ function DetailPageContent<TModel extends FieldValues>({
         {...pageProps}
         disabled={disabled || loading}
         commandsContent={commands}
+        commandsPosition={commandsPosition}
         onHeader={renderPageHeader}
         onClose={onClose}
         loading={loading}
         alertsContent={alertsContent}
+        onTabChanged={onSegmentChanged}
+        selectedTabValue={activeSegmentValue}
       >
         {content}
         {/* Shortcuts */}
@@ -361,8 +367,9 @@ function DetailPageContent<TModel extends FieldValues>({
       enableDiscardChanges,
       enableSave,
       disabled,
-      activeSegmentIndex,
+      activeSegmentValue,
       onSave,
+      setActiveSegment: onSegmentChanged!,
     }),
     [
       data,
@@ -375,8 +382,9 @@ function DetailPageContent<TModel extends FieldValues>({
       enableDiscardChanges,
       enableSave,
       disabled,
-      activeSegmentIndex,
+      activeSegmentValue,
       onSave,
+      onSegmentChanged,
     ],
   );
 
