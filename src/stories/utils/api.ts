@@ -12,6 +12,7 @@ export const UserDefaultValues: DeepPartial<UserSchema> = {
   email: '',
   phone: '',
   website: '',
+  isActive: false,
 };
 
 export const handleSaveUser = async ({ model, reason }: SavePayload<UserSchema>) => {

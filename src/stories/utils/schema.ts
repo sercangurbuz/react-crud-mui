@@ -7,6 +7,7 @@ export const userSchema = z.object({
   website: z.string().min(1),
   phone: z.string(),
   id: z.number().nullable(),
+  isActive: z.boolean(),
 });
 
 export type UserSchema = z.infer<typeof userSchema>;

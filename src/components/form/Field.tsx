@@ -10,6 +10,9 @@ import {
 
 import isNil from '../misc/isNil';
 import usePage from '../page/hooks/usePage';
+import FormControl, { FormControlProps } from './components/FormControl';
+import FormCheckbox from './controls/FormCheckbox';
+import FormSwitch from './controls/FormSwitch';
 import FormTextField from './controls/FormTextField';
 import useValidationOptionsContext from './hooks/useValidationOptionsContext';
 
@@ -20,6 +23,7 @@ import useValidationOptionsContext from './hooks/useValidationOptionsContext';
 export type ControlCommonProps<TFieldValues extends FieldValues = FieldValues> = {
   name: FieldProps<TFieldValues>['name'];
   fieldProps?: Omit<FieldProps<TFieldValues>, 'name'>;
+  formControlProps?: FieldProps<TFieldValues>['formControlProps'];
 };
 
 export interface FieldRender<TFieldValues extends FieldValues> {
@@ -36,6 +40,7 @@ export type FieldProps<TFieldValues extends FieldValues = FieldValues> = Omit<
   render?: FieldRender<TFieldValues>;
   children?: FieldRender<TFieldValues>;
   disabled?: boolean;
+  formControlProps?: FormControlProps;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -54,6 +59,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
   render,
   rules,
   shouldUnregister,
+  formControlProps,
 }: FieldProps<TFieldValues>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
@@ -103,16 +109,22 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
 
   const controlNode = renderControl?.(
     { ...field, ...disabledProp },
-    { ...fieldState, ...(!isEnabledFieldCallout && { error: undefined }) },
+    isEnabledFieldCallout ? fieldState : { ...fieldState, error: undefined },
   );
 
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
 
-  return controlNode;
+  return formControlProps ? (
+    <FormControl {...formControlProps}>{controlNode}</FormControl>
+  ) : (
+    controlNode
+  );
 }
 
 export default Field;
 
 Field.Input = FormTextField;
+Field.Checkbox = FormCheckbox;
+Field.Switch = FormSwitch;
