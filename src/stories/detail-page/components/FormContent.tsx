@@ -4,11 +4,13 @@ import { Grid2 } from '@mui/material';
 
 import Field from '../../../components/form/Field';
 import Page from '../../../components/page/Page';
+import UserSelect from './UsersSelect';
 
 interface FormContentProps {}
 
 function FormContent(props: FormContentProps) {
   const { trigger } = useFormContext();
+
   return (
     <>
       <Page.Content>
@@ -34,6 +36,9 @@ function FormContent(props: FormContentProps) {
               label="Is Active ?"
               helperText="Check this if user is enabled"
             />
+          </Grid2>
+          <Grid2 size={{ md: 4, xs: 12 }}>
+            <UserSelect name="users" />
           </Grid2>
         </Grid2>
       </Page.Content>

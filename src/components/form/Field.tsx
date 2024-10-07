@@ -15,6 +15,7 @@ import FormCheckbox from './controls/FormCheckbox';
 import FormSwitch from './controls/FormSwitch';
 import FormTextField from './controls/FormTextField';
 import useValidationOptionsContext from './hooks/useValidationOptionsContext';
+import FormComboBox from './controls/FormComboBox';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -128,3 +129,4 @@ export default Field;
 Field.Input = FormTextField;
 Field.Checkbox = FormCheckbox;
 Field.Switch = FormSwitch;
+Field.Combobox = FormComboBox;

@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { ForwardedRef, forwardRef, useCallback, useState } from 'react';
+import { FieldValues } from 'react-hook-form';
 
 import {
   Autocomplete,
   AutocompleteFreeSoloValueMapping,
+  AutocompleteOwnerState,
   AutocompleteProps,
   AutocompleteRenderOptionState,
   Box,
@@ -14,22 +16,13 @@ import {
 } from '@mui/material';
 
 import useTranslation from '../i18n/hooks/useTranslation';
+import { H5, H6, Tiny } from '../typography';
 import useComboboxTemplate from './hooks/useComboboxTemplate';
 
-export interface ComboBoxProps<T extends CreatableModel, Creatable extends boolean = false, WP = {}>
-  extends Partial<AutocompleteProps<T, false, true, Creatable>>,
-    Pick<StandardTextFieldProps, 'autoFocus'> {
-  data?: T[];
-  valueField?: string;
-  direction?: 'row' | 'column';
-  optionTemplate: string;
-  displayTemplate?: string;
-  descriptionTemplate?: string;
-  creatable?: Creatable;
-  onCreate?: (text: string) => Promise<T>;
-  InputWrapper?: React.ComponentType<WP>;
-  inputWrapperProps?: Partial<WP>;
-}
+/* -------------------------------------------------------------------------- */
+/*                                  Creatable                                 */
+/* -------------------------------------------------------------------------- */
+export type CreatableModel = FieldValues & CreatableModelProps;
 
 const addValueField = Symbol('addValueField');
 const addDisplayTextField = Symbol('addDisplayTextField');
@@ -39,26 +32,50 @@ type CreatableModelProps = {
   [addDisplayTextField]?: string;
 };
 
-export type CreatableModel = Record<string, any> & CreatableModelProps;
+function isCreatableOption<T extends FieldValues>(option: T): boolean {
+  return option && addValueField in option && addDisplayTextField in option;
+}
+
+/* --------------------------------- Filter --------------------------------- */
 
 const filter = createFilterOptions();
+const DEFAULT_VALUE_FIELD = 'id';
+
+/* -------------------------------------------------------------------------- */
+/*                                    Types                                   */
+/* -------------------------------------------------------------------------- */
+
+export interface ComboBoxProps<T extends CreatableModel, Creatable extends boolean = false>
+  extends Partial<AutocompleteProps<T, false, true, Creatable>>,
+    Pick<StandardTextFieldProps, 'autoFocus' | 'label' | 'error' | 'helperText'> {
+  data?: T[];
+  valueField?: string;
+  direction?: 'row' | 'column';
+  optionTemplate: string;
+  displayTemplate?: string;
+  descriptionTemplate?: string;
+  creatable?: Creatable;
+  onCreate?: (text: string) => Promise<T>;
+}
 
 function ComboBox<T extends CreatableModel, Creatable extends boolean>({
-  data = [],
-  valueField = 'id',
-  direction = 'column',
-  optionTemplate,
-  displayTemplate,
-  descriptionTemplate,
-  renderOption,
-  getOptionLabel,
-  loading,
   autoFocus,
   creatable,
-  onCreate,
-  InputWrapper,
-  inputWrapperProps,
+  data = [],
+  descriptionTemplate,
+  direction = 'column',
+  displayTemplate,
+  error,
+  getOptionLabel,
+  helperText,
+  loading,
   onBlur,
+  onCreate,
+  optionTemplate,
+  label,
+  renderOption: onRenderOption,
+  ref,
+  valueField = DEFAULT_VALUE_FIELD,
   ...rest
 }: ComboBoxProps<T, Creatable>) {
   /* -------------------------------------------------------------------------- */
@@ -67,9 +84,8 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
 
   const { t } = useTranslation();
   const [showNewItemTag, setShowNewItemTag] = useState<boolean>();
-  const [optionRender, descriptionRender, displayRender] = useComboboxTemplate({
+  const { renderDisplay, renderOption, renderDesc } = useComboboxTemplate({
     optionTemplate,
-    descriptionTemplate,
     displayTemplate,
   });
 
@@ -77,32 +93,29 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   /*                                   Events                                   */
   /* -------------------------------------------------------------------------- */
 
-  const isCreatableOption = useCallback((option: T) => {
-    return option && addValueField in option && addDisplayTextField in option;
-  }, []);
-
   const renderOptionItem = useCallback(
     (
-      props: React.HTMLAttributes<HTMLLIElement>,
+      props: React.HTMLAttributes<HTMLLIElement> & { key: any },
       option: T,
       state: AutocompleteRenderOptionState,
+      ownerState: AutocompleteOwnerState<T, false, true, Creatable>,
     ) => {
       // creatable item mi render ediliyor ?
       if (isCreatableOption(option)) {
         return (
           <li {...props}>
-            <H5 sx={{ lineHeight: 1.2 }}>{option[addDisplayTextField]}</H5>
+            <H6 sx={{ lineHeight: 1.2 }}>{option[addDisplayTextField]}</H6>
           </li>
         );
       }
 
       // Custom render option ?
-      if (renderOption) {
-        return renderOption(props, option, state);
+      if (onRenderOption) {
+        return onRenderOption(props, option, state, ownerState);
       }
 
-      const textNode = optionRender?.(option);
-      const descNode = descriptionRender?.(option);
+      const textNode = renderOption?.(option);
+      const descNode = renderDesc?.(option);
 
       return (
         <Box
@@ -118,41 +131,38 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
             },
           }}
         >
-          {typeof textNode === 'string' ? <H5 sx={{ lineHeight: 1.2 }}>{textNode}</H5> : textNode}
-          {typeof descNode === 'string' && descNode ? (
-            <Tiny color="text.disabled">{descNode}</Tiny>
-          ) : (
-            descNode
-          )}
+          <H6 sx={{ lineHeight: 1.2 }}>{textNode}</H6>
+          {descNode ? <Tiny color="text.disabled">{descNode}</Tiny> : null}
         </Box>
       );
     },
-    [descriptionRender, direction, isCreatableOption, optionRender, renderOption],
+    [renderDesc, direction, isCreatableOption, renderOption],
   );
 
   const renderSelectedText = useCallback(
-    (option: T | AutocompleteFreeSoloValueMapping<typeof creatable>) => {
+    (option: T | AutocompleteFreeSoloValueMapping<typeof creatable>): string => {
       if (typeof option === 'string') {
         return option;
       }
 
       if (isCreatableOption(option)) {
-        return option[addValueField];
+        return option[addValueField] as string;
       }
 
       if (getOptionLabel) {
         return getOptionLabel(option);
       }
 
-      const optionText = (displayRender ?? optionRender)(option);
-      return optionText as string;
+      const renderDisplayText = renderDisplay ?? renderOption;
+      const optionText = renderDisplayText!(option);
+      return optionText;
     },
-    [displayRender, getOptionLabel, isCreatableOption, optionRender],
+    [renderDisplay, getOptionLabel, isCreatableOption, renderOption],
   );
 
   const handleFilterOptions = useCallback(
     (options: T[], params: FilterOptionsState<T>) => {
-      const filtered = filter(options, params);
+      const filtered = filter(options, params as FilterOptionsState<unknown>);
       const { inputValue } = params;
 
       //Eger hic bir kayit eşleşmiyorsa ve daha onceden öneri option eklenmemiş ise
@@ -160,10 +170,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
         if (inputValue !== '' && !filtered.length) {
           filtered.push({
             [addValueField]: inputValue,
-            [addDisplayTextField]: formatMessage(
-              { defaultMessage: 'Ekle "{inputValue}"' },
-              { inputValue },
-            ),
+            [addDisplayTextField]: t('combobox.newItem', { inputValue }),
           } as T);
 
           setShowNewItemTag(true);
@@ -174,7 +181,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
 
       return filtered as T[];
     },
-    [creatable, formatMessage],
+    [creatable, t],
   );
 
   /* -------------------------------------------------------------------------- */
@@ -182,6 +189,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   /* -------------------------------------------------------------------------- */
   return (
     <Autocomplete<T, false, true, typeof creatable>
+      disablePortal
       {...rest}
       options={data}
       noOptionsText={t('nodatafound')}
@@ -192,11 +200,10 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       selectOnFocus={creatable}
       handleHomeEndKeys={creatable}
       clearOnBlur={creatable}
-      //value={selValue}
       getOptionLabel={renderSelectedText}
-      onBlur={() => {
+      onBlur={(e) => {
         setShowNewItemTag(false);
-        onBlur();
+        onBlur?.(e);
       }}
       sx={{
         '& .MuiListSubheader-root': {
@@ -210,14 +217,17 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
           return;
         }
 
+        let result = item;
         if (item && isCreatableOption(item)) {
-          item = await onCreate?.(item[addValueField]);
+          if (!onCreate) {
+            throw new Error('missing onCreate callback when createable is used');
+          }
+          result = await onCreate(item[addValueField] as string);
           // hide new item tag
           setShowNewItemTag(false);
         }
 
-        rest.onChange?.(event, item, reason, details);
-        onChange(item ? getRowKey(item) : null);
+        rest.onChange?.(event, result, reason, details);
       }}
       forcePopupIcon
       filterOptions={handleFilterOptions}
@@ -236,7 +246,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
                     backgroundColor: 'success.main',
                   }}
                 >
-                  {formatMessage({ defaultMessage: 'YENİ' })}
+                  {t('combobox.newLabel')}
                 </Tiny>
               </InputAdornment>
             ),
@@ -245,31 +255,33 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
 
         const textfieldNode = (
           <TextField
-            placeholder={placeholder ?? formatMessage({ defaultMessage: 'Seçim yapınız' })}
+            label={label ?? t('combobox.defaultPlaceholder')}
             {...params}
             fullWidth
             inputRef={ref}
             autoFocus={autoFocus}
-            error={!!error}
-            helperText={error?.message}
+            error={error}
+            helperText={helperText}
             sx={{
               '.MuiInputBase-root': showNewItemTag ? { paddingRight: '10px !important' } : null,
             }}
-            InputProps={{
-              ...params.InputProps,
-              ...newItemAdornment,
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                ...newItemAdornment,
+              },
             }}
           />
         );
 
-        return InputWrapper ? (
-          <InputWrapper {...inputWrapperProps}>{textfieldNode}</InputWrapper>
-        ) : (
-          textfieldNode
-        );
+        return textfieldNode;
       }}
     />
   );
 }
 
-export default ComboBox;
+export default forwardRef<typeof ComboBox, ComboBoxProps<any, false>>((props, ref) => (
+  <ComboBox {...props} ref={ref} />
+)) as unknown as typeof ComboBox;
+
+//export default ComboBox

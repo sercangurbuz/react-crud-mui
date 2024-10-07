@@ -23,16 +23,20 @@ function useComboboxTemplate({
   if (displayTemplate && !displayTemplateFn.current) {
     displayTemplateFn.current = template(displayTemplate);
   }
-  //set desc template fn
-  if (descriptionTemplate && !descTemplateFn.current) {
-    descTemplateFn.current = template(descriptionTemplate);
-  }
 
   if (optionTemplate && !optionTemplateFn.current) {
     optionTemplateFn.current = template(optionTemplate);
   }
 
-  return [optionTemplateFn.current, displayTemplateFn.current, descTemplateFn.current] as const;
+  if (descriptionTemplate && !descTemplateFn.current) {
+    descTemplateFn.current = template(descriptionTemplate);
+  }
+
+  return {
+    renderOption: optionTemplateFn.current,
+    renderDisplay: displayTemplateFn.current,
+    renderDesc: descTemplateFn.current,
+  };
 }
 
 export default useComboboxTemplate;
