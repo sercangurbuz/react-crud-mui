@@ -1,27 +1,19 @@
-import React from 'react';
-
-import { FormComboBoxProps } from '../../../components/form/controls/FormComboBox';
+import { FormSelectProps } from '../../../components/form/controls/FormSelect';
 import Field from '../../../components/form/Field';
 import { useAppQuery } from '../../../components/query';
-import { IdNameSchema } from '../../utils/schema';
+import { UserSchema } from '../../utils/schema';
 
-interface UsersSelectProps extends Omit<FormComboBoxProps<IdNameSchema, false>, 'optionTemplate'> {}
+interface UsersSelectProps extends Omit<FormSelectProps<UserSchema>, 'optionTemplate'> {}
 
-function UserSelect(props: UsersSelectProps) {
-  const { data, isFetching } = useAppQuery<IdNameSchema[]>({
+function UsersSelect(props: UsersSelectProps) {
+  const { data } = useAppQuery<UserSchema[]>({
     queryKey: ['users'],
     url: 'https://jsonplaceholder.typicode.com/users',
   });
 
   return (
-    <Field.Combobox
-      {...props}
-      label="Selected User"
-      optionTemplate="${name}"
-      data={data}
-      loading={isFetching}
-    />
+    <Field.Select {...props} optionTemplate="${name}" data={data} />
   );
 }
 
-export default UserSelect;
+export default UsersSelect;

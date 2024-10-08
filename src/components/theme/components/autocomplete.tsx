@@ -1,7 +1,7 @@
-import { Theme } from '@mui/material/styles/createTheme'
-import { Components } from '@mui/material/styles/components'
 // MUI ICON COMPONENT
-import ExpandMore from '@mui/icons-material/ExpandMore'
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import { Components } from '@mui/material/styles/components';
+import { Theme } from '@mui/material/styles/createTheme';
 
 const Autocomplete = (theme: Theme): Components['MuiAutocomplete'] => {
   return {
@@ -24,8 +24,12 @@ const Autocomplete = (theme: Theme): Components['MuiAutocomplete'] => {
         marginInline: 10,
       },
       tag: { maxWidth: 130 },
+      inputRoot: {
+        paddingTop: '9px !important',
+        paddingBottom: '9px !important',
+      },
     },
-  }
-}
+  };
+};
 
-export default Autocomplete
+export default Autocomplete;

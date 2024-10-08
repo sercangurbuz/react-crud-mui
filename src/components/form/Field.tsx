@@ -12,10 +12,11 @@ import isNil from '../misc/isNil';
 import usePage from '../page/hooks/usePage';
 import FormControl, { FormControlProps } from './components/FormControl';
 import FormCheckbox from './controls/FormCheckbox';
+import FormComboBox from './controls/FormComboBox';
+import FormSelect from './controls/FormSelect';
 import FormSwitch from './controls/FormSwitch';
 import FormTextField from './controls/FormTextField';
 import useValidationOptionsContext from './hooks/useValidationOptionsContext';
-import FormComboBox from './controls/FormComboBox';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -130,3 +131,4 @@ Field.Input = FormTextField;
 Field.Checkbox = FormCheckbox;
 Field.Switch = FormSwitch;
 Field.Combobox = FormComboBox;
+Field.Select = FormSelect;

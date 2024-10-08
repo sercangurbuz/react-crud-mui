@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef, useCallback, useState } from 'react';
+import React, { forwardRef, useCallback, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import {
@@ -6,6 +6,7 @@ import {
   AutocompleteFreeSoloValueMapping,
   AutocompleteOwnerState,
   AutocompleteProps,
+  AutocompleteRenderInputParams,
   AutocompleteRenderOptionState,
   Box,
   createFilterOptions,
@@ -16,8 +17,8 @@ import {
 } from '@mui/material';
 
 import useTranslation from '../i18n/hooks/useTranslation';
-import { H5, H6, Tiny } from '../typography';
-import useComboboxTemplate from './hooks/useComboboxTemplate';
+import { H6, Tiny } from '../typography';
+import useComboboxTemplate, { ComboboxTemplate } from './hooks/useComboboxTemplate';
 
 /* -------------------------------------------------------------------------- */
 /*                                  Creatable                                 */
@@ -51,9 +52,9 @@ export interface ComboBoxProps<T extends CreatableModel, Creatable extends boole
   data?: T[];
   valueField?: string;
   direction?: 'row' | 'column';
-  optionTemplate: string;
-  displayTemplate?: string;
-  descriptionTemplate?: string;
+  optionTemplate: ComboboxTemplate<T>;
+  displayTemplate?: ComboboxTemplate<T>;
+  descriptionTemplate?: ComboboxTemplate<T>;
   creatable?: Creatable;
   onCreate?: (text: string) => Promise<T>;
 }
@@ -84,9 +85,10 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
 
   const { t } = useTranslation();
   const [showNewItemTag, setShowNewItemTag] = useState<boolean>();
-  const { renderDisplay, renderOption, renderDesc } = useComboboxTemplate({
+  const { renderDisplay, renderOption, renderDescription } = useComboboxTemplate({
     optionTemplate,
     displayTemplate,
+    descriptionTemplate,
   });
 
   /* -------------------------------------------------------------------------- */
@@ -115,7 +117,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       }
 
       const textNode = renderOption?.(option);
-      const descNode = renderDesc?.(option);
+      const descNode = renderDescription?.(option);
 
       return (
         <Box
@@ -131,12 +133,12 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
             },
           }}
         >
-          <H6 sx={{ lineHeight: 1.2 }}>{textNode}</H6>
-          {descNode ? <Tiny color="text.disabled">{descNode}</Tiny> : null}
+          {textNode}
+          {descNode ? <Tiny color="text.secondary">{descNode}</Tiny> : null}
         </Box>
       );
     },
-    [renderDesc, direction, isCreatableOption, renderOption],
+    [renderDescription, direction, isCreatableOption, renderOption],
   );
 
   const renderSelectedText = useCallback(
@@ -154,8 +156,8 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       }
 
       const renderDisplayText = renderDisplay ?? renderOption;
-      const optionText = renderDisplayText!(option);
-      return optionText;
+      const optionText = renderDisplayText(option);
+      return optionText as string;
     },
     [renderDisplay, getOptionLabel, isCreatableOption, renderOption],
   );
@@ -184,6 +186,52 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
     [creatable, t],
   );
 
+  const renderInput = (params: AutocompleteRenderInputParams) => {
+    let newItemAdornment = {};
+
+    if (showNewItemTag) {
+      newItemAdornment = {
+        endAdornment: (
+          <InputAdornment position="end">
+            <Tiny
+              sx={{
+                color: 'common.white',
+                p: '0.2rem 0.6rem',
+                borderRadius: 1,
+                backgroundColor: 'success.main',
+              }}
+            >
+              {t('combobox.newLabel')}
+            </Tiny>
+          </InputAdornment>
+        ),
+      };
+    }
+
+    const textfieldNode = (
+      <TextField
+        label={label}
+        {...params}
+        fullWidth
+        inputRef={ref}
+        autoFocus={autoFocus}
+        error={error}
+        helperText={helperText}
+        sx={{
+          '.MuiInputBase-root': showNewItemTag ? { paddingRight: '10px !important' } : null,
+        }}
+        slotProps={{
+          input: {
+            ...params.InputProps,
+            ...newItemAdornment,
+          },
+        }}
+      />
+    );
+
+    return textfieldNode;
+  };
+
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
@@ -193,7 +241,6 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       {...rest}
       options={data}
       noOptionsText={t('nodatafound')}
-      data-testid={name}
       autoComplete
       loading={loading}
       freeSolo={creatable}
@@ -232,50 +279,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       forcePopupIcon
       filterOptions={handleFilterOptions}
       renderOption={renderOptionItem}
-      renderInput={(params) => {
-        let newItemAdornment = {};
-        if (showNewItemTag) {
-          newItemAdornment = {
-            endAdornment: (
-              <InputAdornment position="end">
-                <Tiny
-                  sx={{
-                    color: 'common.white',
-                    p: '0.2rem 0.6rem',
-                    borderRadius: 1,
-                    backgroundColor: 'success.main',
-                  }}
-                >
-                  {t('combobox.newLabel')}
-                </Tiny>
-              </InputAdornment>
-            ),
-          };
-        }
-
-        const textfieldNode = (
-          <TextField
-            label={label ?? t('combobox.defaultPlaceholder')}
-            {...params}
-            fullWidth
-            inputRef={ref}
-            autoFocus={autoFocus}
-            error={error}
-            helperText={helperText}
-            sx={{
-              '.MuiInputBase-root': showNewItemTag ? { paddingRight: '10px !important' } : null,
-            }}
-            slotProps={{
-              input: {
-                ...params.InputProps,
-                ...newItemAdornment,
-              },
-            }}
-          />
-        );
-
-        return textfieldNode;
-      }}
+      renderInput={renderInput}
     />
   );
 }

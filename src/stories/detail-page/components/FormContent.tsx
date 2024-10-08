@@ -4,7 +4,8 @@ import { Grid2 } from '@mui/material';
 
 import Field from '../../../components/form/Field';
 import Page from '../../../components/page/Page';
-import UserSelect from './UsersSelect';
+import UserFind from './UsersFind';
+import UsersSelect from './UsersSelect';
 
 interface FormContentProps {}
 
@@ -38,7 +39,11 @@ function FormContent(props: FormContentProps) {
             />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
-            <UserSelect name="users" />
+            <UserFind name="selUser" />
+          </Grid2>
+
+          <Grid2 size={{ md: 4, xs: 12 }}>
+            <UsersSelect name="selUserId" />
           </Grid2>
         </Grid2>
       </Page.Content>

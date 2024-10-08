@@ -1,41 +1,48 @@
-import { useRef } from 'react';
+import { ReactNode, useRef } from 'react';
+import { FieldValues } from 'react-hook-form';
 
 import template from 'lodash.template';
 
-export interface TemplateOptions {
-  displayTemplate?: string;
-  descriptionTemplate?: string;
-  optionTemplate?: string;
+export type ComboboxTemplateFn<T extends FieldValues> = (model: T) => ReactNode;
+export type ComboboxTemplate<T extends FieldValues> = string | ComboboxTemplateFn<T>;
+export interface UseComboboxTemplateOptions<T extends FieldValues> {
+  displayTemplate?: ComboboxTemplate<T>;
+  descriptionTemplate?: ComboboxTemplate<T>;
+  optionTemplate: ComboboxTemplate<T>;
 }
 
-export type UseTemplateOptions = TemplateOptions;
+export interface UseComboboxTemplateReturn<T extends FieldValues> {
+  renderDisplay?: ComboboxTemplateFn<T>;
+  renderDescription?: ComboboxTemplateFn<T>;
+  renderOption: ComboboxTemplateFn<T>;
+}
 
-function useComboboxTemplate({
+function useComboboxTemplate<T extends FieldValues>({
   optionTemplate,
   displayTemplate,
   descriptionTemplate,
-}: UseTemplateOptions) {
+}: UseComboboxTemplateOptions<T>): UseComboboxTemplateReturn<T> {
   const displayTemplateFn = useRef<ReturnType<typeof template> | undefined>();
   const descTemplateFn = useRef<ReturnType<typeof template> | undefined>();
   const optionTemplateFn = useRef<ReturnType<typeof template> | undefined>();
 
   //set template fn
-  if (displayTemplate && !displayTemplateFn.current) {
+  if (typeof displayTemplate === 'string' && !displayTemplateFn.current) {
     displayTemplateFn.current = template(displayTemplate);
   }
 
-  if (optionTemplate && !optionTemplateFn.current) {
+  if (typeof optionTemplate === 'string' && !optionTemplateFn.current) {
     optionTemplateFn.current = template(optionTemplate);
   }
 
-  if (descriptionTemplate && !descTemplateFn.current) {
+  if (typeof descriptionTemplate === 'string' && !descTemplateFn.current) {
     descTemplateFn.current = template(descriptionTemplate);
   }
 
   return {
-    renderOption: optionTemplateFn.current,
-    renderDisplay: displayTemplateFn.current,
-    renderDesc: descTemplateFn.current,
+    renderOption: optionTemplateFn.current ?? (optionTemplate as ComboboxTemplateFn<T>),
+    renderDisplay: displayTemplateFn.current ?? (displayTemplate as ComboboxTemplateFn<T>),
+    renderDescription: descTemplateFn.current ?? (descriptionTemplate as ComboboxTemplateFn<T>),
   };
 }
 
