@@ -1,11 +1,10 @@
-import { DeepPartial } from 'react-hook-form';
-
 import axios from 'axios';
 
 import { DeletePayload, SavePayload } from '../../components/detail-page/pages/DetailPageData';
+import { DeepNullable } from '../../components/utils';
 import { UserSchema } from './schema';
 
-export const UserDefaultValues: DeepPartial<UserSchema> = {
+export const UserDefaultValues: DeepNullable<UserSchema> = {
   id: null,
   name: '',
   username: '',
@@ -13,6 +12,8 @@ export const UserDefaultValues: DeepPartial<UserSchema> = {
   phone: '',
   website: '',
   isActive: false,
+  selUser: null,
+  selUserId: null,
 };
 
 export const handleSaveUser = async ({ model, reason }: SavePayload<UserSchema>) => {

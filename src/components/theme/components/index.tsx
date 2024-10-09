@@ -145,6 +145,19 @@ const componentsOverride = (theme: Theme): Components => {
     MuiDesktopDateTimePicker: DesktopDateTimePicker(),
     // INPUT & LABEL
     MuiInput: Input(theme),
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          fontSize: 14,
+          lineHeight: 1.7,
+          fontWeight: 500,
+
+          '&:not(.Mui-focused)': {
+            transform: 'translate(12px, 10px) scale(1)',
+          },
+        },
+      },
+    },
     MuiInputLabel: InputLabel(theme),
     MuiFilledInput: FilledInput(theme),
     MuiOutlinedInput: OutlinedInput(theme),

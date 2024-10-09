@@ -21,10 +21,11 @@ function FormSelect<T extends FieldValues, TFieldValues extends FieldValues>({
         <Select
           {...selectProps}
           {...field}
+          id={name}
           error={invalid}
           helperText={error?.message}
           onChange={(e, child) => {
-            field.onChange(e);
+            field.onChange(e.target.value);
             selectProps?.onChange?.(e, child);
           }}
         />

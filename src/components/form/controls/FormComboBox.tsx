@@ -25,7 +25,7 @@ function FormComboBox<
           error={invalid}
           helperText={error?.message}
           onChange={(e, value, reason, details) => {
-            field.onChange(e);
+            field.onChange(value);
             comboBoxProps?.onChange?.(e, value, reason, details);
           }}
         />

@@ -207,6 +207,13 @@ export const WithZodRefine: DetailPageStory = {
     const { data, isFetching } = useAppQuery<UserSchema>({
       queryKey: ['user'],
       url: 'https://jsonplaceholder.typicode.com/users/1',
+      select(data) {
+        return {
+          ...data,
+          selUser: null,
+          selUserId: undefined,
+        };
+      },
     });
 
     const [s, { addRefine }] = useZodRefine({ schema: userSchema });

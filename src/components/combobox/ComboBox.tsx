@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useState } from 'react';
+import React, { forwardRef, Ref, useCallback, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import {
@@ -57,6 +57,7 @@ export interface ComboBoxProps<T extends CreatableModel, Creatable extends boole
   descriptionTemplate?: ComboboxTemplate<T>;
   creatable?: Creatable;
   onCreate?: (text: string) => Promise<T>;
+  selectRef?: Ref<unknown>;
 }
 
 function ComboBox<T extends CreatableModel, Creatable extends boolean>({
@@ -75,7 +76,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   optionTemplate,
   label,
   renderOption: onRenderOption,
-  ref,
+  selectRef,
   valueField = DEFAULT_VALUE_FIELD,
   ...rest
 }: ComboBoxProps<T, Creatable>) {
@@ -213,7 +214,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
         label={label}
         {...params}
         fullWidth
-        inputRef={ref}
+        inputRef={selectRef}
         autoFocus={autoFocus}
         error={error}
         helperText={helperText}
@@ -285,7 +286,5 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
 }
 
 export default forwardRef<typeof ComboBox, ComboBoxProps<any, false>>((props, ref) => (
-  <ComboBox {...props} ref={ref} />
-)) as unknown as typeof ComboBox;
-
-//export default ComboBox
+  <ComboBox {...props} selectRef={ref} />
+)) as typeof ComboBox;

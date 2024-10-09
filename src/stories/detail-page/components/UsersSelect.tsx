@@ -1,3 +1,5 @@
+import { useWatch } from 'react-hook-form';
+
 import { FormSelectProps } from '../../../components/form/controls/FormSelect';
 import Field from '../../../components/form/Field';
 import { useAppQuery } from '../../../components/query';
@@ -11,8 +13,18 @@ function UsersSelect(props: UsersSelectProps) {
     url: 'https://jsonplaceholder.typicode.com/users',
   });
 
+  const selUserId = useWatch({ name: 'selUserId' });
+
+  console.log('selUserId', selUserId);
+
   return (
-    <Field.Select {...props} optionTemplate="${name}" data={data} />
+    <Field.Select
+      {...props}
+      optionTemplate="${name}"
+      //displayTemplate="${name}"
+      label="Selected"
+      data={data}
+    />
   );
 }
 

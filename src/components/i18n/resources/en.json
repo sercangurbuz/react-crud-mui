@@ -8,6 +8,7 @@
     "combobox.suggestions": "Recommended options",
     "combobox.missinggroupname": "Unknown group",
     "combobox.select": "Choose...",
+    "combobox.selectnone": "None",
     "autosavepromptcontent": "Would you like to load auto-saved form data ?",
     "autosavepromptoktext": "Load unsaved form data",
     "autosaveprompttitle": "Found unsaved form data !",

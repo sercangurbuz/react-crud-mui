@@ -171,6 +171,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     return (
       <LoadingButton
         {...(saveCommandMenus[mode] as unknown as LoadingButtonProps)}
+        key={saveCommandMenus[mode].key}
         loading={loading}
         {...commandsExtraProps['save']}
       />

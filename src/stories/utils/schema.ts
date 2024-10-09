@@ -14,6 +14,7 @@ export const userSchema = z.object({
   id: z.number().nullable(),
   isActive: z.boolean(),
   selUser: IdNameSchema,
+  selUserId: z.number(),
 });
 
 export type UserSchema = z.infer<typeof userSchema>;

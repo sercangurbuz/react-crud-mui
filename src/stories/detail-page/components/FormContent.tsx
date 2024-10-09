@@ -44,6 +44,7 @@ function FormContent(props: FormContentProps) {
 
           <Grid2 size={{ md: 4, xs: 12 }}>
             <UsersSelect name="selUserId" />
+            <Field.Button onClick={(form) => form.resetField('selUserId')}>Set select</Field.Button>
           </Grid2>
         </Grid2>
       </Page.Content>

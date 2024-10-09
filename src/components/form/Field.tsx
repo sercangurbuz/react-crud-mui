@@ -10,6 +10,7 @@ import {
 
 import isNil from '../misc/isNil';
 import usePage from '../page/hooks/usePage';
+import FormButton from './components/FormButton';
 import FormControl, { FormControlProps } from './components/FormControl';
 import FormCheckbox from './controls/FormCheckbox';
 import FormComboBox from './controls/FormComboBox';
@@ -132,3 +133,5 @@ Field.Checkbox = FormCheckbox;
 Field.Switch = FormSwitch;
 Field.Combobox = FormComboBox;
 Field.Select = FormSelect;
+
+Field.Button = FormButton;

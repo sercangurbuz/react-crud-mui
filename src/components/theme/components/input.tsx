@@ -87,3 +87,4 @@ export const InputLabel = (theme: Theme): Components['MuiInputLabel'] => ({
     },
   },
 });
+

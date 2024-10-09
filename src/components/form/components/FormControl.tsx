@@ -20,7 +20,7 @@ function FormControl({
   /* -------------------------------------------------------------------------- */
 
   const labelNode = (
-    <div>
+    <div key="label">
       <Paragraph fontWeight={500} lineHeight={1}>
         {label}
       </Paragraph>
