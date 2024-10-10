@@ -10,6 +10,7 @@ import {
 
 import isNil from '../misc/isNil';
 import usePage from '../page/hooks/usePage';
+import FieldWatch from './components/FieldWatch';
 import FormButton from './components/FormButton';
 import FormControl, { FormControlProps } from './components/FormControl';
 import FormCheckbox from './controls/FormCheckbox';
@@ -135,3 +136,4 @@ Field.Combobox = FormComboBox;
 Field.Select = FormSelect;
 
 Field.Button = FormButton;
+Field.Watch = FieldWatch;

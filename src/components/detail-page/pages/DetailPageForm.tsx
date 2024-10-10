@@ -1,17 +1,18 @@
-import { DeepPartial, DefaultValues, FieldValues } from 'react-hook-form';
+import { DefaultValues, FieldValues } from 'react-hook-form';
 
 import { z } from 'zod';
 
 import FormProvider from '../../form/components/FormProvider';
 import { useForm } from '../../form/hooks';
 import { UseFormReturn, ValidationOptions } from '../../form/hooks/useForm';
+import { DeepNullable } from '../../utils';
 import DetailPageData, { DetailPageDataProps } from './DetailPageData';
 
 export interface DetailPageFormProps<TModel extends FieldValues>
   extends Omit<DetailPageDataProps<TModel>, 'form' | 'defaultValues' | 'schema'> {
   form?: UseFormReturn<TModel>;
   schema?: z.ZodType<Partial<TModel>> | z.ZodType<Partial<TModel>>[];
-  defaultValues?: DeepPartial<TModel> | DeepPartial<TModel>[];
+  defaultValues?: DeepNullable<TModel> | DeepNullable<TModel>[];
   /**
    * Optional validation options
    */
@@ -19,19 +20,17 @@ export interface DetailPageFormProps<TModel extends FieldValues>
 }
 
 function DetailPageForm<TModel extends FieldValues>(props: DetailPageFormProps<TModel>) {
-  const { activeSegmentValue: activeSegmentIndex = 0, schema, defaultValues, validationOptions } = props;
+  const { activeSegmentValue, schema, defaultValues, validationOptions } = props;
   /* -------------------------------------------------------------------------- */
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */
   /**
    * get default values depending on segment index when using in steps mode
    */
-  const initialValues = Array.isArray(defaultValues)
-    ? defaultValues[activeSegmentIndex]
-    : defaultValues;
+  const initialValues = Array.isArray(defaultValues) ? defaultValues[0] : defaultValues;
 
   // array schema only used in steps
-  const formSchema = Array.isArray(schema) ? schema[activeSegmentIndex] : schema;
+  const formSchema = Array.isArray(schema) ? schema[0] : schema;
 
   const form = useForm<TModel>({
     reValidateMode: 'onChange',

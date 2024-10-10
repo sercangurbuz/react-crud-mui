@@ -25,8 +25,12 @@ function FormComboBox<
           error={invalid}
           helperText={error?.message}
           onChange={(e, value, reason, details) => {
-            field.onChange(value);
+            if (reason === 'createOption' && typeof value === 'string') {
+              return;
+            }
+
             comboBoxProps?.onChange?.(e, value, reason, details);
+            field.onChange(value);
           }}
         />
       )}

@@ -1,5 +1,5 @@
 import { forwardRef, ReactNode, Ref } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { FieldValues, Path } from 'react-hook-form';
 
 import { ClearRounded } from '@mui/icons-material';
 import {
@@ -33,7 +33,7 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<MuiSelect
   optionTemplate: ComboboxTemplate<T>;
   displayTemplate?: ComboboxTemplate<T>;
   descriptionTemplate?: ComboboxTemplate<T>;
-  optionImg?: string;
+  optionImg?: Path<T>;
   optionImgProps?: AvatarProps;
   helperText?: ReactNode;
   selectRef?: Ref<unknown>;
@@ -130,7 +130,7 @@ function Select<T extends FieldValues>({
           value={idValue}
           key={idValue}
           sx={{ paddingLeft: indent }}
-          autoFocus={index === 0}
+          autoFocus={value ? value === idValue : index === 0}
         >
           {optionNode}
         </MenuItem>
@@ -203,9 +203,6 @@ function Select<T extends FieldValues>({
               : undefined
         }
       >
-        {/*    <MenuItem value="">
-          <em>{t('combobox.selectnone')}</em>
-        </MenuItem> */}
         {children ?? (groupByFn ? renderGroupOptions(data) : renderOptions(data))}
       </MuiSelect>
     );

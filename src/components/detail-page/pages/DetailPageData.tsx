@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { DeepPartial, FieldValues } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 import { UseFormOptions, UseFormReturn } from '../../form/hooks/useForm';
@@ -7,7 +7,7 @@ import { useRunAsync, useUpdateEffect } from '../../hooks';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
 import { Message } from '../../page/hooks/useNormalizeMessages';
-import { ServerError } from '../../utils';
+import { DeepNullable, ServerError } from '../../utils';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -52,7 +52,7 @@ export interface DetailPageDataProps<TModel extends FieldValues>
     >,
     Pick<UseFormOptions<TModel>, 'schema'> {
   form: UseFormReturn<TModel>;
-  defaultValues?: Readonly<DeepPartial<TModel>>;
+  defaultValues?: Readonly<DeepNullable<TModel>>;
   /**
    * Navigation buttons event when navigation is active
    * @returns if returns data,either in promise or object will bind to form data

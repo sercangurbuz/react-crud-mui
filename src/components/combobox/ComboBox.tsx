@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 
 import useTranslation from '../i18n/hooks/useTranslation';
-import { H6, Tiny } from '../typography';
+import { H6, Small, Tiny } from '../typography';
 import useComboboxTemplate, { ComboboxTemplate } from './hooks/useComboboxTemplate';
 
 /* -------------------------------------------------------------------------- */
@@ -105,11 +105,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
     ) => {
       // creatable item mi render ediliyor ?
       if (isCreatableOption(option)) {
-        return (
-          <li {...props}>
-            <H6 sx={{ lineHeight: 1.2 }}>{option[addDisplayTextField]}</H6>
-          </li>
-        );
+        return <li {...props}>{option[addDisplayTextField]}</li>;
       }
 
       // Custom render option ?
@@ -126,11 +122,11 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
           component="li"
           sx={{
             '&.MuiAutocomplete-option': {
-              gap: 0.5,
+              gap: 0.3,
               flexDirection: direction,
               justifyContent: direction === 'column' ? 'flex-start' : 'space-between',
               alignItems: direction === 'column' ? 'flex-start' : 'center',
-              py: 1.5,
+              py: 1,
             },
           }}
         >
@@ -244,6 +240,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       noOptionsText={t('nodatafound')}
       autoComplete
       loading={loading}
+      fullWidth
       freeSolo={creatable}
       selectOnFocus={creatable}
       handleHomeEndKeys={creatable}

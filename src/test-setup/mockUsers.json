@@ -163,8 +163,8 @@
         },
         "todos": [],
         "position": {
-            "id": 9,
-            "title": "Security engineer"
+            "id": 3,
+            "title": "Web developer"
         }
     },
     {
@@ -219,8 +219,8 @@
         },
         "todos": [],
         "position": {
-            "id": 2,
-            "title": "Network administrator"
+            "id": 3,
+            "title": "Web developer"
         }
     },
     {

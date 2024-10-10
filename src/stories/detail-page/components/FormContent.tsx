@@ -31,28 +31,6 @@ function FormContent(props: FormContentProps) {
           <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.Input name="website" label="Web site" />
           </Grid2>
-          <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.Switch
-              name="isActive"
-              label="Is Active ?"
-              helperText="Check this if user is enabled"
-            />
-          </Grid2>
-          <Grid2 size={{ md: 4, xs: 12 }}>
-            <UserFind name="selUser" />
-          </Grid2>
-
-          <Grid2 size={{ md: 4, xs: 12 }}>
-            <UsersSelect name="selUserId" />
-          </Grid2>
-          <Field.Button
-            onClick={(form) => {
-              form.setValue('selUserId', null, { shouldValidate: true });
-              form.setValue('selUser', null, { shouldValidate: true });
-            }}
-          >
-            Set select
-          </Field.Button>
         </Grid2>
       </Page.Content>
     </>
