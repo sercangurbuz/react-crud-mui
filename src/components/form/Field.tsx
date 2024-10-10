@@ -15,6 +15,7 @@ import FormButton from './components/FormButton';
 import FormControl, { FormControlProps } from './components/FormControl';
 import FormCheckbox from './controls/FormCheckbox';
 import FormComboBox from './controls/FormComboBox';
+import FormRadioGroup from './controls/FormRadioGroup';
 import FormSelect from './controls/FormSelect';
 import FormSwitch from './controls/FormSwitch';
 import FormTextField from './controls/FormTextField';
@@ -111,17 +112,17 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
     throw new Error(`missing render function in field ${name}`);
   }
 
-  const controlNode = renderControl?.(
-    { ...field, ...disabledProp },
-    isEnabledFieldCallout ? fieldState : { ...fieldState, error: undefined },
-  );
+  const fieldStates = isEnabledFieldCallout ? fieldState : { ...fieldState, error: undefined };
+  const controlNode = renderControl?.({ ...field, ...disabledProp }, fieldStates);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
 
-  return formControlProps ? (
-    <FormControl {...formControlProps}>{controlNode}</FormControl>
+  return formControlProps?.label ? (
+    <FormControl {...formControlProps} {...fieldStates}>
+      {controlNode}
+    </FormControl>
   ) : (
     controlNode
   );
@@ -134,6 +135,7 @@ Field.Checkbox = FormCheckbox;
 Field.Switch = FormSwitch;
 Field.Combobox = FormComboBox;
 Field.Select = FormSelect;
+Field.RadioGroup = FormRadioGroup;
 
 Field.Button = FormButton;
 Field.Watch = FieldWatch;
