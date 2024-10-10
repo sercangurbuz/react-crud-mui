@@ -60,7 +60,7 @@ export const CommandsOnFooter: PageStory = {
 
 export const WithTabs: PageStory = {
   args: {
-    selectedTabValue: 'assigned',
+    selectedTabIndex: 'assigned',
     tabs: [
       {
         key: 'tab1',

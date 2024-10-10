@@ -37,8 +37,8 @@ export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
   loading?: boolean;
   disableShortCuts?: boolean;
   tabs?: TabPane[];
-  selectedTabValue?: string;
-  onTabChanged?: (value: string) => void;
+  selectedTabIndex?: number;
+  onTabChanged?: (index: number) => void;
   customTabs?: ComponentType<DefaultTabsProps>;
 }
 
@@ -64,7 +64,7 @@ function Page({
   style,
   tabs,
   onTabChanged,
-  selectedTabValue = '',
+  selectedTabIndex = 0,
   ...headerProps
 }: PageProps) {
   /* -------------------------------------------------------------------------- */
@@ -86,10 +86,15 @@ function Page({
       return null;
     }
 
+    const selectedValue = selectedTabIndex <= tabs.length - 1 ? tabs[selectedTabIndex].value : '';
+
     const props: DefaultTabsProps = {
       tabs,
-      value: selectedTabValue,
-      onChange: (_, value) => onTabChanged?.(value),
+      value: selectedValue,
+      onChange: (_, value) => {
+        const selIndex = tabs.findIndex((item) => item.value === value);
+        onTabChanged?.(selIndex ?? 0);
+      },
     };
 
     const Tabs = CustomTabs ?? DefaultTabs;
@@ -101,7 +106,7 @@ function Page({
       return null;
     }
 
-    const tabContent = tabs.find((tab) => tab.value === selectedTabValue);
+    const tabContent = selectedTabIndex <= tabs.length - 1 ? tabs[selectedTabIndex] : null;
     return tabContent?.children;
   };
 

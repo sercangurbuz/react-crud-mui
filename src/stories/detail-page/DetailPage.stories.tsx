@@ -297,7 +297,6 @@ export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
 export const WithTabs: DetailPageStory = {
   args: {
     component: undefined,
-    defaultSegmentValue: 'assigned',
     tabs: [
       {
         key: 'tab1',
@@ -336,7 +335,6 @@ export const WithTabs: DetailPageStory = {
   },
 };
 
-//TODO: finish tabs with custom
 export const WithCustomTabs: DetailPageStory = {
   args: {
     ...WithTabs.args,

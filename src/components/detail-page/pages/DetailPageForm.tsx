@@ -20,17 +20,19 @@ export interface DetailPageFormProps<TModel extends FieldValues>
 }
 
 function DetailPageForm<TModel extends FieldValues>(props: DetailPageFormProps<TModel>) {
-  const { activeSegmentValue, schema, defaultValues, validationOptions } = props;
+  const { activeSegmentIndex = 0, schema, defaultValues, validationOptions } = props;
   /* -------------------------------------------------------------------------- */
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */
   /**
    * get default values depending on segment index when using in steps mode
    */
-  const initialValues = Array.isArray(defaultValues) ? defaultValues[0] : defaultValues;
+  const initialValues = Array.isArray(defaultValues)
+    ? defaultValues[activeSegmentIndex]
+    : defaultValues;
 
   // array schema only used in steps
-  const formSchema = Array.isArray(schema) ? schema[0] : schema;
+  const formSchema = Array.isArray(schema) ? schema[activeSegmentIndex] : schema;
 
   const form = useForm<TModel>({
     reValidateMode: 'onChange',

@@ -46,11 +46,11 @@ export interface DetailPageContentProps<TModel extends FieldValues>
   /**
    * Active segment index (tab of step)
    */
-  activeSegmentValue?: string;
+  activeSegmentIndex?: number;
   /**
    * Event that fired with current index when active segment is changed
    */
-  onSegmentChanged?: (value: string) => void;
+  onSegmentChanged?: (index: number) => void;
   /**
    * Content component
    */
@@ -131,7 +131,7 @@ export interface DetailPageContentProps<TModel extends FieldValues>
 }
 
 function DetailPageContent<TModel extends FieldValues>({
-  activeSegmentValue,
+  activeSegmentIndex,
   alerts,
   autoSave,
   children,
@@ -342,7 +342,7 @@ function DetailPageContent<TModel extends FieldValues>({
         loading={loading}
         alertsContent={alertsContent}
         onTabChanged={onSegmentChanged}
-        selectedTabValue={activeSegmentValue}
+        selectedTabIndex={activeSegmentIndex}
       >
         {content}
         {/* Shortcuts */}
@@ -367,9 +367,9 @@ function DetailPageContent<TModel extends FieldValues>({
       enableDiscardChanges,
       enableSave,
       disabled,
-      activeSegmentValue,
+      activeSegmentIndex,
       onSave,
-      setActiveSegment: onSegmentChanged!,
+      setActiveSegmentIndex: onSegmentChanged!,
     }),
     [
       data,
@@ -382,7 +382,7 @@ function DetailPageContent<TModel extends FieldValues>({
       enableDiscardChanges,
       enableSave,
       disabled,
-      activeSegmentValue,
+      activeSegmentIndex,
       onSave,
       onSegmentChanged,
     ],
