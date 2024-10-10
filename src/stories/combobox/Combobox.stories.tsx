@@ -38,6 +38,9 @@ const meta: Meta<typeof Field.Combobox> = {
               Reset
             </Field.Button>
           </Stack>
+        </Page.Content>
+        <Page.Divider />
+        <Page.Content>
           <Field.Watch name="user" label="User" showAsJson />
         </Page.Content>
       </DetailPage>

@@ -45,6 +45,9 @@ const meta: Meta<typeof Field.RadioGroup> = {
               Reset
             </Field.Button>
           </Stack>
+        </Page.Content>
+        <Page.Divider />
+        <Page.Content>
           <Field.Watch name="gender" label="Selected Gender" sx={{ marginTop: 3 }} />
         </Page.Content>
       </DetailPage>

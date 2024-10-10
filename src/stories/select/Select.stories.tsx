@@ -35,6 +35,9 @@ const meta: Meta<typeof Field.Select> = {
               Reset
             </Field.Button>
           </Stack>
+        </Page.Content>
+        <Page.Divider />
+        <Page.Content>
           <Field.Watch name="userId" label="User ID" />
         </Page.Content>
       </DetailPage>
