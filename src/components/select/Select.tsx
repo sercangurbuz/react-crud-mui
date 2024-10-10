@@ -1,23 +1,25 @@
 import { forwardRef, ReactNode, Ref } from 'react';
 import { FieldValues } from 'react-hook-form';
 
+import { ClearRounded } from '@mui/icons-material';
 import {
   Avatar,
   AvatarProps,
   Box,
   FormControl,
   FormHelperText,
+  IconButton,
   InputLabel,
   ListSubheader,
   MenuItem,
   Select as MuiSelect,
   SelectProps as MuiSelectProps,
+  SelectChangeEvent,
 } from '@mui/material';
 import { get, groupBy } from 'lodash';
 
 import useComboboxTemplate, { ComboboxTemplate } from '../combobox/hooks/useComboboxTemplate';
 import { FlexBox } from '../flexbox';
-import useTranslation from '../i18n/hooks/useTranslation';
 import isNil from '../misc/isNil';
 import { Tiny } from '../typography';
 
@@ -66,7 +68,6 @@ function Select<T extends FieldValues>({
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const { t } = useTranslation();
   const { renderDisplay, renderOption, renderDescription } = useComboboxTemplate({
     optionTemplate,
     displayTemplate,
@@ -93,7 +94,7 @@ function Select<T extends FieldValues>({
   };
 
   const renderOptions = (collection?: T[], indent?: number) => {
-    return collection?.map((item) => {
+    return collection?.map((item, index) => {
       const idValue = get(item, valueField);
       const textNode = renderOption(item);
       const descNode = renderDescription?.(item);
@@ -125,7 +126,12 @@ function Select<T extends FieldValues>({
       }
 
       return (
-        <MenuItem value={idValue} key={idValue} sx={{ paddingLeft: indent }}>
+        <MenuItem
+          value={idValue}
+          key={idValue}
+          sx={{ paddingLeft: indent }}
+          autoFocus={index === 0}
+        >
           {optionNode}
         </MenuItem>
       );
@@ -148,6 +154,7 @@ function Select<T extends FieldValues>({
     return (
       <MuiSelect
         {...rest}
+        notched={!!value}
         error={error}
         ref={selectRef}
         labelId={`${id}-label`}
@@ -159,6 +166,30 @@ function Select<T extends FieldValues>({
         MenuProps={{
           PaperProps: { sx: { maxHeight: dropDownHeight } },
           autoFocus: false,
+        }}
+        endAdornment={
+          <IconButton
+            sx={{
+              display: allowClear && !disabled && value ? '' : 'none',
+              marginRight: 2.5,
+            }}
+            size="small"
+            onClick={() =>
+              onChange?.({ target: { value: null } } as unknown as SelectChangeEvent, null)
+            }
+          >
+            <ClearRounded sx={{ fontSize: rest.size === 'small' ? '0.8em' : '1em' }} />
+          </IconButton>
+        }
+        sx={{
+          width: '100%',
+          '& .MuiIconButton-root': {
+            visibility: 'hidden',
+          },
+          '&:hover .MuiIconButton-root': {
+            visibility: value ? 'visible' : 'hidden',
+          },
+          ...sx,
         }}
         size="small"
         inputProps={{
@@ -172,9 +203,9 @@ function Select<T extends FieldValues>({
               : undefined
         }
       >
-        <MenuItem value={null as any}>
+        {/*    <MenuItem value="">
           <em>{t('combobox.selectnone')}</em>
-        </MenuItem>
+        </MenuItem> */}
         {children ?? (groupByFn ? renderGroupOptions(data) : renderOptions(data))}
       </MuiSelect>
     );
@@ -186,8 +217,10 @@ function Select<T extends FieldValues>({
 
   const renderLabelWrapper = (content: ReactNode) => {
     return (
-      <FormControl fullWidth error={!!error}>
-        <InputLabel id={`${id}-label`}>{label}</InputLabel>
+      <FormControl fullWidth error={!!error} size="small">
+        <InputLabel shrink={!!value} id={`${id}-label`}>
+          {label}
+        </InputLabel>
         {content}
       </FormControl>
     );

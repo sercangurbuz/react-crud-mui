@@ -44,8 +44,15 @@ function FormContent(props: FormContentProps) {
 
           <Grid2 size={{ md: 4, xs: 12 }}>
             <UsersSelect name="selUserId" />
-            <Field.Button onClick={(form) => form.resetField('selUserId')}>Set select</Field.Button>
           </Grid2>
+          <Field.Button
+            onClick={(form) => {
+              form.setValue('selUserId', null, { shouldValidate: true });
+              form.setValue('selUser', null, { shouldValidate: true });
+            }}
+          >
+            Set select
+          </Field.Button>
         </Grid2>
       </Page.Content>
     </>

@@ -211,7 +211,7 @@ export const WithZodRefine: DetailPageStory = {
         return {
           ...data,
           selUser: null,
-          selUserId: undefined,
+          selUserId: '',
         };
       },
     });

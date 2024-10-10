@@ -151,10 +151,6 @@ const componentsOverride = (theme: Theme): Components => {
           fontSize: 14,
           lineHeight: 1.7,
           fontWeight: 500,
-
-          '&:not(.Mui-focused)': {
-            transform: 'translate(12px, 10px) scale(1)',
-          },
         },
       },
     },
