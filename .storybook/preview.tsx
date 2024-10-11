@@ -60,7 +60,7 @@ const preview: Preview = {
       }, [context.globals.lang]);
 
       return (
-        <SettingsProvider theme={context.globals.theme} removeFalsyFilterValues>
+        <SettingsProvider theme={context.globals.theme}>
           <Story />
         </SettingsProvider>
       );

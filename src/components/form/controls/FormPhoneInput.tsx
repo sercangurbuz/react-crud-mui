@@ -1,23 +1,22 @@
 import { FieldValues } from 'react-hook-form';
 
-import { TextField, TextFieldProps } from '@mui/material';
-
+import PhoneInput, { PhoneInputProps } from '../../phone-input/PhoneInput';
 import Field, { ControlCommonProps } from '../Field';
 
-export interface FormTextFieldProps<TFieldValues extends FieldValues = FieldValues>
-  extends Omit<TextFieldProps<'standard'>, 'name'>,
+export interface FormPhoneInputProps<TFieldValues extends FieldValues = FieldValues>
+  extends Omit<PhoneInputProps, 'name'>,
     ControlCommonProps<TFieldValues> {}
 
-function FormTextField<TFieldValues extends FieldValues = FieldValues>({
+function FormPhoneInput<TFieldValues extends FieldValues = FieldValues>({
   name,
   fieldProps,
   ...inputProps
-}: FormTextFieldProps<TFieldValues>) {
+}: FormPhoneInputProps<TFieldValues>) {
   return (
     <Field
       name={name}
       render={(field, { invalid, error }) => (
-        <TextField
+        <PhoneInput
           sx={{
             width: '100%',
           }}
@@ -36,4 +35,4 @@ function FormTextField<TFieldValues extends FieldValues = FieldValues>({
   );
 }
 
-export default FormTextField;
+export default FormPhoneInput;

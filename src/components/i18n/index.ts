@@ -7,6 +7,7 @@ import zod_translation_en from 'zod-i18n-map/locales/en/zod.json';
 import zod_translation_tr from 'zod-i18n-map/locales/tr/zod.json';
 
 import 'dayjs/locale/tr';
+import 'dayjs/locale/en';
 
 import translation_en from './resources/en.json';
 import translation_tr from './resources/tr.json';

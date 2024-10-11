@@ -17,6 +17,9 @@ import SettingsContext from './SettingsContext';
 
 import 'simplebar-react/dist/simplebar.min.css';
 
+import i18n from '../i18n';
+import useTranslation from '../i18n/hooks/useTranslation';
+
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
@@ -42,12 +45,11 @@ function SettingsProvider({
   /* -------------------------------------------------------------------------- */
 
   const contextValue = merge(getDefaultSettings(), rest) as Settings;
-
   const { theme, responsiveFontSizes, direction } = contextValue;
 
   return (
     <SettingsContext.Provider value={contextValue}>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18n.language}>
         <ThemeProvider
           theme={theme}
           responsiveFontSizes={responsiveFontSizes}

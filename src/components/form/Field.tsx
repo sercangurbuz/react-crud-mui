@@ -15,11 +15,16 @@ import FormButton from './components/FormButton';
 import FormControl, { FormControlProps } from './components/FormControl';
 import FormCheckbox from './controls/FormCheckbox';
 import FormComboBox from './controls/FormComboBox';
+import FormDatePicker from './controls/FormDatePicker';
+import FormInput from './controls/FormInput';
+import FormMoneyInput from './controls/FormMoneyInput';
+import FormNumberInput from './controls/FormNumberInput';
+import FormPhoneInput from './controls/FormPhoneInput';
 import FormRadioGroup from './controls/FormRadioGroup';
 import FormSelect from './controls/FormSelect';
 import FormSwitch from './controls/FormSwitch';
-import FormTextField from './controls/FormTextField';
 import useValidationOptionsContext from './hooks/useValidationOptionsContext';
+import * as schemas from './schema';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -130,12 +135,18 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
 
 export default Field;
 
-Field.Input = FormTextField;
+Field.Input = FormInput;
+Field.NumberInput = FormNumberInput;
+Field.MoneyInput = FormMoneyInput;
+Field.PhoneInput = FormPhoneInput;
 Field.Checkbox = FormCheckbox;
 Field.Switch = FormSwitch;
 Field.Combobox = FormComboBox;
 Field.Select = FormSelect;
 Field.RadioGroup = FormRadioGroup;
+Field.DatePicker = FormDatePicker;
 
 Field.Button = FormButton;
 Field.Watch = FieldWatch;
+
+Field.schemas = schemas;
