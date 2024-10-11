@@ -1,9 +1,12 @@
+import { useWatch } from 'react-hook-form';
+
 import { Box, Stack } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
 import Field from '../../components/form/Field';
+import { CurrencySymbols, DEFAULT_CURRENCY } from '../../components/misc/getCurrencySymbolProps';
 import Page from '../../components/page/Page';
 
 const meta: Meta<typeof Field.MoneyInput> = {
@@ -18,9 +21,10 @@ const meta: Meta<typeof Field.MoneyInput> = {
       <DetailPage
         schema={z.object({
           value: z.number().min(10).max(9999),
+          currency: z.string(),
         })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ value: 0 }}
+        defaultValues={{ value: 0, currency: DEFAULT_CURRENCY }}
         showHeader={false}
       >
         <Page.Content>
@@ -50,7 +54,14 @@ type MoneyInputStory = StoryObj<typeof Field.MoneyInput>;
 export const Simple: MoneyInputStory = {};
 
 export const CustomCurrency: MoneyInputStory = {
-  args: {
-    currency: 'USD',
+  render(args) {
+    const curr = useWatch({ name: 'currency' });
+    const currData = Object.keys(CurrencySymbols).map((curr) => ({ label: curr, value: curr }));
+    return (
+      <Stack spacing={1}>
+        <Field.RadioGroup name="currency" data={currData} />
+        <Field.MoneyInput {...args} currency={curr} />
+      </Stack>
+    );
   },
 };
