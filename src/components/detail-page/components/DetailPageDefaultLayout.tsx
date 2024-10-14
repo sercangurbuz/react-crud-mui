@@ -11,6 +11,7 @@ export type DetailPageLayoutOptions = {
 
 export type DetailPageLayoutProps = {
   content?: ReactNode;
+  stepsContent?: ReactNode;
   autoSaveContent?: ReactNode;
   options: DetailPageLayoutOptions;
 };
@@ -25,12 +26,14 @@ interface DetailPageDefaultLayoutProps extends DetailPageLayoutProps {}
 
 function DetailPageDefaultLayout({
   content,
+  stepsContent,
   autoSaveContent,
   options: { loading },
 }: DetailPageDefaultLayoutProps) {
   return (
     <>
       <LoadingProgress style={{ visibility: loading ? 'visible' : 'hidden' }} />
+      {stepsContent}
       {content}
       {autoSaveContent}
     </>

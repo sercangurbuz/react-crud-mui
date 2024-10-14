@@ -17,8 +17,11 @@ import SettingsContext from './SettingsContext';
 
 import 'simplebar-react/dist/simplebar.min.css';
 
+import { enableMapSet } from 'immer';
+
 import i18n from '../i18n';
-import useTranslation from '../i18n/hooks/useTranslation';
+
+enableMapSet();
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */

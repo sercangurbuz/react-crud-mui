@@ -158,6 +158,14 @@ const componentsOverride = (theme: Theme): Components => {
     MuiFilledInput: FilledInput(theme),
     MuiOutlinedInput: OutlinedInput(theme),
 
+    MuiStepLabel: {
+      styleOverrides: {
+        labelContainer: {
+          fontSize: 12
+        },
+      },
+    },
+
     MuiStepIcon: {
       styleOverrides: {
         root: { color: grey[400] },

@@ -8,6 +8,7 @@ import Edit from '../../icons/Edit';
 import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
+import { ServerError } from '../../utils';
 import AutoSave from '../components/AutoSave';
 import DetailPageCommands, { DetailPageCommandsProps } from '../components/DetailPageCommands';
 import DetailPageDefaultLayout, {
@@ -15,6 +16,10 @@ import DetailPageDefaultLayout, {
 } from '../components/DetailPageDefaultLayout';
 import DetailPageHeader, { DetailPageHeaderProps } from '../components/DetailPageHeader';
 import DetailPageShortCuts from '../components/DetailPageShortCuts';
+import DetailPageStepCommands, {
+  DetailPageStepCommandsProps,
+} from '../components/DetailPageStepCommands';
+import DetailPageSteps, { DetailPageStepsProps, StepPane } from '../components/DetailPageSteps';
 import { DetailPageContext, DetailPageContextType } from '../hooks/useDetailPage';
 import { DETAILPAGE_HOTKEYS_SCOPE } from '../hooks/useDetailPageHotKeys';
 import { SaveMode } from './DetailPageData';
@@ -39,6 +44,10 @@ export interface DetailPageContentProps<TModel extends FieldValues>
   extends Omit<PageProps, 'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader'>,
     Pick<DetailPageCommandsProps, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
   data?: TModel;
+  /**
+   * External error indicator
+   */
+  error?: ServerError;
   /**
    * Alerts
    */
@@ -128,15 +137,28 @@ export interface DetailPageContentProps<TModel extends FieldValues>
   onContentLayout?: (props: DetailPageLayoutProps) => React.ReactNode;
   onWrapperLayout?: (props: DetailPageWrapperLayoutProps) => React.ReactNode;
   defaultSaveMode?: SaveMode;
+  /**
+   * Steps definitons
+   */
+  steps?: StepPane[];
+  /**
+   * Custom steps component
+   */
+  customSteps?: React.ComponentType<DetailPageStepsProps>;
+  /**
+   * Optional steps props
+   */
+  stepsProps?: Partial<DetailPageStepsProps>;
 }
 
 function DetailPageContent<TModel extends FieldValues>({
-  activeSegmentIndex,
+  activeSegmentIndex = 0,
   alerts,
   autoSave,
   children,
   commandsPosition,
   component: RenderComponent,
+  customSteps: CustomSteps,
   createCommandLabel,
   data,
   defaultSaveMode = 'save',
@@ -148,6 +170,7 @@ function DetailPageContent<TModel extends FieldValues>({
   enableDelete,
   enableDiscardChanges,
   enableSave = true,
+  error,
   hotkeyScopes = DETAILPAGE_HOTKEYS_SCOPE,
   loading,
   onClose,
@@ -166,6 +189,8 @@ function DetailPageContent<TModel extends FieldValues>({
   onWrapperLayout,
   reason = 'create',
   showHeader = true,
+  steps,
+  stepsProps,
   ...pageProps
 }: DetailPageContentProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -173,6 +198,7 @@ function DetailPageContent<TModel extends FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   const { t } = useTranslation();
+
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
   /* -------------------------------------------------------------------------- */
@@ -206,10 +232,12 @@ function DetailPageContent<TModel extends FieldValues>({
   const renderContentLayout = () => {
     const content = renderContent();
     const autoSaveContent = renderAutoSave();
+    const stepsContent = renderSteps();
 
     const props: DetailPageLayoutProps = {
       content,
       autoSaveContent,
+      stepsContent,
       options: {
         loading,
         reason,
@@ -257,6 +285,14 @@ function DetailPageContent<TModel extends FieldValues>({
    * Render commands
    */
   const renderCommands = () => {
+    const isStepper = !!steps?.length;
+    return isStepper ? renderStepsCommands() : renderStandartCommands();
+  };
+
+  /**
+   * Render standart commands
+   */
+  const renderStandartCommands = () => {
     const commandProps: DetailPageCommandsProps = {
       onCreate,
       onCopy,
@@ -323,12 +359,67 @@ function DetailPageContent<TModel extends FieldValues>({
     );
   };
 
+  const renderSteps = () => {
+    if (!steps && !CustomSteps) {
+      return null;
+    }
+
+    const Steps = CustomSteps ?? DetailPageSteps;
+    return (
+      <Steps
+        items={steps!}
+        disabled={disabled}
+        status={loading ? 'wait' : error ? 'error' : 'process'}
+        activeStep={activeSegmentIndex}
+        onChange={onSegmentChanged}
+        {...stepsProps}
+      />
+    );
+  };
+
+  /**
+   * Render steps commands
+   */
+  const renderStepsCommands = () => {
+    if (!steps?.length) {
+      return null;
+    }
+
+    const nextButtonTitle =
+      activeSegmentIndex < steps.length - 1 ? steps[activeSegmentIndex + 1].label : undefined;
+    const prevButtonTitle =
+      activeSegmentIndex > 0 ? steps[activeSegmentIndex - 1].label : undefined;
+
+    const props: DetailPageStepCommandsProps = {
+      onNextClick: () => onSegmentChanged?.(activeSegmentIndex + 1),
+      onPrevClick: () => onSegmentChanged?.(activeSegmentIndex - 1),
+      onFinish: onSave,
+      nextButtonTitle,
+      prevButtonTitle,
+      commands: stepsProps?.commands,
+      options: {
+        showNextButton: !!nextButtonTitle,
+        showPrevButton: !!prevButtonTitle,
+        disableNextButton: disabled,
+        disablePrevButton: disabled,
+        disableFinishButton: disabled,
+        showFinishButton: stepsProps?.showFinishButton ?? true,
+        activeStepIndex: activeSegmentIndex,
+        currentKey: steps[activeSegmentIndex].key,
+        steps,
+      },
+    };
+
+    return <DetailPageStepCommands {...props} />;
+  };
+
   /**
    * Renders BasePage and its content without Form component
    * @param content Component,children,tabs or steps nodes
    * @param commands Commands nodes
    */
   const renderPage = (content: ReactNode, commands: ReactNode, alertsContent: ReactNode) => {
+    const isStepper = !!steps?.length;
     return (
       <Page
         icon={<Edit />}
@@ -336,7 +427,7 @@ function DetailPageContent<TModel extends FieldValues>({
         {...pageProps}
         disabled={disabled || loading}
         commandsContent={commands}
-        commandsPosition={commandsPosition}
+        commandsPosition={isStepper ? 'bottom' : commandsPosition}
         onHeader={renderPageHeader}
         onClose={onClose}
         loading={loading}

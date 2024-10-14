@@ -3,7 +3,6 @@ import { ReactNode } from 'react';
 import { Close, Save, Undo } from '@mui/icons-material';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
 
-import { FlexBox } from '../../flexbox';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
 import Delete from '../../icons/Delete';

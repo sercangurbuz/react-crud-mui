@@ -4,12 +4,8 @@ import { Grid2 } from '@mui/material';
 
 import Field from '../../../components/form/Field';
 import Page from '../../../components/page/Page';
-import UserFind from './UsersFind';
-import UsersSelect from './UsersSelect';
 
-interface FormContentProps {}
-
-function FormContent(props: FormContentProps) {
+function FormContent() {
   const { trigger } = useFormContext();
 
   return (
@@ -23,7 +19,7 @@ function FormContent(props: FormContentProps) {
             <Field.Input name="username" label="User name" onChange={() => trigger()} />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.Input name="phone" label="Phone" />
+            <Field.PhoneInput name="phone" label="Phone" />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.Input name="email" label="Email" />

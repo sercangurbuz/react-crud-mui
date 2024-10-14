@@ -10,6 +10,7 @@ import {
 
 import isNil from '../misc/isNil';
 import usePage from '../page/hooks/usePage';
+import FieldGroupProvider from './components/FieldGroupProvider';
 import FieldWatch from './components/FieldWatch';
 import FormButton from './components/FormButton';
 import FormControl, { FormControlProps } from './components/FormControl';
@@ -23,6 +24,7 @@ import FormPhoneInput from './controls/FormPhoneInput';
 import FormRadioGroup from './controls/FormRadioGroup';
 import FormSelect from './controls/FormSelect';
 import FormSwitch from './controls/FormSwitch';
+import useRegisterField from './hooks/useRegisterField';
 import useValidationOptionsContext from './hooks/useValidationOptionsContext';
 import * as schemas from './schema';
 
@@ -91,6 +93,9 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
     rules,
   });
 
+  // register extra field data like group and label
+  useRegisterField({ name });
+
   /* -------------------------------------------------------------------------- */
   /*                                   States                                   */
   /* -------------------------------------------------------------------------- */
@@ -150,3 +155,4 @@ Field.Button = FormButton;
 Field.Watch = FieldWatch;
 
 Field.schemas = schemas;
+Field.Group = FieldGroupProvider;

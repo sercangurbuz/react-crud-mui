@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Assignment, Done, Pending } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
+import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
 import { useZodRefine } from '../../components/hooks';
@@ -18,10 +19,12 @@ import mockData from '../../test-setup/mockUsers.json';
 import { handleDeleteUser, handleSaveUser, UserDefaultValues } from '../utils/api';
 import { userSchema, type UserSchema } from '../utils/schema';
 import CustomCommands from './components/CustomCommands';
+import CustomStepCommands from './components/CustomStepCommands';
 import CustomTabs from './components/CustomTabs';
 import CustomTitle from './components/CustomTitle';
 import DisableStateButtons from './components/DisableStateButtons';
 import FormContent from './components/FormContent';
+import { Step1, Step2, Step3 } from './components/Steps';
 
 const meta: Meta<typeof DetailPage<UserSchema>> = {
   title: 'Components/DetailPage',
@@ -339,5 +342,50 @@ export const WithCustomTabs: DetailPageStory = {
   args: {
     ...WithTabs.args,
     customTabs: CustomTabs,
+  },
+};
+
+export const WithSteps: DetailPageStory = {
+  args: {
+    component: undefined,
+    defaultValues: UserDefaultValues,
+    reason: 'create',
+    schema: [
+      z.object({
+        name: z.string().min(1),
+        username: z.string().min(1),
+      }),
+      userSchema.pick({ phone: true, email: true, website: true }),
+    ],
+    steps: [
+      {
+        label: 'Person Info',
+        optional: 'Please define person name',
+        key: 'info',
+        children: <Step1 />,
+      },
+      {
+        label: 'Contact Details',
+        optional: 'Please define contact info',
+        key: 'additional',
+        children: <Step2 />,
+      },
+      {
+        label: 'Overview',
+        optional: 'Please check your form to confirm',
+        key: 'last',
+        children: <Step3 />,
+      },
+    ],
+  },
+};
+
+export const StepsWithCustomCommands: DetailPageStory = {
+  args: {
+    ...WithSteps.args,
+    stepsProps: {
+      showFinishButton: false,
+      commands: CustomStepCommands,
+    },
   },
 };

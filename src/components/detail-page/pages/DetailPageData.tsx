@@ -80,10 +80,6 @@ export interface DetailPageDataProps<TModel extends FieldValues>
    * Enable to show success messages (Default true)
    */
   showSuccessMessages?: boolean;
-  /**
-   * External error indicator
-   */
-  error?: ServerError;
 }
 
 /**
@@ -282,6 +278,7 @@ function DetailPageData<TModel extends FieldValues>({
     <DetailPageContent
       {...dpProps}
       alerts={messages}
+      error={error}
       data={prevDataRef.current}
       autoSave={autoSave}
       loading={loading || loadingState}
