@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
@@ -7,7 +7,7 @@ import { useRunAsync, useUpdateEffect } from '../../hooks';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
 import { Message } from '../../page/hooks/useNormalizeMessages';
-import { DeepNullable, ServerError } from '../../utils';
+import { DeepNullable } from '../../utils';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */

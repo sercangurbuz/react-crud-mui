@@ -100,7 +100,9 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    * Delete event
    */
   onDelete: () => void;
-
+  /**
+   * Custom header function
+   */
   onHeader?: (props: DetailPageHeaderProps) => ReactNode;
   /**
    * Page opening reason Default create.
@@ -313,7 +315,7 @@ function DetailPageContent<TModel extends FieldValues>({
   };
 
   /**
-   * ListPage header node
+   * DstailPage header node
    */
   const renderPageHeader = (props: HeaderProps) => {
     if (!showHeader) {

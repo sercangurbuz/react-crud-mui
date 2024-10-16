@@ -35,7 +35,6 @@ const meta: Meta<typeof DetailPage<UserSchema>> = {
     icon: <GroupSenior sx={{ color: 'primary.main' }} />,
     component: FormContent,
     defaultReason: 'create',
-    title: 'User Details',
     enableDelete: true,
     onSave: handleSaveUser,
     onDelete: handleDeleteUser,
