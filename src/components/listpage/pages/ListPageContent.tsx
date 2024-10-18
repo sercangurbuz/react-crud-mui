@@ -1,7 +1,13 @@
 import React, { ReactNode, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import { ColumnDef, TableState } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  getFilteredRowModel,
+  getSortedRowModel,
+  TableOptions,
+  TableState,
+} from '@tanstack/react-table';
 
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
@@ -16,7 +22,7 @@ import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageC
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
 import ListPageShortCuts from '../components/ListPageShortCuts';
 import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
-import { DefaultTableStateSetters } from '../hooks/useListPageTableStates';
+import { DefaultTableStateSetters } from '../hooks/useListPageTableProps';
 import { ListPageFilter, ListPageModel, PagingListModel } from './ListPageData';
 
 /* -------------------------------------------------------------------------- */
@@ -46,21 +52,9 @@ export interface ListPageContentProps<TModel extends FieldValues, TFilter extend
    */
   filter?: () => ReactNode;
   /**
-   * Page size
-   */
-  pageSize?: number;
-  /**
-   * Global pagesize functions
-   */
-  pageSizes?: number[] | ((count: number) => number[]);
-  /**
    * Table states
    */
-  tableStates?: Partial<TableState>;
-  /**
-   * Change event of table states
-   */
-  tableStateSetters: DefaultTableStateSetters;
+  tableProps: Partial<TableOptions<TModel>>;
   /**
    * Search event
    */
@@ -82,10 +76,6 @@ export interface ListPageContentProps<TModel extends FieldValues, TFilter extend
    * ==> MUST BE MEMOIZED <==
    */
   columns: ColumnDef<TModel>[];
-  /**
-   * Indicator that if onneeddata event is called or not on mount
-   */
-  searchOnLoad?: boolean;
   /**
    * Enable searching thru commands and shortcuts
    */
@@ -176,17 +166,14 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   onHeader,
   onSearch,
   onTabChanged,
-  tableStateSetters,
+  tableProps,
   onWrapperLayout,
   showHeader = true,
-  tableStates,
   ...pageProps
 }: ListPageContentProps<TModel, TFilter>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
-
-  const defaultData = useMemo(() => [], []);
 
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
@@ -336,12 +323,10 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
    */
   const renderTable = () => {
     const props: Partial<TableProps<TModel>> = {
+      ...tableProps,
       columns,
-      state: tableStates,
-      manualPagination: true,
       rowCount: (data as PagingListModel<TModel>).dataCount,
-      data: (data as PagingListModel<TModel>).data ?? defaultData,
-      ...tableStateSetters,
+      data: (data as PagingListModel<TModel>).data,
     };
 
     const tableNode = ListComponent ? (

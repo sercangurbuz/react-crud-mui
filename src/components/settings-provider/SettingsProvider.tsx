@@ -64,11 +64,11 @@ function SettingsProvider({
                 {children}
               </ValidationOptionsProvider>
             </HotkeysProvider>
-            <ReactQueryDevtools
+            {/* <ReactQueryDevtools
               initialIsOpen={false}
               buttonPosition="bottom-right"
               position="bottom"
-            />
+            /> */}
           </QueryClientProvider>
         </ThemeProvider>
       </LocalizationProvider>

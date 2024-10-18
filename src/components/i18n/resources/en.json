@@ -179,5 +179,6 @@
     "shortcuts": "Shortcuts",
     "export": "Export",
     "import": "Import",
-    "report.initiate": "Initiating report download..."
+    "report.initiate": "Initiating report download...",
+    "new_row": "Add new row"
 }

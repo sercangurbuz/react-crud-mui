@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { TableState } from '@tanstack/react-table';
@@ -33,10 +33,6 @@ export interface ListPageDataProps<TModel extends FieldValues, TFilter extends F
    */
   defaultFilter?: ListPageFilter<TFilter>;
   /**
-   * Table initial states
-   */
-  defaultTableStates?: Partial<TableState>;
-  /**
    * Data fetcher function with given filter
    * ==> MUST BE MEMOIZED <==
    */
@@ -54,13 +50,12 @@ export interface ListPageDataProps<TModel extends FieldValues, TFilter extends F
 function ListPageData<TModel extends FieldValues, TFilter extends FieldValues>({
   form,
   onFormFilterChange,
-  tableStateSetters,
+  tableProps,
   onTabChanged,
   defaultSegmentIndex = 0,
   onClear,
   currentFilter,
   onNeedData,
-  searchOnLoad = true,
   ...lpProps
 }: ListPageDataProps<TModel, TFilter>) {
   const {
@@ -69,7 +64,7 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues>({
     getFormModel,
   } = form;
 
-  const { onPaginationChange, onColumnFiltersChange, onSortingChange } = tableStateSetters;
+  const { onPaginationChange, onColumnFiltersChange, onSortingChange } = tableProps;
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -115,11 +110,7 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues>({
   /*                                Data Effects                                */
   /* -------------------------------------------------------------------------- */
 
-  useMountEffect(() => {
-    searchOnLoad && initSearch();
-  }, [searchOnLoad, initSearch]);
-
-  useUpdateEffect(() => {
+  useEffect(() => {
     onNeedData?.(currentFilter!);
   }, [currentFilter, onNeedData]);
 
@@ -129,7 +120,7 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues>({
     <ListPageContent
       {...lpProps}
       onSearch={initSearch}
-      tableStateSetters={tableStateSetters}
+      tableProps={tableProps}
       onTabChanged={onTabChanged}
       onClear={clearForm}
       currentFilter={currentFilter}

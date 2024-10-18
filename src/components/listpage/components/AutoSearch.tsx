@@ -1,27 +1,26 @@
-import { useEffect } from 'react';
-import { FieldValues, useFormState, useWatch } from 'react-hook-form';
+import { useEffect, useMemo, useRef } from 'react';
+import { useFormState, useWatch } from 'react-hook-form';
 
-import useDebounce from '../../hooks/useDebounce';
+import debounce from 'lodash.debounce';
 
-interface AutoSearchProps<TFieldValues extends FieldValues> {
-  onValuesChange: (values: TFieldValues) => void;
+interface AutoSearchProps {
+  onValuesChange: () => void;
   delay?: number;
 }
 
-function AutoSearch<TFieldValues extends FieldValues = FieldValues>({
-  onValuesChange,
-  delay = 500,
-}: AutoSearchProps<TFieldValues>) {
-  const values = useWatch<TFieldValues>();
+function AutoSearch({ onValuesChange, delay = 500 }: AutoSearchProps) {
+  const values = useWatch();
   const { isDirty } = useFormState();
-  const debouncedValue = useDebounce(values, delay);
+  const isTouchedOrDirtyRef = useRef<boolean>(false);
+
+  const lazyOnChange = useMemo(() => debounce(onValuesChange, delay), []);
 
   useEffect(() => {
-    if (isDirty) {
-      onValuesChange(debouncedValue as TFieldValues);
+    if (isDirty || isTouchedOrDirtyRef.current) {
+      lazyOnChange();
+      isTouchedOrDirtyRef.current = true;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedValue, isDirty]);
+  }, [values, isDirty]);
   return null;
 }
 

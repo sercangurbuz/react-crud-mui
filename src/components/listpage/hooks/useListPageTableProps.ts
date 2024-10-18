@@ -3,7 +3,9 @@ import { FieldValues } from 'react-hook-form';
 
 import {
   ColumnFiltersState,
+  InitialTableState,
   PaginationState,
+  RowSelectionState,
   SortingState,
   TableOptions,
   TableState,
@@ -14,10 +16,13 @@ import { INITIAL_PAGEINDEX } from '../constants';
 import { ListPageFilter } from '../pages/ListPageData';
 
 export type DefaultTableState = Partial<
-  Pick<TableState, 'pagination' | 'sorting' | 'columnFilters'>
+  Pick<TableState, 'pagination' | 'sorting' | 'columnFilters' | 'rowSelection'>
 >;
 export type DefaultTableStateSetters = Partial<
-  Pick<TableOptions<unknown>, 'onPaginationChange' | 'onSortingChange' | 'onColumnFiltersChange'>
+  Pick<
+    TableOptions<unknown>,
+    'onPaginationChange' | 'onSortingChange' | 'onColumnFiltersChange' | 'onRowSelectionChange'
+  >
 >;
 
 interface UseListPageTableStatesOptions<TFilter extends FieldValues> {
@@ -28,18 +33,22 @@ interface UseListPageTableStatesOptions<TFilter extends FieldValues> {
   /**
    * Table initial states
    */
-  defaultTableStates?: DefaultTableState;
+  initialState?: InitialTableState;
 }
 
-function useListPageTableStates<TFilter extends FieldValues>({
+function useListPageTableProps<TFilter extends FieldValues, TModel extends FieldValues>({
   defaultFilter,
-  defaultTableStates,
+  initialState,
 }: UseListPageTableStatesOptions<TFilter>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
+
   const { pageSize: defaultPageSize } = useSettings();
 
+  /* --------------------------------- States --------------------------------- */
+
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [pagination, setPagination] = useState<PaginationState>(() => {
     let defaultPagination: PaginationState = {
       pageIndex: INITIAL_PAGEINDEX,
@@ -53,32 +62,31 @@ function useListPageTableStates<TFilter extends FieldValues>({
 
     return {
       ...defaultPagination,
-      ...defaultTableStates?.pagination,
+      ...initialState?.pagination,
       ...paginationFromFilter,
     };
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnsFilters, setColumnFilter] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilter] = useState<ColumnFiltersState>([]);
 
-  const states = useMemo<DefaultTableState>(
+  const props = useMemo<Partial<TableOptions<TModel>>>(
     () => ({
-      pagination,
-      sorting,
-      columnsFilters,
-    }),
-    [pagination, sorting, columnsFilters],
-  );
-
-  const setters = useMemo<DefaultTableStateSetters>(
-    () => ({
+      state: { pagination, sorting, columnFilters, rowSelection },
+      enableSorting: true,
+      manualPagination: true,
+      enableRowSelection: true,
+      manualSorting: true,
+      manualFiltering: true,
+      // setters
       onColumnFiltersChange: setColumnFilter,
       onPaginationChange: setPagination,
       onSortingChange: setSorting,
+      onRowSelectionChange: setRowSelection,
     }),
-    [],
+    [pagination, sorting, columnFilters, rowSelection],
   );
 
-  return [states, setters] as const;
+  return props as TableOptions<TModel>;
 }
 
-export default useListPageTableStates;
+export default useListPageTableProps;

@@ -27,6 +27,7 @@ function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
   const headers = useCommonHeaders();
   const makeURI = useMakeURI<TVariables>({ action, controller, url });
   const abortControllerRef = useRef<AbortController | null>(null);
+  const previousDataRef = useRef<TData | null>(null);
 
   const { mutate, mutateAsync, variables, status, ...restOptions } = useMutation<
     TData,
@@ -43,6 +44,7 @@ function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
         baseURL,
         signal: abortControllerRef.current.signal,
       });
+      previousDataRef.current = response.data;
       return response.data;
     },
     ...options,
@@ -81,6 +83,7 @@ function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
     refetch,
     fetch,
     fetchAsync,
+    prevData: previousDataRef.current,
   };
 }
 

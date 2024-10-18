@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import useListPageTableStates from '../hooks/useListPageTableStates';
+import useListPageTableProps from '../hooks/useListPageTableProps';
 import { ListPageFilter } from './ListPageData';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
 
@@ -11,7 +11,7 @@ export interface ListPageProps<TModel extends FieldValues, TFilter extends Field
 function ListPage<TModel extends FieldValues, TFilter extends FieldValues>(
   props: ListPageProps<TModel, TFilter>,
 ) {
-  const { defaultSegmentIndex = 0, defaultFilter, defaultTableStates } = props;
+  const { defaultSegmentIndex = 0, defaultFilter, defaultValues, tableProps: exTableProps } = props;
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -22,14 +22,13 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues>(
    * Form filter values
    */
   const [formFilter, setFormFilter] = useState<ListPageFilter<TFilter>>(
-    defaultFilter as ListPageFilter<TFilter>,
+    (defaultFilter ?? defaultValues) as ListPageFilter<TFilter>,
   );
-  /**
-   * Table states (filters) intialized by external filter values or default states.
-   * External values will override default states
-   */
-  const [tableStates, setters] = useListPageTableStates({
-    defaultTableStates,
+
+  const tableProps = useListPageTableProps<TFilter, TModel>({
+    // custom states given by user
+    initialState: exTableProps?.state ?? exTableProps?.initialState,
+    // filter on which states gets extracted from
     defaultFilter,
   });
 
@@ -37,16 +36,18 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues>(
    * Current filter object
    */
   const filter = useMemo(() => {
-    const result = Object.assign({}, formFilter, tableStates?.sorting, tableStates?.pagination);
-    return result as unknown as ListPageFilter<TFilter>;
-  }, [tableStates, formFilter]);
+    return {
+      ...formFilter,
+      sorting: tableProps.state?.sorting,
+      pagination: tableProps.state?.pagination,
+    } as ListPageFilter<TFilter>;
+  }, [tableProps.state?.sorting, tableProps.state?.pagination, formFilter]);
 
   return (
     <ListPageForm
       {...props}
       currentFilter={filter}
-      tableStates={tableStates}
-      tableStateSetters={setters}
+      tableProps={tableProps}
       onFormFilterChange={setFormFilter}
       onTabChanged={setActiveSegmentIndex}
       activeSegmentIndex={activeSegmentIndex}

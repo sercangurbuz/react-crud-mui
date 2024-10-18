@@ -179,5 +179,6 @@
     "shortcuts": "Kısayollar",
     "export": "Dışa aktar",
     "import": "İçe aktar",
-    "report.initiate": "Rapor indiriliyor..."
+    "report.initiate": "Rapor indiriliyor...",
+    "new_row": "Yeni Satır Ekle"
 }
