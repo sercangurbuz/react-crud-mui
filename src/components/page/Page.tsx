@@ -1,6 +1,6 @@
 import { ComponentType, ReactNode } from 'react';
 
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, LinearProgress, styled } from '@mui/material';
 
 import { FlexBox } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';
@@ -47,6 +47,16 @@ export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
 /* -------------------------------------------------------------------------- */
 
 export const PagePadding: Record<PaddingSize, number> = { large: 4, normal: 3, small: 2 };
+
+/* -------------------------------------------------------------------------- */
+/*                                   Styled                                   */
+/* -------------------------------------------------------------------------- */
+
+const LoadingProgress = styled(LinearProgress)(({ theme }) => ({
+  height: 1.5,
+  borderRadius: 0,
+  marginBottom: theme.spacing(2),
+}));
 
 function Page({
   alertsContent,
@@ -165,6 +175,10 @@ function Page({
     );
   };
 
+  const renderProgress = () => {
+    return <LoadingProgress style={{ visibility: loading ? 'visible' : 'hidden' }} />;
+  };
+
   const renderLayout = () => {
     const pageProps: PageLayoutProps = {
       commandsContent,
@@ -172,6 +186,7 @@ function Page({
       tabsContent: renderTabContent(),
       pageHeader: renderHeader(),
       footerContent: renderFooter(),
+      progressContent: renderProgress(),
       alertsContent,
       options: {
         size,

@@ -16,23 +16,15 @@ export type DetailPageLayoutProps = {
   options: DetailPageLayoutOptions;
 };
 
-const LoadingProgress = styled(LinearProgress)(({ theme }) => ({
-  height: 1.5,
-  borderRadius: 0,
-  marginBottom: theme.spacing(2),
-}));
-
 interface DetailPageDefaultLayoutProps extends DetailPageLayoutProps {}
 
 function DetailPageDefaultLayout({
   content,
   stepsContent,
   autoSaveContent,
-  options: { loading },
 }: DetailPageDefaultLayoutProps) {
   return (
     <>
-      <LoadingProgress style={{ visibility: loading ? 'visible' : 'hidden' }} />
       {stepsContent}
       {content}
       {autoSaveContent}

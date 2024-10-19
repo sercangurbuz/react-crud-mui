@@ -327,6 +327,7 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
       columns,
       rowCount: (data as PagingListModel<TModel>).dataCount,
       data: (data as PagingListModel<TModel>).data,
+      loading,
     };
 
     const tableNode = ListComponent ? (

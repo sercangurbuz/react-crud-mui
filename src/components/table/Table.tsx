@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 
 import { Add, ArrowDownward, ArrowUpward } from '@mui/icons-material';
 import {
+  Backdrop,
   Box,
   Checkbox,
+  CircularProgress,
+  LinearProgress,
   Table as MuiTable,
   Radio,
   Stack,
@@ -43,6 +46,7 @@ import { BodyTableRow } from './components/BodyTableRow';
 import EmptyText, { EmptyTextProps } from './components/EmptyText';
 import { HeadTableCell } from './components/HeadTableCell';
 import { NewRowButton } from './components/NewRowButton';
+import TableSkeleton from './components/TableSkeleton';
 import { DEFAULT_ROW_KEY_FIELD, SELECTION_COL_NAME } from './constants';
 
 /* -------------------------------------------------------------------------- */
@@ -88,6 +92,7 @@ export interface TableProps<TData extends FieldValues>
   onNewRow?: (row?: Row<TData>) => void;
   enableColorIndicator?: boolean;
   onIndicatorColor?: (row: Row<TData>) => string | undefined;
+  loading?: boolean;
 }
 
 function Table<TData extends FieldValues>({
@@ -109,6 +114,7 @@ function Table<TData extends FieldValues>({
   showNewRowButton,
   newRowButtonText,
   onNewRow,
+  loading,
   ...tableProps
 }: TableProps<TData>) {
   /* -------------------------------------------------------------------------- */
@@ -117,6 +123,7 @@ function Table<TData extends FieldValues>({
 
   const { t } = useTranslation();
   const bodyRef = useRef(null);
+  const firstLoadRef = useRef<boolean>(true);
   const defaultData = useMemo(() => [], []);
   const extractRowId = useCallback(
     (row: TData) => String((row as FieldValues)[rowIdField]),
@@ -196,10 +203,6 @@ function Table<TData extends FieldValues>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  /* -------------------------------------------------------------------------- */
-  /*                                   Events                                   */
-  /* -------------------------------------------------------------------------- */
-
   useEffect(() => {
     if (autoFocus) {
       const rows = (bodyRef.current as unknown as HTMLBodyElement)?.children;
@@ -209,16 +212,36 @@ function Table<TData extends FieldValues>({
     }
   }, [autoFocus]);
 
+  useEffect(() => {
+    if (data) {
+      firstLoadRef.current = false;
+    }
+  }, [data]);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Events                                   */
+  /* -------------------------------------------------------------------------- */
+
+  const selectRow = (row: Row<TData>) => {
+    const isRowSelectable = row.getCanSelect();
+
+    if (!isRowSelectable) {
+      return;
+    }
+
+    const isMultiSelect = row.getCanMultiSelect();
+
+    if (isMultiSelect) {
+      row.toggleSelected();
+    } else {
+      table.toggleAllRowsSelected(false);
+      row.toggleSelected(true);
+    }
+  };
+
   const handleRowClick = (row: Row<TData>) => {
     if (enableRowClickSelect) {
-      const isMultiSelect = row.getCanMultiSelect();
-
-      if (isMultiSelect) {
-        row.toggleSelected();
-      } else {
-        table.toggleAllRowsSelected(false);
-        row.toggleSelected(true);
-      }
+      selectRow(row);
     }
     onRowClick?.(row);
   };
@@ -226,12 +249,15 @@ function Table<TData extends FieldValues>({
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>, row: Row<TData>) => {
     event.stopPropagation();
     const currentRow = (bodyRef.current as unknown as HTMLBodyElement)?.children.namedItem(row.id);
-    switch (event.key) {
+    switch (event.code) {
       case 'ArrowUp':
         (currentRow?.previousElementSibling as HTMLTableRowElement)?.focus();
         break;
       case 'ArrowDown':
         (currentRow?.nextElementSibling as HTMLTableRowElement)?.focus();
+        break;
+      case 'Space':
+        selectRow(row);
         break;
       case 'Enter':
         onRowEnterPress?.(row);
@@ -438,13 +464,22 @@ function Table<TData extends FieldValues>({
     );
   };
 
+  const renderProgress = () => {
+    return (
+      <Backdrop open={!!loading} sx={{ position: 'absolute', zIndex: 2 }}>
+        <CircularProgress />
+      </Backdrop>
+    );
+  };
+
   return (
     <>
       <Scrollbar autoHide={false} forceVisible {...scrollProps}>
-        <MuiTable>
+        <MuiTable stickyHeader>
           {renderHeader()}
           {renderBody()}
         </MuiTable>
+        {renderProgress()}
       </Scrollbar>
       {renderPagination()}
     </>

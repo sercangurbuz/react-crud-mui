@@ -36,6 +36,7 @@ const meta: Meta<typeof ListPage> = {
       },
       {
         id: 'address',
+        enableSorting: false,
         accessorFn: (row) =>
           `${row.address?.street} ${row.address?.suite} ${row.address?.city} ${row.address?.zipcode}`,
       },
