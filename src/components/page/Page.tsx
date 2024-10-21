@@ -52,11 +52,12 @@ export const PagePadding: Record<PaddingSize, number> = { large: 4, normal: 3, s
 /*                                   Styled                                   */
 /* -------------------------------------------------------------------------- */
 
-const LoadingProgress = styled(LinearProgress)(({ theme }) => ({
+const LoadingProgress = styled(LinearProgress)({
   height: 1.5,
   borderRadius: 0,
-  marginBottom: theme.spacing(2),
-}));
+  margin: 0,
+  flexGrow: 0,
+});
 
 function Page({
   alertsContent,

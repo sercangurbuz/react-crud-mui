@@ -1,3 +1,4 @@
+import { alpha } from '@mui/material';
 import styled from '@mui/material/styles/styled';
 import TableRow from '@mui/material/TableRow';
 
@@ -49,6 +50,6 @@ export const BodyTableRow = styled(TableRow, {
     backgroundColor: theme.palette.action.hover,
   },
   '&:focus:not(.description-row),&:focus+tr.description-row': {
-    backgroundColor: isDark(theme) ? theme.palette.primary[900] : theme.palette.primary[700],
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
   },
 }));

@@ -1,14 +1,14 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { FieldValues, get, Path } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-import { Add, ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import { Add, KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
 import {
+  alpha,
   Backdrop,
-  Box,
   Checkbox,
   CircularProgress,
-  LinearProgress,
+  IconButton,
   Table as MuiTable,
   Radio,
   Stack,
@@ -26,28 +26,28 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   Row,
-  SortDirection,
   TableOptions,
   useReactTable,
   VisibilityState,
   type RowData,
 } from '@tanstack/react-table';
 
-import { FlexBox, FlexRowAlign } from '../flexbox';
+import { FlexRowAlign } from '../flexbox';
 import useTranslation from '../i18n/hooks/useTranslation';
 import isNil from '../misc/isNil';
 import Scrollbar from '../scrollbar';
 import { ScrollbarProps } from '../scrollbar/Scrollbar';
-import { isDark } from '../theme/theme.constants';
-import { Tiny } from '../typography';
+import { primary } from '../theme/colors';
+import { Small, Tiny } from '../typography';
 import { BodyTableCell } from './components/BodyTableCell';
 import { BodyTableRow } from './components/BodyTableRow';
 import EmptyText, { EmptyTextProps } from './components/EmptyText';
+import { ExpandMore } from './components/ExpandButton';
 import { HeadTableCell } from './components/HeadTableCell';
 import { NewRowButton } from './components/NewRowButton';
-import TableSkeleton from './components/TableSkeleton';
-import { DEFAULT_ROW_KEY_FIELD, SELECTION_COL_NAME } from './constants';
+import { DEFAULT_ROW_KEY_FIELD, EXPANDER_COL_NAME, SELECTION_COL_NAME } from './constants';
 
 /* -------------------------------------------------------------------------- */
 /*                              Type Augmentation                             */
@@ -58,6 +58,7 @@ declare module '@tanstack/react-table' {
     link?: (row: Row<TData>) => string;
     align?: CellAlignment;
     title?: string;
+    icon?: ReactNode;
   }
 }
 
@@ -66,6 +67,9 @@ declare module '@tanstack/react-table' {
 /* -------------------------------------------------------------------------- */
 
 export type CellAlignment = 'center' | 'right' | 'left';
+export interface RenderSubComponentProps<D extends object> {
+  row: Row<D>;
+}
 
 export type TableColumn<D extends object = object> = {
   sx?: SxProps<Theme>;
@@ -74,14 +78,16 @@ export type TableColumn<D extends object = object> = {
   title?: string;
   disableSortBy?: boolean;
   link?: (row: Row<D>) => string;
+  icon?: ReactNode;
 } & ColumnDef<D>;
 
 export interface TableProps<TData extends FieldValues>
   extends Omit<TableOptions<TData>, 'getCoreRowModel' | 'columns'>,
     Partial<Omit<EmptyTextProps, 'onChange'>> {
   rowIdField?: Path<TData>;
-  descriptionField?: Path<TData>;
+  descriptionField?: Path<TData> | ((row: Row<TData>) => ReactNode);
   columns: TableColumn<TData>[];
+  bordered?: boolean;
   autoFocus?: boolean;
   onRowClick?: (row: Row<TData>) => void;
   onRowEnterPress?: (row: Row<TData>) => void;
@@ -93,28 +99,37 @@ export interface TableProps<TData extends FieldValues>
   enableColorIndicator?: boolean;
   onIndicatorColor?: (row: Row<TData>) => string | undefined;
   loading?: boolean;
+  enablePaging?: boolean;
+  enableTreeMode?: boolean;
+
+  subRowsField?: string | ((originalRow: TData) => TData[]);
+  enableNestedComponent?: boolean | ((row: Row<TData>) => boolean);
+  onRenderNestedComponent?: (props: RenderSubComponentProps<TData>) => React.ReactNode;
 }
 
 function Table<TData extends FieldValues>({
-  enableSorting,
-  rowIdField = DEFAULT_ROW_KEY_FIELD as Path<TData>,
-  descriptionField,
-  enableColorIndicator,
-  onIndicatorColor,
-  data,
-  state,
+  autoFocus,
+  bordered,
   columns,
+  data,
+  descriptionField,
+  emptyText,
+  enableColorIndicator,
+  enablePaging,
+  enableRowClickSelect,
+  enableNestedComponent,
+  loading,
+  newRowButtonText,
+  onIndicatorColor,
+  onNewRow,
+  onRenderNestedComponent,
   onRowClick,
   onRowEnterPress,
-  autoFocus,
+  rowIdField = DEFAULT_ROW_KEY_FIELD as Path<TData>,
   scrollProps,
-  enableRowClickSelect,
-  emptyText,
   showEmptyImage,
   showNewRowButton,
-  newRowButtonText,
-  onNewRow,
-  loading,
+  state,
   ...tableProps
 }: TableProps<TData>) {
   /* -------------------------------------------------------------------------- */
@@ -146,8 +161,9 @@ function Table<TData extends FieldValues>({
   /* --------------------------------- Columns -------------------------------- */
 
   const cols = useMemo<ColumnDef<TData>[]>(() => {
+    let result = columns;
     if (tableProps.enableRowSelection) {
-      return [
+      result = [
         {
           id: SELECTION_COL_NAME,
           enableSorting: false,
@@ -179,18 +195,53 @@ function Table<TData extends FieldValues>({
             );
           },
         },
-        ...columns,
+        ...result,
       ];
     }
 
-    return columns;
+    if (enableNestedComponent) {
+      result = [
+        {
+          id: EXPANDER_COL_NAME,
+          enableSorting: false,
+          minSize: 50,
+          size: 50,
+          cell: ({ row }) => {
+            const isExpanded = row.getIsExpanded();
+            return row.getCanExpand() ? (
+              <ExpandMore
+                onClick={row.getToggleExpandedHandler()}
+                expand={isExpanded}
+                sx={{ p: 1 }}
+              >
+                {isExpanded ? (
+                  <KeyboardArrowDown
+                    color="disabled"
+                    sx={{
+                      color: 'primary.main',
+                    }}
+                  />
+                ) : (
+                  <KeyboardArrowRight color="disabled" />
+                )}
+              </ExpandMore>
+            ) : null;
+          },
+        },
+        ...result,
+      ];
+    }
+
+    return result;
   }, [columns, tableProps.enableRowSelection]);
+
+  /* ---------------------------- Expandable props ---------------------------- */
 
   /* -------------------------------------------------------------------------- */
   /*                               Table instance                               */
   /* -------------------------------------------------------------------------- */
 
-  const table = useReactTable({
+  const table = useReactTable<TData>({
     ...tableProps,
     columns: cols,
     state: {
@@ -201,6 +252,17 @@ function Table<TData extends FieldValues>({
     getRowId: extractRowId,
     // Row models
     getCoreRowModel: getCoreRowModel(),
+    // Row expanding
+    ...(enableNestedComponent
+      ? {
+          getRowCanExpand(row) {
+            return typeof enableNestedComponent === 'boolean'
+              ? enableNestedComponent
+              : enableNestedComponent(row);
+          },
+          getExpandedRowModel: getExpandedRowModel(),
+        }
+      : undefined),
   });
 
   useEffect(() => {
@@ -276,40 +338,68 @@ function Table<TData extends FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   const renderHeader = () => {
+    const headerGroups = table.getHeaderGroups();
+    const isBanded = headerGroups.length > 1;
+
     return (
       <TableHead>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow
-            key={headerGroup.id}
-            sx={{
-              '& .MuiTableCell-root': {
-                backgroundColor: 'background.header',
-              },
-            }}
-          >
-            {headerGroup.headers.map((header) => {
-              const cellNode = flexRender(header.column.columnDef.header, header.getContext());
-              const isSortingEnabled = header.column.getCanSort();
-              const sortDirection = header.column.getIsSorted();
-              const sortToggleHandler = header.column.getToggleSortingHandler();
-              return (
-                <HeadTableCell key={header.id} sx={{ minWidth: header.getSize() }}>
-                  {isSortingEnabled ? (
-                    <TableSortLabel
-                      active={!!sortDirection}
-                      onClick={sortToggleHandler}
-                      direction={sortDirection === false ? undefined : sortDirection}
-                    >
-                      {cellNode}
-                    </TableSortLabel>
-                  ) : (
-                    cellNode
-                  )}
-                </HeadTableCell>
-              );
-            })}
-          </TableRow>
-        ))}
+        {headerGroups.map((headerGroup) => {
+          const isLeafHeader = isBanded && headerGroups.length - 1 === headerGroup.depth;
+
+          return (
+            <TableRow
+              key={headerGroup.id}
+              sx={{
+                '& .MuiTableCell-root': {
+                  backgroundColor: 'background.header',
+                  borderBottom: isBanded && !isLeafHeader ? '1px solid' : 'none',
+                  borderColor: (theme) => theme.palette.grey[600],
+
+                  '&:not(:first-child)': {
+                    borderLeft: isBanded ? '1px solid' : 'none',
+                    borderColor: (theme) => theme.palette.grey[600],
+                  },
+                },
+              }}
+            >
+              {headerGroup.headers.map((header) => {
+                const cellNode = flexRender(header.column.columnDef.header, header.getContext());
+                const cellNodeWithIcon = header.column.icon ? (
+                  <FlexRowAlign gap={1}>
+                    {header.column.icon} {cellNode}
+                  </FlexRowAlign>
+                ) : (
+                  cellNode
+                );
+                const isSortingEnabled = header.column.getCanSort();
+                const sortDirection = header.column.getIsSorted();
+                const sortToggleHandler = header.column.getToggleSortingHandler();
+
+                return (
+                  <HeadTableCell
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    sx={{
+                      minWidth: header.getSize(),
+                    }}
+                  >
+                    {isSortingEnabled ? (
+                      <TableSortLabel
+                        active={!!sortDirection}
+                        onClick={sortToggleHandler}
+                        direction={sortDirection === false ? undefined : sortDirection}
+                      >
+                        {cellNodeWithIcon}
+                      </TableSortLabel>
+                    ) : (
+                      cellNodeWithIcon
+                    )}
+                  </HeadTableCell>
+                );
+              })}
+            </TableRow>
+          );
+        })}
       </TableHead>
     );
   };
@@ -356,38 +446,22 @@ function Table<TData extends FieldValues>({
   };
 
   const renderDescriptionRow = (text: string, row: Row<TData>) => {
-    const visibleCols = table.getVisibleFlatColumns();
+    const visibleCols = row.getVisibleCells();
     return (
       <BodyTableRow className="description-row" key={`description-${row.id}`}>
         {enableColorIndicator ? renderCell(row.getVisibleCells()[0]) : null}
-        <TableCell
-          sx={{
-            paddingBottom: 2,
-            paddingTop: 0,
-            paddingLeft: 1,
-            borderBottom: '1px solid',
-            borderColor: (theme) => (isDark(theme) ? 'divider' : 'secondary.light'),
-          }}
+        <BodyTableCell
           colSpan={visibleCols?.length}
+          sx={{ py: 1, px: 0, backgroundColor: alpha(primary.main, 0.1) }}
         >
-          <Tiny
-            color="common.white"
-            sx={{
-              borderRadius: 1,
-              padding: '.2rem .8rem',
-              backgroundColor: (theme) =>
-                isDark(theme) ? theme.palette.grey[300] : theme.palette.grey[300],
-            }}
-          >
-            {text}
-          </Tiny>
-        </TableCell>
+          <Small color="text.secondary">{text}</Small>
+        </BodyTableCell>
       </BodyTableRow>
     );
   };
 
   const renderNewRow = (row?: Row<TData>) => {
-    const cols = table.getVisibleFlatColumns();
+    const cols = row?.getVisibleCells();
     return (
       <TableRow key="new-row">
         <TableCell
@@ -416,10 +490,19 @@ function Table<TData extends FieldValues>({
     return (
       <TableBody ref={bodyRef}>
         {table.getRowModel().rows.map((row) => {
-          const descriptionText = descriptionField ? get(row.original, descriptionField) : null;
+          let descriptionText;
+
+          if (descriptionField) {
+            descriptionText =
+              typeof descriptionField === 'function'
+                ? descriptionField(row)
+                : get(row.original, descriptionField);
+          }
+
+          const isRowExpanded = row.getIsExpanded();
 
           return (
-            <Fragment>
+            <Fragment key={row.id}>
               <BodyTableRow
                 bordered={!descriptionText}
                 isSelected={row.getIsSelected()}
@@ -439,6 +522,7 @@ function Table<TData extends FieldValues>({
               </BodyTableRow>
 
               {descriptionText ? renderDescriptionRow(descriptionText, row) : null}
+              {isRowExpanded && renderExpandedRow(row)}
             </Fragment>
           );
         })}
@@ -449,6 +533,10 @@ function Table<TData extends FieldValues>({
   };
 
   const renderPagination = () => {
+    if (!enablePaging) {
+      return null;
+    }
+
     const { pageSize, pageIndex } = table.getState().pagination;
 
     return (
@@ -472,10 +560,36 @@ function Table<TData extends FieldValues>({
     );
   };
 
+  const renderExpandedRow = (row: Row<TData>) => {
+    const nodes = onRenderNestedComponent?.({ row });
+    const cells = row.getVisibleCells();
+
+    return (
+      <TableRow key={`sub-row-${row.id}`}>
+        {enableColorIndicator ? renderCell(cells[0]) : null}
+        <TableCell
+          sx={{
+            py: '1rem',
+            paddingLeft: 7,
+          }}
+          colSpan={cells?.length}
+        >
+          {nodes}
+        </TableCell>
+      </TableRow>
+    );
+  };
+
   return (
     <>
       <Scrollbar autoHide={false} forceVisible {...scrollProps}>
-        <MuiTable stickyHeader>
+        <MuiTable
+          stickyHeader
+          sx={{
+            border: bordered ? '1px solid' : 'none',
+            borderColor: 'grey[500]',
+          }}
+        >
           {renderHeader()}
           {renderBody()}
         </MuiTable>

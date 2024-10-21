@@ -42,6 +42,7 @@ const meta: Meta<typeof ListPage> = {
       },
       {
         accessorKey: 'phone',
+        enableSorting: false,
         header: 'Phone',
       },
       {
