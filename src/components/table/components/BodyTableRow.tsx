@@ -12,7 +12,6 @@ export const BodyTableRow = styled(TableRow, {
 }>(({ bgColor, indicatorColor, theme, bordered = true }) => ({
   ...(indicatorColor && {
     position: 'relative',
-
     '&::after': {
       top: 0,
       left: 0,
@@ -20,11 +19,22 @@ export const BodyTableRow = styled(TableRow, {
       content: '""',
       height: '100%',
       position: 'absolute',
-      backgroundColor: indicatorColor, //theme.palette.primary.main,
+      backgroundColor: indicatorColor,
+    },
+    '&+tr.description-row': {
+      position: 'relative',
+      '&::after': {
+        top: 0,
+        left: 0,
+        width: '3px',
+        content: '""',
+        height: '100%',
+        position: 'absolute',
+        backgroundColor: indicatorColor,
+      },
     },
   }),
   backgroundColor: bgColor,
-
   '& .MuiTableCell-root': {
     borderBottom: bordered ? undefined : 'none',
   },

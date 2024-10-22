@@ -1,3 +1,5 @@
+import { Theme } from '@mui/material';
+
 export type ServerError = {
   message?: string;
   [key: string]: any;
@@ -17,6 +19,10 @@ export type ControlledFormProps<T = RecordType> = {
   value?: T;
   onChange?(value?: T): void;
 };
+
+export type InterpolationArgs<Props = RecordType> = {
+  theme: Theme;
+} & Props;
 
 export type EnumObj = Record<string, string>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

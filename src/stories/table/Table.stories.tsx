@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { InfoOutlined, LocationCityOutlined, Map, Phone } from '@mui/icons-material';
-import { Card } from '@mui/material';
+import { alpha, Card } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { getSortedRowModel, RowSelectionState, SortingState } from '@tanstack/react-table';
 
@@ -128,6 +128,11 @@ export const FixedWidth: TableStory = {
 
 export const WithDescriptionRow: TableStory = {
   args: {
+    onRowProps(row) {
+      return {
+        indicatorColor: row.index % 2 === 0 ? '#035058' : '#0C9E80',
+      };
+    },
     descriptionField: (row) => (
       <FlexBox gap={1} alignItems="center">
         <Map sx={{ fontSize: '1rem' }} />
@@ -261,8 +266,8 @@ export const CustomRow: TableStory = {
   args: {
     onRowProps(row) {
       return row.index % 2 === 0
-        ? { bgColor: '#63091F', indicatorColor: '#EB194C' }
-        : { bgColor: '#035058', indicatorColor: '#0C9E80' };
+        ? { bgColor: alpha('#EB194C', 0.1), indicatorColor: '#EB194C' }
+        : { bgColor: alpha('#0C9E80', 0.1), indicatorColor: '#0C9E80' };
     },
   },
 };

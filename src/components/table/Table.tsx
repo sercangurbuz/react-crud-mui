@@ -98,8 +98,6 @@ export interface TableProps<TData extends FieldValues>
   showNewRowButton?: boolean;
   newRowButtonText?: string;
   onNewRow?: (row?: Row<TData>) => void;
-  enableColorIndicator?: boolean;
-  onIndicatorColor?: (row: Row<TData>) => string | undefined;
   loading?: boolean;
   enablePaging?: boolean;
   onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
@@ -119,13 +117,11 @@ function Table<TData extends FieldValues>({
   data,
   descriptionField,
   emptyText,
-  enableColorIndicator,
   enablePaging,
   enableRowClickSelect,
   enableNestedComponent,
   loading,
   newRowButtonText,
-  onIndicatorColor,
   onNewRow,
   onRenderNestedComponent,
   onRowClick,
@@ -503,7 +499,6 @@ function Table<TData extends FieldValues>({
     const visibleCols = row.getVisibleCells();
     return (
       <BodyTableRow className="description-row" key={`description-${row.id}`}>
-        {enableColorIndicator ? renderCell(row.getVisibleCells()[0]) : null}
         <BodyTableCell
           colSpan={visibleCols?.length}
           sx={{ py: 1, px: 0, backgroundColor: alpha(primary.main, 0.1) }}
@@ -622,7 +617,6 @@ function Table<TData extends FieldValues>({
 
     return (
       <TableRow key={`sub-row-${row.id}`}>
-        {enableColorIndicator ? renderCell(cells[0]) : null}
         <TableCell
           sx={{
             py: '1rem',
