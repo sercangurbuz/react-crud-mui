@@ -8,8 +8,8 @@ import {
   Backdrop,
   Checkbox,
   CircularProgress,
-  IconButton,
   Table as MuiTable,
+  TableProps as MuiTableProps,
   Radio,
   Stack,
   SxProps,
@@ -20,6 +20,7 @@ import {
   TableRow,
   TableSortLabel,
   Theme,
+  useTheme,
 } from '@mui/material';
 import {
   Cell,
@@ -83,7 +84,8 @@ export type TableColumn<D extends object = object> = {
 
 export interface TableProps<TData extends FieldValues>
   extends Omit<TableOptions<TData>, 'getCoreRowModel' | 'columns'>,
-    Partial<Omit<EmptyTextProps, 'onChange'>> {
+    Partial<Pick<EmptyTextProps, 'emptyText' | 'showEmptyImage'>>,
+    MuiTableProps {
   rowIdField?: Path<TData>;
   descriptionField?: Path<TData> | ((row: Row<TData>) => ReactNode);
   columns: TableColumn<TData>[];
@@ -100,11 +102,14 @@ export interface TableProps<TData extends FieldValues>
   onIndicatorColor?: (row: Row<TData>) => string | undefined;
   loading?: boolean;
   enablePaging?: boolean;
-  enableTreeMode?: boolean;
-
-  subRowsField?: string | ((originalRow: TData) => TData[]);
-  enableNestedComponent?: boolean | ((row: Row<TData>) => boolean);
+  onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
+  enableNestedComponent?: boolean | ((row: Row<TData>) => boolean | undefined);
   onRenderNestedComponent?: (props: RenderSubComponentProps<TData>) => React.ReactNode;
+  onRowProps?: (row: Row<TData>) => React.ComponentProps<typeof BodyTableRow> | undefined;
+}
+
+function isStandartColumn(colId: string) {
+  return colId === EXPANDER_COL_NAME || colId === SELECTION_COL_NAME;
 }
 
 function Table<TData extends FieldValues>({
@@ -125,7 +130,11 @@ function Table<TData extends FieldValues>({
   onRenderNestedComponent,
   onRowClick,
   onRowEnterPress,
+  onRowProps,
+  onSubTreeRows,
   rowIdField = DEFAULT_ROW_KEY_FIELD as Path<TData>,
+  size = 'medium',
+  stickyHeader = true,
   scrollProps,
   showEmptyImage,
   showNewRowButton,
@@ -144,6 +153,7 @@ function Table<TData extends FieldValues>({
     (row: TData) => String((row as FieldValues)[rowIdField]),
     [rowIdField],
   );
+  const theme = useTheme();
 
   /* -------------------------------------------------------------------------- */
   /*                                Table helpers                               */
@@ -199,7 +209,7 @@ function Table<TData extends FieldValues>({
       ];
     }
 
-    if (enableNestedComponent) {
+    if (enableNestedComponent || onSubTreeRows) {
       result = [
         {
           id: EXPANDER_COL_NAME,
@@ -212,7 +222,9 @@ function Table<TData extends FieldValues>({
               <ExpandMore
                 onClick={row.getToggleExpandedHandler()}
                 expand={isExpanded}
-                sx={{ p: 1 }}
+                sx={{
+                  p: 1,
+                }}
               >
                 {isExpanded ? (
                   <KeyboardArrowDown
@@ -252,17 +264,38 @@ function Table<TData extends FieldValues>({
     getRowId: extractRowId,
     // Row models
     getCoreRowModel: getCoreRowModel(),
+    // Row tree mode (sub rows)
+    ...(onSubTreeRows
+      ? {
+          getSubRows: (originalRow) => {
+            return typeof onSubTreeRows === 'string'
+              ? get(originalRow, onSubTreeRows)
+              : onSubTreeRows(originalRow);
+          },
+        }
+      : undefined),
     // Row expanding
+    ...(enableNestedComponent || onSubTreeRows
+      ? {
+          getExpandedRowModel: getExpandedRowModel(),
+        }
+      : undefined),
+    // Row nested component
     ...(enableNestedComponent
       ? {
           getRowCanExpand(row) {
             return typeof enableNestedComponent === 'boolean'
               ? enableNestedComponent
-              : enableNestedComponent(row);
+              : !!enableNestedComponent(row);
           },
-          getExpandedRowModel: getExpandedRowModel(),
         }
       : undefined),
+    // Column sizing
+    defaultColumn: {
+      minSize: 0,
+      size: Number.MAX_SAFE_INTEGER,
+      maxSize: Number.MAX_SAFE_INTEGER,
+    },
   });
 
   useEffect(() => {
@@ -378,9 +411,15 @@ function Table<TData extends FieldValues>({
                 return (
                   <HeadTableCell
                     key={header.id}
+                    size={size}
                     colSpan={header.colSpan}
                     sx={{
-                      minWidth: header.getSize(),
+                      ...(header.getSize() === Number.MAX_SAFE_INTEGER || !isLeafHeader
+                        ? { width: 'auto' }
+                        : {
+                            width: header.getSize(),
+                            minWidth: header.getSize(),
+                          }),
                     }}
                   >
                     {isSortingEnabled ? (
@@ -406,6 +445,8 @@ function Table<TData extends FieldValues>({
 
   const renderCell = (cell: Cell<TData, unknown>) => {
     let cellNode = flexRender(cell.column.columnDef.cell, cell.getContext());
+    const isStandartCol = isStandartColumn(cell.column.id);
+    const isIndentedCol = cell.row.depth > 0 && cell.column.getIndex() == 1;
 
     if (cell.column.link) {
       const uri = cell.column.link(cell.row);
@@ -424,7 +465,20 @@ function Table<TData extends FieldValues>({
     }
 
     return (
-      <BodyTableCell key={cell.id} title={cell.column.title}>
+      <BodyTableCell
+        key={cell.id}
+        title={cell.column.title}
+        size={isStandartCol ? 'small' : size}
+        sx={{
+          ...(cell.column.getSize() === Number.MAX_SAFE_INTEGER
+            ? { width: 'auto' }
+            : {
+                width: cell.column.getSize(),
+                minWidth: cell.column.getSize(),
+              }),
+          ...(isIndentedCol ? { paddingLeft: '3rem' } : undefined),
+        }}
+      >
         {cellNode}
       </BodyTableCell>
     );
@@ -461,15 +515,13 @@ function Table<TData extends FieldValues>({
   };
 
   const renderNewRow = (row?: Row<TData>) => {
-    const cols = row?.getVisibleCells();
+    const cols = table?.getVisibleFlatColumns();
     return (
       <TableRow key="new-row">
         <TableCell
           sx={{
             py: 2,
             textAlign: 'center',
-            borderBottom: '1px solid',
-            borderColor: (theme) => theme.palette.action.disabled,
           }}
           colSpan={cols?.length}
         >
@@ -499,19 +551,23 @@ function Table<TData extends FieldValues>({
                 : get(row.original, descriptionField);
           }
 
-          const isRowExpanded = row.getIsExpanded();
+          const isCanNested = onRenderNestedComponent && row.getIsExpanded();
+          const isSelected = row.getIsSelected();
+          const exRowProps = onRowProps?.(row);
 
           return (
             <Fragment key={row.id}>
               <BodyTableRow
                 bordered={!descriptionText}
-                isSelected={row.getIsSelected()}
+                indicatorColor={isSelected ? theme.palette.primary.main : undefined}
+                bgColor={isSelected ? theme.palette.action.selected : undefined}
                 onClick={() => {
                   handleRowClick(row);
                 }}
                 sx={{
                   cursor: onRowClick || enableRowClickSelect ? 'pointer' : undefined,
                 }}
+                {...exRowProps}
                 // for keyboard navigation
                 id={row.id}
                 tabIndex={0}
@@ -522,7 +578,7 @@ function Table<TData extends FieldValues>({
               </BodyTableRow>
 
               {descriptionText ? renderDescriptionRow(descriptionText, row) : null}
-              {isRowExpanded && renderExpandedRow(row)}
+              {isCanNested && renderNestedRow(row)}
             </Fragment>
           );
         })}
@@ -560,7 +616,7 @@ function Table<TData extends FieldValues>({
     );
   };
 
-  const renderExpandedRow = (row: Row<TData>) => {
+  const renderNestedRow = (row: Row<TData>) => {
     const nodes = onRenderNestedComponent?.({ row });
     const cells = row.getVisibleCells();
 
@@ -584,11 +640,13 @@ function Table<TData extends FieldValues>({
     <>
       <Scrollbar autoHide={false} forceVisible {...scrollProps}>
         <MuiTable
-          stickyHeader
+          stickyHeader={stickyHeader}
+          size={size}
           sx={{
             border: bordered ? '1px solid' : 'none',
-            borderColor: 'grey[500]',
+            borderColor: (theme) => theme.palette.grey[700],
           }}
+          {...tableProps}
         >
           {renderHeader()}
           {renderBody()}

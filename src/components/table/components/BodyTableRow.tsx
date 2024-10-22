@@ -2,37 +2,17 @@ import { alpha } from '@mui/material';
 import styled from '@mui/material/styles/styled';
 import TableRow from '@mui/material/TableRow';
 
-import { isDark } from '../../theme/theme.constants';
-
-//type Select = { selected_row: number };
-/* 
 export const BodyTableRow = styled(TableRow, {
-  shouldForwardProp: (prop) => prop !== 'selected_row',
-})<Select>(({ theme, selected_row }) => ({
-  ...(selected_row && {
-    position: 'relative',
-    backgroundColor: theme.palette.action.selected,
-    '&::after': {
-      top: 0,
-      left: 0,
-      width: '3px',
-      content: '""',
-      height: '100%',
-      position: 'absolute',
-      backgroundColor: theme.palette.primary.main,
-    },
-  }),
-})); */
-
-export const BodyTableRow = styled(TableRow, {
-  shouldForwardProp: (prop) => prop !== 'isSelected' && prop !== 'bordered',
+  shouldForwardProp: (prop) =>
+    prop !== 'indicatorColor' && prop !== 'bordered' && prop !== 'bgColor',
 })<{
-  isSelected?: boolean;
+  indicatorColor?: string;
+  bgColor?: string;
   bordered?: boolean;
-}>(({ isSelected, theme, bordered = true }) => ({
-  ...(isSelected && {
+}>(({ bgColor, indicatorColor, theme, bordered = true }) => ({
+  ...(indicatorColor && {
     position: 'relative',
-    backgroundColor: theme.palette.action.selected,
+
     '&::after': {
       top: 0,
       left: 0,
@@ -40,9 +20,11 @@ export const BodyTableRow = styled(TableRow, {
       content: '""',
       height: '100%',
       position: 'absolute',
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: indicatorColor, //theme.palette.primary.main,
     },
   }),
+  backgroundColor: bgColor,
+
   '& .MuiTableCell-root': {
     borderBottom: bordered ? undefined : 'none',
   },

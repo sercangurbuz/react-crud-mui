@@ -31,7 +31,7 @@ function EmptyText({
         <img src="/general-no-results-found.svg" width={150} height={150} alt="no record" />
       )}
       <FlexBox alignItems="center" flexDirection="column" gap={1}>
-        <Small sx={{ color: 'text.disabled' }}>{emptyText}</Small>
+        <Small sx={{ color: 'text.secondary' }}>{emptyText}</Small>
         <Small color="primary.main">{children}</Small>
       </FlexBox>
     </FlexBox>

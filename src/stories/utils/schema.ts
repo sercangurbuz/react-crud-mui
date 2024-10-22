@@ -13,6 +13,12 @@ export const userSchema = z.object({
   phone: z.string(),
   id: z.number().nullable(),
   isActive: z.boolean(),
+  address: z.object({
+    street: z.string(),
+    suite: z.string(),
+    city: z.string(),
+    zipcode: z.string(),
+  }),
 });
 
 export type UserSchema = z.infer<typeof userSchema>;
