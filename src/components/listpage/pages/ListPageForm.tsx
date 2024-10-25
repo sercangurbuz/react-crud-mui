@@ -7,14 +7,16 @@ import { z } from 'zod';
 import FormProvider from '../../form/components/FormProvider';
 import useForm, { UseFormOptions, ValidationOptions } from '../../form/hooks/useForm';
 import { DeepNullable } from '../../utils';
-import ListPageData, { ListPageDataProps, ListPageFilter } from './ListPageData';
+import ListPageData, { ListPageDataProps } from './ListPageData';
 
 /* -------------------------------------------------------------------------- */
 /*                                    TYpes                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface ListPageFormProps<TModel extends FieldValues, TFilter extends FieldValues>
-  extends ListPageDataProps<TModel, TFilter>,
+export interface ListPageFormProps<
+  TModel extends FieldValues,
+  TFilter extends FieldValues = FieldValues,
+> extends ListPageDataProps<TModel, TFilter>,
     Partial<Pick<UseFormOptions<TFilter>, 'schema'>> {
   schema?: z.ZodType<Partial<TFilter>>;
   /**
@@ -24,10 +26,10 @@ export interface ListPageFormProps<TModel extends FieldValues, TFilter extends F
   /**
    * Optional validation options
    */
-  validationOptions?: ValidationOptions<ListPageFilter<TFilter>>;
+  validationOptions?: ValidationOptions<TFilter>;
 }
 
-function ListPageForm<TModel extends FieldValues, TFilter extends FieldValues>(
+function ListPageForm<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>(
   props: ListPageFormProps<TModel, TFilter>,
 ) {
   const { schema, defaultValues, defaultFilter, validationOptions } = props;
@@ -36,18 +38,17 @@ function ListPageForm<TModel extends FieldValues, TFilter extends FieldValues>(
   /* -------------------------------------------------------------------------- */
 
   const initialFilter = useMemo(() => {
-    return defaultFilter
-      ? (merge({}, defaultValues, defaultFilter) as ListPageFilter<TFilter>)
-      : undefined;
+    return defaultFilter ? (merge({}, defaultValues, defaultFilter) as TFilter) : undefined;
   }, [defaultValues, defaultFilter]);
 
-  const form = useForm<ListPageFilter<TFilter>>({
+  const form = useForm<TFilter>({
     reValidateMode: 'onChange',
     mode: 'onChange',
     schema,
-    defaultValues: defaultValues as DefaultValues<ListPageFilter<TFilter>>,
+    defaultValues: defaultValues as DefaultValues<TFilter>,
     resetOptions: {
       keepDefaultValues: true,
+      keepDirty: true,
     },
     values: initialFilter,
   });

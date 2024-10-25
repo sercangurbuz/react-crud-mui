@@ -1,20 +1,23 @@
-import { useCallback, useMemo } from 'react';
-
-import { Search } from '@mui/icons-material';
+import { Assignment, Done, Pending, Search } from '@mui/icons-material';
 import { Meta, StoryObj } from '@storybook/react';
+import { Z } from 'vitest/dist/chunks/reporters.WnPwkmgA.js';
+import { z } from 'zod';
 
 import ListPage from '../../components/listpage/pages/ListPage';
-import { ListPageFilter, PagingListModel } from '../../components/listpage/pages/ListPageData';
-import { useAppLazyQuery } from '../../components/query';
-import { ServerError } from '../../components/utils';
+import mockUsers from '../../test-setup/mockUsers.json';
 import { UserDefaultValues } from '../utils/api';
 import { UserSchema } from '../utils/schema';
 import FilterContent from './components/FilterContent';
+import useListPageData from './components/useListPageData';
 
-const meta: Meta<typeof ListPage> = {
+const meta: Meta<typeof ListPage<UserSchema>> = {
   title: 'Components/ListPage',
   args: {
     header: 'User list',
+    data: {
+      data: mockUsers as unknown as UserSchema[],
+      dataCount: 10,
+    },
     helperText: 'Type in user settings',
     icon: <Search sx={{ color: 'primary.main' }} />,
     filter: () => <FilterContent />,
@@ -51,62 +54,89 @@ const meta: Meta<typeof ListPage> = {
       },
     ],
     defaultValues: UserDefaultValues,
+    tableProps: {
+      initialState: {
+        pagination: { pageSize: 5 },
+      },
+    },
   },
   component: ListPage,
+  decorators: (Story, context) => {
+    const props = useListPageData();
+    Object.assign(context.args, props);
+    return Story(context);
+  },
 };
 
 export default meta;
-type ListPageStory = StoryObj<typeof ListPage<UserSchema, UserSchema>>;
+type ListPageStory = StoryObj<typeof ListPage<UserSchema>>;
 
-export const Simple: ListPageStory = {
-  render(args) {
-    const { fetch, data, isPending, error, prevData } = useAppLazyQuery<UserSchema[]>({
-      url: 'https://jsonplaceholder.typicode.com/users',
-    });
-    const users = useMemo<PagingListModel<UserSchema>>(
-      () => ({
-        data: data ?? prevData ?? [],
-        dataCount: data || prevData ? 10 : 0,
-      }),
-      [data, prevData],
-    );
+export const Simple: ListPageStory = {};
 
-    const handleNeedData = useCallback(
-      ({
-        name,
-        username,
-        email,
-        website,
-        phone,
-        pagination,
-        sorting,
-      }: ListPageFilter<UserSchema>) =>
-        fetch({
-          name_like: name && `^${name}`,
-          username_like: username && `^${username}`,
-          email_like: email && `^${email}`,
-          website_like: website && `^${website}`,
-          phone_like: phone && `^${phone}`,
-          _page: pagination?.pageIndex + 1,
-          _limit: pagination?.pageSize,
-          _sort: sorting.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
-        }),
-      [],
-    );
+export const WithDefaultValues: ListPageStory = {
+  args: {
+    enableClear: true,
+    defaultFilter: { username: 'M' },
+    defaultValues: { username: 'K' },
+  },
+};
 
-    return (
-      <ListPage
-        {...args}
-        onNeedData={handleNeedData}
-        tableProps={{
-          initialState: {
-            pagination: { pageSize: 5 },
+export const WithDefaultTableFilters: ListPageStory = {
+  args: {
+    enableClear: true,
+    tableProps: {
+      initialState: {
+        pagination: { pageSize: 3 },
+        sorting: [
+          {
+            id: 'username',
+            desc: false,
           },
-        }}
-        data={users}
-        loading={isPending}
-        error={error as ServerError}
-      />
-    );
+        ],
+      },
+    },
+  },
+};
+
+export const WithNoFilter: ListPageStory = {
+  args: {
+    filter: undefined,
+  },
+};
+
+export const WithTabbedFilter: ListPageStory = {
+  args: {
+    tabs: [
+      {
+        key: 'tab1',
+        value: 'assigned',
+        label: 'Assigned',
+        icon: <Assignment />,
+      },
+      {
+        key: 'tab2',
+        value: 'pending',
+        label: 'Pending',
+        icon: <Pending />,
+      },
+      {
+        key: 'tab3',
+        value: 'done',
+        label: 'Done',
+        icon: <Done />,
+      },
+    ],
+  },
+};
+
+export const WithValidation: ListPageStory = {
+  args: {
+    schema: z.object({
+      name: z.string().min(1),
+      username: z.string().optional(),
+      email: z.string().email().min(1),
+      website: z.string().min(1),
+      phone: z.string(),
+    }),
   },
 };

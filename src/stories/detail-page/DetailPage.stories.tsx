@@ -1,11 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
+import {
+  createMemoryRouter,
+  createRoutesFromElements,
+  Outlet,
+  Route,
+  RouterProvider,
+} from 'react-router-dom';
 
 import { Assignment, Done, Pending } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { Button, Grid2 } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
+import useDetailPageRouteParams from '../../components/detail-page/hooks/useDetailPageRouteParams';
+import Field from '../../components/form/Field';
 import { useZodRefine } from '../../components/hooks';
 import Add from '../../components/icons/Add';
 import Edit from '../../components/icons/Edit';
@@ -25,6 +34,7 @@ import CustomTitle from './components/CustomTitle';
 import DisableStateButtons from './components/DisableStateButtons';
 import FormContent from './components/FormContent';
 import { Step1, Step2, Step3 } from './components/Steps';
+import UserList from './components/UserList';
 
 const meta: Meta<typeof DetailPage<UserSchema>> = {
   title: 'Components/DetailPage',
@@ -39,12 +49,15 @@ const meta: Meta<typeof DetailPage<UserSchema>> = {
     onSave: handleSaveUser,
     onDelete: handleDeleteUser,
     createCommandLabel: 'New User',
+    defaultValues: UserDefaultValues,
+    schema: userSchema,
   },
 };
 
 export default meta;
 type DetailPageStory = StoryObj<typeof DetailPage>;
 type DetailPageModalStory = StoryObj<typeof DetailPage.Modal<UserSchema>>;
+type DetailPageRouteStory = StoryObj<typeof DetailPage.Route<UserSchema>>;
 
 export const Simple: DetailPageStory = {};
 
@@ -202,8 +215,6 @@ export const AutoSave: DetailPageStory = {
 export const WithZodRefine: DetailPageStory = {
   args: {
     defaultReason: 'fetch',
-    defaultValues: UserDefaultValues,
-    schema: userSchema,
   },
   render: (args) => {
     const { data, isFetching } = useAppQuery<UserSchema>({
@@ -232,9 +243,7 @@ export const WithZodRefine: DetailPageStory = {
 export const OpenInModal: DetailPageModalStory = {
   args: {
     defaultReason: 'fetch',
-    data: mockData[0],
-    defaultValues: UserDefaultValues,
-    schema: userSchema,
+    data: mockData[0] as unknown as UserSchema,
     enableDelete: false,
   },
   render: (args) => {
@@ -248,6 +257,15 @@ export const OpenInModal: DetailPageModalStory = {
   },
 };
 
+export const ClassicModal: DetailPageModalStory = {
+  args: {
+    ...OpenInModal.args,
+    commandsPosition: 'bottom-right',
+    footerContent: <Field.Switch name="isActive" label="Is Active ?" />,
+  },
+  render: OpenInModal.render,
+};
+
 export const OpenInDrawer: DetailPageModalStory = {
   args: OpenInModal.args,
   render: (args) => {
@@ -259,7 +277,6 @@ export const OpenInDrawer: DetailPageModalStory = {
           {...args}
           enableDelete={false}
           open={visible}
-          schema={userSchema}
           onClose={() => {
             setVisible(false);
           }}
@@ -281,12 +298,16 @@ export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
           enableDelete={false}
           commandsPosition="bottom"
           onCommands={({ props }) => (
-            <Button onClick={props.onSaveClose} startIcon={<Add />} fullWidth>
+            <Button
+              onClick={props.onSaveClose}
+              disabled={props.disabled.save}
+              startIcon={<Add />}
+              fullWidth
+            >
               Save User
             </Button>
           )}
           open={visible}
-          schema={userSchema}
           onClose={() => {
             setVisible(false);
           }}
@@ -347,7 +368,6 @@ export const WithCustomTabs: DetailPageStory = {
 export const WithSteps: DetailPageStory = {
   args: {
     component: undefined,
-    defaultValues: UserDefaultValues,
     reason: 'create',
     schema: [
       z.object({
@@ -386,5 +406,86 @@ export const StepsWithCustomCommands: DetailPageStory = {
       showFinishButton: false,
       commands: CustomStepCommands,
     },
+  },
+};
+
+export const InRouter: DetailPageRouteStory = {
+  decorators: (Story) => {
+    const router = createMemoryRouter(
+      createRoutesFromElements(
+        <Route
+          element={
+            <Grid2 container spacing={2}>
+              <Grid2 size={{ md: 4, xs: 12 }}>
+                <UserList />
+              </Grid2>
+              <Grid2 size={{ md: 8, xs: 12 }}>
+                <Outlet />
+              </Grid2>
+            </Grid2>
+          }
+        >
+          <Route path=":id" element={<Story />} />
+        </Route>,
+      ),
+      { initialEntries: ['/1'] },
+    );
+
+    return <RouterProvider router={router} />;
+  },
+  render(args) {
+    const { id } = useDetailPageRouteParams();
+
+    const { data, isFetching } = useAppQuery<UserSchema>({
+      queryKey: ['user', { id }],
+      url: 'https://jsonplaceholder.typicode.com/users/' + id,
+      variables: { id },
+      enabled: id !== 'new',
+    });
+
+    return <DetailPage.Route {...args} data={data} loading={isFetching} />;
+  },
+};
+
+export const RoutedTabs: DetailPageRouteStory = {
+  ...InRouter,
+  args: {
+    component: undefined,
+    ...InRouter.args,
+    tabs: [
+      {
+        key: 'tab1',
+        value: 'assigned',
+        label: 'Assigned',
+        icon: <Assignment />,
+        children: (
+          <Page.Content>
+            <H2>Tab 1 content</H2>
+          </Page.Content>
+        ),
+      },
+      {
+        key: 'tab2',
+        value: 'pending',
+        label: 'Pending',
+        icon: <Pending />,
+        children: (
+          <Page.Content>
+            <H2>Tab 2 content</H2>
+          </Page.Content>
+        ),
+      },
+      {
+        key: 'tab3',
+        value: 'done',
+        label: 'Done',
+        icon: <Done />,
+        children: (
+          <Page.Content>
+            <H2>Tab 3 content</H2>
+          </Page.Content>
+        ),
+      },
+    ],
   },
 };

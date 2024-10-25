@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MemoryRouter } from 'react-router-dom';
 
 import { InfoOutlined, LocationCityOutlined, Map, Phone } from '@mui/icons-material';
 import { alpha, Card } from '@mui/material';
@@ -227,6 +228,35 @@ export const Sorting: TableStory = {
         getSortedRowModel={getSortedRowModel()}
       />
     );
+  },
+};
+
+export const Alignment: TableStory = {
+  args: {
+    columns: columns.map((col, index) => ({
+      ...col,
+      align: index === 0 ? 'center' : index === 1 ? 'right' : 'left',
+    })),
+  },
+};
+
+export const WithLink: TableStory = {
+  decorators: (Story) => (
+    <MemoryRouter>
+      <Story />
+    </MemoryRouter>
+  ),
+  args: {
+    columns: [
+      {
+        accessorKey: 'name',
+        header: 'Name with link',
+        link(row) {
+          return `/${row.original.id}`;
+        },
+      },
+      ...columns.slice(1),
+    ],
   },
 };
 

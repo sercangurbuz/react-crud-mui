@@ -1,11 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { FieldValues, useFormContext, useFormState } from 'react-hook-form';
 
-import { TableState } from '@tanstack/react-table';
+import { PaginationState } from '@tanstack/react-table';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
-import { useMountEffect, useUpdateEffect } from '../../hooks';
+import useSettings from '../../settings-provider/hooks/useSettings';
 import { INITIAL_PAGEINDEX } from '../constants';
+import { DefaultTableState } from '../hooks/useListPageTableProps';
 import ListPageContent, { ListPageContentProps } from './ListPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -18,16 +19,18 @@ export interface PagingListModel<TModel> {
 }
 export type ListPageModel<TModel> = PagingListModel<TModel>;
 
-export type PagingFields = Pick<TableState, 'pagination' | 'sorting'>;
-export type ListPageFilter<TFilter extends FieldValues> = TFilter & PagingFields;
+export type ListPageMeta = DefaultTableState & { activeSegmentIndex?: number };
+export type ListPageFilter<TFilter extends FieldValues> = TFilter & ListPageMeta;
 
 export type NeedDataPayload<TFilter extends FieldValues> = {
   filter: TFilter;
 };
 
-export interface ListPageDataProps<TModel extends FieldValues, TFilter extends FieldValues>
-  extends ListPageContentProps<TModel, TFilter> {
-  form: UseFormReturn<ListPageFilter<TFilter>>;
+export interface ListPageDataProps<
+  TModel extends FieldValues,
+  TFilter extends FieldValues = FieldValues,
+> extends ListPageContentProps<TModel, TFilter> {
+  form: UseFormReturn<TFilter>;
   /**
    * External filter criteries
    */
@@ -36,25 +39,26 @@ export interface ListPageDataProps<TModel extends FieldValues, TFilter extends F
    * Data fetcher function with given filter
    * ==> MUST BE MEMOIZED <==
    */
-  onNeedData?: (filter: ListPageFilter<TFilter>) => void;
+  onNeedData?: (filter: TFilter, meta: ListPageMeta) => void;
   /**
    * Form filter values change event
    */
-  onFormFilterChange?: (values: ListPageFilter<TFilter>) => void;
+  onFormFilterChange?: (values: TFilter) => void;
   /**
    * Default index of tab
    */
   defaultSegmentIndex?: number;
 }
 
-function ListPageData<TModel extends FieldValues, TFilter extends FieldValues>({
+function ListPageData<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
   form,
   onFormFilterChange,
   tableProps,
   onTabChanged,
   defaultSegmentIndex = 0,
   onClear,
-  currentFilter,
+  formFilter,
+  meta,
   onNeedData,
   ...lpProps
 }: ListPageDataProps<TModel, TFilter>) {
@@ -69,22 +73,28 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues>({
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
+  const { pageSize: defaultPageSize } = useSettings();
+
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
   /* -------------------------------------------------------------------------- */
 
-  const clearForm = () => {
+  const clearForm = async () => {
     // reset form filters
-    reset(defaultValues as ListPageFilter<TFilter>, { keepDefaultValues: true });
+    reset(defaultValues as TFilter, { keepDefaultValues: true });
+    // reset form values
+    onFormFilterChange?.(defaultValues as TFilter);
     // reset tab index
     onTabChanged?.(defaultSegmentIndex);
-    // clear table states
-    onPaginationChange?.((props) => ({
-      pageSize: props?.pageSize,
-      pageIndex: INITIAL_PAGEINDEX,
-    }));
-    onSortingChange?.([]);
-    onColumnFiltersChange?.([]);
+    // reset to defaults
+    onSortingChange?.(tableProps.initialState?.sorting ?? []);
+    onPaginationChange?.(
+      (tableProps.initialState?.pagination as PaginationState) ?? {
+        pageIndex: INITIAL_PAGEINDEX,
+        pageSize: defaultPageSize,
+      },
+    );
+    onColumnFiltersChange?.(tableProps.initialState?.columnFilters ?? []);
     // clear callback
     onClear?.();
   };
@@ -111,8 +121,8 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   useEffect(() => {
-    onNeedData?.(currentFilter!);
-  }, [currentFilter, onNeedData]);
+    onNeedData?.(formFilter!, meta);
+  }, [formFilter, onNeedData, meta]);
 
   /* --------------------------------- Render --------------------------------- */
 
@@ -123,7 +133,8 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues>({
       tableProps={tableProps}
       onTabChanged={onTabChanged}
       onClear={clearForm}
-      currentFilter={currentFilter}
+      formFilter={formFilter}
+      meta={meta}
     />
   );
 }

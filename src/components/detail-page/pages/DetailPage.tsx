@@ -7,6 +7,7 @@ import { NeedDataReason } from './DetailPageContent';
 import DetailPageDrawer from './DetailPageDrawer';
 import DetailPageForm, { DetailPageFormProps } from './DetailPageForm';
 import DetailPageModal from './DetailPageModal';
+import DetailPageRoute from './DetailPageRoute';
 
 export interface DetailPageProps<TModel extends FieldValues> extends DetailPageFormProps<TModel> {
   defaultReason?: NeedDataReason;
@@ -52,4 +53,5 @@ export default DetailPage;
 DetailPage.Header = DetailPageHeader;
 DetailPage.Modal = DetailPageModal;
 DetailPage.Drawer = DetailPageDrawer;
+DetailPage.Route = DetailPageRoute;
 DetailPage.Layout = DetailPageDefaultLayout;

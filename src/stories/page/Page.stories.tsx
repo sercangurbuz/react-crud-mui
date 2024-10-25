@@ -58,9 +58,16 @@ export const CommandsOnFooter: PageStory = {
   },
 };
 
+export const WithFooter: PageStory = {
+  args: {
+    commandsPosition: 'bottom-right',
+    footerContent: 'Extra footer within the same level with commands',
+  },
+};
+
 export const WithTabs: PageStory = {
   args: {
-    selectedTabIndex: 'assigned',
+    selectedTabIndex: 0,
     tabs: [
       {
         key: 'tab1',

@@ -25,6 +25,7 @@ import {
 import {
   Cell,
   ColumnDef,
+  CoreColumn,
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
@@ -35,7 +36,7 @@ import {
   type RowData,
 } from '@tanstack/react-table';
 
-import { FlexRowAlign } from '../flexbox';
+import { FlexBox, FlexRowAlign } from '../flexbox';
 import useTranslation from '../i18n/hooks/useTranslation';
 import isNil from '../misc/isNil';
 import Scrollbar from '../scrollbar';
@@ -55,7 +56,7 @@ import { DEFAULT_ROW_KEY_FIELD, EXPANDER_COL_NAME, SELECTION_COL_NAME } from './
 /* -------------------------------------------------------------------------- */
 
 declare module '@tanstack/react-table' {
-  interface Column<TData extends RowData, TValue = unknown> {
+  interface CoreColumn<TData extends RowData, TValue = unknown> {
     link?: (row: Row<TData>) => string;
     align?: CellAlignment;
     title?: string;
@@ -444,19 +445,19 @@ function Table<TData extends FieldValues>({
     const isStandartCol = isStandartColumn(cell.column.id);
     const isIndentedCol = cell.row.depth > 0 && cell.column.getIndex() == 1;
 
-    if (cell.column.link) {
-      const uri = cell.column.link(cell.row);
+    if ((cell.column.columnDef as CoreColumn<TData>).link) {
+      const uri = (cell.column.columnDef as CoreColumn<TData>).link!(cell.row);
       if (uri) {
         cellNode = <Link to={uri}>{cellNode}</Link>;
       }
     }
 
-    switch (cell.column.align) {
+    switch ((cell.column.columnDef as CoreColumn<TData>).align) {
       case 'center':
         cellNode = <FlexRowAlign sx={{ textAlign: 'center' }}>{cellNode}</FlexRowAlign>;
         break;
       case 'right':
-        cellNode = <FlexRowAlign>{cellNode}</FlexRowAlign>;
+        cellNode = <FlexBox justifyContent="flex-end">{cellNode}</FlexBox>;
         break;
     }
 

@@ -10,6 +10,7 @@ import Delete from '../../icons/Delete';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
 import useSettings from '../../settings-provider/hooks/useSettings';
 import useListPageCommandStates from '../hooks/useListPageCommandStates';
+import Clear from '../../icons/Clear';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -128,8 +129,9 @@ function ListPageCommands(props: ListPageCommandsProps) {
     return (
       <Button
         key="clear"
-        startIcon={<Delete />}
-        color="error"
+        startIcon={<Clear />}
+        color="secondary"
+        variant="outlined"
         title={`${t('listpage.listbuttons.cleartitle')}\n(${SHORTCUT_CLEAR.toUpperCase()})`}
         onClick={onClear}
         disabled={disabled.clear}

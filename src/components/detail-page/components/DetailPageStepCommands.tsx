@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { Key, ReactNode } from 'react';
 
 import { ArrowLeft, ArrowRight, Save } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';

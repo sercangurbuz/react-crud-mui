@@ -80,6 +80,14 @@ export interface DetailPageDataProps<TModel extends FieldValues>
    * Enable to show success messages (Default true)
    */
   showSuccessMessages?: boolean;
+  /**
+   * Event called after succesfull save
+   */
+  onAfterSave?: (result: Awaited<DataResult<TModel>>, variables: SavePayload<TModel>) => void;
+  /**
+   * Event called after succesfull delete
+   */
+  onAfterDelete?: (variables: DeletePayload<TModel>) => void;
 }
 
 /**
@@ -93,6 +101,8 @@ function DetailPageData<TModel extends FieldValues>({
   error,
   form,
   loading,
+  onAfterDelete,
+  onAfterSave,
   onClose,
   onDelete,
   onDiscardChanges,
@@ -128,10 +138,7 @@ function DetailPageData<TModel extends FieldValues>({
         reset(data);
       }
 
-      // validation might not to be desired to run on every data change
-      // since there might be expensive validation rules.
       trigger();
-
       prevDataRef.current = data;
     },
     [reset, trigger],
@@ -186,35 +193,34 @@ function DetailPageData<TModel extends FieldValues>({
   /*                                Model Methods                               */
   /* -------------------------------------------------------------------------- */
 
-  const save = useCallback(
-    async (mode: SaveMode = 'save') => {
-      resetState();
-      // get data thru submission
-      const model = await getFormModel();
+  const save = async (mode: SaveMode = 'save') => {
+    resetState();
+    // get data thru submission
+    const model = await getFormModel();
 
-      const variables: SavePayload<TModel> = {
-        reason,
-        model,
-        data: prevDataRef.current,
-        mode,
-      };
+    const variables: SavePayload<TModel> = {
+      reason,
+      model,
+      data: prevDataRef.current,
+      mode,
+    };
 
-      let result = onSave?.(variables);
+    let result = onSave?.(variables);
 
-      if (isPromise(result)) {
-        result = await runAsync(result);
-      }
+    if (isPromise(result)) {
+      result = await runAsync(result);
+    }
 
-      if (result) {
-        updateForm(result);
-      }
+    if (result) {
+      updateForm(result);
+    }
 
-      if (showSuccessMessages && !autoSave) {
-        toast.success(t('savedsuccesfully'));
-      }
-    },
-    [getFormModel, reason, showSuccessMessages, autoSave, onSave, t, updateForm],
-  );
+    if (showSuccessMessages && !autoSave) {
+      toast.success(t('savedsuccesfully'));
+    }
+
+    onAfterSave?.(result as Awaited<DataResult<TModel>>, variables);
+  };
 
   const handleSave = async () => {
     await save();
@@ -257,6 +263,8 @@ function DetailPageData<TModel extends FieldValues>({
     if (showSuccessMessages) {
       toast.success(t('deletedsuccesfully'));
     }
+
+    onAfterDelete?.(variables);
   };
 
   const handleDiscard = () => {

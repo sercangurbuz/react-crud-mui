@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { ListPageProps } from '../pages/ListPage';
-import { ListPageModel } from '../pages/ListPageData';
+import { ListPageMeta, ListPageModel } from '../pages/ListPageData';
 
 /* ---------------------------- ListPage Context ---------------------------- */
 export type ListPageContextType<TModel extends FieldValues, TFilter extends FieldValues> = {
@@ -20,6 +20,10 @@ export type ListPageContextType<TModel extends FieldValues, TFilter extends Fiel
    * Current filter object
    */
   currentFilter?: TFilter;
+  /**
+   * Current meta object
+   */
+  meta: ListPageMeta;
   /**
    * Used for built in detailpage opener
    */

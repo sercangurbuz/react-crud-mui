@@ -1,13 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import {
-  ColumnDef,
-  getFilteredRowModel,
-  getSortedRowModel,
-  TableOptions,
-  TableState,
-} from '@tanstack/react-table';
+import { ColumnDef, TableOptions } from '@tanstack/react-table';
 
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
@@ -22,8 +16,7 @@ import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageC
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
 import ListPageShortCuts from '../components/ListPageShortCuts';
 import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
-import { DefaultTableStateSetters } from '../hooks/useListPageTableProps';
-import { ListPageFilter, ListPageModel, PagingListModel } from './ListPageData';
+import { ListPageFilter, ListPageMeta, ListPageModel, PagingListModel } from './ListPageData';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -36,8 +29,10 @@ export type ListPageWrapperLayoutProps = {
   commandsContent: ReactNode;
 };
 
-export interface ListPageContentProps<TModel extends FieldValues, TFilter extends FieldValues>
-  extends Omit<PageProps, 'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader'>,
+export interface ListPageContentProps<
+  TModel extends FieldValues,
+  TFilter extends FieldValues = FieldValues,
+> extends Omit<PageProps, 'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader'>,
     Pick<ListPageCommandsProps, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
   /**
    * Alerts
@@ -115,7 +110,11 @@ export interface ListPageContentProps<TModel extends FieldValues, TFilter extend
   /**
    * Current filter
    */
-  currentFilter?: ListPageFilter<TFilter>;
+  formFilter?: TFilter;
+  /**
+   * Object that includes extra filters
+   */
+  meta: ListPageMeta;
   /**
    * Datasource
    */
@@ -139,13 +138,13 @@ export interface ListPageContentProps<TModel extends FieldValues, TFilter extend
   onWrapperLayout?: (props: ListPageWrapperLayoutProps) => React.ReactNode;
 }
 
-function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues>({
+function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
   activeSegmentIndex,
   alerts,
   autoSearch = true,
   columns,
   createCommandLabel,
-  currentFilter,
+  formFilter: currentFilter,
   data,
   disabled,
   disableShortCuts,
@@ -166,6 +165,7 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   onHeader,
   onSearch,
   onTabChanged,
+  meta,
   tableProps,
   onWrapperLayout,
   showHeader = true,
@@ -366,8 +366,10 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
       enableCreateItem,
       enableExport,
       enableSearch,
+      meta,
     }),
     [
+      meta,
       currentFilter,
       data,
       enableClear,

@@ -12,12 +12,15 @@ import {
 } from '@tanstack/react-table';
 
 import useSettings from '../../settings-provider/hooks/useSettings';
+import { TableProps } from '../../table/Table';
 import { INITIAL_PAGEINDEX } from '../constants';
 import { ListPageFilter } from '../pages/ListPageData';
 
-export type DefaultTableState = Partial<
-  Pick<TableState, 'pagination' | 'sorting' | 'columnFilters' | 'rowSelection'>
+export type DefaultTableState = Pick<
+  TableState,
+  'pagination' | 'sorting' | 'columnFilters' | 'rowSelection'
 >;
+
 export type DefaultTableStateSetters = Partial<
   Pick<
     TableOptions<unknown>,
@@ -66,13 +69,15 @@ function useListPageTableProps<TFilter extends FieldValues, TModel extends Field
       ...paginationFromFilter,
     };
   });
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>(initialState?.sorting ?? []);
   const [columnFilters, setColumnFilter] = useState<ColumnFiltersState>([]);
 
-  const props = useMemo<Partial<TableOptions<TModel>>>(
+  const props = useMemo<Partial<TableProps<TModel>>>(
     () => ({
       state: { pagination, sorting, columnFilters, rowSelection },
+      initialState,
       enableSorting: true,
+      enablePaging: true,
       manualPagination: true,
       enableRowSelection: true,
       manualSorting: true,

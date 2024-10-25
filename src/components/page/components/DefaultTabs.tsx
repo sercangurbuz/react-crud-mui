@@ -5,7 +5,7 @@ import { styled, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
-export type TabPane = Omit<TabProps, 'children'> & { children?: ReactNode };
+export type TabPane = Omit<TabProps, 'children' | 'key'> & { children?: ReactNode; key: string };
 
 export interface DefaultTabsProps extends TabsProps {
   tabs: TabPane[];

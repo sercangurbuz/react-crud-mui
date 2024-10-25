@@ -21,7 +21,11 @@ function PhoneInput({ onChange, ...props }: PhoneInputProps) {
     <PatternFormat
       mask="_"
       allowEmptyFormatting
-      onValueChange={({ value }) => onChange?.(value)}
+      onValueChange={({ value }, e) => {
+        if (e.source === 'event') {
+          onChange?.(value);
+        }
+      }}
       customInput={TextField}
       getInputRef={props?.getRef}
       format={DEFAULT_PHONE_FORMAT}

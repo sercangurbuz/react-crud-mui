@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { Key, ReactNode } from 'react';
 
 import { Step, StepLabel, StepLabelProps, Stepper, StepperProps, StepProps } from '@mui/material';
 

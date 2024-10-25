@@ -2,13 +2,15 @@ import { useMemo, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import useListPageTableProps from '../hooks/useListPageTableProps';
-import { ListPageFilter } from './ListPageData';
+import { ListPageFilter, ListPageMeta } from './ListPageData';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
 
-export interface ListPageProps<TModel extends FieldValues, TFilter extends FieldValues>
-  extends Omit<ListPageFormProps<TModel, TFilter>, 'currentFilter'> {}
+export interface ListPageProps<
+  TModel extends FieldValues,
+  TFilter extends FieldValues = FieldValues,
+> extends Omit<ListPageFormProps<TModel, TFilter>, 'currentFilter' | 'meta'> {}
 
-function ListPage<TModel extends FieldValues, TFilter extends FieldValues>(
+function ListPage<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>(
   props: ListPageProps<TModel, TFilter>,
 ) {
   const { defaultSegmentIndex = 0, defaultFilter, defaultValues, tableProps: exTableProps } = props;
@@ -17,40 +19,40 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues>(
   /* -------------------------------------------------------------------------- */
 
   // keep segment indicators here to manage in context
-  const [activeSegmentIndex, setActiveSegmentIndex] = useState<number>(defaultSegmentIndex);
-  /**
-   * Form filter values
-   */
-  const [formFilter, setFormFilter] = useState<ListPageFilter<TFilter>>(
-    (defaultFilter ?? defaultValues) as ListPageFilter<TFilter>,
+  const [activeSegmentIndex, setActiveSegmentIndex] = useState<number>(
+    defaultFilter?.activeSegmentIndex ?? defaultSegmentIndex,
   );
 
+  //Form filter values
+  const [formFilter, setFormFilter] = useState<TFilter>(
+    (defaultFilter ?? defaultValues) as TFilter,
+  );
+
+  // controlled table props
   const tableProps = useListPageTableProps<TFilter, TModel>({
-    // custom states given by user
-    initialState: exTableProps?.state ?? exTableProps?.initialState,
-    // filter on which states gets extracted from
+    initialState: exTableProps?.initialState,
+    // filter which states gets extracted from
     defaultFilter,
   });
 
-  /**
-   * Current filter object
-   */
-  const filter = useMemo(() => {
+  // meta options
+  const meta = useMemo(() => {
     return {
-      ...formFilter,
       sorting: tableProps.state?.sorting,
       pagination: tableProps.state?.pagination,
-    } as ListPageFilter<TFilter>;
-  }, [tableProps.state?.sorting, tableProps.state?.pagination, formFilter]);
+      activeSegmentIndex,
+    } as ListPageMeta;
+  }, [tableProps.state?.sorting, tableProps.state?.pagination, activeSegmentIndex]);
 
   return (
     <ListPageForm
       {...props}
-      currentFilter={filter}
+      formFilter={formFilter}
+      meta={meta}
       tableProps={tableProps}
+      activeSegmentIndex={activeSegmentIndex}
       onFormFilterChange={setFormFilter}
       onTabChanged={setActiveSegmentIndex}
-      activeSegmentIndex={activeSegmentIndex}
     />
   );
 }
