@@ -301,3 +301,10 @@ export const CustomRow: TableStory = {
     },
   },
 };
+
+export const Footer: TableStory = {
+  args: {
+    size: 'small',
+    footerContent: 'This is footer content',
+  },
+};

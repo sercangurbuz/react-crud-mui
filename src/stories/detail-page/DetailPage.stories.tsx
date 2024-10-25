@@ -414,6 +414,7 @@ export const InRouter: DetailPageRouteStory = {
     const router = createMemoryRouter(
       createRoutesFromElements(
         <Route
+          path=""
           element={
             <Grid2 container spacing={2}>
               <Grid2 size={{ md: 4, xs: 12 }}>
@@ -487,5 +488,21 @@ export const RoutedTabs: DetailPageRouteStory = {
         ),
       },
     ],
+  },
+};
+
+export const InRouterModal: DetailPageRouteStory = {
+  ...InRouter,
+  render(args) {
+    const { id } = useDetailPageRouteParams();
+
+    const { data, isFetching } = useAppQuery<UserSchema>({
+      queryKey: ['user', { id }],
+      url: 'https://jsonplaceholder.typicode.com/users/' + id,
+      variables: { id },
+      enabled: id !== 'new',
+    });
+
+    return <DetailPage.RouteModal {...args} data={data} loading={isFetching} />;
   },
 };

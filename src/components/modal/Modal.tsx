@@ -7,7 +7,7 @@ import { StyledScrollbar, Wrapper } from './styles';
 // ===========================================================================
 export interface ModalProps extends BoxProps {
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
 }
 // ===========================================================================
 

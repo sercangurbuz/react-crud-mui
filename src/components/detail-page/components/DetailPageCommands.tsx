@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import { Close, Save, Undo } from '@mui/icons-material';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
+import { Button } from '@mui/material';
 
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
@@ -214,7 +215,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
       return null;
     }
     return (
-      <LoadingButton
+      <Button
         key="discard"
         disabled={disabled.discardchanges}
         onClick={onDiscardChanges}
@@ -231,11 +232,10 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     }
 
     return (
-      <LoadingButton
+      <Button
         key="delete"
         disabled={disabled.delete}
         color="error"
-        loading={loading}
         startIcon={<Delete />}
         title={`${t('deletetitle')}\n(${SHORTCUT_DELETE.toUpperCase()})`}
         children={t('delete')}
@@ -251,7 +251,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     }
 
     return (
-      <LoadingButton
+      <Button
         key="close"
         variant="outlined"
         color="secondary"

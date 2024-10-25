@@ -86,15 +86,12 @@ function DetailPageRoute<TModel extends FieldValues>({
     onReasonChange?.(reason);
   };
 
-  const handleClose = useCallback(
-    (reason?: CloseReason) => {
-      navigate(enableNestedSegments ? '../../' : '../', {
-        state: { noBlock: reason === 'action' },
-        relative: 'path',
-      });
-    },
-    [enableNestedSegments, navigate],
-  );
+  const handleClose = (reason?: CloseReason) => {
+    navigate(enableNestedSegments ? '../../' : '../', {
+      state: { noBlock: reason === 'action' },
+      relative: 'path',
+    });
+  };
 
   const handleAfterSave = (data: Awaited<DataResult<TModel>>) => {
     if (enableRedirectToCreated && reason !== 'fetch' && data?.id) {

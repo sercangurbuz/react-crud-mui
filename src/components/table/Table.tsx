@@ -15,6 +15,7 @@ import {
   SxProps,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TablePagination,
   TableRow,
@@ -23,17 +24,18 @@ import {
   useTheme,
 } from '@mui/material';
 import {
-  Cell,
-  ColumnDef,
-  CoreColumn,
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
-  Row,
-  TableOptions,
   useReactTable,
-  VisibilityState,
+  type Cell,
+  type ColumnDef,
+  type CoreColumn,
+  type Row,
   type RowData,
+  type Table,
+  type TableOptions,
+  type VisibilityState,
 } from '@tanstack/react-table';
 
 import { FlexBox, FlexRowAlign } from '../flexbox';
@@ -98,13 +100,14 @@ export interface TableProps<TData extends FieldValues>
   enableRowClickSelect?: boolean;
   showNewRowButton?: boolean;
   newRowButtonText?: string;
-  onNewRow?: (row?: Row<TData>) => void;
+  onNewRow?: () => void;
   loading?: boolean;
   enablePaging?: boolean;
   onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
   enableNestedComponent?: boolean | ((row: Row<TData>) => boolean | undefined);
   onRenderNestedComponent?: (props: RenderSubComponentProps<TData>) => React.ReactNode;
   onRowProps?: (row: Row<TData>) => React.ComponentProps<typeof BodyTableRow> | undefined;
+  footerContent?: ReactNode | ((table: Table<TData>) => ReactNode);
 }
 
 function isStandartColumn(colId: string) {
@@ -121,6 +124,7 @@ function Table<TData extends FieldValues>({
   enablePaging,
   enableRowClickSelect,
   enableNestedComponent,
+  footerContent,
   loading,
   newRowButtonText,
   onNewRow,
@@ -359,8 +363,8 @@ function Table<TData extends FieldValues>({
     }
   };
 
-  const handleNewRow = (row?: Row<TData>) => () => {
-    onNewRow?.(row);
+  const handleNewRow = () => () => {
+    onNewRow?.();
   };
 
   /* -------------------------------------------------------------------------- */
@@ -510,7 +514,7 @@ function Table<TData extends FieldValues>({
     );
   };
 
-  const renderNewRow = (row?: Row<TData>) => {
+  const renderNewRow = () => {
     const cols = table?.getVisibleFlatColumns();
     return (
       <TableRow key="new-row">
@@ -521,7 +525,7 @@ function Table<TData extends FieldValues>({
           }}
           colSpan={cols?.length}
         >
-          <NewRowButton disableRipple onClick={handleNewRow(row)}>
+          <NewRowButton disableRipple onClick={handleNewRow()}>
             <Stack flexDirection="row" alignItems="center" gap={0.5} p={0.4}>
               <Add sx={{ color: 'text.secondary', fontSize: '18px' }} />
               <Tiny color="text.secondary" fontWeight={600}>
@@ -631,6 +635,23 @@ function Table<TData extends FieldValues>({
     );
   };
 
+  const renderFooter = () => {
+    if (!footerContent) {
+      return null;
+    }
+    const cols = table?.getVisibleFlatColumns();
+    const node = typeof footerContent === 'function' ? footerContent(table) : footerContent;
+    return (
+      <TableFooter>
+        <TableRow>
+          <BodyTableCell size={size} colSpan={cols?.length}>
+            {node}
+          </BodyTableCell>
+        </TableRow>
+      </TableFooter>
+    );
+  };
+
   return (
     <>
       <Scrollbar autoHide={false} forceVisible {...scrollProps}>
@@ -645,6 +666,7 @@ function Table<TData extends FieldValues>({
         >
           {renderHeader()}
           {renderBody()}
+          {renderFooter()}
         </MuiTable>
         {renderProgress()}
       </Scrollbar>

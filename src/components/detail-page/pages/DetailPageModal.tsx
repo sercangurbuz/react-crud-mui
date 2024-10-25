@@ -49,7 +49,7 @@ function DetailPageModal<TModel extends FieldValues>({
         enableClose
         enableDelete
         enableDiscardChanges={false}
-        commandsPosition="footer"
+        commandsPosition="bottom-right"
         onLayout={(props) => (
           <>
             <FormDirtyTracker onDirtyStateChange={setFormDirtyChange} />

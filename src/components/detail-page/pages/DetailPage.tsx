@@ -8,6 +8,7 @@ import DetailPageDrawer from './DetailPageDrawer';
 import DetailPageForm, { DetailPageFormProps } from './DetailPageForm';
 import DetailPageModal from './DetailPageModal';
 import DetailPageRoute from './DetailPageRoute';
+import DetailPageRouteModal from './DetailPageRouteModal';
 
 export interface DetailPageProps<TModel extends FieldValues> extends DetailPageFormProps<TModel> {
   defaultReason?: NeedDataReason;
@@ -52,6 +53,7 @@ export default DetailPage;
 
 DetailPage.Header = DetailPageHeader;
 DetailPage.Modal = DetailPageModal;
+DetailPage.RouteModal = DetailPageRouteModal;
 DetailPage.Drawer = DetailPageDrawer;
 DetailPage.Route = DetailPageRoute;
 DetailPage.Layout = DetailPageDefaultLayout;
