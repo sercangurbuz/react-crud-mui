@@ -16,7 +16,7 @@ import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageC
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
 import ListPageShortCuts from '../components/ListPageShortCuts';
 import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
-import { ListPageFilter, ListPageMeta, ListPageModel, PagingListModel } from './ListPageData';
+import { ListPageMeta, ListPageModel, PagingListModel } from './ListPageData';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */

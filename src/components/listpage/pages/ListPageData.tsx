@@ -4,6 +4,7 @@ import { FieldValues, useFormContext, useFormState } from 'react-hook-form';
 import { PaginationState } from '@tanstack/react-table';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
+import { useUpdateEffect } from '../../hooks';
 import useSettings from '../../settings-provider/hooks/useSettings';
 import { INITIAL_PAGEINDEX } from '../constants';
 import { DefaultTableState } from '../hooks/useListPageTableProps';
@@ -74,6 +75,7 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues = 
   /* -------------------------------------------------------------------------- */
 
   const { pageSize: defaultPageSize } = useSettings();
+  const { isValid } = useFormState();
 
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
@@ -102,7 +104,7 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues = 
   /**
    * Get current form filter and update filter state
    */
-  const initSearch = useCallback(async () => {
+  const initSearch = async () => {
     try {
       // get current filter from form
       const filter = await getFormModel();
@@ -114,13 +116,15 @@ function ListPageData<TModel extends FieldValues, TFilter extends FieldValues = 
         pageIndex: INITIAL_PAGEINDEX,
       }));
     } catch {}
-  }, [getFormModel, onFormFilterChange, onPaginationChange]);
+  };
 
   /* -------------------------------------------------------------------------- */
   /*                                Data Effects                                */
   /* -------------------------------------------------------------------------- */
 
-  useEffect(() => {
+  useUpdateEffect(() => {
+    console.log('form.formState.isValid', isValid);
+
     onNeedData?.(formFilter!, meta);
   }, [formFilter, onNeedData, meta]);
 

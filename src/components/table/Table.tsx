@@ -11,6 +11,7 @@ import {
   Table as MuiTable,
   TableProps as MuiTableProps,
   Radio,
+  Skeleton,
   Stack,
   SxProps,
   TableBody,
@@ -89,25 +90,26 @@ export interface TableProps<TData extends FieldValues>
   extends Omit<TableOptions<TData>, 'getCoreRowModel' | 'columns'>,
     Partial<Pick<EmptyTextProps, 'emptyText' | 'showEmptyImage'>>,
     MuiTableProps {
-  rowIdField?: Path<TData>;
-  descriptionField?: Path<TData> | ((row: Row<TData>) => ReactNode);
-  columns: TableColumn<TData>[];
-  bordered?: boolean;
   autoFocus?: boolean;
-  onRowClick?: (row: Row<TData>) => void;
-  onRowEnterPress?: (row: Row<TData>) => void;
-  scrollProps?: Partial<ScrollbarProps>;
+  bordered?: boolean;
+  columns: TableColumn<TData>[];
+  descriptionField?: Path<TData> | ((row: Row<TData>) => ReactNode);
+  enableNestedComponent?: boolean | ((row: Row<TData>) => boolean | undefined);
+  enablePaging?: boolean;
+  enableSkeleton?: boolean;
   enableRowClickSelect?: boolean;
-  showNewRowButton?: boolean;
+  footerContent?: ReactNode | ((table: Table<TData>) => ReactNode);
+  loading?: boolean;
   newRowButtonText?: string;
   onNewRow?: () => void;
-  loading?: boolean;
-  enablePaging?: boolean;
-  onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
-  enableNestedComponent?: boolean | ((row: Row<TData>) => boolean | undefined);
   onRenderNestedComponent?: (props: RenderSubComponentProps<TData>) => React.ReactNode;
+  onRowClick?: (row: Row<TData>) => void;
+  onRowEnterPress?: (row: Row<TData>) => void;
   onRowProps?: (row: Row<TData>) => React.ComponentProps<typeof BodyTableRow> | undefined;
-  footerContent?: ReactNode | ((table: Table<TData>) => ReactNode);
+  onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
+  rowIdField?: Path<TData>;
+  scrollProps?: Partial<ScrollbarProps>;
+  showNewRowButton?: boolean;
 }
 
 function isStandartColumn(colId: string) {
@@ -124,6 +126,7 @@ function Table<TData extends FieldValues>({
   enablePaging,
   enableRowClickSelect,
   enableNestedComponent,
+  enableSkeleton = true,
   footerContent,
   loading,
   newRowButtonText,
@@ -309,7 +312,7 @@ function Table<TData extends FieldValues>({
   }, [autoFocus]);
 
   useEffect(() => {
-    if (data) {
+    if (data?.length) {
       firstLoadRef.current = false;
     }
   }, [data]);
@@ -486,6 +489,10 @@ function Table<TData extends FieldValues>({
   };
 
   const renderEmptyImage = () => {
+    if (data?.length || loading) {
+      return null;
+    }
+
     const cols = table.getVisibleFlatColumns();
     return (
       <TableRow>
@@ -515,6 +522,10 @@ function Table<TData extends FieldValues>({
   };
 
   const renderNewRow = () => {
+    if (!showNewRowButton || data?.length || loading) {
+      return null;
+    }
+
     const cols = table?.getVisibleFlatColumns();
     return (
       <TableRow key="new-row">
@@ -582,8 +593,9 @@ function Table<TData extends FieldValues>({
             </Fragment>
           );
         })}
-        {!data?.length && renderEmptyImage()}
-        {showNewRowButton && renderNewRow()}
+        {renderSkeleton()}
+        {renderEmptyImage()}
+        {renderNewRow()}
       </TableBody>
     );
   };
@@ -610,7 +622,7 @@ function Table<TData extends FieldValues>({
 
   const renderProgress = () => {
     return (
-      <Backdrop open={!!loading} sx={{ position: 'absolute', zIndex: 2 }}>
+      <Backdrop open={!!loading && !firstLoadRef.current} sx={{ position: 'absolute', zIndex: 2 }}>
         <CircularProgress />
       </Backdrop>
     );
@@ -626,6 +638,7 @@ function Table<TData extends FieldValues>({
           sx={{
             py: '1rem',
             paddingLeft: 7,
+            backgroundColor: 'background.default',
           }}
           colSpan={cells?.length}
         >
@@ -650,6 +663,24 @@ function Table<TData extends FieldValues>({
         </TableRow>
       </TableFooter>
     );
+  };
+
+  const renderSkeleton = (rowsNum: number = 10) => {
+    if (!enableSkeleton || !loading || !firstLoadRef.current) {
+      return null;
+    }
+
+    const cols = table.getVisibleFlatColumns();
+
+    return [...Array(rowsNum)].map((_row, index) => (
+      <TableRow key={index}>
+        {cols.map((_, ind) => (
+          <BodyTableCell scope="row" key={`skeloton-${ind}`}>
+            <Skeleton animation="wave" variant="text" />
+          </BodyTableCell>
+        ))}
+      </TableRow>
+    ));
   };
 
   return (

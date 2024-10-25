@@ -73,6 +73,13 @@ export const Loading: TableStory = {
   },
 };
 
+export const WithSkeleton: TableStory = {
+  args: {
+    loading: true,
+    data: undefined,
+  },
+};
+
 export const Empty: TableStory = {
   args: {
     data: [],
@@ -266,13 +273,15 @@ export const WithNestedTable: TableStory = {
       row.original.name?.startsWith('L') || row.original.name?.startsWith('C'),
     onRenderNestedComponent() {
       return (
-        <Table
-          columns={meta.args!.columns!}
-          data={meta.args!.data!}
-          bordered
-          size="small"
-          scrollProps={{ style: { maxHeight: 300 } }}
-        />
+        <Card>
+          <Table
+            columns={meta.args!.columns!}
+            data={meta.args!.data!}
+            bordered
+            size="small"
+            scrollProps={{ style: { maxHeight: 300 } }}
+          />
+        </Card>
       );
     },
   },
