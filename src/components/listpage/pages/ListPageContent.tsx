@@ -16,7 +16,7 @@ import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageC
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
 import ListPageShortCuts from '../components/ListPageShortCuts';
 import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
-import { ListPageMeta, ListPageModel, PagingListModel } from './ListPageData';
+import { ListPageFilter, ListPageModel, PagingListModel } from './ListPageFilter';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -32,7 +32,10 @@ export type ListPageWrapperLayoutProps = {
 export interface ListPageContentProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-> extends Omit<PageProps, 'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader'>,
+> extends Omit<
+      PageProps,
+      'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange'
+    >,
     Pick<ListPageCommandsProps, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
   /**
    * Alerts
@@ -45,7 +48,7 @@ export interface ListPageContentProps<
   /**
    * Content component
    */
-  filter?: () => ReactNode;
+  filterContent?: ReactNode;
   /**
    * Table states
    */
@@ -108,14 +111,6 @@ export interface ListPageContentProps<
    */
   hotkeyScopes?: string;
   /**
-   * Current filter
-   */
-  formFilter?: TFilter;
-  /**
-   * Object that includes extra filters
-   */
-  meta: ListPageMeta;
-  /**
    * Datasource
    */
   data?: ListPageModel<TModel>;
@@ -144,7 +139,6 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   autoSearch = true,
   columns,
   createCommandLabel,
-  formFilter: currentFilter,
   data,
   disabled,
   disableShortCuts,
@@ -152,7 +146,7 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   enableCreateItem = true,
   enableExport,
   enableSearch,
-  filter,
+  filterContent,
   hotkeyScopes,
   list: ListComponent,
   loading,
@@ -165,7 +159,6 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   onHeader,
   onSearch,
   onTabChanged,
-  meta,
   tableProps,
   onWrapperLayout,
   showHeader = true,
@@ -305,7 +298,6 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
    * Render all components
    */
   const renderContentLayout = () => {
-    const filterContent = filter?.();
     const tableContent = renderTable();
     const autoSearchContent = renderAutoSearch();
 
@@ -361,25 +353,12 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
       data,
       search: onSearch,
       clear: onClear,
-      currentFilter,
       enableClear,
       enableCreateItem,
       enableExport,
       enableSearch,
-      meta,
     }),
-    [
-      meta,
-      currentFilter,
-      data,
-      enableClear,
-      enableCreateItem,
-      enableExport,
-      enableSearch,
-      loading,
-      onClear,
-      onSearch,
-    ],
+    [data, enableClear, enableCreateItem, enableExport, enableSearch, loading, onClear, onSearch],
   );
 
   /* --------------------------------- Render --------------------------------- */

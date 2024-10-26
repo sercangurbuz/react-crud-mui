@@ -14,6 +14,7 @@ import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
 import useDetailPageRouteParams from '../../components/detail-page/hooks/useDetailPageRouteParams';
+import { FlexBetween, FlexBox } from '../../components/flexbox';
 import Field from '../../components/form/Field';
 import { useZodRefine } from '../../components/hooks';
 import Add from '../../components/icons/Add';
@@ -261,7 +262,14 @@ export const ClassicModal: DetailPageModalStory = {
   args: {
     ...OpenInModal.args,
     commandsPosition: 'bottom-right',
-    footerContent: <Field.Switch name="isActive" label="Is Active ?" />,
+    onCommands({ content }) {
+      return (
+        <FlexBetween width="100%">
+          <Field.Switch name="isActive" label="Is Active ?" />
+          <FlexBox gap={1}>{content}</FlexBox>
+        </FlexBetween>
+      );
+    },
   },
   render: OpenInModal.render,
 };

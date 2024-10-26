@@ -1,7 +1,11 @@
 import { useCallback, useMemo } from 'react';
 
 import { ListPageProps } from '../../../components/listpage/pages/ListPage';
-import { ListPageMeta, PagingListModel } from '../../../components/listpage/pages/ListPageData';
+import {
+  ListPageFilter,
+  ListPageMeta,
+  PagingListModel,
+} from '../../../components/listpage/pages/ListPageFilter';
 import { useAppLazyQuery } from '../../../components/query';
 import { UserSchema } from '../../utils/schema';
 
@@ -18,14 +22,14 @@ function useListPageData() {
   );
 
   const handleNeedData = useCallback(
-    ({ name, username, email, website, phone }: UserSchema, meta: ListPageMeta) =>
+    ({ name, username, email, website, phone, meta }: ListPageFilter<UserSchema>) =>
       fetch({
         name_like: name && `^${name}`,
         username_like: username && `^${username}`,
         email_like: email && `^${email}`,
         website_like: website && `^${website}`,
         phone_like: phone && `^${phone}`,
-        _page: meta.pagination?.pageIndex + 1,
+        _page: meta.pagination.pageIndex + 1,
         _limit: meta.pagination?.pageSize,
         _sort: meta.sorting.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
       }),

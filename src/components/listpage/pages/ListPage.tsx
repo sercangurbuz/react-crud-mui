@@ -1,60 +1,67 @@
-import { useMemo, useState } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { useState } from 'react';
+import { DeepPartial, FieldValues } from 'react-hook-form';
 
-import useListPageTableProps from '../hooks/useListPageTableProps';
-import { ListPageFilter, ListPageMeta } from './ListPageData';
+import { produce } from 'immer';
+import merge from 'lodash.merge';
+
+import useSettings from '../../settings-provider/hooks/useSettings';
+import { INITIAL_PAGEINDEX } from '../constants';
+import { ListPageFilter, ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
 
 export interface ListPageProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-> extends Omit<ListPageFormProps<TModel, TFilter>, 'currentFilter' | 'meta'> {}
+> extends Omit<ListPageFormProps<TModel, TFilter>, 'filter' | 'onChange'> {
+  /**
+   * Data fetcher function with given filter
+   */
+  onNeedData?: (filter: ListPageFilter<TFilter> | undefined) => void;
+}
 
 function ListPage<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>(
   props: ListPageProps<TModel, TFilter>,
 ) {
-  const { defaultSegmentIndex = 0, defaultFilter, defaultValues, tableProps: exTableProps } = props;
+  const { defaultFilter, onNeedData, tableProps } = props;
+  const { pageSize: defaultPageSize } = useSettings();
+
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  // keep segment indicators here to manage in context
-  const [activeSegmentIndex, setActiveSegmentIndex] = useState<number>(
-    defaultFilter?.activeSegmentIndex ?? defaultSegmentIndex,
-  );
-
-  //Form filter values
-  const [formFilter, setFormFilter] = useState<TFilter>(
-    (defaultFilter ?? defaultValues) as TFilter,
-  );
-
-  // controlled table props
-  const tableProps = useListPageTableProps<TFilter, TModel>({
-    initialState: exTableProps?.initialState,
-    // filter which states gets extracted from
-    defaultFilter,
+  const [meta, setMeta] = useState<ListPageMeta>(() => {
+    return {
+      pagination: {
+        pageIndex: INITIAL_PAGEINDEX,
+        pageSize: defaultPageSize,
+        ...tableProps?.initialState?.pagination,
+        ...defaultFilter?.meta?.pagination,
+      },
+      sorting: defaultFilter?.meta?.sorting ?? tableProps?.initialState?.sorting ?? [],
+      columnFilters:
+        defaultFilter?.meta?.columnFilters ?? tableProps?.initialState?.columnFilters ?? [],
+    };
   });
 
-  // meta options
-  const meta = useMemo(() => {
-    return {
-      sorting: tableProps.state?.sorting,
-      pagination: tableProps.state?.pagination,
-      activeSegmentIndex,
-    } as ListPageMeta;
-  }, [tableProps.state?.sorting, tableProps.state?.pagination, activeSegmentIndex]);
+  /* -------------------------------------------------------------------------- */
+  /*                                Data Effects                                */
+  /* -------------------------------------------------------------------------- */
 
-  return (
-    <ListPageForm
-      {...props}
-      formFilter={formFilter}
-      meta={meta}
-      tableProps={tableProps}
-      activeSegmentIndex={activeSegmentIndex}
-      onFormFilterChange={setFormFilter}
-      onTabChanged={setActiveSegmentIndex}
-    />
-  );
+  const handleChange = (filter: TFilter, updatedMeta?: DeepPartial<ListPageMeta>) => {
+    let _meta = meta;
+
+    if (updatedMeta) {
+      _meta = produce(meta, (draft) => merge(draft, updatedMeta));
+      setMeta(_meta);
+    }
+
+    onNeedData?.({
+      ...filter,
+      meta: _meta,
+    });
+  };
+
+  return <ListPageForm {...props} meta={meta} onChange={handleChange} />;
 }
 
 export default ListPage;

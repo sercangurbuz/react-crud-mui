@@ -25,18 +25,14 @@ function DetailPage<TModel extends FieldValues>({
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  // controlled reason state
+  // controlled states
   const [reason, setReason] = useState<NeedDataReason>(defaultReason);
-  // keep segment indicators here to manage in context
   const [activeSegmentIndex, setActiveSegmentIndex] = useState<number>(defaultSegmentIndex);
 
-  const handleReasonChange = useCallback(
-    (reason: NeedDataReason) => {
-      setReason(reason);
-      onReasonChange?.(reason);
-    },
-    [onReasonChange],
-  );
+  const handleReasonChange = (reason: NeedDataReason) => {
+    setReason(reason);
+    onReasonChange?.(reason);
+  };
 
   return (
     <DetailPageForm<TModel>

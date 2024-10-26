@@ -121,16 +121,8 @@ function Page({
     return tabContent?.children;
   };
 
-  const renderCommands = (extraContent?: ReactNode) => {
+  const renderCommands = () => {
     let justifyContent: BoxProps['justifyContent'] = 'flex-end';
-    let content = extraContent ? (
-      <>
-        {extraContent}
-        <FlexBox gap={1}>{commandsContent}</FlexBox>
-      </>
-    ) : (
-      commandsContent
-    );
 
     switch (commandsPosition) {
       case 'bottom':
@@ -139,17 +131,17 @@ function Page({
         break;
       case 'bottom-left':
       case 'top-left':
-        justifyContent = extraContent ? 'space-between' : 'flex-start';
+        justifyContent = 'flex-start';
         break;
       case 'bottom-right':
       case 'top-right':
-        justifyContent = extraContent ? 'space-between' : 'flex-end';
+        justifyContent = 'flex-end';
         break;
     }
 
     return (
-      <FlexBox alignItems="center" justifyContent={justifyContent} gap={1}>
-        {content}
+      <FlexBox justifyContent={justifyContent} gap={1}>
+        {commandsContent}
       </FlexBox>
     );
   };
@@ -174,13 +166,14 @@ function Page({
   };
 
   const renderFooter = () => {
-    const commands = commandsVertPos === 'bottom' ? renderCommands(footerContent) : null;
+    const commands = commandsVertPos === 'bottom' ? renderCommands() : null;
 
-    if (commands) {
-      return <Box p={PagePadding[size]}>{commands}</Box>;
-    }
-
-    return <>{footerContent ? <Box p={PagePadding[size]}>{footerContent}</Box> : null}</>;
+    return (
+      <>
+        {commands ? <Box p={PagePadding[size]}>{commands}</Box> : null}
+        {footerContent ? <Box p={PagePadding[size]}>{footerContent}</Box> : null}
+      </>
+    );
   };
 
   const renderProgress = () => {

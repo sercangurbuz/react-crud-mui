@@ -13,13 +13,9 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
   title: 'Components/ListPage',
   args: {
     header: 'User list',
-    data: {
-      data: mockUsers as unknown as UserSchema[],
-      dataCount: 10,
-    },
     helperText: 'Type in user settings',
     icon: <Search sx={{ color: 'primary.main' }} />,
-    filter: () => <FilterContent />,
+    filterContent: <FilterContent />,
     createCommandLabel: 'New User',
     columns: [
       {
@@ -99,7 +95,7 @@ export const WithDefaultTableFilters: ListPageStory = {
 
 export const WithNoFilter: ListPageStory = {
   args: {
-    filter: undefined,
+    filterContent: undefined,
   },
 };
 

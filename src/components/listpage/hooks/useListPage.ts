@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { ListPageProps } from '../pages/ListPage';
-import { ListPageMeta, ListPageModel } from '../pages/ListPageData';
+import { ListPageModel } from '../pages/ListPageFilter';
 
 /* ---------------------------- ListPage Context ---------------------------- */
 export type ListPageContextType<TModel extends FieldValues, TFilter extends FieldValues> = {
@@ -16,14 +16,6 @@ export type ListPageContextType<TModel extends FieldValues, TFilter extends Fiel
    * Trigger search with defined filter criterias
    */
   search: () => void;
-  /**
-   * Current filter object
-   */
-  currentFilter?: TFilter;
-  /**
-   * Current meta object
-   */
-  meta: ListPageMeta;
   /**
    * Used for built in detailpage opener
    */
