@@ -6,11 +6,11 @@ import { Button, ButtonProps } from '@mui/material';
 
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
+import Clear from '../../icons/Clear';
 import Delete from '../../icons/Delete';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
 import useSettings from '../../settings-provider/hooks/useSettings';
 import useListPageCommandStates from '../hooks/useListPageCommandStates';
-import Clear from '../../icons/Clear';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -114,6 +114,7 @@ function ListPageCommands(props: ListPageCommandsProps) {
         startIcon={<Search />}
         title={`${t('listpage.listbuttons.searchtitle')}\n(${SHORTCUT_SEARCH.toUpperCase()})`}
         onClick={onSearch}
+        color="success"
         disabled={disabled.search}
         loading={loading}
         children={t('listpage.listbuttons.search')}

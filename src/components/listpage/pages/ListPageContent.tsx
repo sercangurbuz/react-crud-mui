@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import { ColumnDef, TableOptions } from '@tanstack/react-table';
+import { ColumnDef } from '@tanstack/react-table';
 
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
@@ -16,7 +16,7 @@ import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageC
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
 import ListPageShortCuts from '../components/ListPageShortCuts';
 import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
-import { ListPageFilter, ListPageModel, PagingListModel } from './ListPageFilter';
+import { ListPageModel, PagingListModel } from './ListPageFilter';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -29,10 +29,8 @@ export type ListPageWrapperLayoutProps = {
   commandsContent: ReactNode;
 };
 
-export interface ListPageContentProps<
-  TModel extends FieldValues,
-  TFilter extends FieldValues = FieldValues,
-> extends Omit<
+export interface ListPageContentProps<TModel extends FieldValues>
+  extends Omit<
       PageProps,
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange'
     >,
@@ -52,7 +50,7 @@ export interface ListPageContentProps<
   /**
    * Table states
    */
-  tableProps: Partial<TableOptions<TModel>>;
+  tableProps: Partial<TableProps<TModel>>;
   /**
    * Search event
    */
@@ -163,7 +161,7 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   onWrapperLayout,
   showHeader = true,
   ...pageProps
-}: ListPageContentProps<TModel, TFilter>) {
+}: ListPageContentProps<TModel>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */

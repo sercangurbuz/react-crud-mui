@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 
-import { RowSelectionState, TableState } from '@tanstack/react-table';
+import { ColumnFiltersState, RowSelectionState, TableState } from '@tanstack/react-table';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
-import { useMountEffect } from '../../hooks';
+import useFormInitEffect from '../../form/hooks/useFormInitEffect';
 import useSettings from '../../settings-provider/hooks/useSettings';
 import { TableProps } from '../../table/Table';
 import { INITIAL_PAGEINDEX } from '../constants';
@@ -32,7 +32,7 @@ export type NeedDataPayload<TFilter extends FieldValues> = {
 export interface ListPageFilterProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-> extends ListPageContentProps<TModel, TFilter> {
+> extends ListPageContentProps<TModel> {
   form: UseFormReturn<TFilter>;
   /**
    * Form filter values change event
@@ -76,10 +76,18 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
     manualSorting: true,
     manualFiltering: true,
     // setters
-    onColumnFiltersChange: (columnFilters) =>
-      handleSearch({ columnFilters } as DeepPartial<ListPageMeta>),
-    onPaginationChange: (pagination) => handleSearch({ pagination } as DeepPartial<ListPageMeta>),
-    onSortingChange: (sorting) => handleSearch({ sorting } as DeepPartial<ListPageMeta>),
+    onColumnFiltersChange: (updater) => {
+      const columnFilters = updater instanceof Function ? updater(meta?.columnFilters!) : updater;
+      handleSearch({ columnFilters } as DeepPartial<ListPageMeta>);
+    },
+    onPaginationChange: (updater) => {
+      const pagination = updater instanceof Function ? updater(meta?.pagination!) : updater;
+      handleSearch({ pagination });
+    },
+    onSortingChange: (updater) => {
+      const sorting = updater instanceof Function ? updater(meta?.sorting!) : updater;
+      handleSearch({ sorting });
+    },
     onRowSelectionChange: setRowSelection,
     ...extableProps,
     // states
@@ -124,7 +132,10 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
     onClear?.();
   };
 
-  useMountEffect(() => {
+  /**
+   * Wait RHF to init (skip to second render)
+   */
+  useFormInitEffect(() => {
     handleSearch();
   });
 
@@ -141,6 +152,7 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
         })
       }
       tableProps={tableProps}
+      activeSegmentIndex={meta?.segmentIndex}
       onTabChanged={(segmentIndex) => handleSearch({ segmentIndex })}
       onClear={clearForm}
     />

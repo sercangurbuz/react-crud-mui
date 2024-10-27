@@ -19,6 +19,7 @@ import {
   TableFooter,
   TableHead,
   TablePagination,
+  TablePaginationProps,
   TableRow,
   TableSortLabel,
   Theme,
@@ -110,6 +111,7 @@ export interface TableProps<TData extends FieldValues>
   rowIdField?: Path<TData>;
   scrollProps?: Partial<ScrollbarProps>;
   showNewRowButton?: boolean;
+  paginationProps?: Partial<TablePaginationProps>;
 }
 
 function isStandartColumn(colId: string) {
@@ -136,6 +138,7 @@ function Table<TData extends FieldValues>({
   onRowEnterPress,
   onRowProps,
   onSubTreeRows,
+  paginationProps,
   rowIdField = DEFAULT_ROW_KEY_FIELD as Path<TData>,
   size = 'medium',
   stickyHeader = true,
@@ -616,6 +619,7 @@ function Table<TData extends FieldValues>({
         count={table.getRowCount()}
         onPageChange={(_, page) => table.setPageIndex(page)}
         onRowsPerPageChange={(e) => table.setPageSize(+e.target.value || 5)}
+        {...paginationProps}
       />
     );
   };

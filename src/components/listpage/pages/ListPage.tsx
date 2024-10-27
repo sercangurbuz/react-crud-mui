@@ -22,7 +22,7 @@ export interface ListPageProps<
 function ListPage<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>(
   props: ListPageProps<TModel, TFilter>,
 ) {
-  const { defaultFilter, onNeedData, tableProps } = props;
+  const { defaultFilter, onNeedData, tableProps, defaultSegmentIndex } = props;
   const { pageSize: defaultPageSize } = useSettings();
 
   /* -------------------------------------------------------------------------- */
@@ -40,6 +40,7 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues = Fiel
       sorting: defaultFilter?.meta?.sorting ?? tableProps?.initialState?.sorting ?? [],
       columnFilters:
         defaultFilter?.meta?.columnFilters ?? tableProps?.initialState?.columnFilters ?? [],
+      segmentIndex: defaultSegmentIndex,
     };
   });
 
@@ -51,7 +52,14 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues = Fiel
     let _meta = meta;
 
     if (updatedMeta) {
-      _meta = produce(meta, (draft) => merge(draft, updatedMeta));
+      _meta = {
+        ...meta,
+        ...updatedMeta,
+        pagination: {
+          ...meta.pagination,
+          ...updatedMeta.pagination,
+        },
+      } as ListPageMeta;
       setMeta(_meta);
     }
 

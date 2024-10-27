@@ -70,7 +70,6 @@ export const Simple: ListPageStory = {};
 
 export const WithDefaultValues: ListPageStory = {
   args: {
-    enableClear: true,
     defaultFilter: { username: 'M' },
     defaultValues: { username: 'K' },
   },
@@ -79,7 +78,11 @@ export const WithDefaultValues: ListPageStory = {
 export const WithDefaultTableFilters: ListPageStory = {
   args: {
     enableClear: true,
+
     tableProps: {
+      paginationProps: {
+        rowsPerPageOptions: [3, 5, 10, 25],
+      },
       initialState: {
         pagination: { pageSize: 3 },
         sorting: [
@@ -129,8 +132,8 @@ export const WithValidation: ListPageStory = {
     schema: z.object({
       name: z.string().min(1),
       username: z.string().optional(),
-      email: z.string().email().min(1),
-      website: z.string().min(1),
+      email: z.string(),
+      website: z.string(),
       phone: z.string(),
     }),
   },
