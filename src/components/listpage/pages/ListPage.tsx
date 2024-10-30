@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 
-import { produce } from 'immer';
-import merge from 'lodash.merge';
-
 import useSettings from '../../settings-provider/hooks/useSettings';
 import { INITIAL_PAGEINDEX } from '../constants';
 import { ListPageFilter, ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
+import ListPageSelection from './ListPageSelection';
 
 export interface ListPageProps<
   TModel extends FieldValues,
@@ -41,6 +39,7 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues = Fiel
       columnFilters:
         defaultFilter?.meta?.columnFilters ?? tableProps?.initialState?.columnFilters ?? [],
       segmentIndex: defaultSegmentIndex,
+      reason: 'init',
     };
   });
 
@@ -71,5 +70,7 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues = Fiel
 
   return <ListPageForm {...props} meta={meta} onChange={handleChange} />;
 }
+
+ListPage.Selection = ListPageSelection;
 
 export default ListPage;

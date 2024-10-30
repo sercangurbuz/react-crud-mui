@@ -1,14 +1,22 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ComponentType, ReactNode, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
+import { Visibility } from '@mui/icons-material';
 import { ColumnDef } from '@tanstack/react-table';
 
+import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
+import useDetailPageModal from '../../detail-page/hooks/useDetailPageModal';
+import { DetailPageDrawerProps } from '../../detail-page/pages/DetailPageDrawer';
+import { DetailPageModalProps } from '../../detail-page/pages/DetailPageModal';
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
+import useTranslation from '../../i18n/hooks/useTranslation';
+import Edit from '../../icons/Edit';
 import SearchIcon from '../../icons/SearchIcon';
 import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
+import useSettings from '../../settings-provider/hooks/useSettings';
 import Table, { TableProps } from '../../table/Table';
 import { ServerError } from '../../utils';
 import AutoSearch from '../components/AutoSearch';
@@ -27,10 +35,13 @@ export type ListPageWrapperLayoutProps = {
   pageContent: ReactNode;
   alertsContent: ReactNode;
   commandsContent: ReactNode;
+  detailPageContent: ReactNode;
 };
 
-export interface ListPageContentProps<TModel extends FieldValues>
-  extends Omit<
+export interface ListPageContentProps<
+  TModel extends FieldValues,
+  TDetailPageModel extends FieldValues = FieldValues,
+> extends Omit<
       PageProps,
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange'
     >,
@@ -66,7 +77,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
   /**
    * Exporting current models to excel
    */
-  onExcelExport?: () => void;
+  onExcelExport: () => void;
   /**
    * ListPage columns
    * ==> MUST BE MEMOIZED <==
@@ -129,21 +140,46 @@ export interface ListPageContentProps<TModel extends FieldValues>
    */
   activeSegmentIndex?: number;
   onWrapperLayout?: (props: ListPageWrapperLayoutProps) => React.ReactNode;
+  /**
+   * Embedded detail page component
+   */
+  detailPage?: ComponentType<
+    DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel>
+  >;
+  /**
+   * Render action commands used with detailPage on every row
+   */
+  enableActionCommands?: boolean;
+  /**
+   * Actionm commands extra props
+   */
+  actionCommandsProps?: ActionCommandsProps;
+  /**
+   * Delete event when detailPage props is set
+   */
+  onDelete?: (model: TModel) => void;
 }
 
-function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
+function ListPageContent<
+  TModel extends FieldValues,
+  TDetailPageModel extends FieldValues = FieldValues,
+>({
   activeSegmentIndex,
+  actionCommandsProps,
   alerts,
   autoSearch = true,
   columns,
   createCommandLabel,
   data,
+  detailPage: EmbededDetailPageComponent,
   disabled,
   disableShortCuts,
+  enableActionCommands = true,
   enableClear,
   enableCreateItem = true,
   enableExport,
   enableSearch,
+  error,
   filterContent,
   hotkeyScopes,
   list: ListComponent,
@@ -152,6 +188,7 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   onClose,
   onCommands,
   onCreateItem,
+  onDelete,
   onExcelExport,
   onExtraCommands,
   onHeader,
@@ -161,10 +198,19 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   onWrapperLayout,
   showHeader = true,
   ...pageProps
-}: ListPageContentProps<TModel>) {
+}: ListPageContentProps<TModel, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
+
+  /* --------------------------- Embeded DetailPage --------------------------- */
+
+  const { t } = useTranslation();
+  const { uniqueIdParamName } = useSettings();
+  const [onOpen, dpProps] = useDetailPageModal<TDetailPageModel>({
+    models: data?.data,
+    uniqueIdParamName,
+  });
 
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
@@ -178,19 +224,26 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
     const alertsContent = renderAlerts();
     const commandsContent = renderCommands();
     const pageContent = renderPage(content, commandsContent, alertsContent);
+    const detailPageContent = renderDetailPage();
 
     const props: ListPageWrapperLayoutProps = {
       content,
       pageContent,
       commandsContent,
       alertsContent,
+      detailPageContent,
     };
 
     if (onWrapperLayout) {
       return onWrapperLayout(props);
     }
 
-    return pageContent;
+    return (
+      <>
+        {pageContent}
+        {detailPageContent}
+      </>
+    );
   };
 
   /**
@@ -233,6 +286,7 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
         onCreateItem={onCreateItem}
         onClear={onClear}
         scopes={hotkeyScopes}
+        onExport={onExcelExport}
       />
     );
   };
@@ -270,7 +324,7 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
     const commandProps: ListPageCommandsProps = {
       onExcelExport,
       onSearch,
-      onCreateItem,
+      onCreateItem: enableActionCommands && EmbededDetailPageComponent ? onOpen : onCreateItem,
       onClear,
       onCommands,
       onExtraCommands,
@@ -284,9 +338,14 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
    * Merge server errors and client alerts
    */
   const renderAlerts = () => {
+    const messages = alerts ?? [];
+
+    if (error?.message) {
+      messages.unshift(error?.message);
+    }
     return (
       <>
-        <Alerts messages={alerts} />
+        <Alerts messages={messages} />
         <ValidationAlerts />
       </>
     );
@@ -314,7 +373,41 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
   const renderTable = () => {
     const props: Partial<TableProps<TModel>> = {
       ...tableProps,
-      columns,
+      columns:
+        enableActionCommands && EmbededDetailPageComponent
+          ? [
+              ...columns,
+              {
+                accessorKey: 'commands',
+                align: 'center',
+                header: () => null,
+                enableSorting: false,
+                cell(cell) {
+                  const data = cell.row.original as unknown as TDetailPageModel;
+                  return (
+                    <ActionCommands
+                      onDelete={() => onDelete?.(cell.row.original)}
+                      onView={() =>
+                        onOpen({
+                          data,
+                          disabled: true,
+                        })
+                      }
+                      onEdit={() => onOpen({ data, disabled })}
+                      onCopy={() =>
+                        onOpen({
+                          data,
+                          disabled,
+                          reason: 'copy',
+                        })
+                      }
+                      {...actionCommandsProps}
+                    />
+                  );
+                },
+              },
+            ]
+          : columns,
       rowCount: (data as PagingListModel<TModel>).dataCount,
       data: (data as PagingListModel<TModel>).data,
       loading,
@@ -340,11 +433,39 @@ function ListPageContent<TModel extends FieldValues, TFilter extends FieldValues
     return <AutoSearch onValuesChange={onSearch} />;
   };
 
+  /**
+   * Render DetailPage opened from new item button
+   */
+  const renderDetailPage = () => {
+    if (!EmbededDetailPageComponent || !dpProps?.open) {
+      return null;
+    }
+
+    const isDisabled = dpProps.disabled;
+    const props: DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel> =
+      {
+        enableCreate: true,
+        enableCopy: true,
+        enableDiscardChanges: false,
+        icon: isDisabled ? <Visibility /> : <Edit />,
+        header: isDisabled
+          ? t('browse')
+          : dpProps?.reason === 'fetch'
+            ? t('edit')
+            : (createCommandLabel ?? t('newitem')),
+        helperText: dpProps?.reason === 'copy' ? t('tags.copy') : null,
+        createCommandLabel,
+        ...dpProps,
+      };
+
+    return <EmbededDetailPageComponent {...props} />;
+  };
+
   /* -------------------------------------------------------------------------- */
   /*                              ListPage Context                              */
   /* -------------------------------------------------------------------------- */
 
-  const contextValue = useMemo<ListPageContextType<TModel, TFilter>>(
+  const contextValue = useMemo<ListPageContextType<TModel>>(
     () => ({
       onShowDetailPage: () => {},
       loading,

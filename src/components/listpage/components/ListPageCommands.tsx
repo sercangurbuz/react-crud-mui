@@ -1,13 +1,12 @@
 import { ReactNode } from 'react';
 
-import { Search } from '@mui/icons-material';
+import { Print, Search } from '@mui/icons-material';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
-import { Button, ButtonProps } from '@mui/material';
+import { Button, ButtonProps, IconButton } from '@mui/material';
 
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
 import Clear from '../../icons/Clear';
-import Delete from '../../icons/Delete';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
 import useSettings from '../../settings-provider/hooks/useSettings';
 import useListPageCommandStates from '../hooks/useListPageCommandStates';
@@ -47,6 +46,7 @@ export type ListPageCommandsLayoutContents = {
   search: ReactNode;
   clear: ReactNode;
   create: ReactNode;
+  export: ReactNode;
   content: ReactNode;
   renderMoreCommand: (items: MoreButtonItem[]) => ReactNode;
   extra?: ReactNode;
@@ -96,7 +96,12 @@ function ListPageCommands(props: ListPageCommandsProps) {
   const { t } = useTranslation();
   const { visible, disabled, loading } = useListPageCommandStates();
   const {
-    hotkeys: { search: SHORTCUT_SEARCH, newItem: SHORTCUT_NEWITEM, clear: SHORTCUT_CLEAR },
+    hotkeys: {
+      search: SHORTCUT_SEARCH,
+      newItem: SHORTCUT_NEWITEM,
+      clear: SHORTCUT_CLEAR,
+      export: SHORTCUT_EXPORT,
+    },
   } = useSettings();
 
   /* -------------------------------------------------------------------------- */
@@ -142,6 +147,24 @@ function ListPageCommands(props: ListPageCommandsProps) {
     );
   };
 
+  const renderExport = () => {
+    if (!visible.export) {
+      return null;
+    }
+    return (
+      <IconButton
+        key="clear"
+        color="secondary"
+        variant="outlined"
+        title={`${t('listpage.settings.exportExcel')}\n(${SHORTCUT_EXPORT.toUpperCase()})`}
+        onClick={onExcelExport}
+        disabled={disabled.export}
+        children={<Print />}
+        {...commandsExtraProps['clear']}
+      />
+    );
+  };
+
   const renderCreate = () => {
     if (!visible.create) {
       return null;
@@ -169,9 +192,10 @@ function ListPageCommands(props: ListPageCommandsProps) {
 
   const renderCommands = () => {
     const searchContent = renderSearch();
+    const exportContent = renderExport();
     const clearContent = renderClear();
     const createContent = renderCreate();
-    const content = [searchContent, clearContent, createContent];
+    const content = [exportContent, searchContent, clearContent, createContent];
     const extra = onExtraCommands?.();
 
     const layoutContent = (
@@ -185,6 +209,7 @@ function ListPageCommands(props: ListPageCommandsProps) {
       search: searchContent,
       clear: clearContent,
       create: createContent,
+      export: exportContent,
       content,
       renderMoreCommand,
       extra,

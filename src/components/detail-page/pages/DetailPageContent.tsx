@@ -61,10 +61,6 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    */
   onSegmentChanged?: (index: number) => void;
   /**
-   * Content component
-   */
-  component?: React.ComponentType;
-  /**
    * Disable all keyboard shortcuts,default all enabled
    */
   disableShortCuts?: boolean;
@@ -159,7 +155,6 @@ function DetailPageContent<TModel extends FieldValues>({
   autoSave,
   children,
   commandsPosition,
-  component: RenderComponent,
   customSteps: CustomSteps,
   createCommandLabel,
   data,
@@ -232,7 +227,7 @@ function DetailPageContent<TModel extends FieldValues>({
    * Renders customization component of content
    */
   const renderContentLayout = () => {
-    const content = renderContent();
+    const content = children;
     const autoSaveContent = renderAutoSave();
     const stepsContent = renderSteps();
 
@@ -251,13 +246,6 @@ function DetailPageContent<TModel extends FieldValues>({
     }
 
     return <DetailPageDefaultLayout {...props} />;
-  };
-
-  /**
-   * Render component,children,tabs or steps respectively depending on its definitions
-   */
-  const renderContent = () => {
-    return RenderComponent ? <RenderComponent /> : children;
   };
 
   /**

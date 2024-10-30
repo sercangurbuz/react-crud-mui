@@ -44,7 +44,7 @@ const meta: Meta<typeof DetailPage<UserSchema>> = {
     header: 'User Details',
     helperText: 'Type in user settings',
     icon: <GroupSenior sx={{ color: 'primary.main' }} />,
-    component: FormContent,
+    children: <FormContent />,
     defaultReason: 'create',
     enableDelete: true,
     onSave: handleSaveUser,
@@ -79,19 +79,6 @@ export const WithAsyncData: DetailPageStory = {
     });
 
     return <DetailPage {...args} loading={isFetching} data={data} />;
-  },
-};
-
-export const WithChildrenContent: DetailPageStory = {
-  args: {
-    component: undefined,
-  },
-  render: (args) => {
-    return (
-      <DetailPage {...args}>
-        <FormContent />
-      </DetailPage>
-    );
   },
 };
 
@@ -327,7 +314,7 @@ export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
 
 export const WithTabs: DetailPageStory = {
   args: {
-    component: undefined,
+    children: undefined,
     tabs: [
       {
         key: 'tab1',
@@ -375,7 +362,7 @@ export const WithCustomTabs: DetailPageStory = {
 
 export const WithSteps: DetailPageStory = {
   args: {
-    component: undefined,
+    children: undefined,
     reason: 'create',
     schema: [
       z.object({
@@ -459,7 +446,7 @@ export const InRouter: DetailPageRouteStory = {
 export const RoutedTabs: DetailPageRouteStory = {
   ...InRouter,
   args: {
-    component: undefined,
+    children: undefined,
     ...InRouter.args,
     tabs: [
       {

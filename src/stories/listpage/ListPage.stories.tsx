@@ -1,11 +1,18 @@
+import { useEffect, useState } from 'react';
+
 import { Assignment, Done, Pending, Search } from '@mui/icons-material';
+import { Alert, AlertTitle, Button, Stack } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
+import { RowSelectionState } from '@tanstack/react-table';
 import { z } from 'zod';
 
 import ListPage from '../../components/listpage/pages/ListPage';
+import { ServerError } from '../../components/utils';
 import mockUsers from '../../test-setup/mockUsers.json';
 import { UserDefaultValues } from '../utils/api';
 import { UserSchema } from '../utils/schema';
+import useSession from '../utils/useSession';
+import EmbededDetailPage from './components/EmbededDetailPage';
 import FilterContent from './components/FilterContent';
 import useListPageData from './components/useListPageData';
 
@@ -65,6 +72,7 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
 
 export default meta;
 type ListPageStory = StoryObj<typeof ListPage<UserSchema>>;
+type ListPageSelectionStory = StoryObj<typeof ListPage.Selection<UserSchema>>;
 
 export const Simple: ListPageStory = {};
 
@@ -136,5 +144,115 @@ export const WithValidation: ListPageStory = {
       website: z.string(),
       phone: z.string(),
     }),
+  },
+};
+
+export const WithErrorAsyncData: ListPageStory = {
+  args: {},
+  render: (args) => {
+    const [loading, setloading] = useState(true);
+    const [error, setError] = useState<ServerError>();
+
+    const callError = (error: string) => {
+      setTimeout(() => {
+        setloading(false);
+        setError({ message: error });
+      }, 1500);
+    };
+
+    return (
+      <ListPage
+        {...args}
+        loading={loading}
+        error={error}
+        onExtraCommands={() => {
+          return (
+            <Button
+              onClick={() => {
+                setloading(true);
+                callError('Saving failed');
+              }}
+            >
+              Call external endpoint
+            </Button>
+          );
+        }}
+        onNeedData={() => {
+          setloading(true);
+          callError('Fetching data failed');
+        }}
+      />
+    );
+  },
+};
+
+export const TemporaryFilter: ListPageStory = {
+  name: 'Remember filter (Temporary filter)',
+  render: (args, { id }) => {
+    const [value, setValue] = useSession<any>({ name: id });
+    const [mounted, setMounted] = useState(true);
+
+    return (
+      <Stack>
+        <Button sx={{ width: 200 }} onClick={() => setMounted((p) => !p)}>
+          {!mounted ? 'MOUNT' : 'UNMOUNT'}
+        </Button>
+
+        <Alert sx={{ borderRadius: 0, my: 2 }}>
+          <AlertTitle>Stored Filters</AlertTitle>
+          {value && JSON.stringify(value)}
+        </Alert>
+
+        {mounted ? (
+          <ListPage
+            {...args}
+            style={{ marginBottom: 5 }}
+            defaultFilter={value}
+            onNeedData={(filter) => {
+              setValue(filter);
+              args.onNeedData?.(filter);
+            }}
+          />
+        ) : null}
+      </Stack>
+    );
+  },
+};
+
+export const WithDetailPage: ListPageStory = {
+  args: {
+    enableCreateItem: true,
+    detailPage: EmbededDetailPage,
+    actionCommandsProps: {
+      showCopy: false,
+    },
+    createCommandLabel: 'New User',
+  },
+};
+
+export const Selection: ListPageSelectionStory = {
+  name: 'Selection Modal',
+  args: {
+    //    selectButtonText: 'Select Person & Close',
+  },
+  render: (args) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    const [selectedKeys, setSelected] = useState<RowSelectionState>({ 1: true, 2: true });
+    return (
+      <>
+        <Button onClick={() => setVisible(true)}>Toggle ListPage Selection</Button>
+        <ListPage.Selection
+          {...args}
+          defaultRowSelection={selectedKeys}
+          open={visible}
+          onClose={() => setVisible(false)}
+          onSelect={(selection) => {
+            alert('You selected row id(s): ' + Object.keys(selection).join(','));
+            setSelected(selection);
+            setVisible(false);
+          }}
+        />
+      </>
+    );
   },
 };

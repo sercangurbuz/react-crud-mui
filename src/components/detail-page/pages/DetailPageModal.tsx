@@ -18,7 +18,7 @@ export interface DetailPageModalProps<TModel extends FieldValues> extends Detail
   /**
    * Shortcut to open prop of Modal
    */
-  open: boolean;
+  open?: boolean;
   /**
    * Whether to leave modal without saving when form is dirty,default true
    */
@@ -43,7 +43,7 @@ function DetailPageModal<TModel extends FieldValues>({
   });
 
   return (
-    <Modal open={open} onClose={() => handleCloseEvent('backdrop')} {...modalProps}>
+    <Modal open={!!open} onClose={() => handleCloseEvent('backdrop')} {...modalProps}>
       <DetailPage<TModel>
         defaultSaveMode="save-close"
         enableClose

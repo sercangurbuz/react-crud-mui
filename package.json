@@ -59,6 +59,7 @@
     "react-router-dom": "^6.26.2",
     "react-scroll": "^1.9.0",
     "simplebar-react": "^3.2.6",
+    "xlsx-js-style": "^1.2.0",
     "zod": "^3.23.8",
     "zod-i18n-map": "^2.27.0"
   },

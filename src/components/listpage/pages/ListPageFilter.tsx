@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 
-import { ColumnFiltersState, RowSelectionState, TableState } from '@tanstack/react-table';
+import { RowSelectionState, TableState } from '@tanstack/react-table';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
 import useFormInitEffect from '../../form/hooks/useFormInitEffect';
@@ -21,7 +21,17 @@ export interface PagingListModel<TModel> {
 export type ListPageModel<TModel> = PagingListModel<TModel>;
 export type ListPageMeta = Pick<TableState, 'pagination' | 'sorting' | 'columnFilters'> & {
   segmentIndex?: number;
+  reason: SearchReason;
 };
+export type SearchReason =
+  | 'search'
+  | 'sorting'
+  | 'pagination'
+  | 'init'
+  | 'clear'
+  | 'export'
+  | 'tabChanged'
+  | 'columnfilter';
 
 export type ListPageFilter<TFilter extends FieldValues> = TFilter & { meta: ListPageMeta };
 
@@ -78,15 +88,15 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
     // setters
     onColumnFiltersChange: (updater) => {
       const columnFilters = updater instanceof Function ? updater(meta?.columnFilters!) : updater;
-      handleSearch({ columnFilters } as DeepPartial<ListPageMeta>);
+      handleSearch({ columnFilters, reason: 'columnfilter' } as DeepPartial<ListPageMeta>);
     },
     onPaginationChange: (updater) => {
       const pagination = updater instanceof Function ? updater(meta?.pagination!) : updater;
-      handleSearch({ pagination });
+      handleSearch({ pagination, reason: 'pagination' });
     },
     onSortingChange: (updater) => {
       const sorting = updater instanceof Function ? updater(meta?.sorting!) : updater;
-      handleSearch({ sorting });
+      handleSearch({ sorting, reason: 'sorting' });
     },
     onRowSelectionChange: setRowSelection,
     ...extableProps,
@@ -136,7 +146,7 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
    * Wait RHF to init (skip to second render)
    */
   useFormInitEffect(() => {
-    handleSearch();
+    handleSearch({ reason: 'init' });
   });
 
   /* --------------------------------- Render --------------------------------- */
@@ -146,6 +156,7 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
       {...props}
       onSearch={() =>
         handleSearch({
+          reason: 'search',
           pagination: {
             pageIndex: INITIAL_PAGEINDEX,
           },
@@ -153,7 +164,7 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
       }
       tableProps={tableProps}
       activeSegmentIndex={meta?.segmentIndex}
-      onTabChanged={(segmentIndex) => handleSearch({ segmentIndex })}
+      onTabChanged={(segmentIndex) => handleSearch({ segmentIndex, reason: 'tabChanged' })}
       onClear={clearForm}
     />
   );

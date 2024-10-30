@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode } from 'react';
 
-import { Card } from '@mui/material';
+import { Card, SxProps, Theme } from '@mui/material';
 
 import { PaddingSize } from './PageProvider';
 
@@ -9,6 +9,7 @@ export type PageLayoutOptions = {
   loading?: boolean;
   disabled?: boolean;
   style?: CSSProperties;
+  sx?: SxProps<Theme>;
 };
 
 export type PageLayoutProps = {
@@ -32,7 +33,7 @@ function DefaultLayout({
   tabsContent,
 }: PageLayoutProps) {
   return (
-    <Card style={options?.style}>
+    <Card style={options?.style} sx={options?.sx}>
       {pageHeader}
       {progressContent}
       {alertsContent}

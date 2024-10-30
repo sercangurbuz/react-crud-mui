@@ -29,6 +29,7 @@ import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  Header,
   useReactTable,
   type Cell,
   type ColumnDef,
@@ -65,6 +66,7 @@ declare module '@tanstack/react-table' {
     align?: CellAlignment;
     title?: string;
     icon?: ReactNode;
+    export?: boolean;
   }
 }
 
@@ -85,6 +87,7 @@ export type TableColumn<D extends object = object> = {
   disableSortBy?: boolean;
   link?: (row: Row<D>) => string;
   icon?: ReactNode;
+  export?: boolean;
 } & ColumnDef<D>;
 
 export interface TableProps<TData extends FieldValues>
@@ -110,10 +113,12 @@ export interface TableProps<TData extends FieldValues>
   onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
   rowIdField?: Path<TData>;
   scrollProps?: Partial<ScrollbarProps>;
+  skeletonRows?: number;
   showNewRowButton?: boolean;
   paginationProps?: Partial<TablePaginationProps>;
 }
 
+const DEFAULT_SKELETON_ROW_NUMBER = 10;
 function isStandartColumn(colId: string) {
   return colId === EXPANDER_COL_NAME || colId === SELECTION_COL_NAME;
 }
@@ -145,6 +150,7 @@ function Table<TData extends FieldValues>({
   scrollProps,
   showEmptyImage,
   showNewRowButton,
+  skeletonRows = DEFAULT_SKELETON_ROW_NUMBER,
   state,
   ...tableProps
 }: TableProps<TData>) {
@@ -377,6 +383,48 @@ function Table<TData extends FieldValues>({
   /*                               Render Helpers                               */
   /* -------------------------------------------------------------------------- */
 
+  const renderHeaderCell = (header: Header<TData, unknown>, isLeafHeader: boolean) => {
+    const cellNode = flexRender(header.column.columnDef.header, header.getContext());
+    const cellNodeWithIcon = header.column.icon ? (
+      <FlexRowAlign gap={1}>
+        {header.column.icon} {cellNode}
+      </FlexRowAlign>
+    ) : (
+      cellNode
+    );
+    const isSortingEnabled = header.column.getCanSort();
+    const sortDirection = header.column.getIsSorted();
+    const sortToggleHandler = header.column.getToggleSortingHandler();
+
+    return (
+      <HeadTableCell
+        key={header.id}
+        size={size}
+        colSpan={header.colSpan}
+        sx={{
+          ...(header.getSize() === Number.MAX_SAFE_INTEGER || !isLeafHeader
+            ? { width: 'auto' }
+            : {
+                width: header.getSize(),
+                minWidth: header.getSize(),
+              }),
+        }}
+      >
+        {isSortingEnabled ? (
+          <TableSortLabel
+            active={!!sortDirection}
+            onClick={sortToggleHandler}
+            direction={sortDirection === false ? undefined : sortDirection}
+          >
+            {cellNodeWithIcon}
+          </TableSortLabel>
+        ) : (
+          cellNodeWithIcon
+        )}
+      </HeadTableCell>
+    );
+  };
+
   const renderHeader = () => {
     const headerGroups = table.getHeaderGroups();
     const isBanded = headerGroups.length > 1;
@@ -402,47 +450,7 @@ function Table<TData extends FieldValues>({
                 },
               }}
             >
-              {headerGroup.headers.map((header) => {
-                const cellNode = flexRender(header.column.columnDef.header, header.getContext());
-                const cellNodeWithIcon = header.column.icon ? (
-                  <FlexRowAlign gap={1}>
-                    {header.column.icon} {cellNode}
-                  </FlexRowAlign>
-                ) : (
-                  cellNode
-                );
-                const isSortingEnabled = header.column.getCanSort();
-                const sortDirection = header.column.getIsSorted();
-                const sortToggleHandler = header.column.getToggleSortingHandler();
-
-                return (
-                  <HeadTableCell
-                    key={header.id}
-                    size={size}
-                    colSpan={header.colSpan}
-                    sx={{
-                      ...(header.getSize() === Number.MAX_SAFE_INTEGER || !isLeafHeader
-                        ? { width: 'auto' }
-                        : {
-                            width: header.getSize(),
-                            minWidth: header.getSize(),
-                          }),
-                    }}
-                  >
-                    {isSortingEnabled ? (
-                      <TableSortLabel
-                        active={!!sortDirection}
-                        onClick={sortToggleHandler}
-                        direction={sortDirection === false ? undefined : sortDirection}
-                      >
-                        {cellNodeWithIcon}
-                      </TableSortLabel>
-                    ) : (
-                      cellNodeWithIcon
-                    )}
-                  </HeadTableCell>
-                );
-              })}
+              {headerGroup.headers.map((header) => renderHeaderCell(header, isLeafHeader))}
             </TableRow>
           );
         })}
@@ -453,7 +461,7 @@ function Table<TData extends FieldValues>({
   const renderCell = (cell: Cell<TData, unknown>) => {
     let cellNode = flexRender(cell.column.columnDef.cell, cell.getContext());
     const isStandartCol = isStandartColumn(cell.column.id);
-    const isIndentedCol = cell.row.depth > 0 && cell.column.getIndex() == 1;
+    const isIndentedCol = cell.row.depth > 0 && cell.column.getIndex() === 1;
 
     if ((cell.column.columnDef as CoreColumn<TData>).link) {
       const uri = (cell.column.columnDef as CoreColumn<TData>).link!(cell.row);
@@ -596,7 +604,7 @@ function Table<TData extends FieldValues>({
             </Fragment>
           );
         })}
-        {renderSkeleton()}
+        {renderSkeleton(skeletonRows)}
         {renderEmptyImage()}
         {renderNewRow()}
       </TableBody>
@@ -669,7 +677,7 @@ function Table<TData extends FieldValues>({
     );
   };
 
-  const renderSkeleton = (rowsNum: number = 10) => {
+  const renderSkeleton = (rowsNum: number) => {
     if (!enableSkeleton || !loading || !firstLoadRef.current) {
       return null;
     }

@@ -73,6 +73,7 @@ function Page({
   showHeader = true,
   size = 'small',
   style,
+  sx,
   tabs,
   onTabChanged,
   selectedTabIndex = 0,
@@ -194,6 +195,7 @@ function Page({
         disabled,
         loading,
         style,
+        sx,
       },
     };
 

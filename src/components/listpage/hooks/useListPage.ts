@@ -6,7 +6,7 @@ import { ListPageProps } from '../pages/ListPage';
 import { ListPageModel } from '../pages/ListPageFilter';
 
 /* ---------------------------- ListPage Context ---------------------------- */
-export type ListPageContextType<TModel extends FieldValues, TFilter extends FieldValues> = {
+export type ListPageContextType<TModel extends FieldValues> = {
   data?: ListPageModel<TModel>;
   /**
    * Clear all form controls in filter
@@ -21,16 +21,16 @@ export type ListPageContextType<TModel extends FieldValues, TFilter extends Fiel
    */
   onShowDetailPage: (model?: any) => void;
 } & Pick<
-  ListPageProps<TModel, TFilter>,
+  ListPageProps<TModel>,
   'loading' | 'enableClear' | 'enableCreateItem' | 'enableExport' | 'enableSearch'
 >;
 
 //https://stackoverflow.com/questions/60725621/react-context-with-generics
-export const ListPageContext = React.createContext<ListPageContextType<any, any> | null>(null);
+export const ListPageContext = React.createContext<ListPageContextType<any> | null>(null);
 
-const useListPage = <TModel extends FieldValues, TFilter extends FieldValues>() => {
+const useListPage = <TModel extends FieldValues>() => {
   const injectedProps = useContext(ListPageContext);
-  return injectedProps as ListPageContextType<TModel, TFilter>;
+  return injectedProps as ListPageContextType<TModel>;
 };
 
 export default useListPage;

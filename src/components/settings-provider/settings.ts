@@ -10,6 +10,7 @@ export interface CommonHotKeys {
   nextStep: string;
   prevStep: string;
   search: string;
+  export: string;
   clear: string;
   applyFilter_1: string;
   applyFilter_2: string;
@@ -76,6 +77,7 @@ export default (): Settings => ({
     nextStep: 'ctrl+enter',
     prevStep: 'ctrl+shift+enter',
     search: 'ctrl+enter, ctrl+s',
+    export: 'ctrl+p',
     clear: 'ctrl+shift+c, ctrl+backspace',
     applyFilter_1: 'ctrl+1',
     applyFilter_2: 'ctrl+2',

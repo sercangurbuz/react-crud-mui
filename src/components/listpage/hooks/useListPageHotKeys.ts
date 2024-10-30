@@ -8,6 +8,7 @@ export interface UseListPageHotKeysProps extends Partial<Options> {
   onSearch: () => void;
   onCreateItem?: () => void;
   onClear: () => void;
+  onExport: () => void;
 }
 
 // Hotkey scope name for preventing conflict
@@ -23,6 +24,7 @@ function useListPageHotKeys({
   onSearch,
   onCreateItem,
   onClear,
+  onExport,
   scopes = LISTPAGE_HOTKEYS_SCOPE,
   ...hotKeyOptions
 }: UseListPageHotKeysProps) {
@@ -34,7 +36,12 @@ function useListPageHotKeys({
   const { t } = useTranslation();
 
   const {
-    hotkeys: { search: SHORTCUT_SEARCH, newItem: SHORTCUT_NEWITEM, clear: SHORTCUT_CLEAR },
+    hotkeys: {
+      search: SHORTCUT_SEARCH,
+      newItem: SHORTCUT_NEWITEM,
+      clear: SHORTCUT_CLEAR,
+      export: SHORTCUT_EXPORT,
+    },
   } = useSettings();
 
   /* -------------------------------------------------------------------------- */
@@ -47,6 +54,17 @@ function useListPageHotKeys({
   useHotkeys(SHORTCUT_SEARCH, onSearch, {
     enabled: !disabled.search && !!visible.search && !loading,
     description: t('listpage.listbuttons.searchtitle'),
+    scopes,
+    ...HOTKEYS_COMMON_PROPS,
+    ...hotKeyOptions,
+  });
+
+  /**
+   * Export
+   */
+  useHotkeys(SHORTCUT_EXPORT, onExport, {
+    enabled: !disabled.search && !!visible.export && !loading,
+    description: t('listpage.settings.exportExcel'),
     scopes,
     ...HOTKEYS_COMMON_PROPS,
     ...hotKeyOptions,
