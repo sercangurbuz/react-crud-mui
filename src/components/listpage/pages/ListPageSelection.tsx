@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { DoneAll } from '@mui/icons-material';
@@ -10,7 +10,7 @@ import Modal, { ModalProps } from '../../modal/Modal';
 import Page from '../../page/Page';
 import ListPage, { ListPageProps } from './ListPage';
 
-interface ListPageSelectionProps<
+export interface ListPageSelectionProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
 > extends Omit<ListPageProps<TModel, TFilter>, 'onSelect'> {

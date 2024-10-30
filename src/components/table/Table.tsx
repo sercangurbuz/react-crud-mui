@@ -375,10 +375,6 @@ function Table<TData extends FieldValues>({
     }
   };
 
-  const handleNewRow = () => () => {
-    onNewRow?.();
-  };
-
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
   /* -------------------------------------------------------------------------- */
@@ -547,7 +543,7 @@ function Table<TData extends FieldValues>({
           }}
           colSpan={cols?.length}
         >
-          <NewRowButton disableRipple onClick={handleNewRow()}>
+          <NewRowButton disableRipple onClick={onNewRow}>
             <Stack flexDirection="row" alignItems="center" gap={0.5} p={0.4}>
               <Add sx={{ color: 'text.secondary', fontSize: '18px' }} />
               <Tiny color="text.secondary" fontWeight={600}>

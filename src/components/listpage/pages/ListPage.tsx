@@ -5,6 +5,7 @@ import useSettings from '../../settings-provider/hooks/useSettings';
 import { INITIAL_PAGEINDEX } from '../constants';
 import { ListPageFilter, ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
+import ListPageModal from './ListPageModal';
 import ListPageSelection from './ListPageSelection';
 
 export interface ListPageProps<
@@ -72,5 +73,6 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues = Fiel
 }
 
 ListPage.Selection = ListPageSelection;
+ListPage.Modal = ListPageModal;
 
 export default ListPage;

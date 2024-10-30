@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import { Assignment, Done, Pending, Search } from '@mui/icons-material';
+import { Assignment, Close, Done, Pending, Search } from '@mui/icons-material';
 import { Alert, AlertTitle, Button, Stack } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { RowSelectionState } from '@tanstack/react-table';
@@ -8,7 +8,6 @@ import { z } from 'zod';
 
 import ListPage from '../../components/listpage/pages/ListPage';
 import { ServerError } from '../../components/utils';
-import mockUsers from '../../test-setup/mockUsers.json';
 import { UserDefaultValues } from '../utils/api';
 import { UserSchema } from '../utils/schema';
 import useSession from '../utils/useSession';
@@ -73,6 +72,7 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
 export default meta;
 type ListPageStory = StoryObj<typeof ListPage<UserSchema>>;
 type ListPageSelectionStory = StoryObj<typeof ListPage.Selection<UserSchema>>;
+type ListPageModalStory = StoryObj<typeof ListPage.Modal<UserSchema>>;
 
 export const Simple: ListPageStory = {};
 
@@ -254,5 +254,55 @@ export const Selection: ListPageSelectionStory = {
         />
       </>
     );
+  },
+};
+
+export const InModal: ListPageModalStory = {
+  name: 'ListPage in Modal',
+  args: {
+    showHeader: false,
+    enableSearch: false,
+    filterContent: null,
+    enableClear: false,
+    commandsPosition: 'bottom-right',
+  },
+  render: (args) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    return (
+      <>
+        <Button onClick={() => setVisible(true)}>Toggle ListPage Modal</Button>
+        <ListPage.Modal
+          {...args}
+          open={visible}
+          onClose={() => setVisible(false)}
+          onCommands={() => (
+            <Button
+              color="secondary"
+              variant="outlined"
+              onClick={() => setVisible(false)}
+              startIcon={<Close />}
+            >
+              Close
+            </Button>
+          )}
+        />
+      </>
+    );
+  },
+};
+
+export const Notifications: ListPageStory = {
+  name: 'Error Notifications (Alerts)',
+  args: {
+    alerts: [
+      {
+        type: 'info',
+        message: 'Please search first !',
+      },
+      {
+        type: 'success',
+        message: 'Your seaached succesfully !',
+      },
+    ],
   },
 };
