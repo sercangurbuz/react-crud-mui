@@ -250,14 +250,13 @@ export const WithDetailPageDrawer: ListPageStory = {
   },
 };
 
-export const Selection: ListPageSelectionStory = {
-  name: 'Selection Modal',
+export const MultiSelection: ListPageSelectionStory = {
   args: {
     //    selectButtonText: 'Select Person & Close',
   },
   render: (args) => {
     const [visible, setVisible] = useState<boolean>(true);
-    const [selectedKeys, setSelected] = useState<RowSelectionState>({ 1: true, 2: true });
+    const [selectedKeys, setSelected] = useState<RowSelectionState>({ 2: true });
     return (
       <>
         <Button onClick={() => setVisible(true)}>Toggle ListPage Selection</Button>
@@ -274,6 +273,15 @@ export const Selection: ListPageSelectionStory = {
         />
       </>
     );
+  },
+};
+
+export const SingleSelection: ListPageSelectionStory = {
+  ...MultiSelection,
+  args: {
+    tableProps: {
+      enableMultiRowSelection: false,
+    },
   },
 };
 

@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 
-import { RowSelectionState, TableState } from '@tanstack/react-table';
+import { TableState } from '@tanstack/react-table';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
 import useFormInitEffect from '../../form/hooks/useFormInitEffect';
@@ -95,7 +94,6 @@ function ListPageFilter<
   /* -------------------------------------------------------------------------- */
 
   const { pageSize: defaultPageSize } = useSettings();
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   /* -------------------------------------------------------------------------- */
   /*                                 Table Props                                */
@@ -105,7 +103,6 @@ function ListPageFilter<
     enableSorting: true,
     enablePaging: true,
     manualPagination: true,
-    enableRowSelection: true,
     manualSorting: true,
     manualFiltering: true,
     // setters
@@ -121,14 +118,12 @@ function ListPageFilter<
       const sorting = updater instanceof Function ? updater(meta?.sorting!) : updater;
       handleSearch({ sorting, reason: 'sorting' });
     },
-    onRowSelectionChange: setRowSelection,
     ...extableProps,
     // states
     state: {
       pagination: meta?.pagination,
       sorting: meta?.sorting,
       columnFilters: meta?.columnFilters,
-      rowSelection,
       ...extableProps?.state,
     },
   } as TableProps<TModel>;

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { CheckOutlined } from '@mui/icons-material';
+import { CheckOutlined, Search } from '@mui/icons-material';
 import { Grid2 } from '@mui/material';
 import { z } from 'zod';
 
@@ -24,7 +24,7 @@ export type ToDo = {
 function NestedTodosRouteTab() {
   const { id } = useDetailPageRouteParams();
 
-  const { fetch, data, isPending, error } = useAppLazyQuery<
+  const { fetch, data, isPending, error, prevData } = useAppLazyQuery<
     ToDo[],
     ListPageFilter<{ userId: string }>
   >({
@@ -34,20 +34,35 @@ function NestedTodosRouteTab() {
 
   const pagingData = useMemo<ListPageModel<ToDo>>(
     () => ({
-      data: data ? data : [],
+      data: data ?? prevData ?? [],
       dataCount: data?.length ?? 0,
     }),
-    [data],
+    [data, prevData],
   );
 
   return (
     <ListPage.Route
       onNeedData={(filter) => {
-        fetch(filter as ListPageFilter<{ userId: string }>);
+        fetch({
+          title_like: filter?.keyword && `^${filter?.keyword}`,
+        } as any);
       }}
       data={pagingData}
+      defaultValues={{
+        keyword: '',
+      }}
       loading={isPending}
       error={error as ServerError}
+      filterContent={
+        <Page.Content>
+          <Field.Input
+            name="keyword"
+            placeholder="Search..."
+            InputProps={{ startAdornment: <Search /> }}
+            sx={{ maxWidth: 400, width: '100%' }}
+          />
+        </Page.Content>
+      }
       columns={[
         {
           header: 'Title',
@@ -97,10 +112,11 @@ function EmbeddedPage(props: any) {
         userId: null,
         completed: false,
       }}
+      createCommandLabel="New Todo"
       schema={z.object({
         title: z.string().nonempty(),
         id: z.number().optional(),
-        userId: z.number().optional(),
+        userId: z.number().nullable(),
         completed: z.boolean(),
       })}
       onCommands={(props) => (

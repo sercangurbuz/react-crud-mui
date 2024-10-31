@@ -191,15 +191,16 @@ function Table<TData extends FieldValues>({
           id: SELECTION_COL_NAME,
           enableSorting: false,
           maxSize: 50,
-          header: ({ table }) => (
-            <Checkbox
-              {...{
-                checked: table.getIsAllRowsSelected(),
-                indeterminate: table.getIsSomeRowsSelected(),
-                onChange: table.getToggleAllRowsSelectedHandler(),
-              }}
-            />
-          ),
+          header: ({ table }) =>
+            table.options.enableMultiRowSelection ? (
+              <Checkbox
+                {...{
+                  checked: table.getIsAllRowsSelected(),
+                  indeterminate: table.getIsSomeRowsSelected(),
+                  onChange: table.getToggleAllRowsSelectedHandler(),
+                }}
+              />
+            ) : null,
           cell: ({ row }) => {
             const isMultiSelect = row.getCanMultiSelect();
             return isMultiSelect ? (
