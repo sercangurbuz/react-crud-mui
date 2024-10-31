@@ -8,15 +8,13 @@ import useListPage from './useListPage';
  * Returns buttons props depending on validation,loading etc
  * Beware of rerender when state of form changes
  */
-function useListPageCommandStates<TModel extends FieldValues, TFilter extends FieldValues>() {
+function useListPageCommandStates<TModel extends FieldValues>() {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const { loading, enableClear, enableCreateItem, enableExport, enableSearch } = useListPage<
-    TModel,
-    TFilter
-  >();
+  const { loading, enableClear, enableCreateItem, enableExport, enableSearch } =
+    useListPage<TModel>();
   const formStates = useFormState();
 
   const { isValid, isDirty } = formStates;

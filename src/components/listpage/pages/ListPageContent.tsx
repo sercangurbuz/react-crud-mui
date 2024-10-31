@@ -2,7 +2,6 @@ import React, { ComponentType, ReactNode, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { Visibility } from '@mui/icons-material';
-import { ColumnDef } from '@tanstack/react-table';
 
 import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
 import useDetailPageModal from '../../detail-page/hooks/useDetailPageModal';
@@ -17,7 +16,7 @@ import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
 import useSettings from '../../settings-provider/hooks/useSettings';
-import Table, { TableProps } from '../../table/Table';
+import Table, { TableColumn, TableProps } from '../../table/Table';
 import { ServerError } from '../../utils';
 import AutoSearch from '../components/AutoSearch';
 import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageCommands';
@@ -61,7 +60,7 @@ export interface ListPageContentProps<
   /**
    * Table states
    */
-  tableProps: Partial<TableProps<TModel>>;
+  tableProps?: TableProps<TModel>;
   /**
    * Search event
    */
@@ -77,12 +76,11 @@ export interface ListPageContentProps<
   /**
    * Exporting current models to excel
    */
-  onExcelExport: () => void;
+  onExcelExport?: () => void;
   /**
    * ListPage columns
-   * ==> MUST BE MEMOIZED <==
    */
-  columns: ColumnDef<TModel>[];
+  columns: TableColumn<TModel>[];
   /**
    * Enable searching thru commands and shortcuts
    */
@@ -102,7 +100,7 @@ export interface ListPageContentProps<
   /**
    * Event called when clearing filters
    */
-  onClear: () => void;
+  onClear?: () => void;
   /**
    * Automatically call onNeedData when any value of filter get changed
    */
@@ -467,11 +465,11 @@ function ListPageContent<
 
   const contextValue = useMemo<ListPageContextType<TModel>>(
     () => ({
-      onShowDetailPage: () => {},
+      onShowDetailPage: onOpen,
       loading,
       data,
       search: onSearch,
-      clear: onClear,
+      clear: onClear!,
       enableClear,
       enableCreateItem,
       enableExport,

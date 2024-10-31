@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import { Assignment, Close, Done, Pending, Search } from '@mui/icons-material';
 import { Alert, AlertTitle, Button, Stack } from '@mui/material';
@@ -6,13 +7,16 @@ import { Meta, StoryObj } from '@storybook/react';
 import { RowSelectionState } from '@tanstack/react-table';
 import { z } from 'zod';
 
+import { FlexBox } from '../../components/flexbox';
 import ListPage from '../../components/listpage/pages/ListPage';
 import { ServerError } from '../../components/utils';
 import { UserDefaultValues } from '../utils/api';
 import { UserSchema } from '../utils/schema';
 import useSession from '../utils/useSession';
 import EmbededDetailPage from './components/EmbededDetailPage';
+import EmbededDrawerDetailPage from './components/EmbededDrawerDetailPage';
 import FilterContent from './components/FilterContent';
+import ListPageWithRoute from './components/ListPageWithRoute';
 import useListPageData from './components/useListPageData';
 
 const meta: Meta<typeof ListPage<UserSchema>> = {
@@ -34,12 +38,14 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
       },
       {
         accessorKey: 'email',
+        header: 'Email',
         cell(props) {
           return <a href={`mailto:${props.getValue()}`}>{props.renderValue() as string}</a>;
         },
       },
       {
         id: 'address',
+        header: 'Address',
         enableSorting: false,
         accessorFn: (row) =>
           `${row.address?.street} ${row.address?.suite} ${row.address?.city} ${row.address?.zipcode}`,
@@ -60,6 +66,7 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
         pagination: { pageSize: 5 },
       },
     },
+    enableCreateItem: false,
   },
   component: ListPage,
   decorators: (Story, context) => {
@@ -73,6 +80,7 @@ export default meta;
 type ListPageStory = StoryObj<typeof ListPage<UserSchema>>;
 type ListPageSelectionStory = StoryObj<typeof ListPage.Selection<UserSchema>>;
 type ListPageModalStory = StoryObj<typeof ListPage.Modal<UserSchema>>;
+type ListPageRouteStory = StoryObj<typeof ListPage.Route<UserSchema>>;
 
 export const Simple: ListPageStory = {};
 
@@ -230,6 +238,18 @@ export const WithDetailPage: ListPageStory = {
   },
 };
 
+export const WithDetailPageDrawer: ListPageStory = {
+  name: 'With DetailPage (Drawer)',
+  args: {
+    enableCreateItem: true,
+    detailPage: EmbededDrawerDetailPage,
+    actionCommandsProps: {
+      showCopy: false,
+    },
+    createCommandLabel: 'New User',
+  },
+};
+
 export const Selection: ListPageSelectionStory = {
   name: 'Selection Modal',
   args: {
@@ -301,8 +321,57 @@ export const Notifications: ListPageStory = {
       },
       {
         type: 'success',
-        message: 'Your seaached succesfully !',
+        message: 'Your searched succesfully !',
       },
+      'Saving failed',
     ],
+  },
+};
+
+export const WithExtraCommands: ListPageStory = {
+  args: {
+    onExtraCommands: () => (
+      <>
+        <Button color="warning">Extra Command 1</Button>
+        <Button color="success">Extra Command 2</Button>
+      </>
+    ),
+  },
+};
+
+export const WithOnCommands: ListPageStory = {
+  args: {
+    onCommands({ content }) {
+      return (
+        <FlexBox gap={1}>
+          <Button color="warning">Extra Command 1</Button>
+          <Button color="success">Extra Command 2</Button>
+          {content}
+        </FlexBox>
+      );
+    },
+  },
+};
+
+export const AutoSearch: ListPageStory = {
+  name: 'AutoSearch Mode',
+  args: {
+    autoSearch: true,
+  },
+};
+
+export const FilterFromQuerystring: ListPageRouteStory = {
+  args: {
+    enableQueryStringFilter: true,
+    enableClear: true,
+  },
+  render: (args) => {
+    return (
+      <MemoryRouter initialEntries={['/customers?username=K&name=C']}>
+        <Routes>
+          <Route path="customers" element={<ListPageWithRoute {...args} />} />
+        </Routes>
+      </MemoryRouter>
+    );
   },
 };

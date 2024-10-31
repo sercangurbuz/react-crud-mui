@@ -6,22 +6,26 @@ import { INITIAL_PAGEINDEX } from '../constants';
 import { ListPageFilter, ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
 import ListPageModal from './ListPageModal';
+import ListPageRoute from './ListPageRoute';
 import ListPageSelection from './ListPageSelection';
 
 export interface ListPageProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-> extends Omit<ListPageFormProps<TModel, TFilter>, 'filter' | 'onChange'> {
+  TDetailPageModel extends FieldValues = FieldValues,
+> extends Omit<ListPageFormProps<TModel, TFilter, TDetailPageModel>, 'onChange' | 'meta'> {
   /**
    * Data fetcher function with given filter
    */
   onNeedData?: (filter: ListPageFilter<TFilter> | undefined) => void;
 }
 
-function ListPage<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>(
-  props: ListPageProps<TModel, TFilter>,
-) {
-  const { defaultFilter, onNeedData, tableProps, defaultSegmentIndex } = props;
+function ListPage<
+  TModel extends FieldValues,
+  TFilter extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = FieldValues,
+>(props: ListPageProps<TModel, TFilter, TDetailPageModel>) {
+  const { defaultFilter, onNeedData, tableProps, defaultSegmentIndex, activeSegmentIndex } = props;
   const { pageSize: defaultPageSize } = useSettings();
 
   /* -------------------------------------------------------------------------- */
@@ -39,7 +43,7 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues = Fiel
       sorting: defaultFilter?.meta?.sorting ?? tableProps?.initialState?.sorting ?? [],
       columnFilters:
         defaultFilter?.meta?.columnFilters ?? tableProps?.initialState?.columnFilters ?? [],
-      segmentIndex: defaultSegmentIndex,
+      segmentIndex: activeSegmentIndex ?? defaultSegmentIndex,
       reason: 'init',
     };
   });
@@ -74,5 +78,6 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues = Fiel
 
 ListPage.Selection = ListPageSelection;
 ListPage.Modal = ListPageModal;
+ListPage.Route = ListPageRoute;
 
 export default ListPage;

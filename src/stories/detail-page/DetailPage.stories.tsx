@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   createMemoryRouter,
   createRoutesFromElements,
+  Navigate,
   Outlet,
   Route,
   RouterProvider,
@@ -34,6 +35,8 @@ import CustomTabs from './components/CustomTabs';
 import CustomTitle from './components/CustomTitle';
 import DisableStateButtons from './components/DisableStateButtons';
 import FormContent from './components/FormContent';
+import NestedTodosRouteTab from './components/NestedTodosRouteTab';
+import NestedUserInfoRouteTab from './components/NestedUserInfoRouteTab';
 import { Step1, Step2, Step3 } from './components/Steps';
 import UserList from './components/UserList';
 
@@ -356,7 +359,7 @@ export const WithTabs: DetailPageStory = {
 export const WithCustomTabs: DetailPageStory = {
   args: {
     ...WithTabs.args,
-    customTabs: CustomTabs,
+    onTabs: CustomTabs,
   },
 };
 
@@ -499,5 +502,36 @@ export const InRouterModal: DetailPageRouteStory = {
     });
 
     return <DetailPage.RouteModal {...args} data={data} loading={isFetching} />;
+  },
+};
+
+export const NestedRouteTabs: DetailPageRouteStory = {
+  render: () => {
+    const router = createMemoryRouter(
+      createRoutesFromElements(
+        <Route
+          path=""
+          element={
+            <Grid2 container spacing={2}>
+              <Grid2 size={{ md: 4, xs: 12 }}>
+                <UserList />
+              </Grid2>
+              <Grid2 size={{ md: 8, xs: 12 }}>
+                <Outlet />
+              </Grid2>
+            </Grid2>
+          }
+        >
+          <Route path=":id">
+            <Route path="info" element={<NestedUserInfoRouteTab />} />
+            <Route path="todos" element={<NestedTodosRouteTab />} />
+            <Route index element={<Navigate to="info" replace />} />
+          </Route>
+        </Route>,
+      ),
+      { initialEntries: ['/1'] },
+    );
+
+    return <RouterProvider router={router} />;
   },
 };

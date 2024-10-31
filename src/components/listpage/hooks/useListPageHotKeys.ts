@@ -7,8 +7,8 @@ import useListPageCommandStates from './useListPageCommandStates';
 export interface UseListPageHotKeysProps extends Partial<Options> {
   onSearch: () => void;
   onCreateItem?: () => void;
-  onClear: () => void;
-  onExport: () => void;
+  onClear?: () => void;
+  onExport?: () => void;
 }
 
 // Hotkey scope name for preventing conflict
@@ -62,7 +62,7 @@ function useListPageHotKeys({
   /**
    * Export
    */
-  useHotkeys(SHORTCUT_EXPORT, onExport, {
+  useHotkeys(SHORTCUT_EXPORT, () => onExport?.(), {
     enabled: !disabled.search && !!visible.export && !loading,
     description: t('listpage.settings.exportExcel'),
     scopes,

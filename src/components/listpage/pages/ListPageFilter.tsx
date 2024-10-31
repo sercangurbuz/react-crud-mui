@@ -42,7 +42,18 @@ export type NeedDataPayload<TFilter extends FieldValues> = {
 export interface ListPageFilterProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-> extends ListPageContentProps<TModel> {
+  TDetailPageModel extends FieldValues = FieldValues,
+> extends Omit<
+    ListPageContentProps<TModel, TDetailPageModel>,
+    'onSearch' | 'onExcelExport' | 'tableProps' | 'onTabChanged'
+  > {
+  /**
+   * Table states as partial for providing extra props to table
+   */
+  tableProps?: Partial<TableProps<TModel>>;
+  /**
+   * RHF instance
+   */
   form: UseFormReturn<TFilter>;
   /**
    * Form filter values change event
@@ -52,14 +63,26 @@ export interface ListPageFilterProps<
    * Default index of tab
    */
   defaultSegmentIndex?: number;
-
+  /**
+   * Meta data of listpage
+   */
   meta?: ListPageMeta;
 }
 
-function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>(
-  props: ListPageFilterProps<TModel, TFilter>,
-) {
-  const { form, meta, tableProps: extableProps, onChange, defaultSegmentIndex, onClear } = props;
+function ListPageFilter<
+  TModel extends FieldValues,
+  TFilter extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = FieldValues,
+>(props: ListPageFilterProps<TModel, TFilter, TDetailPageModel>) {
+  const {
+    form,
+    meta,
+    tableProps: extableProps,
+    onChange,
+    defaultSegmentIndex,
+    onClear,
+    onSegmentChanged,
+  } = props;
 
   const {
     reset,
@@ -78,7 +101,7 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
   /*                                 Table Props                                */
   /* -------------------------------------------------------------------------- */
 
-  const tableProps: Partial<TableProps<TModel>> = {
+  const tableProps = {
     enableSorting: true,
     enablePaging: true,
     manualPagination: true,
@@ -106,9 +129,9 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
       sorting: meta?.sorting,
       columnFilters: meta?.columnFilters,
       rowSelection,
-      ...extableProps.state,
+      ...extableProps?.state,
     },
-  };
+  } as TableProps<TModel>;
 
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
@@ -152,7 +175,7 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
   /* --------------------------------- Render --------------------------------- */
 
   return (
-    <ListPageContent
+    <ListPageContent<TModel, TDetailPageModel>
       {...props}
       onSearch={() =>
         handleSearch({
@@ -164,7 +187,9 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
       }
       tableProps={tableProps}
       activeSegmentIndex={meta?.segmentIndex}
-      onTabChanged={(segmentIndex) => handleSearch({ segmentIndex, reason: 'tabChanged' })}
+      onTabChanged={(segmentIndex) => {
+        handleSearch({ segmentIndex, reason: 'tabChanged' });
+      }}
       onClear={clearForm}
     />
   );

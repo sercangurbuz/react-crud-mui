@@ -3,7 +3,11 @@ import { DefaultValues, FieldValues } from 'react-hook-form';
 import { z } from 'zod';
 
 import FormProvider from '../../form/components/FormProvider';
-import useForm, { UseFormOptions, ValidationOptions } from '../../form/hooks/useForm';
+import useForm, {
+  UseFormOptions,
+  UseFormReturn,
+  ValidationOptions,
+} from '../../form/hooks/useForm';
 import { DeepNullable } from '../../utils';
 import ListPageFilter, {
   ListPageFilterProps,
@@ -17,8 +21,10 @@ import ListPageFilter, {
 export interface ListPageFormProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-> extends ListPageFilterProps<TModel, TFilter>,
+  TDetailPageModel extends FieldValues = FieldValues,
+> extends Omit<ListPageFilterProps<TModel, TFilter, TDetailPageModel>, 'form'>,
     Partial<Pick<UseFormOptions<TFilter>, 'schema'>> {
+  form?: UseFormReturn<TFilter>;
   schema?: z.ZodType<Partial<TFilter>>;
   /**
    * External filter criteries
@@ -34,9 +40,11 @@ export interface ListPageFormProps<
   validationOptions?: ValidationOptions<TFilter>;
 }
 
-function ListPageForm<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>(
-  props: ListPageFormProps<TModel, TFilter>,
-) {
+function ListPageForm<
+  TModel extends FieldValues,
+  TFilter extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = FieldValues,
+>(props: ListPageFormProps<TModel, TFilter, TDetailPageModel>) {
   const { schema, defaultValues, defaultFilter, validationOptions } = props;
   /* -------------------------------------------------------------------------- */
   /*                                 Form hooks                                 */

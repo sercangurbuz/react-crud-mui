@@ -39,7 +39,7 @@ export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
   tabs?: TabPane[];
   selectedTabIndex?: number;
   onTabChanged?: (index: number) => void;
-  customTabs?: ComponentType<DefaultTabsProps>;
+  onTabs?: (props: DefaultTabsProps) => ReactNode;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -64,7 +64,7 @@ function Page({
   children,
   commandsContent,
   commandsPosition = 'top-right',
-  customTabs: CustomTabs,
+  onTabs,
   disabled,
   footerContent,
   loading,
@@ -109,8 +109,11 @@ function Page({
       },
     };
 
-    const Tabs = CustomTabs ?? DefaultTabs;
-    return <Tabs {...props} />;
+    if (onTabs) {
+      return onTabs(props);
+    }
+
+    return <DefaultTabs {...props} />;
   };
 
   const renderTabContent = () => {
