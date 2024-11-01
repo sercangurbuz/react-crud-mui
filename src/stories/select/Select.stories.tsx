@@ -49,6 +49,11 @@ export default meta;
 type SelectStory = StoryObj<typeof Field.Select>;
 
 export const Simple: SelectStory = {};
+export const Disabled: SelectStory = {
+  args: {
+    disabled: true,
+  },
+};
 
 export const WithDescription: SelectStory = {
   args: {

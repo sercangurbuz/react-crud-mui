@@ -47,6 +47,11 @@ export default meta;
 type CheckboxStory = StoryObj<typeof Field.Checkbox>;
 
 export const Simple: CheckboxStory = {};
+export const Disabled: CheckboxStory = {
+  args: {
+    disabled: true,
+  },
+};
 
 export const WithDescription: CheckboxStory = {
   args: {

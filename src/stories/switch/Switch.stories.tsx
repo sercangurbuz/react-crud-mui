@@ -47,6 +47,11 @@ export default meta;
 type SwitchStory = StoryObj<typeof Field.Switch>;
 
 export const Simple: SwitchStory = {};
+export const Disabled: SwitchStory = {
+  args: {
+    disabled: true,
+  },
+};
 
 export const WithDescription: SwitchStory = {
   args: {

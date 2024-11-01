@@ -161,7 +161,7 @@ const componentsOverride = (theme: Theme): Components => {
     MuiStepLabel: {
       styleOverrides: {
         labelContainer: {
-          fontSize: 12
+          fontSize: 12,
         },
       },
     },

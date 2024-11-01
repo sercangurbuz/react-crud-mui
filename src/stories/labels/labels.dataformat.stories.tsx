@@ -18,6 +18,12 @@ export default meta;
 type Story = StoryObj<typeof Labels.DateFormat>;
 
 export const Simple: Story = {};
+export const WithTime: Story = {
+  args: {
+    enableTime: true,
+  },
+};
+
 export const Custom: Story = {
   args: {
     component: H5,

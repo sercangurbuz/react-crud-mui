@@ -1,5 +1,5 @@
-import { Theme } from '@mui/material/styles/createTheme'
-import { Components } from '@mui/material/styles/components'
+import { Components } from '@mui/material/styles/components';
+import { Theme } from '@mui/material/styles/createTheme';
 
 const Switch = (theme: Theme): Components['MuiSwitch'] => {
   return {
@@ -23,7 +23,7 @@ const Switch = (theme: Theme): Components['MuiSwitch'] => {
         ...(size === 'small' && { width: '12px !important', height: '12px !important' }),
       }),
     },
-  }
-}
+  };
+};
 
-export default Switch
+export default Switch;

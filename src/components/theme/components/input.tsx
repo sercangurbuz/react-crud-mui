@@ -15,7 +15,18 @@ export const Input = (theme: Theme): Components['MuiInput'] => ({
 
 export const OutlinedInput = (theme: Theme): Components['MuiOutlinedInput'] => ({
   styleOverrides: {
-    input: { color: theme.palette.text.primary },
+    root: {
+      '&.Mui-disabled': {
+        backgroundColor: theme.palette.action.disabledBackground, // theme.palette.grey[isDark(theme) ? 700 : 200],
+
+        '.MuiOutlinedInput-notchedOutline': {
+          borderColor: theme.palette.grey[isDark(theme) ? 600 : 300],
+        },
+      },
+    },
+    input: {
+      color: theme.palette.text.primary,
+    },
     adornedEnd: { color: theme.palette.grey[400] },
     adornedStart: { color: theme.palette.grey[400] },
     inputSizeSmall: { padding: '12px 14px' },
@@ -85,6 +96,8 @@ export const InputLabel = (theme: Theme): Components['MuiInputLabel'] => ({
       '&.Mui-focused': { fontWeight: 600 },
       '&.Mui-disabled': { color: theme.palette.grey[300] },
     },
+    outlined: {
+      '&.Mui-disabled': { color: theme.palette.grey[400] },
+    },
   },
 });
-

@@ -52,6 +52,11 @@ export default meta;
 type ComboboxStory = StoryObj<typeof Field.Combobox>;
 
 export const Simple: ComboboxStory = {};
+export const Disabled: ComboboxStory = {
+  args: {
+    disabled: true,
+  },
+};
 
 export const WithDescription: ComboboxStory = {
   args: {

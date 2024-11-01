@@ -33,7 +33,7 @@ const meta: Meta<typeof Field.MoneyInput> = {
               <Story />
             </Box>
             <Field.Button
-              onClick={(form) => form.setValue('value', null, { shouldValidate: true })}
+              onClick={(form) => form.setValue('value', 0, { shouldValidate: true })}
             >
               Reset
             </Field.Button>
@@ -52,6 +52,11 @@ export default meta;
 type MoneyInputStory = StoryObj<typeof Field.MoneyInput>;
 
 export const Simple: MoneyInputStory = {};
+export const Disabled: MoneyInputStory = {
+  args: {
+    disabled: true,
+  },
+};
 
 export const CustomCurrency: MoneyInputStory = {
   render(args) {
