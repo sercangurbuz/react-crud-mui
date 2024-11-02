@@ -60,18 +60,32 @@ function ActionCommands({
         <TableMoreMenuItem
           Icon={RemoveRedEye}
           title={t('browse')}
-          handleClick={onView}
+          handleClick={() => {
+            onView?.();
+            handleCloseOpenMenu();
+          }}
           disabled={!canView}
         />
       ) : null}
       {showEdit ? (
-        <TableMoreMenuItem Icon={Edit} title={t('edit')} handleClick={onEdit} disabled={!canEdit} />
+        <TableMoreMenuItem
+          Icon={Edit}
+          title={t('edit')}
+          handleClick={() => {
+            onEdit?.();
+            handleCloseOpenMenu();
+          }}
+          disabled={!canEdit}
+        />
       ) : null}
       {showCopy ? (
         <TableMoreMenuItem
           Icon={Copy}
           title={t('copyitem')}
-          handleClick={onCopy}
+          handleClick={() => {
+            onCopy?.();
+            handleCloseOpenMenu();
+          }}
           disabled={!canCopy}
         />
       ) : null}
@@ -79,7 +93,10 @@ function ActionCommands({
         <TableMoreMenuItem
           Icon={DeleteOutline}
           title="Delete"
-          handleClick={onDelete}
+          handleClick={() => {
+            onDelete?.();
+            handleCloseOpenMenu();
+          }}
           disabled={!canDelete}
         />
       ) : null}

@@ -73,15 +73,7 @@ function ListPageFilter<
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >(props: ListPageFilterProps<TModel, TFilter, TDetailPageModel>) {
-  const {
-    form,
-    meta,
-    tableProps: extableProps,
-    onChange,
-    defaultSegmentIndex,
-    onClear,
-    onSegmentChanged,
-  } = props;
+  const { form, meta, tableProps: extableProps, onChange, defaultSegmentIndex, onClear } = props;
 
   const {
     reset,

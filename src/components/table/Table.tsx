@@ -21,6 +21,7 @@ import {
   TablePagination,
   TablePaginationProps,
   TableRow,
+  TableRowProps,
   TableSortLabel,
   Theme,
   useTheme,
@@ -93,7 +94,7 @@ export type TableColumn<D extends object = object> = {
 export interface TableProps<TData extends FieldValues>
   extends Omit<TableOptions<TData>, 'getCoreRowModel' | 'columns'>,
     Partial<Pick<EmptyTextProps, 'emptyText' | 'showEmptyImage'>>,
-    MuiTableProps {
+    Pick<MuiTableProps, 'size' | 'stickyHeader' | 'sx'> {
   autoFocus?: boolean;
   bordered?: boolean;
   columns: TableColumn<TData>[];
@@ -116,6 +117,8 @@ export interface TableProps<TData extends FieldValues>
   skeletonRows?: number;
   showNewRowButton?: boolean;
   paginationProps?: Partial<TablePaginationProps>;
+  headerSx?: TableRowProps['sx'];
+  rowSx?: TableRowProps['sx'];
 }
 
 const DEFAULT_SKELETON_ROW_NUMBER = 10;
@@ -135,6 +138,7 @@ function Table<TData extends FieldValues>({
   enableNestedComponent,
   enableSkeleton = true,
   footerContent,
+  headerSx,
   loading,
   newRowButtonText,
   onNewRow,
@@ -145,12 +149,14 @@ function Table<TData extends FieldValues>({
   onSubTreeRows,
   paginationProps,
   rowIdField = DEFAULT_ROW_KEY_FIELD as Path<TData>,
+  rowSx,
   size = 'medium',
   stickyHeader = true,
   scrollProps,
   showEmptyImage,
   showNewRowButton,
   skeletonRows = DEFAULT_SKELETON_ROW_NUMBER,
+  sx,
   state,
   ...tableProps
 }: TableProps<TData>) {
@@ -445,6 +451,7 @@ function Table<TData extends FieldValues>({
                     borderColor: (theme) => theme.palette.grey[600],
                   },
                 },
+                ...headerSx,
               }}
             >
               {headerGroup.headers.map((header) => renderHeaderCell(header, isLeafHeader))}
@@ -583,10 +590,14 @@ function Table<TData extends FieldValues>({
                 onClick={() => {
                   handleRowClick(row);
                 }}
-                sx={{
-                  cursor: onRowClick || enableRowClickSelect ? 'pointer' : undefined,
-                }}
                 {...exRowProps}
+                sx={
+                  {
+                    ...rowSx,
+                    ...exRowProps?.sx,
+                    cursor: onRowClick || enableRowClickSelect ? 'pointer' : 'default',
+                  } as TableRowProps['sx']
+                }
                 // for keyboard navigation
                 id={row.id}
                 tabIndex={0}
@@ -701,8 +712,8 @@ function Table<TData extends FieldValues>({
           sx={{
             border: bordered ? '1px solid' : 'none',
             borderColor: (theme) => theme.palette.grey[700],
+            ...sx,
           }}
-          {...tableProps}
         >
           {renderHeader()}
           {renderBody()}
