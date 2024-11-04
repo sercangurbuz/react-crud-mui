@@ -20,7 +20,7 @@ export type RadioGroupData = {
   label: string;
 };
 
-export interface RadioGroupProps<TFieldValues extends FieldValues = FieldValues>
+export interface FormRadioGroupProps<TFieldValues extends FieldValues = FieldValues>
   extends Omit<MuiRadioGroupProps, 'name'>,
     ControlCommonProps<TFieldValues>,
     FormControlProps {
@@ -43,7 +43,7 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
   fieldProps,
   data,
   ...radioGroupProps
-}: RadioGroupProps<TFieldValues>) {
+}: FormRadioGroupProps<TFieldValues>) {
   return (
     <Field
       name={name}

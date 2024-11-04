@@ -2,7 +2,7 @@ import { Card, Divider } from '@mui/material';
 
 import Header, { HeaderProps } from '../header/Header';
 
-interface PanelProps extends HeaderProps {
+export interface PanelProps extends HeaderProps {
   bordered?: boolean;
 }
 

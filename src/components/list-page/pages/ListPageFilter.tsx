@@ -32,7 +32,7 @@ export type SearchReason =
   | 'tabChanged'
   | 'columnfilter';
 
-export type ListPageFilter<TFilter extends FieldValues> = TFilter & { meta: ListPageMeta };
+export type ListPageFilter<TFilter extends FieldValues> = TFilter & { _meta: ListPageMeta };
 
 export type NeedDataPayload<TFilter extends FieldValues> = {
   filter: ListPageFilter<TFilter>;

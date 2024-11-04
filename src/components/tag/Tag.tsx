@@ -8,13 +8,13 @@ import { StyledSpan } from './styles';
 export type Type = 'primary' | 'success' | 'error';
 
 // ==============================================================
-interface Props extends PropsWithChildren, BoxProps {
+export interface TagProps extends PropsWithChildren, BoxProps {
   type?: Type;
   ellipsis?: boolean;
 }
 // ==============================================================
 
-export default function Tag({ children, type = 'success', ellipsis = false, ...props }: Props) {
+export default function Tag({ children, type = 'success', ellipsis = false, ...props }: TagProps) {
   return (
     <StyledSpan ellipsis={ellipsis} type={type} {...props}>
       {children}

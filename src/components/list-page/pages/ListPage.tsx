@@ -38,11 +38,11 @@ function ListPage<
         pageIndex: INITIAL_PAGEINDEX,
         pageSize: defaultPageSize,
         ...tableProps?.initialState?.pagination,
-        ...defaultFilter?.meta?.pagination,
+        ...defaultFilter?._meta?.pagination,
       },
-      sorting: defaultFilter?.meta?.sorting ?? tableProps?.initialState?.sorting ?? [],
+      sorting: defaultFilter?._meta?.sorting ?? tableProps?.initialState?.sorting ?? [],
       columnFilters:
-        defaultFilter?.meta?.columnFilters ?? tableProps?.initialState?.columnFilters ?? [],
+        defaultFilter?._meta?.columnFilters ?? tableProps?.initialState?.columnFilters ?? [],
       segmentIndex: activeSegmentIndex ?? defaultSegmentIndex,
       reason: 'init',
     };
@@ -69,7 +69,7 @@ function ListPage<
 
     onNeedData?.({
       ...filter,
-      meta: _meta,
+      _meta,
     });
   };
 

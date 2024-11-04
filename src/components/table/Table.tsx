@@ -37,7 +37,7 @@ import {
   type CoreColumn,
   type Row,
   type RowData,
-  type Table,
+  type Table as ReactTable,
   type TableOptions,
   type VisibilityState,
 } from '@tanstack/react-table';
@@ -48,6 +48,7 @@ import isNil from '../misc/isNil';
 import Scrollbar from '../scrollbar';
 import { ScrollbarProps } from '../scrollbar/Scrollbar';
 import { primary } from '../theme/colors';
+import { isDark } from '../theme/theme.constants';
 import { Small, Tiny } from '../typography';
 import { BodyTableCell } from './components/BodyTableCell';
 import { BodyTableRow } from './components/BodyTableRow';
@@ -103,7 +104,7 @@ export interface TableProps<TData extends FieldValues>
   enablePaging?: boolean;
   enableSkeleton?: boolean;
   enableRowClickSelect?: boolean;
-  footerContent?: ReactNode | ((table: Table<TData>) => ReactNode);
+  footerContent?: ReactNode | ((table: ReactTable<TData>) => ReactNode);
   loading?: boolean;
   newRowButtonText?: string;
   onNewRow?: () => void;
@@ -398,6 +399,7 @@ function Table<TData extends FieldValues>({
     const isSortingEnabled = header.column.getCanSort();
     const sortDirection = header.column.getIsSorted();
     const sortToggleHandler = header.column.getToggleSortingHandler();
+    const isSortingActive = !!sortDirection;
 
     return (
       <HeadTableCell
@@ -405,6 +407,9 @@ function Table<TData extends FieldValues>({
         size={size}
         colSpan={header.colSpan}
         sx={{
+          backgroundColor: isSortingActive
+            ? alpha(theme.palette.primary.main, 0.1)
+            : 'background.header',
           ...(header.getSize() === Number.MAX_SAFE_INTEGER || !isLeafHeader
             ? { width: 'auto' }
             : {
@@ -415,9 +420,14 @@ function Table<TData extends FieldValues>({
       >
         {isSortingEnabled ? (
           <TableSortLabel
-            active={!!sortDirection}
+            active={isSortingActive}
             onClick={sortToggleHandler}
             direction={sortDirection === false ? undefined : sortDirection}
+            sx={{
+              '&.Mui-active, &.MuiTableSortLabel-root >.MuiTableSortLabel-icon': {
+                color: isSortingActive ? 'primary.main' : undefined,
+              },
+            }}
           >
             {cellNodeWithIcon}
           </TableSortLabel>
@@ -442,13 +452,14 @@ function Table<TData extends FieldValues>({
               key={headerGroup.id}
               sx={{
                 '& .MuiTableCell-root': {
-                  backgroundColor: 'background.header',
                   borderBottom: isBanded && !isLeafHeader ? '1px solid' : 'none',
-                  borderColor: (theme) => theme.palette.grey[600],
+                  borderColor: (theme) =>
+                    isDark(theme) ? theme.palette.grey[600] : theme.palette.grey[200],
 
                   '&:not(:first-child)': {
                     borderLeft: isBanded ? '1px solid' : 'none',
-                    borderColor: (theme) => theme.palette.grey[600],
+                    borderColor: (theme) =>
+                      isDark(theme) ? theme.palette.grey[600] : theme.palette.grey[200],
                   },
                 },
                 ...headerSx,
@@ -466,6 +477,7 @@ function Table<TData extends FieldValues>({
     let cellNode = flexRender(cell.column.columnDef.cell, cell.getContext());
     const isStandartCol = isStandartColumn(cell.column.id);
     const isIndentedCol = cell.row.depth > 0 && cell.column.getIndex() === 1;
+    const isSortingActive = cell.column.getCanSort() && !!cell.column.getIsSorted();
 
     if ((cell.column.columnDef as CoreColumn<TData>).link) {
       const uri = (cell.column.columnDef as CoreColumn<TData>).link!(cell.row);
@@ -489,6 +501,7 @@ function Table<TData extends FieldValues>({
         title={cell.column.title}
         size={isStandartCol ? 'small' : size}
         sx={{
+          backgroundColor: isSortingActive ? alpha(theme.palette.primary.main, 0.07) : undefined,
           ...(cell.column.getSize() === Number.MAX_SAFE_INTEGER
             ? { width: 'auto' }
             : {

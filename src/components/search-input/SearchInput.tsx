@@ -7,7 +7,7 @@ import SearchIcon from '../icons/SearchIcon';
 import { StyledInputBase } from './styles';
 
 // ========================================================================
-interface SearchInputProps extends InputBaseProps {
+export interface SearchInputProps extends InputBaseProps {
   bordered?: boolean;
   onSearch: (keyword: string) => void;
 }

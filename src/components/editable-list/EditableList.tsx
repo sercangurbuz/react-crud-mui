@@ -31,12 +31,10 @@ import useTranslation from '../i18n/hooks/useTranslation';
 import usePage from '../page/hooks/usePage';
 import useSettings from '../settings-provider/hooks/useSettings';
 import Table, { TableColumn, TableProps } from '../table/Table';
-import DefaultEditableListControlLayout, {
+import DefaultEditableListLayout, {
   DefaultEditableListControlLayoutProps,
-} from './components/DefaultEditableListControlLayout';
-import EditableListControlCommands, {
-  EditableListControlCommandsProps,
-} from './components/EditableListControlCommands';
+} from './components/DefaultEditableListLayout';
+import EditableListCommands, { EditableListCommandsProps } from './components/EditableListCommands';
 
 export const ROW_STATE_FIELD = '__$row_state__';
 export type RowStates = 'created' | 'modified' | 'pristine';
@@ -135,7 +133,7 @@ export interface EditableListProps<
   /**
    * Custom Commands on header
    */
-  commands?: (props: EditableListControlCommandsProps<TModel, TFieldArrayName>) => React.ReactNode;
+  commands?: (props: EditableListCommandsProps<TModel, TFieldArrayName>) => React.ReactNode;
   /**
    * Custom commands when needed to override the default buttons
    */
@@ -248,6 +246,7 @@ function EditableList<
               remove(index);
             },
             onCopy: () => onOpen({ data, reason: 'copy' }),
+            onView: () => onOpen({ data, disabled: true }),
             onEdit: () => onOpen({ data }),
             model: data,
             canCopy,
@@ -389,11 +388,8 @@ function EditableList<
   const renderDetailPage = () => {
     const props: DetailPageModalProps<TArrayModel> = {
       onClose,
-      icon: disabled ? <Visibility /> : <Edit />,
       disabled,
       onDelete: deleteModel,
-      enableDelete: canDelete,
-      enableDiscardChanges: false,
       enableCopy: canCopy,
       onSave: saveModel,
       hotkeyScopes: `${name}-${DETAILPAGE_HOTKEYS_SCOPE}`,
@@ -412,7 +408,7 @@ function EditableList<
   };
 
   const renderCommands = () => {
-    const props: EditableListControlCommandsProps<TModel, TFieldArrayName> = {
+    const props: EditableListCommandsProps<TModel, TFieldArrayName> = {
       newItemTitle,
       onCreate: () => onOpen(),
       onDeleteAll: () => replace([]),
@@ -425,7 +421,7 @@ function EditableList<
       return commands(props);
     }
 
-    return <EditableListControlCommands {...props} />;
+    return <EditableListCommands {...props} />;
   };
 
   const renderLayout = () => {
@@ -447,7 +443,7 @@ function EditableList<
       return onLayout(props);
     }
 
-    return <DefaultEditableListControlLayout {...props} />;
+    return <DefaultEditableListLayout {...props} />;
   };
 
   /* -------------------------------------------------------------------------- */
@@ -471,8 +467,8 @@ function EditableList<
   );
 }
 
-EditableList.Commands = EditableListControlCommands;
+EditableList.Commands = EditableListCommands;
 EditableList.RowCommands = ActionCommands;
-EditableList.DefaultLayout = DefaultEditableListControlLayout;
+EditableList.DefaultLayout = DefaultEditableListLayout;
 
 export default EditableList;

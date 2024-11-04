@@ -12,7 +12,7 @@ import useURLSearchFilter, { UseURLSearchFilterOptions } from '../hooks/useURLSe
 import ListPage, { ListPageProps } from './ListPage';
 import { ListPageFilter } from './ListPageFilter';
 
-interface ListPageRouteProps<
+export interface ListPageRouteProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
@@ -69,7 +69,7 @@ function ListPageRoute<
   /*                                   Events                                   */
   /* -------------------------------------------------------------------------- */
 
-  const setQSByFilter = (filter: Omit<ListPageFilter<TFilter>, 'meta'>) => {
+  const setQSByFilter = (filter: Omit<ListPageFilter<TFilter>, '_meta'>) => {
     let flattenedFilter = flattenObject(filter);
 
     if (flattenedFilter) {
@@ -87,12 +87,12 @@ function ListPageRoute<
 
   const handleNeedData = (filter: ListPageFilter<TFilter> | undefined) => {
     if (enableQueryStringFilter && filter) {
-      const { meta, ...formValues } = filter;
+      const { _meta, ...formValues } = filter;
       setQSByFilter(formValues);
     }
 
-    if (filter?.meta.reason === 'tabChanged') {
-      setSegment(filter?.meta.segmentIndex!);
+    if (filter?._meta.reason === 'tabChanged') {
+      setSegment(filter?._meta.segmentIndex!);
 
       if (enableNestedSegments) {
         return;

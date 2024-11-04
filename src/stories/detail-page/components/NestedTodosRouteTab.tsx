@@ -9,8 +9,8 @@ import useDetailPageRouteParams from '../../../components/detail-page/hooks/useD
 import { FlexBetween, FlexBox } from '../../../components/flexbox';
 import Field from '../../../components/form/Field';
 import UserOutlined from '../../../components/icons/UserOutlined';
-import ListPage from '../../../components/listpage/pages/ListPage';
-import { ListPageFilter, ListPageModel } from '../../../components/listpage/pages/ListPageFilter';
+import ListPage from '../../../components/list-page/pages/ListPage';
+import { ListPageFilter, ListPageModel } from '../../../components/list-page/pages/ListPageFilter';
 import Page from '../../../components/page/Page';
 import { useAppLazyQuery } from '../../../components/query';
 import { ServerError } from '../../../components/utils';

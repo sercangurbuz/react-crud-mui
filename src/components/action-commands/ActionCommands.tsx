@@ -7,7 +7,7 @@ import Copy from '../icons/Copy';
 import TableMoreMenu from '../table/components/TableMoreMenu';
 import TableMoreMenuItem from '../table/components/TableMoreMenuItem';
 
-export interface ActionCommandsProps {
+export interface ActionCommandsProps extends PropsWithChildren {
   onEdit?: () => void;
   onView?: () => void;
   onCopy?: () => void;
@@ -39,7 +39,7 @@ function ActionCommands({
   showDelete = true,
   disabled,
   children,
-}: PropsWithChildren<ActionCommandsProps>) {
+}: ActionCommandsProps) {
   const { t } = useTranslation();
   const [openMenuEl, setOpenMenuEl] = useState<null | HTMLElement>(null);
 

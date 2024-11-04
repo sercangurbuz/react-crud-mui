@@ -8,7 +8,7 @@ import { RowSelectionState } from '@tanstack/react-table';
 import { z } from 'zod';
 
 import { FlexBox } from '../../components/flexbox';
-import ListPage from '../../components/listpage/pages/ListPage';
+import ListPage from '../../components/list-page/pages/ListPage';
 import { ServerError } from '../../components/utils';
 import { UserDefaultValues } from '../utils/api';
 import { UserSchema } from '../utils/schema';

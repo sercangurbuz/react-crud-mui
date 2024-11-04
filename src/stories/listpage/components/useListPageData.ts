@@ -1,10 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
-import { ListPageProps } from '../../../components/listpage/pages/ListPage';
-import {
-  ListPageFilter,
-  PagingListModel,
-} from '../../../components/listpage/pages/ListPageFilter';
+import { ListPageProps } from '../../../components/list-page/pages/ListPage';
+import { ListPageFilter, PagingListModel } from '../../../components/list-page/pages/ListPageFilter';
 import { useAppLazyQuery } from '../../../components/query';
 import { UserSchema } from '../../utils/schema';
 
@@ -21,16 +18,16 @@ function useListPageData() {
   );
 
   const handleNeedData = useCallback(
-    ({ name, username, email, website, phone, meta }: ListPageFilter<UserSchema>) =>
+    ({ name, username, email, website, phone, _meta }: ListPageFilter<UserSchema>) =>
       fetch({
         name_like: name && `^${name}`,
         username_like: username && `^${username}`,
         email_like: email && `^${email}`,
         website_like: website && `^${website}`,
         phone_like: phone && `^${phone}`,
-        _page: meta.pagination.pageIndex + 1,
-        _limit: meta.pagination?.pageSize,
-        _sort: meta.sorting.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
+        _page: _meta.pagination.pageIndex + 1,
+        _limit: _meta.pagination?.pageSize,
+        _sort: _meta.sorting.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
       }),
     [],
   );

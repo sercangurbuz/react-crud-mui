@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 
 import useTranslation from '../i18n/hooks/useTranslation';
-import { H6, Small, Tiny } from '../typography';
+import { Tiny } from '../typography';
 import useComboboxTemplate, { ComboboxTemplate } from './hooks/useComboboxTemplate';
 
 /* -------------------------------------------------------------------------- */

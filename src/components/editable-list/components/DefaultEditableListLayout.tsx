@@ -20,7 +20,7 @@ export interface DefaultEditableListControlLayoutProps<
   headerProps?: HeaderProps;
 }
 
-function DefaultEditableListControlLayout<
+function DefaultEditableListLayout<
   TModel extends FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
 >({
@@ -44,4 +44,4 @@ function DefaultEditableListControlLayout<
   );
 }
 
-export default DefaultEditableListControlLayout;
+export default DefaultEditableListLayout;

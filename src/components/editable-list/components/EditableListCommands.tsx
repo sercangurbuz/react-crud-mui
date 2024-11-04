@@ -9,7 +9,7 @@ import Add from '../../icons/Add';
 import TableMoreMenu from '../../table/components/TableMoreMenu';
 import TableMoreMenuItem from '../../table/components/TableMoreMenuItem';
 
-export interface EditableListControlCommandsProps<
+export interface EditableListCommandsProps<
   TModel extends FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
 > {
@@ -21,7 +21,7 @@ export interface EditableListControlCommandsProps<
   api: UseFieldArrayReturn<TModel, TFieldArrayName, typeof UNIQUE_IDENTIFIER_FIELD_NAME>;
 }
 
-function EditableListControlCommands<
+function EditableListCommands<
   TModel extends FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
 >({
@@ -31,7 +31,7 @@ function EditableListControlCommands<
   newItemTitle,
   disabled,
   children,
-}: PropsWithChildren<EditableListControlCommandsProps<TModel, TFieldArrayName>>) {
+}: PropsWithChildren<EditableListCommandsProps<TModel, TFieldArrayName>>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -76,4 +76,4 @@ function EditableListControlCommands<
   );
 }
 
-export default EditableListControlCommands;
+export default EditableListCommands;

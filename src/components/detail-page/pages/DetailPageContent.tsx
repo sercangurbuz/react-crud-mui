@@ -412,7 +412,6 @@ function DetailPageContent<TModel extends FieldValues>({
     const isStepper = !!steps?.length;
     return (
       <Page
-        icon={<Edit />}
         title={reason === 'fetch' ? t('edit') : t('newitem')}
         {...pageProps}
         disabled={disabled || loading}
