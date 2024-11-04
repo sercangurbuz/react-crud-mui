@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { forwardRef, Ref } from 'react';
 
 import { BoxProps } from '@mui/system/Box';

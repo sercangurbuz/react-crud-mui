@@ -60,7 +60,7 @@ function useForm<TFieldValues extends FieldValues = FieldValues>({
 
   const getFormModel = useCallback((): Promise<TFieldValues> => {
     return new Promise<TFieldValues>((resolve, reject) => {
-      handleSubmit(resolve, reject)();
+      void handleSubmit(resolve, reject)();
     });
   }, [handleSubmit]);
 

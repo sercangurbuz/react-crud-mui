@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { Box, BoxProps, LinearProgress, styled } from '@mui/material';
 
@@ -98,7 +98,9 @@ function Page({
       return null;
     }
 
-    const selectedValue = selectedTabIndex <= tabs.length - 1 ? tabs[selectedTabIndex].value : '';
+    const selectedValue = (
+      selectedTabIndex <= tabs.length - 1 ? tabs[selectedTabIndex].value : ''
+    ) as string;
 
     const props: DefaultTabsProps = {
       tabs,

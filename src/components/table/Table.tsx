@@ -35,9 +35,9 @@ import {
   type Cell,
   type ColumnDef,
   type CoreColumn,
+  type Table as ReactTable,
   type Row,
   type RowData,
-  type Table as ReactTable,
   type TableOptions,
   type VisibilityState,
 } from '@tanstack/react-table';
@@ -63,6 +63,7 @@ import { DEFAULT_ROW_KEY_FIELD, EXPANDER_COL_NAME, SELECTION_COL_NAME } from './
 /* -------------------------------------------------------------------------- */
 
 declare module '@tanstack/react-table' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface CoreColumn<TData extends RowData, TValue = unknown> {
     link?: (row: Row<TData>) => string;
     align?: CellAlignment;
@@ -184,7 +185,7 @@ function Table<TData extends FieldValues>({
   const columnVisibility = useMemo<VisibilityState>(() => {
     const ids = columns
       .filter((col) => !isNil(col.hidden))
-      .reduce((result, col) => ({ [col.id!!]: !!col.hidden, ...result }), {});
+      .reduce((result, col) => ({ [col.id!]: !!col.hidden, ...result }), {});
     return ids;
   }, [columns]);
 
@@ -266,7 +267,7 @@ function Table<TData extends FieldValues>({
     }
 
     return result;
-  }, [columns, tableProps.enableRowSelection]);
+  }, [columns, enableNestedComponent, onSubTreeRows, tableProps.enableRowSelection]);
 
   /* ---------------------------- Expandable props ---------------------------- */
 
@@ -289,9 +290,11 @@ function Table<TData extends FieldValues>({
     ...(onSubTreeRows
       ? {
           getSubRows: (originalRow) => {
-            return typeof onSubTreeRows === 'string'
-              ? get(originalRow, onSubTreeRows)
-              : onSubTreeRows(originalRow);
+            return (
+              typeof onSubTreeRows === 'string'
+                ? get(originalRow, onSubTreeRows)
+                : onSubTreeRows(originalRow)
+            ) as TData[];
           },
         }
       : undefined),
@@ -584,10 +587,11 @@ function Table<TData extends FieldValues>({
           let descriptionText;
 
           if (descriptionField) {
-            descriptionText =
+            descriptionText = (
               typeof descriptionField === 'function'
                 ? descriptionField(row)
-                : get(row.original, descriptionField);
+                : get(row.original, descriptionField)
+            ) as string;
           }
 
           const isCanNested = onRenderNestedComponent && row.getIsExpanded();

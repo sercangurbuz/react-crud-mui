@@ -26,7 +26,9 @@ function useDetailPageRouteParams<
     customUniqueIdParamName ?? uniqueIdParamName
   ];
 
-  const hasRouteValue = (key: string) => currentQueryParameters.has(key) || state?.[key];
+  const hasRouteValue = (key: string) =>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    currentQueryParameters.has(key) || (state?.[key] as boolean);
 
   /* ---------------------------- Determine reason ---------------------------- */
 

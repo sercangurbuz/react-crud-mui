@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 import { FieldArrayPath, FieldValues, UseFieldArrayReturn } from 'react-hook-form';
 
-import { Box } from '@mui/material';
-
 import { UNIQUE_IDENTIFIER_FIELD_NAME } from '../../form/hooks';
 import Header, { HeaderProps } from '../../header/Header';
 import { Small } from '../../typography';

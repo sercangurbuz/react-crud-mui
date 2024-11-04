@@ -1,7 +1,6 @@
-import { Theme } from '@mui/material/styles/createTheme'
-import { Components } from '@mui/material/styles/components'
+import { Components } from '@mui/material/styles/components';
 
-const Fab = (theme: Theme): Components['MuiFab'] => {
+const Fab = (): Components['MuiFab'] => {
   return {
     styleOverrides: {
       extended: ({ ownerState: { color } }) => ({
@@ -22,7 +21,7 @@ const Fab = (theme: Theme): Components['MuiFab'] => {
         ...(variant === 'extended' && { paddingInline: '1rem' }),
       }),
     },
-  }
-}
+  };
+};
 
-export default Fab
+export default Fab;

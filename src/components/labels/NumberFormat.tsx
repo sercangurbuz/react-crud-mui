@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { forwardRef, Ref, useMemo } from 'react';
 
 import { Box } from '@mui/material';

@@ -4,9 +4,7 @@ import CurrencyFormat from './CurrencyFormat';
 import DateFormat from './DateFormat';
 import NumberFormat from './NumberFormat';
 
-interface LabelsProps {}
-
-const Labels: React.FunctionComponent<LabelsProps> & {
+const Labels: React.FunctionComponent & {
   DateFormat: typeof DateFormat;
   CurrencyFormat: typeof CurrencyFormat;
   NumberFormat: typeof NumberFormat;

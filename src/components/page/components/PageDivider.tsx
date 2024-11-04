@@ -1,6 +1,6 @@
 import { Divider, DividerProps } from '@mui/material';
 
-interface PageDividerProps extends DividerProps {}
+export type PageDividerProps = DividerProps;
 
 function PageDivider(props: PageDividerProps) {
   return (

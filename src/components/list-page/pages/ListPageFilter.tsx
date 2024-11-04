@@ -19,7 +19,7 @@ export interface PagingListModel<TModel> {
 }
 export type ListPageModel<TModel> = PagingListModel<TModel>;
 export type ListPageMeta = Pick<TableState, 'pagination' | 'sorting' | 'columnFilters'> & {
-  segmentIndex?: number;
+  segmentIndex: number;
   reason: SearchReason;
 };
 export type SearchReason =
@@ -65,7 +65,7 @@ export interface ListPageFilterProps<
   /**
    * Meta data of listpage
    */
-  meta?: ListPageMeta;
+  meta: ListPageMeta;
 }
 
 function ListPageFilter<
@@ -99,16 +99,16 @@ function ListPageFilter<
     manualFiltering: true,
     // setters
     onColumnFiltersChange: (updater) => {
-      const columnFilters = updater instanceof Function ? updater(meta?.columnFilters!) : updater;
-      handleSearch({ columnFilters, reason: 'columnfilter' } as DeepPartial<ListPageMeta>);
+      const columnFilters = updater instanceof Function ? updater(meta.columnFilters) : updater;
+      void handleSearch({ columnFilters, reason: 'columnfilter' } as DeepPartial<ListPageMeta>);
     },
     onPaginationChange: (updater) => {
-      const pagination = updater instanceof Function ? updater(meta?.pagination!) : updater;
-      handleSearch({ pagination, reason: 'pagination' });
+      const pagination = updater instanceof Function ? updater(meta.pagination) : updater;
+      void handleSearch({ pagination, reason: 'pagination' });
     },
     onSortingChange: (updater) => {
-      const sorting = updater instanceof Function ? updater(meta?.sorting!) : updater;
-      handleSearch({ sorting, reason: 'sorting' });
+      const sorting = updater instanceof Function ? updater(meta.sorting) : updater;
+      void handleSearch({ sorting, reason: 'sorting' });
     },
     ...extableProps,
     // states
@@ -132,14 +132,16 @@ function ListPageFilter<
       // validate and get current filter from form
       const values = await getFormModel();
       onChange?.(values, meta);
-    } catch {}
+    } catch {
+      /* empty */
+    }
   };
 
-  const clearForm = async () => {
+  const clearForm = () => {
     // reset form filters
     reset(defaultValues as TFilter, { keepDefaultValues: true });
     // reset form values
-    handleSearch({
+    void handleSearch({
       ...extableProps?.initialState,
       segmentIndex: defaultSegmentIndex,
       pagination: {
@@ -156,7 +158,7 @@ function ListPageFilter<
    * Wait RHF to init (skip to second render)
    */
   useFormInitEffect(() => {
-    handleSearch({ reason: 'init' });
+    void handleSearch({ reason: 'init' });
   });
 
   /* --------------------------------- Render --------------------------------- */
@@ -165,7 +167,7 @@ function ListPageFilter<
     <ListPageContent<TModel, TDetailPageModel>
       {...props}
       onSearch={() =>
-        handleSearch({
+        void handleSearch({
           reason: 'search',
           pagination: {
             pageIndex: INITIAL_PAGEINDEX,
@@ -175,7 +177,7 @@ function ListPageFilter<
       tableProps={tableProps}
       activeSegmentIndex={meta?.segmentIndex}
       onTabChanged={(segmentIndex) => {
-        handleSearch({ segmentIndex, reason: 'tabChanged' });
+        void handleSearch({ segmentIndex, reason: 'tabChanged' });
       }}
       onClear={clearForm}
     />

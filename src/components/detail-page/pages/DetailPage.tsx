@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import DetailPageDefaultLayout from '../components/DetailPageDefaultLayout';

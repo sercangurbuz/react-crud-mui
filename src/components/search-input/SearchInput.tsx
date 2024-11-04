@@ -23,7 +23,7 @@ export default forwardRef<HTMLInputElement, SearchInputProps>(
 
     useEffect(() => {
       onSearch(debouncedKeyword);
-    }, [debouncedKeyword]);
+    }, [debouncedKeyword, onSearch]);
 
     return (
       <StyledInputBase

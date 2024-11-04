@@ -81,7 +81,6 @@ export interface DetailPageCommandsProps extends DetailPageCommandsState {
   commandsExtraProps?: DetailPageCommandsExtraProps;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export enum DetailPageCommandNames {
   SAVE = 'save',
   CREATE = 'create',
@@ -188,6 +187,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         key="create"
         color="success"
         startIcon={<Add />}
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
         title={`${createCommandLabel ?? t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
         disabled={disabled.create}
         onClick={onCreate}
@@ -204,6 +204,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
               ]
             : undefined
         } */
+        // eslint-disable-next-line react/no-children-prop
         children={createCommandLabel ?? t('newitem')}
         {...commandsExtraProps['create']}
       />
@@ -220,6 +221,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         disabled={disabled.discardchanges}
         onClick={onDiscardChanges}
         startIcon={<Undo />}
+        // eslint-disable-next-line react/no-children-prop
         children={t('discardchanges')}
         {...commandsExtraProps['discardchanges']}
       />
@@ -238,6 +240,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         color="error"
         startIcon={<Delete />}
         title={`${t('deletetitle')}\n(${SHORTCUT_DELETE.toUpperCase()})`}
+        // eslint-disable-next-line react/no-children-prop
         children={t('delete')}
         onClick={onDelete}
         {...commandsExtraProps['delete']}
@@ -258,6 +261,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         disabled={disabled.close}
         startIcon={<Close />}
         onClick={() => onClose?.('close-button')}
+        // eslint-disable-next-line react/no-children-prop
         children={t('close')}
         {...commandsExtraProps['close']}
       />

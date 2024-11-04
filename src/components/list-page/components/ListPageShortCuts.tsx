@@ -1,7 +1,7 @@
 import useHotKeysSingleScope from '../../hooks/useHotKeysSingleScope';
 import useListPageHotKeys, { UseListPageHotKeysProps } from '../hooks/useListPageHotKeys';
 
-interface ListPageShortCutsProps extends UseListPageHotKeysProps {}
+type ListPageShortCutsProps = UseListPageHotKeysProps;
 
 /**
  * Dummy wrapper component for shortcut hook

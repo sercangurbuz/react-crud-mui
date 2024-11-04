@@ -106,7 +106,6 @@ function DetailPageData<TModel extends FieldValues>({
   onClose,
   onDelete,
   onDiscardChanges,
-  onNavigate,
   onReasonChange,
   onSave,
   reason = 'create',
@@ -138,7 +137,7 @@ function DetailPageData<TModel extends FieldValues>({
         reset(data);
       }
 
-      trigger();
+      void trigger();
       prevDataRef.current = data;
     },
     [reset, trigger],
@@ -163,7 +162,7 @@ function DetailPageData<TModel extends FieldValues>({
   // be sure data already set
   useUpdateEffect(() => {
     if (schema && prevDataRef.current) {
-      trigger();
+      void trigger();
     }
   }, [schema, trigger]);
 
@@ -269,7 +268,7 @@ function DetailPageData<TModel extends FieldValues>({
 
   const handleDiscard = () => {
     reset();
-    trigger();
+    void trigger();
     onDiscardChanges?.();
   };
 
@@ -293,10 +292,10 @@ function DetailPageData<TModel extends FieldValues>({
       reason={reason}
       onCreate={() => handleCreate()}
       onCopy={() => handleCreate('copy')}
-      onSaveCreate={handleSaveAndCreate}
-      onSaveClose={handleSaveClose}
-      onSave={handleSave}
-      onDelete={handleDelete}
+      onSaveCreate={() => void handleSaveAndCreate()}
+      onSaveClose={() => void handleSaveClose()}
+      onSave={() => void handleSave()}
+      onDelete={() => void handleDelete()}
       onDiscardChanges={handleDiscard}
       onClose={onClose}
     />

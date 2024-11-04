@@ -4,7 +4,6 @@ import { FieldValues } from 'react-hook-form';
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
 import useTranslation from '../../i18n/hooks/useTranslation';
-import Edit from '../../icons/Edit';
 import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
@@ -358,10 +357,8 @@ function DetailPageContent<TModel extends FieldValues>({
     return (
       <Steps
         items={steps!}
-        disabled={disabled}
         status={loading ? 'wait' : error ? 'error' : 'process'}
         activeStep={activeSegmentIndex}
-        onChange={onSegmentChanged}
         {...stepsProps}
       />
     );
@@ -386,7 +383,6 @@ function DetailPageContent<TModel extends FieldValues>({
       onFinish: onSave,
       nextButtonTitle,
       prevButtonTitle,
-      commands: stepsProps?.commands,
       options: {
         showNextButton: !!nextButtonTitle,
         showPrevButton: !!prevButtonTitle,

@@ -2,7 +2,7 @@ import { Theme } from '@mui/material';
 
 export type ServerError = {
   message?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export type DeepPartial<T> = {

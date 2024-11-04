@@ -10,7 +10,6 @@ export interface UseAppMutationOptions<TData, TVariables>
   extends UseMutationOptions<TData, ServerError, TVariables>,
     UseMakeURIOptions<TVariables> {
   baseURL?: string;
-  resultPropName?: string;
   method?: AxiosRequestConfig['method'];
 }
 
@@ -18,7 +17,6 @@ function useAppMutation<TData, TVariables extends RecordType>({
   url,
   action,
   method = 'POST',
-  resultPropName,
   baseURL,
   controller,
   ...options
@@ -45,7 +43,7 @@ function useAppMutation<TData, TVariables extends RecordType>({
               baseURL,
             });
 
-      return response.data;
+      return response.data as TData;
     },
     ...options,
   });

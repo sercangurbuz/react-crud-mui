@@ -64,7 +64,6 @@ export interface ListPageCommandsProps extends ListPageCommandsStates {
   commandsExtraProps?: ListPageCommandsExtraProps;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export enum ListPageCommandNames {
   SEARCH = 'search',
   CLEAR = 'clear',
@@ -122,6 +121,7 @@ function ListPageCommands(props: ListPageCommandsProps) {
         color="success"
         disabled={disabled.search}
         loading={loading}
+        // eslint-disable-next-line react/no-children-prop
         children={t('listpage.listbuttons.search')}
         {...commandsExtraProps['search']}
       />
@@ -141,6 +141,7 @@ function ListPageCommands(props: ListPageCommandsProps) {
         title={`${t('listpage.listbuttons.cleartitle')}\n(${SHORTCUT_CLEAR.toUpperCase()})`}
         onClick={onClear}
         disabled={disabled.clear}
+        // eslint-disable-next-line react/no-children-prop
         children={t('listpage.listbuttons.clear')}
         {...commandsExtraProps['clear']}
       />
@@ -159,6 +160,7 @@ function ListPageCommands(props: ListPageCommandsProps) {
         title={`${t('listpage.settings.exportExcel')}\n(${SHORTCUT_EXPORT.toUpperCase()})`}
         onClick={onExcelExport}
         disabled={disabled.export}
+        // eslint-disable-next-line react/no-children-prop
         children={<Print />}
         {...commandsExtraProps['clear']}
       />
@@ -173,9 +175,11 @@ function ListPageCommands(props: ListPageCommandsProps) {
       <Button
         key="create"
         startIcon={<Add />}
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
         title={`${createCommandLabel ?? t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
         onClick={() => onCreateItem?.()}
         disabled={disabled.create}
+        // eslint-disable-next-line react/no-children-prop
         children={createCommandLabel ?? t('listpage.listbuttons.newitem')}
         {...commandsExtraProps['create']}
       />

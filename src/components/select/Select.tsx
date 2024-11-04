@@ -29,7 +29,6 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<MuiSelect
   valueField?: string;
   groupBy?: (model: T) => string;
   data?: T[];
-  onFilter?: (keyword: string, model: T) => boolean;
   optionTemplate: ComboboxTemplate<T>;
   displayTemplate?: ComboboxTemplate<T>;
   descriptionTemplate?: ComboboxTemplate<T>;
@@ -53,8 +52,6 @@ function Select<T extends FieldValues>({
   id,
   label,
   onChange,
-  onClose,
-  onFilter,
   optionImg,
   optionImgProps,
   optionTemplate,

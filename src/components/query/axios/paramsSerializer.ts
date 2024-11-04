@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { RecordType } from '../../utils';
 
 const parseParams = (params: RecordType) => {
@@ -21,8 +22,10 @@ const parseParams = (params: RecordType) => {
         params[key].forEach((element: any) => {
           if (element === undefined || element === null) return;
 
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           const toJSONFn = element.toJSON;
           if (typeof toJSONFn === 'function') {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             options += `${key}=${encodeURIComponent(toJSONFn.call(element))}&`;
           } else {
             options += `${key}=${element}&`;
@@ -31,8 +34,10 @@ const parseParams = (params: RecordType) => {
       } else {
         //run toJSON function if available foı moment/dayjs objects
         //https://stackoverflow.com/a/14991571/1016147
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const toJSONFn = params[key].toJSON;
         if (typeof toJSONFn === 'function') {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           options += `${key}=${encodeURIComponent(toJSONFn.call(params[key]))}&`;
         }
       }

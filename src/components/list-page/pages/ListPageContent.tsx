@@ -475,7 +475,17 @@ function ListPageContent<
       enableExport,
       enableSearch,
     }),
-    [data, enableClear, enableCreateItem, enableExport, enableSearch, loading, onClear, onSearch],
+    [
+      data,
+      enableClear,
+      enableCreateItem,
+      enableExport,
+      enableSearch,
+      loading,
+      onClear,
+      onOpen,
+      onSearch,
+    ],
   );
 
   /* --------------------------------- Render --------------------------------- */

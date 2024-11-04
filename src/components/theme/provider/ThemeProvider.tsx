@@ -8,14 +8,12 @@ import { ConfirmProvider } from 'material-ui-confirm';
 import { createCustomTheme, ThemeSettings } from '..';
 import { H3 } from '../../typography';
 
-interface ThemeProviderProps extends ThemeSettings {}
-
 function ThemeProvider({
   theme,
   direction,
   responsiveFontSizes,
   children,
-}: PropsWithChildren<ThemeProviderProps>) {
+}: PropsWithChildren<ThemeSettings>) {
   const customTheme = createCustomTheme({ theme, direction, responsiveFontSizes });
 
   const toasterOptions = {

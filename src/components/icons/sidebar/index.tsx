@@ -1,20 +1,19 @@
-import ChatIcon from './Chat'
-import PagesIcon from './Pages'
-import KanbanIcon from './Kanban'
-import InvoiceIcon from './Invoice'
-import ProjectIcon from './Projects'
-import CalendarIcon from './Calendar'
-import SessionsIcon from './Sessions'
-import DashboardIcon from './Dashboard'
-import DataTableIcon from './DataTable'
-import EcommerceIcon from './Ecommerce'
-import ChartDonut from './ChartDonutIcon'
-import UserProfileIcon from './UserProfile'
-import AdminEcommerceIcon from './AdminEcommerce'
-import UserManagementIcon from './UserManagement'
-import AccountSettingsIcon from './AccountSettings'
+import AccountSettingsIcon from './AccountSettings';
+import AdminEcommerceIcon from './AdminEcommerce';
+import CalendarIcon from './Calendar';
+import ChartDonut from './ChartDonutIcon';
+import ChatIcon from './Chat';
+import DashboardIcon from './Dashboard';
+import DataTableIcon from './DataTable';
+import EcommerceIcon from './Ecommerce';
+import InvoiceIcon from './Invoice';
+import KanbanIcon from './Kanban';
+import PagesIcon from './Pages';
+import ProjectIcon from './Projects';
+import SessionsIcon from './Sessions';
+import UserManagementIcon from './UserManagement';
+import UserProfileIcon from './UserProfile';
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   ChatIcon,
   PagesIcon,
@@ -31,4 +30,4 @@ export default {
   AdminEcommerceIcon,
   UserManagementIcon,
   AccountSettingsIcon,
-}
+};

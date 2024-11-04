@@ -26,8 +26,6 @@ enableMapSet();
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface SettingsProviderProps extends Partial<Settings> {}
-
 //https://tkdodo.eu/blog/react-query-fa-qs#2-the-queryclient-is-not-stable
 const queryClient = new QueryClient({
   defaultOptions: { queries: { refetchOnWindowFocus: false, gcTime: 0 } },
@@ -41,7 +39,7 @@ function SettingsProvider({
   children,
   validationOptions,
   ...rest
-}: PropsWithChildren<SettingsProviderProps>) {
+}: PropsWithChildren<Partial<Settings>>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */

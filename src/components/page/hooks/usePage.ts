@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 
-import { PageContext, PageProviderProps } from '../components/PageProvider';
+import { PageContext } from '../components/PageProvider';
 
 function usePage() {
-  const props = useContext(PageContext) as PageProviderProps;
+  const props = useContext(PageContext);
   return props;
 }
 

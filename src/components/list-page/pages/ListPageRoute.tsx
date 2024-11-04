@@ -76,7 +76,7 @@ function ListPageRoute<
       if (typeof enableQueryStringFilter === 'object') {
         flattenedFilter = Object.fromEntries(
           Object.keys(enableQueryStringFilter)
-            .map((key) => [key, get(flattenedFilter, key)])
+            .map((key) => [key, get(flattenedFilter, key) as string])
             .filter(([, value]) => !isNil(value)),
         );
       }
@@ -87,12 +87,13 @@ function ListPageRoute<
 
   const handleNeedData = (filter: ListPageFilter<TFilter> | undefined) => {
     if (enableQueryStringFilter && filter) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { _meta, ...formValues } = filter;
       setQSByFilter(formValues);
     }
 
     if (filter?._meta.reason === 'tabChanged') {
-      setSegment(filter?._meta.segmentIndex!);
+      setSegment(filter?._meta.segmentIndex);
 
       if (enableNestedSegments) {
         return;

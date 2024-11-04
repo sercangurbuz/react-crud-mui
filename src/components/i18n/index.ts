@@ -26,7 +26,7 @@ const i18n = createInstance({
   },
 }).use(initReactI18next);
 
-i18n.init();
+void i18n.init();
 
 z.setErrorMap(makeZodI18nMap({ t: i18n.t }));
 

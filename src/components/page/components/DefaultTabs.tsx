@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ReactNode } from 'react';
 
 import { styled, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
@@ -23,8 +24,8 @@ const TabListWrapper = styled(Tabs)(({ theme }) => ({
 function DefaultTabs({ tabs, ...tabsProps }: DefaultTabsProps) {
   return (
     <TabListWrapper variant="scrollable" {...tabsProps}>
-      {tabs.map(({ children, ...tabProps }) => (
-        <Tab disableRipple iconPosition="start" {...tabProps} />
+      {tabs.map(({ children, key, ...tabProps }) => (
+        <Tab disableRipple iconPosition="start" key={key} {...tabProps} />
       ))}
     </TabListWrapper>
   );

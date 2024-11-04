@@ -1,7 +1,5 @@
 import { ReactNode } from 'react';
 
-import { LinearProgress, styled } from '@mui/material';
-
 import { NeedDataReason } from '../pages/DetailPageContent';
 
 export type DetailPageLayoutOptions = {
@@ -16,7 +14,7 @@ export type DetailPageLayoutProps = {
   options: DetailPageLayoutOptions;
 };
 
-interface DetailPageDefaultLayoutProps extends DetailPageLayoutProps {}
+type DetailPageDefaultLayoutProps = DetailPageLayoutProps;
 
 function DetailPageDefaultLayout({
   content,

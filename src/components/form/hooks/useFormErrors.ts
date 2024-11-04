@@ -29,7 +29,7 @@ function useFormErrors<TFieldValues extends FieldValues = FieldValues>({
    * Create message from Error object
    */
   const createErrorMessage = useCallback((error: ErrorOption) => {
-    let errMsg = error.message as string;
+    const errMsg = error.message as string;
     return errMsg;
   }, []);
 
@@ -43,7 +43,9 @@ function useFormErrors<TFieldValues extends FieldValues = FieldValues>({
         // this is for tuple types,
         // Example : Using DateRangePicker bind tis model to [dayjs(),dayjs()]
         const message = createErrorMessage(errors);
-        message && initial.push(message);
+        if (message) {
+          initial.push(message);
+        }
         return initial;
       }
       // filter out fields
@@ -65,15 +67,20 @@ function useFormErrors<TFieldValues extends FieldValues = FieldValues>({
       });
 
       //flatten error messages of selected/all fields
-      return filteredFields.reduce<string[]>((result, [_field, error]) => {
+      return filteredFields.reduce<string[]>((result, [, error]) => {
         // check if prop is error object
         if (isErrorObject(error)) {
           const message = createErrorMessage(error);
-          message && result.push(message);
+          if (message) {
+            result.push(message);
+          }
         } else {
           // nested object or array
           if (Array.isArray(error)) {
-            return error.reduce((result, err) => flattenErrors(err, result), initial);
+            return error.reduce<string[]>(
+              (result, err: FieldError) => flattenErrors(err, result),
+              initial,
+            );
           }
           return flattenErrors(error as FieldErrors, initial);
         }

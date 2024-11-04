@@ -1,4 +1,3 @@
-import { FlexBox } from '../../flexbox';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
 import Delete from '../../icons/Delete';
@@ -8,7 +7,7 @@ import { DetailPageCommmandsSettings } from './DetailPageCommands';
 function DetailPageDrawerCommands({ layout, props }: DetailPageCommmandsSettings) {
   const { t } = useTranslation();
   const { save, renderMoreCommand } = layout;
-  const { disabled, onCreate, onDelete, visible, commandsPosition } = props;
+  const { disabled, onCreate, onDelete, visible } = props;
 
   const items: (MoreButtonItem | null)[] = [
     visible.create

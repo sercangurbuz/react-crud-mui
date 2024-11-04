@@ -11,14 +11,12 @@ export interface UseAppLazyQueryOptions<TData, TVariables = RecordType>
   extends UseMutationOptions<TData, ServerError, TVariables>,
     UseMakeURIOptions<TVariables> {
   baseURL?: string;
-  resultPropName?: string;
   variables?: Partial<TVariables>;
 }
 
 function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
   url,
   action,
-  resultPropName,
   baseURL,
   controller,
   variables: initialVariables,
@@ -38,7 +36,7 @@ function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
       abortControllerRef.current = new AbortController();
       const params = Object.assign({}, initialVariables, variables);
       const uri = await makeURI(params);
-      const response = await axiosInstance.get(uri, {
+      const response = await axiosInstance.get<TData>(uri, {
         params,
         headers,
         baseURL,
@@ -72,7 +70,7 @@ function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
 
   const refetch = useCallback(() => {
     if (status === 'success' || status === 'error') {
-      return mutate(variables as TVariables);
+      return mutate(variables);
     }
   }, [mutate, variables, status]);
 

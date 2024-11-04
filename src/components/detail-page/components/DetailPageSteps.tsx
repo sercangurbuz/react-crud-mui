@@ -1,4 +1,4 @@
-import { Key, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { Step, StepLabel, StepLabelProps, Stepper, StepperProps, StepProps } from '@mui/material';
 
@@ -12,10 +12,7 @@ import { DetailPageStepCommandsProps } from './DetailPageStepCommands';
 
 export interface DetailPageStepsProps extends Omit<StepperProps, 'onChange'> {
   items: StepPane[];
-  disabled?: boolean;
-  onChange?: (current: number) => void;
   status?: StepStatus;
-  commands?: DetailPageStepCommandsProps['commands'];
   showFinishButton?: DetailPageStepCommandsProps['options']['showFinishButton'];
 }
 
@@ -30,15 +27,7 @@ export type StepStatus = 'wait' | 'process' | 'finish' | 'error';
 /*                                   Styled                                   */
 /* -------------------------------------------------------------------------- */
 
-function DetailPageSteps({
-  activeStep = 0,
-  disabled,
-  items,
-  onChange,
-  status,
-  commands,
-  ...stepperProps
-}: DetailPageStepsProps) {
+function DetailPageSteps({ activeStep = 0, items, status, ...stepperProps }: DetailPageStepsProps) {
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
@@ -63,7 +52,7 @@ function DetailPageSteps({
         </Stepper>
       </Page.Content>
       {/* Step Content */}
-      <Field.Group group={items[activeStep].key as string}>
+      <Field.Group group={items[activeStep].key}>
         {items[activeStep].children}
       </Field.Group>
     </>

@@ -1,5 +1,4 @@
-/* eslint-disable no-inline-comments */
-export default function(str: string) {
+export default function (str: string) {
   const el = document.createElement('textarea'); // Create a <textarea> element
   el.value = str; // Set its value to the string that you want copied
   el.setAttribute('readonly', ''); // Make it readonly to be tamper-proof

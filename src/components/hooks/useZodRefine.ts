@@ -17,6 +17,7 @@ export interface ZodRefine<
     [k in keyof T]?: true;
   },
 > {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   (arg: z.output<ZodObject<Pick<T, Extract<keyof T, keyof Mask>>>>): unknown | Promise<unknown>;
 }
 
@@ -42,7 +43,7 @@ function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>)
       refine: ZodRefine<T, Mask>,
       options?: ZodRefineOptions<T>,
     ) => {
-      const nullableSchema = nullable((schema as ZodObject<T>).pick(mask));
+      const nullableSchema = nullable(schema.pick(mask));
       const currentSchema = nullableSchema.refine(
         refine as Parameters<(typeof nullableSchema)['refine']>[0],
         (output) => ({
@@ -68,9 +69,9 @@ function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>)
       mask: Mask,
       superRefine: ZodSuperRefine<T, Mask>,
     ) => {
-      const nullableSchema = nullable((schema as ZodObject<T>).pick(mask));
+      const nullableSchema = nullable(schema.pick(mask));
       const currentSchema = nullableSchema.superRefine(
-        superRefine as Parameters<(typeof nullableSchema)['refine']>[0],
+        superRefine as unknown as Parameters<(typeof nullableSchema)['refine']>[0],
       );
 
       setSchema((s) => z.intersection(s, currentSchema));
@@ -82,6 +83,7 @@ function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>)
 }
 
 function nullable<TSchema extends z.AnyZodObject>(schema: TSchema) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const entries = Object.entries(schema.shape) as [keyof TSchema['shape'], z.ZodTypeAny][];
 
   const newProps = entries.reduce(

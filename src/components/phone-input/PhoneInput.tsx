@@ -1,5 +1,6 @@
 import { forwardRef, Ref } from 'react';
 import { PatternFormat, PatternFormatProps } from 'react-number-format';
+import { SourceType } from 'react-number-format/types/types';
 
 import { StandardTextFieldProps, TextField } from '@mui/material';
 
@@ -12,6 +13,7 @@ export type PhoneInputProps = Omit<
   'format' | 'onChange'
 > &
   ControlledFormProps<string> & {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getRef?: Ref<any>;
     format?: string;
   };
@@ -22,7 +24,7 @@ function PhoneInput({ onChange, ...props }: PhoneInputProps) {
       mask="_"
       allowEmptyFormatting
       onValueChange={({ value }, e) => {
-        if (e.source === 'event') {
+        if (e.source === SourceType.event) {
           onChange?.(value);
         }
       }}

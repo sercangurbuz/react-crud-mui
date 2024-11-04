@@ -16,6 +16,7 @@ function useArrayFieldHelpers<TModel>({
 }: UseArrayFieldHelpersOptions<TModel> = {}) {
   const getUID = useCallback(
     (model?: TModel) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return model ? (model as FieldValues)[uniqueIdParamName] : null;
     },
     [uniqueIdParamName],
@@ -38,6 +39,7 @@ function useArrayFieldHelpers<TModel>({
   const findIndex = useCallback(
     (model?: TModel) => {
       const uid = getUID(model);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       return findIndexByUID(uid);
     },
     [findIndexByUID, getUID],

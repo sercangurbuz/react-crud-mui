@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 
 import dayjs from 'dayjs';
 
@@ -39,7 +39,7 @@ function useURLSearchFilter<TFilter>({
         let filterValue;
         //advanced object to define type
         if (typeof enableQueryStringFilter[field] === 'object') {
-          const { type, isArray } = enableQueryStringFilter[field] as AdvancedFilterSource;
+          const { type, isArray } = enableQueryStringFilter[field];
 
           //extract value
           const value = params?.get(field);
@@ -53,9 +53,11 @@ function useURLSearchFilter<TFilter>({
             case 'number':
               if (Array.isArray(value) || isArray) {
                 filterValue = []
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                   .concat(value as any)
                   .map(Number)
                   .filter((v) => !isNaN(v));
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
               } else if (!isNaN(value as any)) {
                 filterValue = Number(value);
               }
@@ -63,6 +65,7 @@ function useURLSearchFilter<TFilter>({
             case 'date':
               if (Array.isArray(value) || isArray) {
                 filterValue = []
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                   .concat(value as any)
                   .map((d) => dayjs(d))
                   .filter((m) => m.isValid());

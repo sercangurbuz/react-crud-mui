@@ -20,7 +20,7 @@ function useRegisterField<TFieldValues extends FieldValues>({
   const { group } = useFormGroupContext();
 
   useEffect(() => {
-    registerField!({ group, name });
+    registerField({ group, name });
   }, [group, name, registerField]);
 
   useEffect(() => () => unRegisterField(name), [name, unRegisterField]);

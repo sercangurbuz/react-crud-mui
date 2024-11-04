@@ -7,6 +7,7 @@ import useSettings from '../settings-provider/hooks/useSettings';
 import { ControlledFormProps } from '../utils';
 
 export type NumberInputProps = Omit<NumericFormatProps<StandardTextFieldProps>, 'onChange'> &
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ControlledFormProps<number | undefined> & { getRef?: Ref<any> };
 
 function NumberInput({ onChange, sx, getRef, ...numberProps }: NumberInputProps) {

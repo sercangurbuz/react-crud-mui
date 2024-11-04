@@ -4,8 +4,10 @@ import kebabCase from 'lodash.kebabcase';
 
 import { UseMakeURIOptions } from './useMakeFullURI';
 
-export interface UseAppQueryKey<TVariables>
-  extends Pick<UseMakeURIOptions<TVariables>, 'action' | 'controller'> {}
+export type UseAppQueryKey<TVariables> = Pick<
+  UseMakeURIOptions<TVariables>,
+  'action' | 'controller'
+>;
 
 function useAppQueryKey<TVariables>({ action, controller }: UseAppQueryKey<TVariables>) {
   const getQueryKey = useCallback(

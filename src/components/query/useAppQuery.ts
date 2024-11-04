@@ -14,7 +14,6 @@ export interface UseAppQueryOptions<TResult, TVariables = RecordType>
     UseMakeURIOptions<TVariables> {
   queryKey?: QueryKey;
   variables?: TVariables;
-  resultPropName?: string;
   baseURL?: string;
 }
 
@@ -27,7 +26,6 @@ function useAppQuery<TResult, TVariables extends RecordType = RecordType>({
   action,
   queryKey: customQueryKey,
   variables,
-  resultPropName,
   controller,
   baseURL,
   ...options
@@ -41,7 +39,7 @@ function useAppQuery<TResult, TVariables extends RecordType = RecordType>({
     queryKey,
     queryFn: async ({ signal }) => {
       const uri = await makeURI(variables);
-      const response = await axiosInstance.get(uri, {
+      const response = await axiosInstance.get<TResult>(uri, {
         params: variables,
         headers,
         baseURL,
@@ -52,8 +50,8 @@ function useAppQuery<TResult, TVariables extends RecordType = RecordType>({
     ...options,
   });
 
-  const appResult = useMemo<UseAppQueryResult<TResult, ServerError>>(
-    () => ({ ...result, queryKey }),
+  const appResult = useMemo(
+    () => ({ ...result, queryKey }) as UseAppQueryResult<TResult, ServerError>,
     [queryKey, result],
   );
 

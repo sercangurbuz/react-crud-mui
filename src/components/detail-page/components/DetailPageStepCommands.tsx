@@ -1,4 +1,4 @@
-import React, { Key, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 import { ArrowLeft, ArrowRight, Save } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -46,7 +46,6 @@ export interface DetailPageStepCommandsProps extends StepCommandsStates {
   commands?: React.ComponentType<StepCommandsComponentProps>;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export enum DetailPageStepCommandNames {
   PREV = 'prev',
   NEXT = 'next',
@@ -62,8 +61,6 @@ function DetailPageStepCommands({
     onNextClick,
     onPrevClick,
     onFinish,
-    nextButtonTitle,
-    prevButtonTitle,
     options: {
       showNextButton,
       showPrevButton,

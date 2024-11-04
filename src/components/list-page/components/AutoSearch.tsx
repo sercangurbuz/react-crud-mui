@@ -13,6 +13,7 @@ function AutoSearch({ onValuesChange, delay = 500 }: AutoSearchProps) {
   const { isDirty } = useFormState();
   const isTouchedOrDirtyRef = useRef<boolean>(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const lazyOnChange = useMemo(() => debounce(onValuesChange, delay), []);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ function AutoSearch({ onValuesChange, delay = 500 }: AutoSearchProps) {
       lazyOnChange();
       isTouchedOrDirtyRef.current = true;
     }
-  }, [values, isDirty]);
+  }, [values, isDirty, lazyOnChange]);
   return null;
 }
 

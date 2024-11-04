@@ -1,18 +1,17 @@
-import Key from '@/icons/Key'
-import Link from '@/icons/Link'
-import Instagram from '@/icons/social/Instagram'
-import Fingerprint from '@/icons/Fingerprint'
-import DevicesApple from '@/icons/DevicesApple'
-import FileOutlined from '@/icons/FileOutlined'
-import UserOutlined from '@/icons/UserOutlined'
-import LockOutlined from '@/icons/LockOutlined'
-import DeleteOutlined from '@/icons/DeleteOutlined'
-import DollarOutlined from '@/icons/DollarOutlined'
-import PremiumOutlined from '@/icons/PremiumOutlined'
-import SettingsOutlined from '@/icons/SettingsOutlined'
-import NotificationOutlined from '@/icons/NotificationOutlined'
+import DeleteOutlined from '../DeleteOutlined';
+import DevicesApple from '../DevicesApple';
+import DollarOutlined from '../DollarOutlined';
+import FileOutlined from '../FileOutlined';
+import Fingerprint from '../Fingerprint';
+import Key from '../Key';
+import Link from '../Link';
+import LockOutlined from '../LockOutlined';
+import NotificationOutlined from '../NotificationOutlined';
+import PremiumOutlined from '../PremiumOutlined';
+import SettingsOutlined from '../SettingsOutlined';
+import Instagram from '../social/Instagram';
+import UserOutlined from '../UserOutlined';
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   NotificationOutlined,
   DeleteOutlined,
@@ -27,4 +26,4 @@ export default {
   UserOutlined,
   Fingerprint,
   Instagram,
-}
+};

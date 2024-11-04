@@ -33,7 +33,6 @@ function ListPageSelection<TModel extends FieldValues, TFilter extends FieldValu
   open,
   onClose,
   tableProps,
-  onExtraCommands,
   ...lpProps
 }: ListPageSelectionProps<TModel, TFilter>) {
   const { t } = useTranslation();

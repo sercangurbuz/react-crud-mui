@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, useCallback, useState } from 'react';
+import React, { forwardRef, Key, Ref, useCallback, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import {
@@ -40,7 +40,6 @@ function isCreatableOption<T extends FieldValues>(option: T): boolean {
 /* --------------------------------- Filter --------------------------------- */
 
 const filter = createFilterOptions();
-const DEFAULT_VALUE_FIELD = 'id';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -50,7 +49,6 @@ export interface ComboBoxProps<T extends CreatableModel, Creatable extends boole
   extends Partial<AutocompleteProps<T, false, true, Creatable>>,
     Pick<StandardTextFieldProps, 'autoFocus' | 'label' | 'error' | 'helperText'> {
   data?: T[];
-  valueField?: string;
   direction?: 'row' | 'column';
   optionTemplate: ComboboxTemplate<T>;
   displayTemplate?: ComboboxTemplate<T>;
@@ -77,7 +75,6 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   label,
   renderOption: onRenderOption,
   selectRef,
-  valueField = DEFAULT_VALUE_FIELD,
   ...rest
 }: ComboBoxProps<T, Creatable>) {
   /* -------------------------------------------------------------------------- */
@@ -98,7 +95,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
 
   const renderOptionItem = useCallback(
     (
-      props: React.HTMLAttributes<HTMLLIElement> & { key: any },
+      props: React.HTMLAttributes<HTMLLIElement> & { key: Key },
       option: T,
       state: AutocompleteRenderOptionState,
       ownerState: AutocompleteOwnerState<T, false, true, Creatable>,
@@ -135,7 +132,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
         </Box>
       );
     },
-    [renderDescription, direction, isCreatableOption, renderOption],
+    [onRenderOption, renderOption, renderDescription, direction],
   );
 
   const renderSelectedText = useCallback(
@@ -156,7 +153,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       const optionText = renderDisplayText(option);
       return optionText as string;
     },
-    [renderDisplay, getOptionLabel, isCreatableOption, renderOption],
+    [renderDisplay, getOptionLabel, renderOption],
   );
 
   const handleFilterOptions = useCallback(
@@ -255,6 +252,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
           color: 'text.secondary',
         },
       }}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onChange={async (event, item, reason, details) => {
         // Eger creatable item'da Enter'a basarsa,ignore ediyoruz
         if (typeof item === 'string') {
@@ -282,6 +280,6 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   );
 }
 
-export default forwardRef<typeof ComboBox, ComboBoxProps<any, false>>((props, ref) => (
+export default forwardRef<typeof ComboBox, ComboBoxProps<CreatableModel, false>>((props, ref) => (
   <ComboBox {...props} selectRef={ref} />
 )) as typeof ComboBox;

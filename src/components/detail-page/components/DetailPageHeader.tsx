@@ -7,6 +7,7 @@ export interface DetailPageHeaderProps extends HeaderProps, PropsWithChildren {
   reason: NeedDataReason;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function DetailPageHeader({ reason, ...headerProps }: DetailPageHeaderProps) {
   return <Header {...headerProps} />;
 }

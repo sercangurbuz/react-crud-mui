@@ -8,7 +8,6 @@ import {
   UseFieldArrayReturn,
 } from 'react-hook-form';
 
-import { Edit, Visibility } from '@mui/icons-material';
 import { getSortedRowModel, SortingState } from '@tanstack/react-table';
 
 import ActionCommands, { ActionCommandsProps } from '../action-commands/ActionCommands';
@@ -117,7 +116,7 @@ export interface EditableListProps<
   onSave?: (
     payload: SavePayload<TArrayModel>,
     api: UseFieldArrayReturn<TModel, TFieldArrayName, typeof UNIQUE_IDENTIFIER_FIELD_NAME>,
-    handleSave: () => void,
+    handleSave: () => Promise<unknown> | undefined | void,
     checkUniqueFields: ReturnType<
       typeof useUniqueFieldsInArray<TModel, TArrayModel, TFieldArrayName>
     >,
@@ -261,6 +260,7 @@ function EditableList<
 
           return <ActionCommands {...props} />;
         },
+        ...commandColProps,
       },
     ];
   }, [
@@ -295,6 +295,7 @@ function EditableList<
           const messages = checkUniqueFields({ model, reason, uid });
 
           if (messages.length) {
+            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
             return Promise.reject({ messages });
           }
         }

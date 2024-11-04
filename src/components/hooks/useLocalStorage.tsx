@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 function useLocalStorage<T>(key: string, defaultValue?: T) {
   const [data, setData] = useState<T>(() => {
     const data = window.localStorage.getItem(key);
-    return data ? JSON.parse(data) : defaultValue;
+    return (data ? JSON.parse(data) : defaultValue) as T;
   });
 
   const storeData = useCallback(
