@@ -1,6 +1,5 @@
 import { forwardRef, Ref } from 'react';
 import { PatternFormat, PatternFormatProps } from 'react-number-format';
-import { SourceType } from 'react-number-format/types/types';
 
 import { StandardTextFieldProps, TextField } from '@mui/material';
 
@@ -24,7 +23,8 @@ function PhoneInput({ onChange, ...props }: PhoneInputProps) {
       mask="_"
       allowEmptyFormatting
       onValueChange={({ value }, e) => {
-        if (e.source === SourceType.event) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        if (e.source === 'event') {
           onChange?.(value);
         }
       }}

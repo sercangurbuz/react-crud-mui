@@ -23,6 +23,6 @@ export const handleSaveUser = async ({ model, reason }: SavePayload<UserSchema>)
   }
 };
 
-export const handleDeleteUser = async ({ model, reason }: DeletePayload<UserSchema>) => {
+export const handleDeleteUser = async ({ model }: DeletePayload<UserSchema>) => {
   await axios.delete<UserSchema>(`https://jsonplaceholder.typicode.com/users/${model.id}`);
 };

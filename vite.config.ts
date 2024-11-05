@@ -1,14 +1,21 @@
 import { resolve } from 'path';
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import dts from 'vite-plugin-dts';
+
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import react from '@vitejs/plugin-react';
+import dts from 'vite-plugin-dts';
+import { defineConfig } from 'vitest/config';
 
 import pkg from './package.json';
+
 const deps = Object.keys(pkg.dependencies);
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test-setup/setup.ts'],
+  },
   build: {
     copyPublicDir: false,
     lib: {
@@ -30,4 +37,4 @@ export default defineConfig({
     }),
     dts({ include: ['src/index.ts', 'src/components'], copyDtsFiles: true }),
   ],
-})
+});

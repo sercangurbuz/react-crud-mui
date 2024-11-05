@@ -1,12 +1,11 @@
-import React from 'react';
+import { useWatch } from 'react-hook-form';
 
 import { FormComboBoxProps } from '../../../components/form/controls/FormComboBox';
 import Field from '../../../components/form/Field';
 import { useAppQuery } from '../../../components/query';
-import { IdNameSchema, UserSchema } from '../../utils/schema';
-import { useWatch } from 'react-hook-form';
+import { UserSchema } from '../../utils/schema';
 
-interface UserFindProps extends Omit<FormComboBoxProps<UserSchema, false>, 'optionTemplate'> {}
+type UserFindProps = Omit<FormComboBoxProps<UserSchema, false>, 'optionTemplate'>;
 
 function UserFind(props: UserFindProps) {
   const { data, isFetching } = useAppQuery<UserSchema[]>({
@@ -14,7 +13,6 @@ function UserFind(props: UserFindProps) {
     url: 'https://jsonplaceholder.typicode.com/users',
   });
 
-  
   const selUser = useWatch({ name: 'selUser' });
 
   console.log('selUser', selUser);

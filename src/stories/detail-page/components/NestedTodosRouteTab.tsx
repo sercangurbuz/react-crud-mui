@@ -1,32 +1,35 @@
 import { useMemo } from 'react';
 
 import { CheckOutlined, Search } from '@mui/icons-material';
-import { Grid2 } from '@mui/material';
 import { z } from 'zod';
 
 import DetailPage from '../../../components/detail-page';
 import useDetailPageRouteParams from '../../../components/detail-page/hooks/useDetailPageRouteParams';
+import { DetailPageModalProps } from '../../../components/detail-page/pages/DetailPageModal';
 import { FlexBetween, FlexBox } from '../../../components/flexbox';
 import Field from '../../../components/form/Field';
 import UserOutlined from '../../../components/icons/UserOutlined';
 import ListPage from '../../../components/list-page/pages/ListPage';
-import { ListPageFilter, ListPageModel } from '../../../components/list-page/pages/ListPageFilter';
+import { ListPageModel } from '../../../components/list-page/pages/ListPageFilter';
 import Page from '../../../components/page/Page';
 import { useAppLazyQuery } from '../../../components/query';
 import { ServerError } from '../../../components/utils';
 
-export type ToDo = {
-  id?: number;
-  title: string;
-  completed: boolean;
-};
+const todoSchema = z.object({
+  title: z.string().nonempty(),
+  id: z.number().optional(),
+  userId: z.number().nullable(),
+  completed: z.boolean(),
+});
+
+export type ToDo = z.infer<typeof todoSchema>;
 
 function NestedTodosRouteTab() {
   const { id } = useDetailPageRouteParams();
 
   const { fetch, data, isPending, error, prevData } = useAppLazyQuery<
     ToDo[],
-    ListPageFilter<{ userId: string }>
+    { userId?: string; title_like?: string }
   >({
     variables: { userId: id },
     url: `https://jsonplaceholder.typicode.com/todos`,
@@ -44,8 +47,9 @@ function NestedTodosRouteTab() {
     <ListPage.Route
       onNeedData={(filter) => {
         fetch({
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           title_like: filter?.keyword && `^${filter?.keyword}`,
-        } as any);
+        });
       }}
       data={pagingData}
       defaultValues={{
@@ -101,7 +105,7 @@ function NestedTodosRouteTab() {
   );
 }
 
-function EmbeddedPage(props: any) {
+function EmbeddedPage(props: DetailPageModalProps<ToDo>) {
   return (
     <DetailPage.Modal
       header="Todo's"
@@ -113,12 +117,7 @@ function EmbeddedPage(props: any) {
         completed: false,
       }}
       createCommandLabel="New Todo"
-      schema={z.object({
-        title: z.string().nonempty(),
-        id: z.number().optional(),
-        userId: z.number().nullable(),
-        completed: z.boolean(),
-      })}
+      schema={todoSchema}
       onCommands={(props) => (
         <FlexBetween sx={{ width: '100%' }}>
           <Field.Checkbox name="completed" label="Completed ?" />

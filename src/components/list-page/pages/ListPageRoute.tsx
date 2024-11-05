@@ -92,7 +92,7 @@ function ListPageRoute<
       setQSByFilter(formValues);
     }
 
-    if (filter?._meta.reason === 'tabChanged') {
+    if (filter?._meta?.reason === 'tabChanged') {
       setSegment(filter?._meta.segmentIndex);
 
       if (enableNestedSegments) {

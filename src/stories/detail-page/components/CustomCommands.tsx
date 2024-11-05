@@ -1,7 +1,7 @@
 import { Save } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import { DetailPageCommmandsSettings } from '../../../components/detail-page/pages/components/DetailPageCommands';
+import { DetailPageCommmandsSettings } from '../../../components/detail-page/components/DetailPageCommands';
 import { FlexBox } from '../../../components/flexbox';
 import Add from '../../../components/icons/Add';
 

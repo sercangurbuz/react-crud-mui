@@ -9,7 +9,6 @@ import EditableList from '../../components/editable-list/EditableList';
 import User from '../../components/icons/User';
 import Page from '../../components/page/Page';
 import { isDark } from '../../components/theme/theme.constants';
-import { H2, H3 } from '../../components/typography';
 import mockUsers from '../../test-setup/mockUsers.json';
 import FormContent from '../detail-page/components/FormContent';
 import { UserDefaultValues } from '../utils/api';
@@ -53,6 +52,7 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
         accessorKey: 'email',
         header: 'E-MAIL',
         cell(props) {
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           return <a href={`mailto:${props.getValue()}`}>{props.renderValue() as string}</a>;
         },
       },

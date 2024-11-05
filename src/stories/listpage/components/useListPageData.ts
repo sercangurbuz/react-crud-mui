@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from 'react';
 
 import { ListPageProps } from '../../../components/list-page/pages/ListPage';
-import { ListPageFilter, PagingListModel } from '../../../components/list-page/pages/ListPageFilter';
+import {
+  ListPageFilter,
+  PagingListModel,
+} from '../../../components/list-page/pages/ListPageFilter';
 import { useAppLazyQuery } from '../../../components/query';
 import { UserSchema } from '../../utils/schema';
 
@@ -25,11 +28,11 @@ function useListPageData() {
         email_like: email && `^${email}`,
         website_like: website && `^${website}`,
         phone_like: phone && `^${phone}`,
-        _page: _meta.pagination.pageIndex + 1,
-        _limit: _meta.pagination?.pageSize,
-        _sort: _meta.sorting.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
+        _page: (_meta?.pagination.pageIndex ?? 0) + 1,
+        _limit: _meta?.pagination?.pageSize,
+        _sort: _meta?.sorting.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
       }),
-    [],
+    [fetch],
   );
 
   return {

@@ -41,6 +41,7 @@ function CustomStepCommands({ next, prev, onFinish, options }: StepCommandsCompo
               disabled={isInValid}
               color="success"
               loading={options.loading}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => {
                 await onFinish?.();
                 reset(UserDefaultValues);

@@ -90,7 +90,7 @@ const componentsOverride = (theme: Theme): Components => {
       },
     },
     MuiRadio: Radio(),
-    MuiFab: Fab(theme),
+    MuiFab: Fab(),
     MuiChip: Chip(theme),
     MuiAlert: Alert(theme),
     MuiBadge: Badge(theme),
@@ -99,7 +99,7 @@ const componentsOverride = (theme: Theme): Components => {
     MuiDataGrid: DataGrid(theme),
     MuiBackdrop: Backdrop(theme),
     MuiBreadcrumbs: Breadcrumbs(theme),
-    MuiAutocomplete: Autocomplete(theme),
+    MuiAutocomplete: Autocomplete(),
     // AVATAR
     MuiAvatar: Avatar(theme),
     MuiAvatarGroup: AvatarGroup(theme),

@@ -25,7 +25,13 @@ function ListPage<
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >(props: ListPageProps<TModel, TFilter, TDetailPageModel>) {
-  const { defaultFilter, onNeedData, tableProps, defaultSegmentIndex, activeSegmentIndex } = props;
+  const {
+    defaultFilter,
+    onNeedData,
+    tableProps,
+    defaultSegmentIndex = 0,
+    activeSegmentIndex,
+  } = props;
   const { pageSize: defaultPageSize } = useSettings();
 
   /* -------------------------------------------------------------------------- */

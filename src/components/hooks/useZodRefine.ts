@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { RefinementCtx, z, ZodIssueBase, ZodObject, ZodRawShape, ZodTypeAny } from 'zod';
+import { RefinementCtx, util, z, ZodIssueBase, ZodObject, ZodRawShape, ZodTypeAny } from 'zod';
 
 export interface UseZodRefineOptions<T extends ZodRawShape> {
   schema: ZodObject<T>;
@@ -35,9 +35,12 @@ function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>)
 
   const addRefine = useCallback(
     <
-      Mask extends {
-        [k in keyof T]?: true;
-      },
+      Mask extends util.Exactly<
+        {
+          [k in keyof T]?: true;
+        },
+        Mask
+      >,
     >(
       mask: Mask,
       refine: ZodRefine<T, Mask>,
@@ -62,9 +65,12 @@ function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>)
 
   const addSuperRefine = useCallback(
     <
-      Mask extends {
-        [k in keyof T]?: true;
-      },
+      Mask extends util.Exactly<
+        {
+          [k in keyof T]?: true;
+        },
+        Mask
+      >,
     >(
       mask: Mask,
       superRefine: ZodSuperRefine<T, Mask>,

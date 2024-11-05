@@ -84,7 +84,9 @@ type ListPageRouteStory = StoryObj<typeof ListPage.Route<UserSchema>>;
 
 export const Simple: ListPageStory = {};
 
-export const WithDefaultValues: ListPageStory = {
+export const WithDefaultValues: StoryObj<
+  typeof ListPage<{ username: string }, { username: string }>
+> = {
   args: {
     defaultFilter: { username: 'M' },
     defaultValues: { username: 'K' },
