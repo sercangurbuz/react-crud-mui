@@ -18,7 +18,7 @@ import 'simplebar-react/dist/simplebar.min.css';
 
 import { enableMapSet } from 'immer';
 
-import i18n from '../i18n';
+import i18nInstance from '../i18n';
 
 enableMapSet();
 
@@ -51,7 +51,7 @@ function SettingsProvider({
 
   return (
     <SettingsContext.Provider value={contextValue}>
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18n.language}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18nInstance.language}>
         <ThemeProvider
           theme={theme}
           responsiveFontSizes={responsiveFontSizes}

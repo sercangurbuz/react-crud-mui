@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 // ==============================================================
 type Ellipsis = { ellipsis: number; component: string };
-interface Props extends BoxProps {
+export interface Props extends BoxProps {
   ellipsis?: boolean;
 }
 // ==============================================================

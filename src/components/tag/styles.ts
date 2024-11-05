@@ -5,6 +5,8 @@ import { Span } from '../typography';
 // CUSTOM DATA TYPE
 import { Type } from './Tag';
 
+//export const Span
+
 // STYLED COMPONENT
 export const StyledSpan = styled(Span, {
   shouldForwardProp: (prop) => prop !== 'type',

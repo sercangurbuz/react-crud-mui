@@ -1,6 +1,6 @@
 import { initReactI18next } from 'react-i18next';
 
-import { createInstance } from 'i18next';
+import { createInstance, i18n } from 'i18next';
 import { z } from 'zod';
 import { makeZodI18nMap } from 'zod-i18n-map';
 import zod_translation_en from 'zod-i18n-map/locales/en/zod.json';
@@ -12,7 +12,7 @@ import 'dayjs/locale/en';
 import translation_en from './resources/en.json';
 import translation_tr from './resources/tr.json';
 
-const i18n = createInstance({
+const i18nInstance: i18n = createInstance({
   fallbackLng: 'en',
   resources: {
     tr: {
@@ -26,8 +26,8 @@ const i18n = createInstance({
   },
 }).use(initReactI18next);
 
-void i18n.init();
+void i18nInstance.init();
 
-z.setErrorMap(makeZodI18nMap({ t: i18n.t }));
+z.setErrorMap(makeZodI18nMap({ t: i18nInstance.t }));
 
-export default i18n;
+export default i18nInstance;

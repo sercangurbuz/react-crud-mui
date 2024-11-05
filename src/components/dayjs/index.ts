@@ -4,7 +4,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 
-import i18n from '../i18n';
+import i18nInstance from '../i18n';
 
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
@@ -23,4 +23,4 @@ const JsonPlugin: PluginFunc<object> = (_option, dayjsClass) => {
 
 dayjs.extend(JsonPlugin);
 
-i18n.on('languageChanged', dayjs.locale);
+i18nInstance.on('languageChanged', dayjs.locale);

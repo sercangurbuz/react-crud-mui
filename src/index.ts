@@ -1,5 +1,5 @@
 export { default as Panel, type PanelProps } from './components/panel/Panel';
-export { default as i18n } from './components/i18n';
+export { default as i18nInstance } from './components/i18n';
 export {
   default as ActionCommands,
   type ActionCommandsProps,

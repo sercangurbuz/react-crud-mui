@@ -35,6 +35,10 @@ export default defineConfig({
         plugins: ['@emotion/babel-plugin'],
       },
     }),
-    dts({ include: ['src/index.ts', 'src/components'], copyDtsFiles: true }),
+    dts({
+      tsconfigPath: resolve(__dirname, 'tsconfig.build.json'),
+      include: ['src/index.ts', 'src/components'],
+      copyDtsFiles: true,
+    }),
   ],
 });
