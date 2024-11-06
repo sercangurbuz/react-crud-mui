@@ -1,6 +1,6 @@
 {
-  "name": "@apex/ui",
-  "private": true,
+  "name": "react-crud-mui",
+  "private": false,
   "version": "0.0.1-beta.1",
   "type": "module",
   "main": "./dist/coreui.js",
