@@ -7,6 +7,7 @@ import { NeedDataReason } from './DetailPageContent';
 import DetailPageDrawer from './DetailPageDrawer';
 import DetailPageForm, { DetailPageFormProps } from './DetailPageForm';
 import DetailPageModal from './DetailPageModal';
+import DetailPagePopover from './DetailPagePopover';
 import DetailPageRoute from './DetailPageRoute';
 import DetailPageRouteModal from './DetailPageRouteModal';
 
@@ -49,6 +50,7 @@ export default DetailPage;
 
 DetailPage.Header = DetailPageHeader;
 DetailPage.Modal = DetailPageModal;
+DetailPage.Popover = DetailPagePopover;
 DetailPage.RouteModal = DetailPageRouteModal;
 DetailPage.Drawer = DetailPageDrawer;
 DetailPage.Route = DetailPageRoute;

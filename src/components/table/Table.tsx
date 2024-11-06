@@ -504,7 +504,11 @@ function Table<TData extends FieldValues>({
         title={cell.column.title}
         size={isStandartCol ? 'small' : size}
         sx={{
-          backgroundColor: isSortingActive ? alpha(theme.palette.primary.main, 0.07) : undefined,
+          backgroundColor: isSortingActive
+            ? isDark(theme)
+              ? alpha(theme.palette.primary.main, 0.04)
+              : alpha(theme.palette.primary.main, 0.07)
+            : undefined,
           ...(cell.column.getSize() === Number.MAX_SAFE_INTEGER
             ? { width: 'auto' }
             : {

@@ -88,6 +88,8 @@ export const WithDefaultValues: StoryObj<
   typeof ListPage<{ username: string }, { username: string }>
 > = {
   args: {
+    alerts: [{ type: 'info', message: 'Clear default filter to default values "M" => "K"' }],
+    enableClear: true,
     defaultFilter: { username: 'M' },
     defaultValues: { username: 'K' },
   },

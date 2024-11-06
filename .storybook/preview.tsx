@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import type { Preview } from '@storybook/react';
 
-import { i18n } from '../src';
+import i18nInstance from '../src/components/i18n';
 import SettingsProvider from '../src/components/settings-provider/SettingsProvider';
 import { THEMES } from '../src/components/theme/theme.constants';
 
@@ -56,7 +56,10 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       useEffect(() => {
-        context.globals.lang && i18n.changeLanguage(context.globals.lang);
+        if (context.globals.lang) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          void i18nInstance.changeLanguage(context.globals.lang);
+        }
       }, [context.globals.lang]);
 
       return (

@@ -13,10 +13,10 @@ function FormContent() {
       <Page.Content>
         <Grid2 container spacing={2}>
           <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.Input name="name" label="Name" autoFocus onChange={() => trigger()} />
+            <Field.Input name="name" label="Name" autoFocus onChange={() => void trigger()} />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.Input name="username" label="User name" onChange={() => trigger()} />
+            <Field.Input name="username" label="User name" onChange={() => void trigger()} />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.PhoneInput name="phone" label="Phone" />

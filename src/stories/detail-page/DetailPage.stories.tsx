@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useEffect, useState } from 'react';
 import {
   createMemoryRouter,
@@ -62,6 +63,7 @@ export default meta;
 type DetailPageStory = StoryObj<typeof DetailPage>;
 type DetailPageModalStory = StoryObj<typeof DetailPage.Modal<UserSchema>>;
 type DetailPageRouteStory = StoryObj<typeof DetailPage.Route<UserSchema>>;
+type DetailPagePopoverStory = StoryObj<typeof DetailPage.Popover<UserSchema>>;
 
 export const Simple: DetailPageStory = {};
 
@@ -310,6 +312,35 @@ export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
             setVisible(false);
           }}
         />
+      </>
+    );
+  },
+};
+
+export const WithPopover: DetailPagePopoverStory = {
+  args: { schema: userSchema.pick({ name: true }) },
+  render: (args) => {
+    const [elem, setElem] = useState<HTMLElement | null>(null);
+    return (
+      <>
+        <Button onClick={(e) => setElem(e.currentTarget)}>Toggle DetailPage Drawer</Button>
+        <DetailPage.Popover
+          {...args}
+          anchorEl={elem}
+          onClose={() => {
+            setElem(null);
+          }}
+          commandsPosition="bottom"
+          onCommands={({ props }) => (
+            <Button onClick={props.onSave} disabled={props.disabled.save} fullWidth>
+              Save
+            </Button>
+          )}
+        >
+          <Page.Content>
+            <Field.Input name="name" label="Name" autoFocus />
+          </Page.Content>
+        </DetailPage.Popover>
       </>
     );
   },
