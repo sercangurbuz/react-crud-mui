@@ -2,8 +2,7 @@ import { create } from '@storybook/theming/create';
 
 export default create({
   base: 'light',
-  brandTitle: '@apex/ui',
-  brandUrl: 'https://ui-lib.apexpro.com',
-  brandImage: 'logo.png',
+  brandTitle: 'Mui based CRUD components',
+  brandImage: 'mui_logo.svg',
   brandTarget: '_self',
 });
