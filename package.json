@@ -1,7 +1,7 @@
 {
   "name": "react-crud-mui",
   "private": false,
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-beta.3",
   "type": "module",
   "main": "./dist/coreui.js",
   "module": "./dist/coreui.js",
@@ -46,7 +46,6 @@
     "lodash.kebabcase": "^4.1.1",
     "lodash.merge": "^4.6.2",
     "lodash.template": "^4.5.0",
-    "material-ui-confirm": "^3.0.16",
     "numeral": "^2.0.6",
     "path-to-regexp": "6.2",
     "react": "^18",

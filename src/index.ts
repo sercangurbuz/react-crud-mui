@@ -92,3 +92,5 @@ export type { CellAlignment, TableProps, TableColumn } from './components/table/
 export { default as Tag, type TagProps } from './components/tag/Tag';
 export * from './components/typography';
 export * from './components/utils';
+export * from './components/theme/colors';
+export * from './components/theme';

@@ -95,7 +95,7 @@ export type TableColumn<D extends object = object> = {
 
 export interface TableProps<TData extends FieldValues>
   extends Omit<TableOptions<TData>, 'getCoreRowModel' | 'columns'>,
-    Partial<Pick<EmptyTextProps, 'emptyText' | 'showEmptyImage'>>,
+    Partial<Pick<EmptyTextProps, 'emptyText' | 'showEmptyImage' | 'emptyImageUrl'>>,
     Pick<MuiTableProps, 'size' | 'stickyHeader' | 'sx'> {
   autoFocus?: boolean;
   bordered?: boolean;

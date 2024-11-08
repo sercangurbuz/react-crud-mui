@@ -2,6 +2,7 @@ import { PropsWithChildren } from 'react';
 import { HotkeysProvider } from 'react-hotkeys-hook';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import merge from 'lodash.merge';
 
 import '../dayjs';
@@ -63,11 +64,11 @@ function SettingsProvider({
                 {children}
               </ValidationOptionsProvider>
             </HotkeysProvider>
-            {/* <ReactQueryDevtools
+            <ReactQueryDevtools
               initialIsOpen={false}
               buttonPosition="bottom-right"
               position="bottom"
-            /> */}
+            />
           </QueryClientProvider>
         </ThemeProvider>
       </LocalizationProvider>

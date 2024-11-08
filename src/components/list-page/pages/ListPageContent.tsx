@@ -406,8 +406,8 @@ function ListPageContent<
               },
             ]
           : columns,
-      rowCount: (data as PagingListModel<TModel>).dataCount,
-      data: (data as PagingListModel<TModel>).data,
+      rowCount: (data as PagingListModel<TModel>)?.dataCount,
+      data: (data as PagingListModel<TModel>)?.data,
       loading,
     };
 
