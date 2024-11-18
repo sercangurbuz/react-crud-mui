@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import type { QueryKey, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 
+import useLangWatch from '../i18n/hooks/useLangWatch';
 import { RecordType, ServerError } from '../utils';
 import axiosInstance from './axios';
 import useAppQueryKey from './useAppQueryKey';
@@ -15,6 +16,7 @@ export interface UseAppQueryOptions<TResult, TVariables = RecordType>
   queryKey?: QueryKey;
   variables?: TVariables;
   baseURL?: string;
+  refetchOnLangChange?: boolean;
 }
 
 export type UseAppQueryResult<TResult, ServerError> = UseQueryResult<TResult, ServerError> & {
@@ -28,6 +30,7 @@ function useAppQuery<TResult, TVariables extends RecordType = RecordType>({
   variables,
   controller,
   baseURL,
+  refetchOnLangChange,
   ...options
 }: UseAppQueryOptions<TResult, TVariables>): UseAppQueryResult<TResult, ServerError> {
   const headers = useCommonHeaders();
@@ -54,6 +57,12 @@ function useAppQuery<TResult, TVariables extends RecordType = RecordType>({
     () => ({ ...result, queryKey }) as UseAppQueryResult<TResult, ServerError>,
     [queryKey, result],
   );
+
+  useLangWatch(() => {
+    if (refetchOnLangChange) {
+      void result.refetch();
+    }
+  });
 
   return appResult;
 }

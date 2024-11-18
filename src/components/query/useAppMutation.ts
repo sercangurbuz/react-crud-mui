@@ -3,6 +3,7 @@ import { AxiosRequestConfig } from 'axios';
 
 import { RecordType, ServerError } from '../utils';
 import axiosInstance from './axios';
+import useAppQueryKey from './useAppQueryKey';
 import useCommonHeaders from './useCommonHeaders';
 import useMakeURI, { UseMakeURIOptions } from './useMakeFullURI';
 
@@ -28,8 +29,10 @@ function useAppMutation<TData, TVariables extends RecordType>({
 > {
   const headers = useCommonHeaders();
   const makeURI = useMakeURI<TVariables>({ action, controller, url });
+  const getDefaultCacheKey = useAppQueryKey({ action, controller });
 
   const result = useMutation<TData, ServerError, TVariables>({
+    mutationKey: getDefaultCacheKey(),
     mutationFn: async (variables) => {
       const uri = await makeURI(variables);
       const response =

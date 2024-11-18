@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
+import useLangWatch from '../i18n/hooks/useLangWatch';
 import { RecordType, ServerError } from '../utils';
 import axiosInstance from './axios';
 import useCommonHeaders from './useCommonHeaders';
@@ -12,6 +13,7 @@ export interface UseAppLazyQueryOptions<TData, TVariables = RecordType>
     UseMakeURIOptions<TVariables> {
   baseURL?: string;
   variables?: Partial<TVariables>;
+  refetchOnLangChange?: boolean;
 }
 
 function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
@@ -20,6 +22,7 @@ function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
   baseURL,
   controller,
   variables: initialVariables,
+  refetchOnLangChange,
   ...options
 }: UseAppLazyQueryOptions<TData, TVariables>) {
   const headers = useCommonHeaders();
@@ -73,6 +76,12 @@ function useAppLazyQuery<TData, TVariables extends RecordType = RecordType>({
       return mutate(variables);
     }
   }, [mutate, variables, status]);
+
+  useLangWatch(() => {
+    if (refetchOnLangChange) {
+      refetch();
+    }
+  });
 
   return {
     ...restOptions,
