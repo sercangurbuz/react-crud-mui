@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -24,11 +25,15 @@ import Edit from '../../components/icons/Edit';
 import GroupSenior from '../../components/icons/GroupSenior';
 import User from '../../components/icons/User';
 import Page from '../../components/page/Page';
-import { useAppQuery } from '../../components/query';
 import { H2 } from '../../components/typography';
 import { ServerError } from '../../components/utils';
 import mockData from '../../test-setup/mockUsers.json';
-import { handleDeleteUser, handleSaveUser, UserDefaultValues } from '../utils/api';
+import {
+  handleDeleteUser,
+  handleSaveUser,
+  useFetchUserById,
+  UserDefaultValues,
+} from '../utils/api';
 import { userSchema, type UserSchema } from '../utils/schema';
 import CustomCommands from './components/CustomCommands';
 import CustomStepCommands from './components/CustomStepCommands';
@@ -78,12 +83,8 @@ export const WithAsyncData: DetailPageStory = {
     defaultReason: 'fetch',
   },
   render: (args) => {
-    const { data, isFetching } = useAppQuery<UserSchema>({
-      queryKey: ['user'],
-      url: 'https://jsonplaceholder.typicode.com/users/1',
-    });
-
-    return <DetailPage {...args} loading={isFetching} data={data} />;
+    const [data, loading] = useFetchUserById();
+    return <DetailPage {...args} loading={loading} data={data} />;
   },
 };
 
@@ -156,7 +157,7 @@ export const WithErrorAsyncData: DetailPageStory = {
         onSave={() => {
           setloading(true);
           callError('Save mutation failed');
-          return Promise.reject({ message: 'Failure message (internal)' });
+          return Promise.reject(new Error('Failure message (internal)'));
         }}
       />
     );
@@ -165,7 +166,7 @@ export const WithErrorAsyncData: DetailPageStory = {
 
 export const DisabledMode: DetailPageStory = {
   render(args) {
-    const [isDisabled, setDisabled] = useState<boolean>(false);
+    const [isDisabled, setDisabled] = useState<boolean>(true);
     return (
       <DetailPage
         {...args}
@@ -210,11 +211,7 @@ export const WithZodRefine: DetailPageStory = {
     defaultReason: 'fetch',
   },
   render: (args) => {
-    const { data, isFetching } = useAppQuery<UserSchema>({
-      queryKey: ['user'],
-      url: 'https://jsonplaceholder.typicode.com/users/1',
-    });
-
+    const [data, loading] = useFetchUserById();
     const [s, { addRefine }] = useZodRefine({ schema: userSchema });
 
     useEffect(() => {
@@ -229,7 +226,7 @@ export const WithZodRefine: DetailPageStory = {
       );
     }, [addRefine]);
 
-    return <DetailPage {...args} schema={s} data={data} loading={isFetching} />;
+    return <DetailPage {...args} schema={s} data={data} loading={loading} />;
   },
 };
 
@@ -465,15 +462,8 @@ export const InRouter: DetailPageRouteStory = {
   },
   render(args) {
     const { id } = useDetailPageRouteParams();
-
-    const { data, isFetching } = useAppQuery<UserSchema>({
-      queryKey: ['user', { id }],
-      url: 'https://jsonplaceholder.typicode.com/users/' + id,
-      variables: { id },
-      enabled: id !== 'new',
-    });
-
-    return <DetailPage.Route {...args} data={data} loading={isFetching} />;
+    const [data, loading] = useFetchUserById(id);
+    return <DetailPage.Route {...args} data={data} loading={loading} />;
   },
 };
 
@@ -524,15 +514,8 @@ export const InRouterModal: DetailPageRouteStory = {
   ...InRouter,
   render(args) {
     const { id } = useDetailPageRouteParams();
-
-    const { data, isFetching } = useAppQuery<UserSchema>({
-      queryKey: ['user', { id }],
-      url: 'https://jsonplaceholder.typicode.com/users/' + id,
-      variables: { id },
-      enabled: id !== 'new',
-    });
-
-    return <DetailPage.RouteModal {...args} data={data} loading={isFetching} />;
+    const [data, loading] = useFetchUserById(id);
+    return <DetailPage.RouteModal {...args} data={data} loading={loading} />;
   },
 };
 

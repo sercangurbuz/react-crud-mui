@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
-import { CheckOutlined, Search } from '@mui/icons-material';
+import { CheckOutlined } from '@mui/icons-material';
 import { z } from 'zod';
 
 import DetailPage from '../../../components/detail-page';
@@ -12,8 +12,7 @@ import UserOutlined from '../../../components/icons/UserOutlined';
 import ListPage from '../../../components/list-page/pages/ListPage';
 import { ListPageModel } from '../../../components/list-page/pages/ListPageFilter';
 import Page from '../../../components/page/Page';
-import { useAppLazyQuery } from '../../../components/query';
-import { ServerError } from '../../../components/utils';
+import { useFetchTodosByUserId } from '../../utils/api';
 
 const todoSchema = z.object({
   title: z.string().nonempty(),
@@ -27,44 +26,30 @@ export type ToDo = z.infer<typeof todoSchema>;
 function NestedTodosRouteTab() {
   const { id } = useDetailPageRouteParams();
 
-  const { fetch, data, isPending, error, prevData } = useAppLazyQuery<
-    ToDo[],
-    { userId?: string; title_like?: string }
-  >({
-    variables: { userId: id },
-    url: `https://jsonplaceholder.typicode.com/todos`,
-  });
+  const [title, settitle] = useState<string>();
+  const [data, loading] = useFetchTodosByUserId(id, title);
 
   const pagingData = useMemo<ListPageModel<ToDo>>(
     () => ({
-      data: data ?? prevData ?? [],
+      data: data ?? [],
       dataCount: data?.length ?? 0,
     }),
-    [data, prevData],
+    [data],
   );
 
   return (
     <ListPage.Route
       onNeedData={(filter) => {
-        fetch({
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          title_like: filter?.keyword && `^${filter?.keyword}`,
-        });
+        settitle(filter?.keyword as string);
       }}
       data={pagingData}
       defaultValues={{
         keyword: '',
       }}
-      loading={isPending}
-      error={error as ServerError}
+      loading={loading}
       filterContent={
         <Page.Content>
-          <Field.Input
-            name="keyword"
-            placeholder="Search..."
-            InputProps={{ startAdornment: <Search /> }}
-            sx={{ maxWidth: 400, width: '100%' }}
-          />
+          <Field.Search name="keyword" sx={{ maxWidth: 400, width: '100%' }} />
         </Page.Content>
       }
       columns={[

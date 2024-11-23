@@ -1,16 +1,14 @@
 import { useState } from 'react';
-import { FieldValues, get } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import useSegmentParams, {
   UseSegmentParamsOptions,
 } from '../../detail-page/hooks/useSegmentParams';
-import flattenObject from '../../misc/flattenObject';
-import isNil from '../../misc/isNil';
 import useSettings from '../../settings-provider/hooks/useSettings';
-import useURLSearchFilter, { UseURLSearchFilterOptions } from '../hooks/useURLSearchFilter';
+import useURLSearchFilter, { QueryStringFilters } from '../hooks/useURLSearchFilter';
 import ListPage, { ListPageProps } from './ListPage';
-import { ListPageFilter } from './ListPageFilter';
+import { ListPageMeta } from './ListPageFilter';
 
 export interface ListPageRouteProps<
   TModel extends FieldValues,
@@ -18,7 +16,7 @@ export interface ListPageRouteProps<
   TDetailPageModel extends FieldValues = FieldValues,
 > extends ListPageProps<TModel, TFilter, TDetailPageModel>,
     Omit<UseSegmentParamsOptions, 'paths' | 'enableSegmentRouting'> {
-  enableQueryStringFilter?: UseURLSearchFilterOptions<TFilter>['enableQueryStringFilter'];
+  enableQueryStringFilter?: boolean;
 }
 
 function ListPageRoute<
@@ -26,12 +24,13 @@ function ListPageRoute<
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >({
-  enableQueryStringFilter = false,
+  enableQueryStringFilter = true,
   enableNestedSegments,
   fallbackSegmentIndex,
   defaultFilter,
   tabs,
   onNeedData,
+  defaultMeta,
   ...listPageProps
 }: ListPageRouteProps<TModel, TFilter, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
@@ -40,67 +39,44 @@ function ListPageRoute<
 
   const { newItemParamValue } = useSettings();
   const navigate = useNavigate();
-  const [currentQueryParameters, setSearchParams] = useSearchParams();
+  const [currentQueryParameters] = useSearchParams();
   const isReadonly = currentQueryParameters.has('readonly');
 
   /* -------------------------------------------------------------------------- */
   /*                                   Filter                                   */
   /* -------------------------------------------------------------------------- */
 
-  /**
-   * Listpage can be used as a nested segment
-   */
   const [segment, setSegment] = useSegmentParams({
     enableNestedSegments,
     fallbackSegmentIndex,
     paths: tabs,
   });
 
-  const getFiltersInQS = useURLSearchFilter<ListPageFilter<TFilter>>({
-    enableQueryStringFilter,
-    params: currentQueryParameters,
-  });
-
-  const [filtersInQS] = useState(() =>
-    enableQueryStringFilter ? getFiltersInQS() : defaultFilter,
+  const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>();
+  const [[filtersInQS, metaInQS]] = useState<QueryStringFilters<TFilter>>(() =>
+    enableQueryStringFilter ? getFiltersInQS() : [defaultFilter, defaultMeta],
   );
 
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
   /* -------------------------------------------------------------------------- */
 
-  const setQSByFilter = (filter: Omit<ListPageFilter<TFilter>, '_meta'>) => {
-    let flattenedFilter = flattenObject(filter);
-
-    if (flattenedFilter) {
-      if (typeof enableQueryStringFilter === 'object') {
-        flattenedFilter = Object.fromEntries(
-          Object.keys(enableQueryStringFilter)
-            .map((key) => [key, get(flattenedFilter, key) as string])
-            .filter(([, value]) => !isNil(value)),
-        );
-      }
-
-      setSearchParams(new URLSearchParams(flattenedFilter));
-    }
-  };
-
-  const handleNeedData = (filter: ListPageFilter<TFilter> | undefined) => {
-    if (enableQueryStringFilter && filter) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { _meta, ...formValues } = filter;
-      setQSByFilter(formValues);
+  const handleNeedData = (filter: TFilter, _meta: ListPageMeta) => {
+    if (enableQueryStringFilter) {
+      setFiltersInQS(filter, _meta);
     }
 
-    if (filter?._meta?.reason === 'tabChanged') {
-      setSegment(filter?._meta.segmentIndex);
+    const { reason, selectedTabIndex } = _meta;
+
+    if (reason === 'tabChanged') {
+      setSegment(selectedTabIndex);
 
       if (enableNestedSegments) {
         return;
       }
     }
 
-    onNeedData?.(filter);
+    onNeedData?.(filter, _meta);
   };
 
   const handleNewItem = () => {
@@ -135,6 +111,7 @@ function ListPageRoute<
       tabs={tabs}
       onNeedData={handleNeedData}
       defaultFilter={filtersInQS}
+      defaultMeta={metaInQS}
     />
   );
 }

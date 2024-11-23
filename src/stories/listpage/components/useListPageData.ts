@@ -1,44 +1,34 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { ListPageProps } from '../../../components/list-page/pages/ListPage';
 import {
   ListPageFilter,
+  ListPageMeta,
   PagingListModel,
 } from '../../../components/list-page/pages/ListPageFilter';
-import { useAppLazyQuery } from '../../../components/query';
+import { useFetchUsers } from '../../utils/api';
 import { UserSchema } from '../../utils/schema';
 
 function useListPageData() {
-  const { fetch, data, isPending, error, prevData } = useAppLazyQuery<UserSchema[]>({
-    url: 'https://jsonplaceholder.typicode.com/users',
-  });
+  const [filter, setfilter] = useState<ListPageFilter<UserSchema>>();
+  const [data, loading] = useFetchUsers(filter!);
+
   const users = useMemo<PagingListModel<UserSchema>>(
     () => ({
-      data: data ?? prevData ?? [],
-      dataCount: data || prevData ? 10 : 0,
+      data: data ?? [],
+      dataCount: data ? 10 : 0,
     }),
-    [data, prevData],
+    [data],
   );
 
   const handleNeedData = useCallback(
-    ({ name, username, email, website, phone, _meta }: ListPageFilter<UserSchema>) =>
-      fetch({
-        name_like: name && `^${name}`,
-        username_like: username && `^${username}`,
-        email_like: email && `^${email}`,
-        website_like: website && `^${website}`,
-        phone_like: phone && `^${phone}`,
-        _page: (_meta?.pagination.pageIndex ?? 0) + 1,
-        _limit: _meta?.pagination?.pageSize,
-        _sort: _meta?.sorting.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
-      }),
-    [fetch],
+    (filter: UserSchema, _meta: ListPageMeta) => setfilter({ ...filter, _meta }),
+    [],
   );
 
   return {
     onNeedData: handleNeedData,
-    loading: isPending,
-    error,
+    loading,
     data: users,
   } as Partial<ListPageProps<UserSchema>>;
 }

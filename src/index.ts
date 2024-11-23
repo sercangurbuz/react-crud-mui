@@ -72,11 +72,6 @@ export { default as MoreButton, type MoreButtonProps } from './components/more-b
 export { default as Page, type PageProps } from './components/page/Page';
 export { default as usePage } from './components/page/hooks/usePage';
 export { default as PhoneInput, type PhoneInputProps } from './components/phone-input/PhoneInput';
-export * from './components/query';
-export type { UseAppQueryOptions, UseAppQueryResult } from './components/query/useAppQuery';
-export type { UseAppLazyQueryOptions } from './components/query/useAppLazyQuery';
-export type { UseAppMutationOptions } from './components/query/useAppMutation';
-export type { UseAppQueryKey } from './components/query/useAppQueryKey';
 export { default as Scrollbar, type ScrollbarProps } from './components/scrollbar/Scrollbar';
 export {
   default as SearchInput,

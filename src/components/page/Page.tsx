@@ -5,7 +5,11 @@ import { Box, BoxProps, LinearProgress, styled } from '@mui/material';
 import { FlexBox } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';
 import DefaultLayout, { PageLayoutProps } from './components/DefaultLayout';
-import DefaultTabs, { DefaultTabsProps, TabPane } from './components/DefaultTabs';
+import DefaultTabs, {
+  DefaultTabsProps,
+  TabChangedPayload,
+  TabPane,
+} from './components/DefaultTabs';
 import PageContent from './components/PageContent';
 import PageDivider from './components/PageDivider';
 import PageProvider, { PaddingSize } from './components/PageProvider';
@@ -38,7 +42,7 @@ export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
   disableShortCuts?: boolean;
   tabs?: TabPane[];
   selectedTabIndex?: number;
-  onTabChanged?: (index: number) => void;
+  onTabChanged?: (selected: TabChangedPayload) => void;
   onTabs?: (props: DefaultTabsProps) => ReactNode;
 }
 
@@ -98,16 +102,16 @@ function Page({
       return null;
     }
 
-    const selectedValue = (
+    const selectedTabValue = (
       selectedTabIndex <= tabs.length - 1 ? tabs[selectedTabIndex].value : ''
     ) as string;
 
     const props: DefaultTabsProps = {
       tabs,
-      value: selectedValue,
+      value: selectedTabValue,
       onChange: (_, value) => {
         const selIndex = tabs.findIndex((item) => item.value === value);
-        onTabChanged?.(selIndex ?? 0);
+        onTabChanged?.({ selectedTabIndex: selIndex, selectedTabValue: value });
       },
     };
 

@@ -20,6 +20,9 @@ function FilterContent() {
           <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.Input name="email" label="Email" />
           </Grid2>
+          <Grid2 size={{ md: 4, xs: 12 }}>
+            <Field.Search name="search" />
+          </Grid2>
         </Grid2>
       </Page.Content>
     </>

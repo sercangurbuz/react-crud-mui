@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 
-import useSettings from '../../settings-provider/hooks/useSettings';
+import merge from 'lodash.merge';
+
 import { INITIAL_PAGEINDEX } from '../constants';
-import { ListPageFilter, ListPageMeta } from './ListPageFilter';
+import { ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
 import ListPageModal from './ListPageModal';
 import ListPageRoute from './ListPageRoute';
@@ -17,41 +18,47 @@ export interface ListPageProps<
   /**
    * Data fetcher function with given filter
    */
-  onNeedData?: (filter: ListPageFilter<TFilter> | undefined) => void;
+  onNeedData?: (filter: TFilter, _meta: ListPageMeta) => void;
 }
+
+/* ---------------------------------- Const --------------------------------- */
+
+const DEFAULT_LISTPAGE_META: ListPageMeta = {
+  pagination: {
+    pageIndex: INITIAL_PAGEINDEX,
+    pageSize: 25,
+  },
+  sorting: [],
+  columnFilters: [],
+  selectedTabIndex: 0,
+  selectedTabValue: '',
+  reason: 'init',
+};
 
 function ListPage<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >(props: ListPageProps<TModel, TFilter, TDetailPageModel>) {
-  const {
-    defaultFilter,
-    onNeedData,
-    tableProps,
-    defaultSegmentIndex = 0,
-    activeSegmentIndex,
-  } = props;
-  const { pageSize: defaultPageSize } = useSettings();
+  const { onNeedData, defaultSegmentIndex = 0, activeSegmentIndex, tabs, defaultMeta } = props;
 
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
   const [meta, setMeta] = useState<ListPageMeta>(() => {
-    return {
-      pagination: {
-        pageIndex: INITIAL_PAGEINDEX,
-        pageSize: defaultPageSize,
-        ...tableProps?.initialState?.pagination,
-        ...defaultFilter?._meta?.pagination,
-      },
-      sorting: defaultFilter?._meta?.sorting ?? tableProps?.initialState?.sorting ?? [],
-      columnFilters:
-        defaultFilter?._meta?.columnFilters ?? tableProps?.initialState?.columnFilters ?? [],
-      segmentIndex: activeSegmentIndex ?? defaultSegmentIndex,
-      reason: 'init',
-    };
+    const selectedTabIndex = activeSegmentIndex ?? defaultSegmentIndex;
+    const selectedTabValue = tabs
+      ? selectedTabIndex <= tabs.length - 1
+        ? tabs[selectedTabIndex].value
+        : ''
+      : '';
+
+    const _meta = merge({}, DEFAULT_LISTPAGE_META, defaultMeta, {
+      selectedTabIndex,
+      selectedTabValue,
+    });
+    return _meta;
   });
 
   /* -------------------------------------------------------------------------- */
@@ -73,10 +80,7 @@ function ListPage<
       setMeta(_meta);
     }
 
-    onNeedData?.({
-      ...filter,
-      _meta,
-    });
+    onNeedData?.(filter, _meta);
   };
 
   return <ListPageForm {...props} meta={meta} onChange={handleChange} />;

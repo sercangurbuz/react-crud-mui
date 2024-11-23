@@ -22,6 +22,7 @@ import FormMoneyInput from './controls/FormMoneyInput';
 import FormNumberInput from './controls/FormNumberInput';
 import FormPhoneInput from './controls/FormPhoneInput';
 import FormRadioGroup from './controls/FormRadioGroup';
+import FormSearchInput from './controls/FormSearchInput';
 import FormSelect from './controls/FormSelect';
 import FormSwitch from './controls/FormSwitch';
 import useRegisterField from './hooks/useRegisterField';
@@ -141,6 +142,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
 export default Field;
 
 Field.Input = FormInput;
+Field.Search = FormSearchInput;
 Field.NumberInput = FormNumberInput;
 Field.MoneyInput = FormMoneyInput;
 Field.PhoneInput = FormPhoneInput;

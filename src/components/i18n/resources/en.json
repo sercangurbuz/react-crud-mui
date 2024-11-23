@@ -46,6 +46,7 @@
     "uniqueconstraint": "Unique check constraint on '{{fields}}' fields",
     "leave": "Leave",
     "finish": "Finish",
+    "search": "Search...",
     "listpage.createnewitem": "Create new item",
     "listpage.extrafilter.columnOptions": "Table columns options",
     "listpage.listbuttons.callout.search.title": "Search failed",

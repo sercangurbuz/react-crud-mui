@@ -47,6 +47,7 @@
     "uniqueconstraint": "'{{fields}}' alanlarında benzersiz alan kısıtı mevcut",
     "leave": "Ayrıl",
     "finish": "Son",
+    "search": "Ara...",
     "listpage.createnewitem": "Yeni kayıt yarat",
     "listpage.extrafilter.columnOptions": "Liste kolon ayarları",
     "listpage.listbuttons.callout.search.title": "Arama başarısız",

@@ -9,10 +9,7 @@ import useForm, {
   ValidationOptions,
 } from '../../form/hooks/useForm';
 import { DeepNullable } from '../../utils';
-import ListPageFilter, {
-  ListPageFilterProps,
-  type ListPageFilter as ListPageFilterType,
-} from './ListPageFilter';
+import ListPageFilter, { ListPageFilterProps } from './ListPageFilter';
 
 /* -------------------------------------------------------------------------- */
 /*                                    TYpes                                   */
@@ -29,7 +26,7 @@ export interface ListPageFormProps<
   /**
    * External filter criteries
    */
-  defaultFilter?: ListPageFilterType<TFilter>;
+  defaultFilter?: Partial<TFilter>;
   /**
    * Default form fields values
    */
@@ -59,7 +56,7 @@ function ListPageForm<
       keepDefaultValues: true,
       keepDirty: true,
     },
-    values: defaultFilter,
+    values: defaultFilter as unknown as TFilter,
   });
 
   const formMethods = props.form ?? form;

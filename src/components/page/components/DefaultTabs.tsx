@@ -12,6 +12,8 @@ export interface DefaultTabsProps extends TabsProps {
   tabs: TabPane[];
 }
 
+export type TabChangedPayload = { selectedTabIndex: number; selectedTabValue: string };
+
 /* -------------------------------------------------------------------------- */
 /*                                   Styled                                   */
 /* -------------------------------------------------------------------------- */

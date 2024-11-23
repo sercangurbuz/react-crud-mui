@@ -4,6 +4,7 @@ import { TableState } from '@tanstack/react-table';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
 import useFormInitEffect from '../../form/hooks/useFormInitEffect';
+import { TabChangedPayload } from '../../page/components/DefaultTabs';
 import useSettings from '../../settings-provider/hooks/useSettings';
 import { TableProps } from '../../table/Table';
 import { INITIAL_PAGEINDEX } from '../constants';
@@ -18,10 +19,10 @@ export interface PagingListModel<TModel> {
   dataCount: number;
 }
 export type ListPageModel<TModel> = PagingListModel<TModel>;
-export type ListPageMeta = Pick<TableState, 'pagination' | 'sorting' | 'columnFilters'> & {
-  segmentIndex: number;
-  reason: SearchReason;
-};
+export type ListPageMeta = Pick<TableState, 'pagination' | 'sorting' | 'columnFilters'> &
+  TabChangedPayload & {
+    reason: SearchReason;
+  };
 export type SearchReason =
   | 'search'
   | 'sorting'
@@ -32,7 +33,7 @@ export type SearchReason =
   | 'tabChanged'
   | 'columnfilter';
 
-export type ListPageFilter<TFilter extends FieldValues> = TFilter & { _meta?: ListPageMeta };
+export type ListPageFilter<TFilter extends FieldValues> = TFilter & { _meta: ListPageMeta };
 
 export type NeedDataPayload<TFilter extends FieldValues> = {
   filter: ListPageFilter<TFilter>;
@@ -66,6 +67,10 @@ export interface ListPageFilterProps<
    * Meta data of listpage
    */
   meta: ListPageMeta;
+  /**
+   * Meta data of listpage
+   */
+  defaultMeta?: Partial<ListPageMeta>;
 }
 
 function ListPageFilter<
@@ -175,9 +180,9 @@ function ListPageFilter<
         })
       }
       tableProps={tableProps}
-      activeSegmentIndex={meta?.segmentIndex}
-      onTabChanged={(segmentIndex) => {
-        void handleSearch({ segmentIndex, reason: 'tabChanged' });
+      activeSegmentIndex={meta?.selectedTabIndex}
+      onTabChanged={(payload) => {
+        void handleSearch({ reason: 'tabChanged', ...payload });
       }}
       onClear={clearForm}
     />

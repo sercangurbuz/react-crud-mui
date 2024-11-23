@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
@@ -40,7 +41,7 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
         accessorKey: 'email',
         header: 'Email',
         cell(props) {
-          return <a href={`mailto:${props.getValue()}`}>{props.renderValue() as string}</a>;
+          return <a href={`mailto:${props.getValue<string>()}`}>{props.renderValue() as string}</a>;
         },
       },
       {
@@ -201,6 +202,7 @@ export const WithErrorAsyncData: ListPageStory = {
 export const TemporaryFilter: ListPageStory = {
   name: 'Remember filter (Temporary filter)',
   render: (args, { id }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [value, setValue] = useSession<any>({ name: id });
     const [mounted, setMounted] = useState(true);
 

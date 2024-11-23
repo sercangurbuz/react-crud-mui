@@ -1,30 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import useDetailPageRouteParams from '../../../components/detail-page/hooks/useDetailPageRouteParams';
 import DetailPage from '../../../components/detail-page/pages/DetailPage';
 import UserOutlined from '../../../components/icons/UserOutlined';
-import useAppQuery from '../../../components/query/useAppQuery';
-import { ServerError } from '../../../components/utils';
 import FormContent from '../../detail-page/components/FormContent';
-import { handleSaveUser, UserDefaultValues } from '../../utils/api';
-import { userSchema, UserSchema } from '../../utils/schema';
+import { handleSaveUser, useFetchUserById, UserDefaultValues } from '../../utils/api';
+import { userSchema } from '../../utils/schema';
 
 function NestedUserInfoRouteTab() {
-  const { id, reason } = useDetailPageRouteParams();
-  const { data, isLoading, error } = useAppQuery<UserSchema>({
-    queryKey: ['user', id],
-    url: `https://jsonplaceholder.typicode.com/users/${id}`,
-    enabled: reason !== 'create',
-  });
+  const { id } = useDetailPageRouteParams();
+  const [data, loading] = useFetchUserById(id);
 
   return (
     <DetailPage.Route
       data={data}
-      loading={isLoading}
+      loading={loading}
       header="User Details"
       icon={<UserOutlined />}
       schema={userSchema}
       defaultValues={UserDefaultValues}
       onSave={handleSaveUser}
-      error={error as ServerError}
       enableNestedSegments
       tabs={[
         {
