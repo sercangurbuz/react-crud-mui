@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { DeepPartial, FieldValues } from 'react-hook-form';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 import useSegmentParams, {
   UseSegmentParamsOptions,
 } from '../../detail-page/hooks/useSegmentParams';
 import useSettings from '../../settings-provider/hooks/useSettings';
-import useURLSearchFilter, { QueryStringFilters } from '../hooks/useURLSearchFilter';
+import useURLSearchFilter from '../hooks/useURLSearchFilter';
 import ListPage, { ListPageProps } from './ListPage';
 import { ListPageMeta } from './ListPageFilter';
 
@@ -53,9 +53,23 @@ function ListPageRoute<
   });
 
   const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>();
-  const [[filtersInQS, metaInQS]] = useState<QueryStringFilters<TFilter>>(() =>
-    enableQueryStringFilter ? getFiltersInQS() : [defaultFilter, defaultMeta],
-  );
+  const [defaultFilterProps] = useState(() => {
+    if (enableQueryStringFilter) {
+      const { filter, meta } = getFiltersInQS();
+      return {
+        defaultFilter: {
+          ...filter,
+          ...defaultFilter,
+        },
+        defaultMeta: {
+          ...meta,
+          ...defaultMeta,
+        },
+      } as { defaultFilter: Partial<TFilter>; defaultMeta: DeepPartial<ListPageMeta> };
+    }
+
+    return { defaultFilter, defaultMeta };
+  });
 
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
@@ -110,8 +124,7 @@ function ListPageRoute<
       {...listPageProps}
       tabs={tabs}
       onNeedData={handleNeedData}
-      defaultFilter={filtersInQS}
-      defaultMeta={metaInQS}
+      {...defaultFilterProps}
     />
   );
 }

@@ -62,10 +62,8 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
       },
     ],
     defaultValues: UserDefaultValues,
-    tableProps: {
-      initialState: {
-        pagination: { pageSize: 5 },
-      },
+    defaultMeta: {
+      pagination: { pageSize: 5 },
     },
     enableCreateItem: false,
   },
@@ -89,17 +87,24 @@ export const WithDefaultValues: StoryObj<
   typeof ListPage<{ username: string }, { username: string }>
 > = {
   args: {
-    alerts: [{ type: 'info', message: 'Clear default filter to default values "M" => "K"' }],
+    alerts: [
+      { type: 'info', message: 'Clear default filter to default values "M" => "K"' },
+      { type: 'info', message: 'Meta has default values of pagination pageSize equals to 3' },
+    ],
     enableClear: true,
     defaultFilter: { username: 'M' },
     defaultValues: { username: 'K' },
+    defaultMeta: {
+      pagination: {
+        pageSize: 3,
+      },
+    },
   },
 };
 
 export const WithDefaultTableFilters: ListPageStory = {
   args: {
     enableClear: true,
-
     tableProps: {
       paginationProps: {
         rowsPerPageOptions: [3, 5, 10, 25],
@@ -222,9 +227,9 @@ export const TemporaryFilter: ListPageStory = {
             {...args}
             style={{ marginBottom: 5 }}
             defaultFilter={value}
-            onNeedData={(filter) => {
+            onNeedData={(filter, meta) => {
               setValue(filter);
-              args.onNeedData?.(filter);
+              args.onNeedData?.(filter, meta);
             }}
           />
         ) : null}

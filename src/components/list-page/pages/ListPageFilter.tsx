@@ -7,7 +7,7 @@ import useFormInitEffect from '../../form/hooks/useFormInitEffect';
 import { TabChangedPayload } from '../../page/components/DefaultTabs';
 import useSettings from '../../settings-provider/hooks/useSettings';
 import { TableProps } from '../../table/Table';
-import { INITIAL_PAGEINDEX } from '../constants';
+import { DEFAULT_PAGEINDEX } from '../constants';
 import ListPageContent, { ListPageContentProps } from './ListPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -70,7 +70,7 @@ export interface ListPageFilterProps<
   /**
    * Meta data of listpage
    */
-  defaultMeta?: Partial<ListPageMeta>;
+  defaultMeta?: DeepPartial<ListPageMeta>;
 }
 
 function ListPageFilter<
@@ -150,7 +150,7 @@ function ListPageFilter<
       ...extableProps?.initialState,
       segmentIndex: defaultSegmentIndex,
       pagination: {
-        pageIndex: INITIAL_PAGEINDEX,
+        pageIndex: DEFAULT_PAGEINDEX,
         pageSize: defaultPageSize,
         ...extableProps?.initialState?.pagination,
       },
@@ -175,7 +175,7 @@ function ListPageFilter<
         void handleSearch({
           reason: 'search',
           pagination: {
-            pageIndex: INITIAL_PAGEINDEX,
+            pageIndex: DEFAULT_PAGEINDEX,
           },
         })
       }

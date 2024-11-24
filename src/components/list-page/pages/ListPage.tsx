@@ -3,7 +3,7 @@ import { DeepPartial, FieldValues } from 'react-hook-form';
 
 import merge from 'lodash.merge';
 
-import { INITIAL_PAGEINDEX } from '../constants';
+import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
 import ListPageModal from './ListPageModal';
@@ -25,8 +25,8 @@ export interface ListPageProps<
 
 const DEFAULT_LISTPAGE_META: ListPageMeta = {
   pagination: {
-    pageIndex: INITIAL_PAGEINDEX,
-    pageSize: 25,
+    pageIndex: DEFAULT_PAGEINDEX,
+    pageSize: DEFAULT_PAGESIZE,
   },
   sorting: [],
   columnFilters: [],
@@ -54,11 +54,10 @@ function ListPage<
         : ''
       : '';
 
-    const _meta = merge({}, DEFAULT_LISTPAGE_META, defaultMeta, {
+    return merge({}, DEFAULT_LISTPAGE_META, defaultMeta, {
       selectedTabIndex,
       selectedTabValue,
     });
-    return _meta;
   });
 
   /* -------------------------------------------------------------------------- */

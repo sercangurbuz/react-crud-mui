@@ -1,38 +1,38 @@
 import { useCallback } from 'react';
 import { FieldValues } from 'react-hook-form';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
-import removeFalsy from '../../misc/removeFalsy';
-import { INITIAL_PAGEINDEX } from '../constants';
+import qs from 'qs';
+
+import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from '../pages/ListPageFilter';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
-export type QueryStringFilters<TFilter extends FieldValues> = [
-  Partial<TFilter> | undefined,
-  Partial<ListPageMeta> | undefined,
-];
 
 function useURLSearchFilter<TFilter extends FieldValues>() {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const [params, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
+  const { search } = useLocation();
 
   const getFiltersInQS = useCallback(() => {
-    const { page, size, ...filter } = Object.fromEntries(params.entries());
-    return [
+    const { page, size, ...filter } = qs.parse(search, {
+      ignoreQueryPrefix: true,
+    });
+    return {
       filter,
-      {
+      meta: {
         pagination: {
-          pageIndex: page ? Number(page) : undefined,
-          pageSize: size ? Number(size) : undefined,
+          pageIndex: page ? Number(page) : DEFAULT_PAGEINDEX,
+          pageSize: size ? Number(size) : DEFAULT_PAGESIZE,
         },
       },
-    ] as QueryStringFilters<TFilter>;
-  }, [params]);
+    };
+  }, [search]);
 
   const setFiltersInQS = useCallback(
     (filter: TFilter, _meta: ListPageMeta) => {
@@ -42,7 +42,26 @@ function useURLSearchFilter<TFilter extends FieldValues>() {
         size: _meta.pagination.pageSize,
       };
 
-      setSearchParams(new URLSearchParams(removeFalsy(qsParams)));
+      const filterQs = qs.stringify(qsParams, {
+        skipNulls: true,
+        strictNullHandling: true,
+        filter(prefix, value) {
+          if (prefix === 'page' && value === DEFAULT_PAGEINDEX) {
+            return;
+          }
+          if (prefix === 'size' && value === DEFAULT_PAGESIZE) {
+            return;
+          }
+
+          if (value === '') {
+            return;
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          return value;
+        },
+      });
+
+      setSearchParams(filterQs);
     },
     [setSearchParams],
   );
