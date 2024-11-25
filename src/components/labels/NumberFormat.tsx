@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { BoxProps } from '@mui/system/Box';
 import numeral from 'numeral';
 
-import useSettings from '../settings-provider/hooks/useSettings';
+import useSettings from '../crud-mui-provider/hooks/useSettings';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */

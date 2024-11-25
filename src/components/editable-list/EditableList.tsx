@@ -28,7 +28,7 @@ import useValidationOptionsContext from '../form/hooks/useValidationOptionsConte
 import { HeaderProps } from '../header/Header';
 import useTranslation from '../i18n/hooks/useTranslation';
 import usePage from '../page/hooks/usePage';
-import useSettings from '../settings-provider/hooks/useSettings';
+import useSettings from '../crud-mui-provider/hooks/useSettings';
 import Table, { TableColumn, TableProps } from '../table/Table';
 import DefaultEditableListLayout, {
   DefaultEditableListControlLayoutProps,

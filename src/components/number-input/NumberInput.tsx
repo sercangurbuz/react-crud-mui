@@ -3,7 +3,7 @@ import { NumericFormat, NumericFormatProps } from 'react-number-format';
 
 import { StandardTextFieldProps, TextField } from '@mui/material';
 
-import useSettings from '../settings-provider/hooks/useSettings';
+import useSettings from '../crud-mui-provider/hooks/useSettings';
 import { ControlledFormProps } from '../utils';
 
 export type NumberInputProps = Omit<NumericFormatProps<StandardTextFieldProps>, 'onChange'> &

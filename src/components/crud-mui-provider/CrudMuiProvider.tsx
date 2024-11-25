@@ -25,29 +25,30 @@ enableMapSet();
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-export type SettingsProviderProps = Partial<Settings>;
+export type CrudMuiProviderProps = Partial<Settings>;
 
 /**
  * All Providers needed for @arkas/ui components.This is client component obviously
  * @description Respectively Antd ConfigProvider => Emotion themeProvider => App =>
  */
-function SettingsProvider({
+function CrudMuiProvider({
   children,
   validationOptions,
   ...rest
-}: PropsWithChildren<SettingsProviderProps>) {
+}: PropsWithChildren<CrudMuiProviderProps>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
   const contextValue = merge(getDefaultSettings(), rest) as Settings;
-  const { theme, responsiveFontSizes, direction } = contextValue;
+  const { theme, themeOptions, responsiveFontSizes, direction } = contextValue;
 
   return (
     <SettingsContext.Provider value={contextValue}>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18nInstance.language}>
         <ThemeProvider
           theme={theme}
+          themeOptions={themeOptions}
           responsiveFontSizes={responsiveFontSizes}
           direction={direction}
         >
@@ -60,4 +61,4 @@ function SettingsProvider({
   );
 }
 
-export default SettingsProvider;
+export default CrudMuiProvider;

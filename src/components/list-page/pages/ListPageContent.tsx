@@ -15,7 +15,7 @@ import SearchIcon from '../../icons/SearchIcon';
 import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
-import useSettings from '../../settings-provider/hooks/useSettings';
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import Table, { TableColumn, TableProps } from '../../table/Table';
 import { ServerError } from '../../utils';
 import AutoSearch from '../components/AutoSearch';

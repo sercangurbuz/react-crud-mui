@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react';
 
 import { act, render, RenderOptions } from '@testing-library/react';
 
-import Provider from '../components/settings-provider/SettingsProvider';
+import Provider from '../components/crud-mui-provider/CrudMuiProvider';
 
 const AllTheProviders = ({ children }: PropsWithChildren) => {
   return <Provider>{children}</Provider>;

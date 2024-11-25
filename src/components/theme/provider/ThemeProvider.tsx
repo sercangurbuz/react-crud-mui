@@ -7,11 +7,12 @@ import { createCustomTheme, ThemeSettings } from '..';
 
 function ThemeProvider({
   theme,
+  themeOptions,
   direction,
   responsiveFontSizes,
   children,
 }: PropsWithChildren<ThemeSettings>) {
-  const customTheme = createCustomTheme({ theme, direction, responsiveFontSizes });
+  const customTheme = createCustomTheme({ theme, themeOptions, direction, responsiveFontSizes });
 
   const toasterOptions = {
     style: {

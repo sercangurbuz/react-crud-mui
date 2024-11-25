@@ -9,7 +9,7 @@ import Add from '../../icons/Add';
 import Delete from '../../icons/Delete';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
 import { CloseReason, CommandsPosition } from '../../page/Page';
-import useSettings from '../../settings-provider/hooks/useSettings';
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useDetailPageStates from '../hooks/useDetailPageStates';
 import { SaveMode } from '../pages/DetailPageData';
 

@@ -2,7 +2,7 @@ import { FieldValues } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { CloseReason } from '../../page/Page';
-import useSettings from '../../settings-provider/hooks/useSettings';
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import DetailPageDefaultLayout from '../components/DetailPageDefaultLayout';
 import Prompt from '../components/Prompt';
 import useDetailPageRouteParams from '../hooks/useDetailPageRouteParams';

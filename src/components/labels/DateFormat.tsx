@@ -5,7 +5,7 @@ import dayjs, { Dayjs } from 'dayjs';
 
 import { FlexBox } from '../flexbox';
 import Calendar from '../icons/sidebar/Calendar';
-import useSettings from '../settings-provider/hooks/useSettings';
+import useSettings from '../crud-mui-provider/hooks/useSettings';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */

@@ -1,5 +1,3 @@
-import { RawAxiosRequestHeaders } from 'axios';
-
 import { ValidationOptions } from '../form/hooks/useForm';
 import { ThemeSettings } from '../theme';
 import { THEMES } from '../theme/theme.constants';
@@ -29,7 +27,6 @@ export interface CommonHotKeys {
 }
 
 export type Settings = {
-  requestCommonHeaders?: RawAxiosRequestHeaders;
   enableDevTool?: boolean;
   appTitle?: string;
   uniqueIdParamName: string;

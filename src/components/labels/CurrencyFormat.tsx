@@ -16,15 +16,24 @@ export interface CurrencyFormatProps extends NumberFormatProps {
 /* -------------------------------------------------------------------------- */
 
 function CurrencyFormat(
-  { decimalDigit = 2, currency = DEFAULT_CURRENCY, ...rest }: CurrencyFormatProps,
+  {
+    decimalDigit = 2,
+    currency = DEFAULT_CURRENCY,
+    prefix = '',
+    suffix = '',
+    ...rest
+  }: CurrencyFormatProps,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref: Ref<any>,
 ) {
+  const { prefix: currPrefix = '', suffix: currSuffix = '' } = getCurrencySymbolProps(currency);
+
   return (
     <NumberFormat
       decimalDigit={decimalDigit}
       ref={ref}
-      {...getCurrencySymbolProps(currency)}
+      prefix={`${prefix} ${currPrefix}`}
+      suffix={`${currSuffix} ${suffix}`}
       {...rest}
     />
   );

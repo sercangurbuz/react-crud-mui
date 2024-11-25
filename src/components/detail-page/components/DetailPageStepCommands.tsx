@@ -7,7 +7,7 @@ import { Box, Button } from '@mui/material';
 import { FlexBetween } from '../../flexbox';
 import useFormGroupIsInValid from '../../form/hooks/useFormGroupIsInValid';
 import useTranslation from '../../i18n/hooks/useTranslation';
-import useSettings from '../../settings-provider/hooks/useSettings';
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import { StepPane } from './DetailPageSteps';
 
 /* ---------------------------------- Types --------------------------------- */

@@ -1,7 +1,7 @@
 import { HotkeyCallback, Options, useHotkeys } from 'react-hotkeys-hook';
 
 import useTranslation from '../../i18n/hooks/useTranslation';
-import useSettings from '../../settings-provider/hooks/useSettings';
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useDetailPageCommandStates from './useDetailPageStates';
 
 export interface UseDetailPageHotKeysProps extends Partial<Options> {

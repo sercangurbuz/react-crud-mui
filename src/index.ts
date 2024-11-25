@@ -80,9 +80,9 @@ export {
 } from './components/search-input/SearchInput';
 export { default as Select, type SelectProps } from './components/select/Select';
 export {
-  default as SettingsProvider,
-  type SettingsProviderProps,
-} from './components/settings-provider/SettingsProvider';
+  default as CrudMuiProvider,
+  type CrudMuiProviderProps as SettingsProviderProps,
+} from './components/crud-mui-provider/CrudMuiProvider';
 export { default as Table } from './components/table/Table';
 export type { CellAlignment, TableProps, TableColumn } from './components/table/Table';
 export { default as Tag, type TagProps } from './components/tag/Tag';

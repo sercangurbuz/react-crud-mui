@@ -8,7 +8,7 @@ import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
 import Clear from '../../icons/Clear';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
-import useSettings from '../../settings-provider/hooks/useSettings';
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useListPageCommandStates from '../hooks/useListPageCommandStates';
 
 /* -------------------------------------------------------------------------- */

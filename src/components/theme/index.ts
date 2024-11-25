@@ -2,23 +2,13 @@ import createTheme, { ThemeOptions } from '@mui/material/styles/createTheme';
 import responsiveFontSizes from '@mui/material/styles/responsiveFontSizes';
 import merge from 'lodash.merge';
 
-// MUI COMPONENTS OVERRIDE
 import componentsOverride from './components';
-// THEME SHADOWS LIST
 import shadows from './shadows';
-// LIGHT & DARK THEME OPTIONS
-import themesOptions from './themeOptions';
-// FONT VARIANTS
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/500.css';
-import '@fontsource/inter/600.css';
-import '@fontsource/inter/700.css';
-
 import { THEMES } from './theme.constants';
+import themesOptions from './themeOptions';
 
 const baseOptions = {
   direction: 'ltr',
-  typography: { fontFamily: "'Inter', sans-serif" },
   breakpoints: { values: { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 } },
 };
 
@@ -27,6 +17,7 @@ export type ThemeSettings = {
   theme: string;
   direction: 'ltr' | 'rtl';
   responsiveFontSizes?: boolean;
+  themeOptions?: ThemeOptions;
 };
 // ==============================================================
 
@@ -41,9 +32,15 @@ export const createCustomTheme = (settings: ThemeSettings) => {
     themeOptions = themesOptions[THEMES.LIGHT];
   }
 
-  const mergedThemeOptions = merge({}, baseOptions, themeOptions, {
-    direction: settings.direction,
-  });
+  const mergedThemeOptions = merge(
+    {},
+    baseOptions,
+    themeOptions,
+    {
+      direction: settings.direction,
+    },
+    settings.themeOptions,
+  );
 
   let theme = createTheme(mergedThemeOptions as ThemeOptions);
 

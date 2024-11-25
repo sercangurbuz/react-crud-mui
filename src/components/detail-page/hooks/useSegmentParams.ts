@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import useSettings from '../../settings-provider/hooks/useSettings';
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useMatchedSegmentIndex, { SegmentModel } from './useMatchedSegment';
 
 export interface UseSegmentParamsOptions {

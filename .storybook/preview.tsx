@@ -1,9 +1,14 @@
 import { useEffect } from 'react';
 
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+
 import type { Preview } from '@storybook/react';
 
+import CrudMuiProvider from '../src/components/crud-mui-provider/CrudMuiProvider';
 import i18nInstance from '../src/components/i18n';
-import SettingsProvider from '../src/components/settings-provider/SettingsProvider';
 import { THEMES } from '../src/components/theme/theme.constants';
 
 const preview: Preview = {
@@ -63,9 +68,12 @@ const preview: Preview = {
       }, [context.globals.lang]);
 
       return (
-        <SettingsProvider theme={context.globals.theme}>
+        <CrudMuiProvider
+          theme={context.globals.theme}
+          themeOptions={{ typography: { fontFamily: "'Inter', sans-serif" } }}
+        >
           <Story />
-        </SettingsProvider>
+        </CrudMuiProvider>
       );
     },
   ],
