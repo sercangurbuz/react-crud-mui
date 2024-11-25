@@ -4,6 +4,7 @@ import { FieldValues } from 'react-hook-form';
 import { Visibility } from '@mui/icons-material';
 
 import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useDetailPageModal from '../../detail-page/hooks/useDetailPageModal';
 import { DetailPageDrawerProps } from '../../detail-page/pages/DetailPageDrawer';
 import { DetailPageModalProps } from '../../detail-page/pages/DetailPageModal';
@@ -15,7 +16,6 @@ import SearchIcon from '../../icons/SearchIcon';
 import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
-import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import Table, { TableColumn, TableProps } from '../../table/Table';
 import { ServerError } from '../../utils';
 import AutoSearch from '../components/AutoSearch';
@@ -172,7 +172,7 @@ function ListPageContent<
   columns,
   createCommandLabel,
   data,
-  dataCount = 0,
+  dataCount,
   detailPage: EmbededDetailPageComponent,
   disabled,
   disableShortCuts,
@@ -410,7 +410,7 @@ function ListPageContent<
               },
             ]
           : columns,
-      rowCount: dataCount,
+      rowCount: dataCount || data?.length || 0,
       data,
       loading,
     };

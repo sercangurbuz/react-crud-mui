@@ -3,11 +3,10 @@ import React, { useContext } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { ListPageProps } from '../pages/ListPage';
-import { ListPageModel } from '../pages/ListPageFilter';
 
 /* ---------------------------- ListPage Context ---------------------------- */
 export type ListPageContextType<TModel extends FieldValues> = {
-  data?: ListPageModel<TModel>;
+  data?: TModel[];
   /**
    * Clear all form controls in filter
    */

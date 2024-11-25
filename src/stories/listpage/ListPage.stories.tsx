@@ -267,9 +267,7 @@ export const WithDetailPageDrawer: ListPageStory = {
 };
 
 export const MultiSelection: ListPageSelectionStory = {
-  args: {
-    //    selectButtonText: 'Select Person & Close',
-  },
+  args: {},
   render: (args) => {
     const [visible, setVisible] = useState<boolean>(true);
     const [selectedKeys, setSelected] = useState<RowSelectionState>({ 2: true });

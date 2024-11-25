@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { CheckOutlined } from '@mui/icons-material';
 import { z } from 'zod';
@@ -10,7 +10,6 @@ import { FlexBetween, FlexBox } from '../../../components/flexbox';
 import Field from '../../../components/form/Field';
 import UserOutlined from '../../../components/icons/UserOutlined';
 import ListPage from '../../../components/list-page/pages/ListPage';
-import { ListPageModel } from '../../../components/list-page/pages/ListPageFilter';
 import Page from '../../../components/page/Page';
 import { useFetchTodosByUserId } from '../../utils/api';
 
@@ -29,20 +28,12 @@ function NestedTodosRouteTab() {
   const [title, settitle] = useState<string>();
   const [data, loading] = useFetchTodosByUserId(id, title);
 
-  const pagingData = useMemo<ListPageModel<ToDo>>(
-    () => ({
-      data: data ?? [],
-      dataCount: data?.length ?? 0,
-    }),
-    [data],
-  );
-
   return (
     <ListPage.Route
       onNeedData={(filter) => {
         settitle(filter?.keyword as string);
       }}
-      data={pagingData}
+      data={data}
       defaultValues={{
         keyword: '',
       }}

@@ -418,7 +418,7 @@ function DetailPageContent<TModel extends FieldValues>({
         onClose={onClose}
         loading={loading}
         alertsContent={alertsContent}
-        onTabChanged={onSegmentChanged}
+        onTabChanged={({ selectedTabIndex }) => onSegmentChanged?.(selectedTabIndex)}
         selectedTabIndex={activeSegmentIndex}
       >
         {content}
