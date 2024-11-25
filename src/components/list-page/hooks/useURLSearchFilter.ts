@@ -4,7 +4,6 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 
 import qs from 'qs';
 
-import { removeProps } from '../../misc';
 import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from '../pages/ListPageFilter';
 
@@ -21,7 +20,7 @@ function useURLSearchFilter<TFilter extends FieldValues>() {
   const { search } = useLocation();
 
   const getFiltersInQS = useCallback(
-    ({ ignoreList }: { ignoreList?: string[] } = {}) => {
+    ({ whiteList }: { whiteList?: string[] } = {}) => {
       const {
         page,
         size,
@@ -29,14 +28,35 @@ function useURLSearchFilter<TFilter extends FieldValues>() {
         ...filter
       } = qs.parse(search, {
         ignoreQueryPrefix: true,
+        decoder(value) {
+          if (/^(\d+|\d*\.\d+)$/.test(value)) {
+            return parseFloat(value);
+          }
+
+          const keywords: Record<string, unknown> = {
+            true: true,
+            false: false,
+            null: null,
+            // eslint-disable-next-line object-shorthand
+            undefined: undefined,
+          };
+          if (value in keywords) {
+            return keywords[value];
+          }
+
+          return value;
+        },
       });
 
-      if (ignoreList?.length) {
-        removeProps(filter, ignoreList);
+      let allowedFilters = filter;
+      if (whiteList) {
+        allowedFilters = whiteList
+          .filter({}.hasOwnProperty.bind(filter))
+          .reduce((r, c) => Object.assign(r, { [c]: filter[c] }), {});
       }
 
       return {
-        filter,
+        filter: allowedFilters,
         meta: {
           pagination: {
             pageIndex: page ? Number(page) : DEFAULT_PAGEINDEX,

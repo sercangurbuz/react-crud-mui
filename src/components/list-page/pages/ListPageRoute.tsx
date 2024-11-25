@@ -17,7 +17,7 @@ export interface ListPageRouteProps<
 > extends ListPageProps<TModel, TFilter, TDetailPageModel>,
     Omit<UseSegmentParamsOptions, 'paths' | 'enableSegmentRouting'> {
   enableQueryStringFilter?: boolean;
-  ignoreQueryStringFilter?: string[];
+  whiteListQueryStringFilter?: string[];
 }
 
 /**
@@ -33,9 +33,10 @@ function ListPageRoute<
   enableNestedSegments,
   enableQueryStringFilter = true,
   fallbackSegmentIndex,
-  ignoreQueryStringFilter = [],
   onNeedData,
   tabs,
+  defaultValues,
+  whiteListQueryStringFilter,
   ...listPageProps
 }: ListPageRouteProps<TModel, TFilter, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
@@ -49,7 +50,7 @@ function ListPageRoute<
   /*                                   Filter                                   */
   /* -------------------------------------------------------------------------- */
 
-  const [segment, setSegment, { segmentParamName }] = useSegmentParams({
+  const [segment, setSegment] = useSegmentParams({
     enableNestedSegments,
     fallbackSegmentIndex,
     paths: tabs,
@@ -59,7 +60,8 @@ function ListPageRoute<
   const [defaultFilterProps] = useState(() => {
     if (enableQueryStringFilter) {
       const { filter, meta } = getFiltersInQS({
-        ignoreList: [segmentParamName, ...ignoreQueryStringFilter],
+        whiteList:
+          whiteListQueryStringFilter ?? (defaultValues ? Object.keys(defaultValues) : undefined),
       });
       return {
         defaultFilter: {
@@ -128,6 +130,7 @@ function ListPageRoute<
       {...listPageProps}
       tabs={tabs}
       onNeedData={handleNeedData}
+      defaultValues={defaultValues}
       {...defaultFilterProps}
     />
   );

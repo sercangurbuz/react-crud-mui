@@ -389,7 +389,6 @@ export const FilterFromQuerystring: ListPageRouteStory = {
     defaultMeta: {
       sorting: [{ id: 'name', desc: true }],
     },
-    ignoreQueryStringFilter: ['ignoreMe'],
   },
   render: (args) => {
     return (
