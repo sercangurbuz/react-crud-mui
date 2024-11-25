@@ -48,6 +48,7 @@ export { type CurrencyFormatProps } from './components/labels/CurrencyFormat';
 export { type DateFormatProps } from './components/labels/DateFormat';
 export { type NumberFormatProps } from './components/labels/NumberFormat';
 export { default as ListPage, type ListPageProps } from './components/list-page/pages/ListPage';
+export { type ListPageMeta } from './components/list-page/pages/ListPageFilter';
 export {
   default as ListPageModal,
   type ListPageModalProps,

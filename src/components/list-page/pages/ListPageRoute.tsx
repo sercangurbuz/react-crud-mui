@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import useSegmentParams, {
   UseSegmentParamsOptions,
@@ -39,8 +39,6 @@ function ListPageRoute<
 
   const { newItemParamValue } = useSettings();
   const navigate = useNavigate();
-  const [currentQueryParameters] = useSearchParams();
-  const isReadonly = currentQueryParameters.has('readonly');
 
   /* -------------------------------------------------------------------------- */
   /*                                   Filter                                   */
@@ -108,7 +106,6 @@ function ListPageRoute<
     <ListPage
       onCreateItem={handleNewItem}
       activeSegmentIndex={segment}
-      disabled={isReadonly}
       onWrapperLayout={(props) =>
         enableNestedSegments ? (
           <>

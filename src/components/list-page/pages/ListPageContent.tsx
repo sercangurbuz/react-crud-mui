@@ -23,7 +23,6 @@ import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageC
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
 import ListPageShortCuts from '../components/ListPageShortCuts';
 import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
-import { ListPageModel, PagingListModel } from './ListPageFilter';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -120,7 +119,11 @@ export interface ListPageContentProps<
   /**
    * Datasource
    */
-  data?: ListPageModel<TModel>;
+  data?: TModel[];
+  /**
+   * Total data row count of paging
+   */
+  dataCount?: number;
   /**
    * Custom list region component
    */
@@ -169,6 +172,7 @@ function ListPageContent<
   columns,
   createCommandLabel,
   data,
+  dataCount = 0,
   detailPage: EmbededDetailPageComponent,
   disabled,
   disableShortCuts,
@@ -206,7 +210,7 @@ function ListPageContent<
   const { t } = useTranslation();
   const { uniqueIdParamName } = useSettings();
   const [onOpen, dpProps] = useDetailPageModal<TDetailPageModel>({
-    models: data?.data,
+    models: data,
     uniqueIdParamName,
   });
 
@@ -406,8 +410,8 @@ function ListPageContent<
               },
             ]
           : columns,
-      rowCount: (data as PagingListModel<TModel>)?.dataCount,
-      data: (data as PagingListModel<TModel>)?.data,
+      rowCount: dataCount,
+      data,
       loading,
     };
 

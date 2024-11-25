@@ -105,18 +105,18 @@ export const WithDefaultValues: StoryObj<
 export const WithDefaultTableFilters: ListPageStory = {
   args: {
     enableClear: true,
+    defaultMeta: {
+      pagination: { pageSize: 3 },
+      sorting: [
+        {
+          id: 'username',
+          desc: false,
+        },
+      ],
+    },
     tableProps: {
       paginationProps: {
         rowsPerPageOptions: [3, 5, 10, 25],
-      },
-      initialState: {
-        pagination: { pageSize: 3 },
-        sorting: [
-          {
-            id: 'username',
-            desc: false,
-          },
-        ],
       },
     },
   },
@@ -206,9 +206,15 @@ export const WithErrorAsyncData: ListPageStory = {
 
 export const TemporaryFilter: ListPageStory = {
   name: 'Remember filter (Temporary filter)',
+  args: {
+    style: { marginBottom: 5 },
+  },
   render: (args, { id }) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [value, setValue] = useSession<any>({ name: id });
+    const [defaultFilters, setValue] = useSession<any>({
+      name: id,
+      defaultValue: { defaultMeta: { sorting: [{ id: 'username' }] } },
+    });
     const [mounted, setMounted] = useState(true);
 
     return (
@@ -218,19 +224,18 @@ export const TemporaryFilter: ListPageStory = {
         </Button>
 
         <Alert sx={{ borderRadius: 0, my: 2 }}>
-          <AlertTitle>Stored Filters</AlertTitle>
-          {value && JSON.stringify(value)}
+          <AlertTitle>Stored Filters (filter and meta)</AlertTitle>
+          {defaultFilters && JSON.stringify(defaultFilters)}
         </Alert>
 
         {mounted ? (
           <ListPage
             {...args}
-            style={{ marginBottom: 5 }}
-            defaultFilter={value}
             onNeedData={(filter, meta) => {
-              setValue(filter);
+              setValue({ defaultFilter: filter, defaultMeta: meta });
               args.onNeedData?.(filter, meta);
             }}
+            {...defaultFilters}
           />
         ) : null}
       </Stack>
@@ -383,6 +388,9 @@ export const FilterFromQuerystring: ListPageRouteStory = {
   args: {
     enableQueryStringFilter: true,
     enableClear: true,
+    defaultMeta: {
+      sorting: [{ id: 'name', desc: true }],
+    },
   },
   render: (args) => {
     return (

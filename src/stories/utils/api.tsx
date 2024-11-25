@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { DeletePayload, SavePayload } from '../../components/detail-page/pages/DetailPageData';
-import { ListPageFilter } from '../../components/list-page/pages/ListPageFilter';
+import { ListPageMeta } from '../../components/list-page/pages/ListPageFilter';
 import { DeepNullable } from '../../components/utils';
 import { ToDo } from '../detail-page/components/NestedTodosRouteTab';
 import { UserSchema } from './schema';
@@ -31,13 +31,13 @@ export const handleDeleteUser = async ({ model }: DeletePayload<UserSchema>) => 
   await axios.delete<UserSchema>(`https://jsonplaceholder.typicode.com/users/${model.id}`);
 };
 
-export const useFetchUsers = (filter: ListPageFilter<UserSchema>) => {
+export const useFetchUsers = (filter: UserSchema, _meta: ListPageMeta) => {
   const [data, setdata] = useState<UserSchema[]>();
   const [loading, setloading] = useState<boolean>();
 
   useEffect(() => {
     if (filter) {
-      const { name, username, email, website, phone, _meta } = filter;
+      const { name, username, email, website, phone } = filter;
 
       setloading(true);
       void fetch(

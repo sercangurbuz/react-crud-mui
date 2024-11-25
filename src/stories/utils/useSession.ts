@@ -1,14 +1,16 @@
 import { useCallback, useState } from 'react';
 
-interface useSessionOptions {
+interface useSessionOptions<T> {
   name?: string;
+  defaultValue?: T;
 }
 
-function useSession<T>({ name = 'temp' }: useSessionOptions = {}) {
+function useSession<T extends object>({ name = 'temp', defaultValue }: useSessionOptions<T> = {}) {
   const [value, setValue] = useState<T>(() => {
     const cache = sessionStorage.getItem(name);
     try {
-      return cache ? JSON.parse(cache) : null;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return cache ? JSON.parse(cache) : defaultValue;
     } catch {
       console.error('useSession fetching error !!!');
       return null;
@@ -25,7 +27,7 @@ function useSession<T>({ name = 'temp' }: useSessionOptions = {}) {
 
       setValue(value);
     },
-    [name]
+    [name],
   );
 
   return [value, set] as const;

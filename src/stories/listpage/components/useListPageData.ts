@@ -1,35 +1,25 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { ListPageProps } from '../../../components/list-page/pages/ListPage';
-import {
-  ListPageFilter,
-  ListPageMeta,
-  PagingListModel,
-} from '../../../components/list-page/pages/ListPageFilter';
+import { ListPageMeta } from '../../../components/list-page/pages/ListPageFilter';
 import { useFetchUsers } from '../../utils/api';
 import { UserSchema } from '../../utils/schema';
 
 function useListPageData() {
-  const [filter, setfilter] = useState<ListPageFilter<UserSchema>>();
-  const [data, loading] = useFetchUsers(filter!);
+  const [{ filter, meta }, setfilter] = useState<{ filter?: UserSchema; meta?: ListPageMeta }>({
+    filter: undefined,
+    meta: undefined,
+  });
+  const [data, loading] = useFetchUsers(filter!, meta!);
 
-  const users = useMemo<PagingListModel<UserSchema>>(
-    () => ({
-      data: data ?? [],
-      dataCount: data ? 10 : 0,
-    }),
-    [data],
-  );
-
-  const handleNeedData = useCallback(
-    (filter: UserSchema, _meta: ListPageMeta) => setfilter({ ...filter, _meta }),
-    [],
-  );
+  const handleNeedData = (filter: UserSchema, meta: ListPageMeta) => setfilter({ filter, meta });
 
   return {
     onNeedData: handleNeedData,
     loading,
-    data: users,
+    data,
+    // jsonplaceholder returns 10 rows total
+    dataCount: data ? 10 : 0,
   } as Partial<ListPageProps<UserSchema>>;
 }
 

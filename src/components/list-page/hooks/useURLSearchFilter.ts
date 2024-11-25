@@ -20,7 +20,12 @@ function useURLSearchFilter<TFilter extends FieldValues>() {
   const { search } = useLocation();
 
   const getFiltersInQS = useCallback(() => {
-    const { page, size, ...filter } = qs.parse(search, {
+    const {
+      page,
+      size,
+      sorting = [],
+      ...filter
+    } = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
     return {
@@ -30,6 +35,7 @@ function useURLSearchFilter<TFilter extends FieldValues>() {
           pageIndex: page ? Number(page) : DEFAULT_PAGEINDEX,
           pageSize: size ? Number(size) : DEFAULT_PAGESIZE,
         },
+        sorting,
       },
     };
   }, [search]);
@@ -40,6 +46,7 @@ function useURLSearchFilter<TFilter extends FieldValues>() {
         ...filter,
         page: _meta.pagination.pageIndex,
         size: _meta.pagination.pageSize,
+        sorting: _meta.sorting,
       };
 
       const filterQs = qs.stringify(qsParams, {

@@ -3,6 +3,7 @@ import { DeepPartial, FieldValues } from 'react-hook-form';
 
 import merge from 'lodash.merge';
 
+import { TabChangedPayload } from '../../page/components/DefaultTabs';
 import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
@@ -47,39 +48,32 @@ function ListPage<
   /* -------------------------------------------------------------------------- */
 
   const [meta, setMeta] = useState<ListPageMeta>(() => {
-    const selectedTabIndex = activeSegmentIndex ?? defaultSegmentIndex;
-    const selectedTabValue = tabs
-      ? selectedTabIndex <= tabs.length - 1
-        ? tabs[selectedTabIndex].value
-        : ''
-      : '';
+    let tabProps: TabChangedPayload | undefined;
+    if (tabs) {
+      const selectedTabIndex = activeSegmentIndex ?? defaultSegmentIndex;
+      const selectedTabValue = tabs
+        ? selectedTabIndex <= tabs.length - 1
+          ? tabs[selectedTabIndex].value
+          : ''
+        : '';
+      tabProps = {
+        selectedTabIndex,
+        selectedTabValue,
+      };
+    }
 
-    return merge({}, DEFAULT_LISTPAGE_META, defaultMeta, {
-      selectedTabIndex,
-      selectedTabValue,
-    });
+    return merge({}, DEFAULT_LISTPAGE_META, defaultMeta, tabProps);
   });
 
   /* -------------------------------------------------------------------------- */
   /*                                Data Effects                                */
   /* -------------------------------------------------------------------------- */
 
-  const handleChange = (filter: TFilter, updatedMeta?: DeepPartial<ListPageMeta>) => {
-    let _meta = meta;
+  const handleChange = (filter: TFilter, updated: DeepPartial<ListPageMeta>) => {
+    const updatedMeta = merge({}, meta, updated) as ListPageMeta;
 
-    if (updatedMeta) {
-      _meta = {
-        ...meta,
-        ...updatedMeta,
-        pagination: {
-          ...meta.pagination,
-          ...updatedMeta.pagination,
-        },
-      } as ListPageMeta;
-      setMeta(_meta);
-    }
-
-    onNeedData?.(filter, _meta);
+    setMeta(updatedMeta);
+    onNeedData?.(filter, updatedMeta);
   };
 
   return <ListPageForm {...props} meta={meta} onChange={handleChange} />;

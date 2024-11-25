@@ -5,24 +5,19 @@ import { TableState } from '@tanstack/react-table';
 import { UseFormReturn } from '../../form/hooks/useForm';
 import useFormInitEffect from '../../form/hooks/useFormInitEffect';
 import { TabChangedPayload } from '../../page/components/DefaultTabs';
-import useSettings from '../../settings-provider/hooks/useSettings';
 import { TableProps } from '../../table/Table';
-import { DEFAULT_PAGEINDEX } from '../constants';
+import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import ListPageContent, { ListPageContentProps } from './ListPageContent';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface PagingListModel<TModel> {
-  data: TModel[];
-  dataCount: number;
-}
-export type ListPageModel<TModel> = PagingListModel<TModel>;
 export type ListPageMeta = Pick<TableState, 'pagination' | 'sorting' | 'columnFilters'> &
   TabChangedPayload & {
     reason: SearchReason;
   };
+
 export type SearchReason =
   | 'search'
   | 'sorting'
@@ -32,12 +27,6 @@ export type SearchReason =
   | 'export'
   | 'tabChanged'
   | 'columnfilter';
-
-export type ListPageFilter<TFilter extends FieldValues> = TFilter & { _meta: ListPageMeta };
-
-export type NeedDataPayload<TFilter extends FieldValues> = {
-  filter: ListPageFilter<TFilter>;
-};
 
 export interface ListPageFilterProps<
   TModel extends FieldValues,
@@ -58,7 +47,7 @@ export interface ListPageFilterProps<
   /**
    * Form filter values change event
    */
-  onChange?: (filter: TFilter, meta?: DeepPartial<ListPageMeta>) => void;
+  onChange?: (filter: TFilter, meta: DeepPartial<ListPageMeta>) => void;
   /**
    * Default index of tab
    */
@@ -85,12 +74,6 @@ function ListPageFilter<
     formState: { defaultValues },
     getFormModel,
   } = form;
-
-  /* -------------------------------------------------------------------------- */
-  /*                                    Hooks                                   */
-  /* -------------------------------------------------------------------------- */
-
-  const { pageSize: defaultPageSize } = useSettings();
 
   /* -------------------------------------------------------------------------- */
   /*                                 Table Props                                */
@@ -132,7 +115,7 @@ function ListPageFilter<
   /**
    * Get current form filter and update filter state
    */
-  const handleSearch = async (meta?: DeepPartial<ListPageMeta>) => {
+  const handleSearch = async (meta: DeepPartial<ListPageMeta>) => {
     try {
       // validate and get current filter from form
       const values = await getFormModel();
@@ -151,7 +134,7 @@ function ListPageFilter<
       segmentIndex: defaultSegmentIndex,
       pagination: {
         pageIndex: DEFAULT_PAGEINDEX,
-        pageSize: defaultPageSize,
+        pageSize: DEFAULT_PAGESIZE,
         ...extableProps?.initialState?.pagination,
       },
     } as DeepPartial<ListPageMeta>);
@@ -160,7 +143,7 @@ function ListPageFilter<
   };
 
   /**
-   * Wait RHF to init (skip to second render)
+   * Wait RHF to init to call search on load
    */
   useFormInitEffect(() => {
     void handleSearch({ reason: 'init' });
