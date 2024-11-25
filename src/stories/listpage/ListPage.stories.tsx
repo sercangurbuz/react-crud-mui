@@ -389,10 +389,11 @@ export const FilterFromQuerystring: ListPageRouteStory = {
     defaultMeta: {
       sorting: [{ id: 'name', desc: true }],
     },
+    ignoreQueryStringFilter: ['ignoreMe'],
   },
   render: (args) => {
     return (
-      <MemoryRouter initialEntries={['/customers?username=K&name=C']}>
+      <MemoryRouter initialEntries={['/customers?username=K&name=C&ignoreMe=1']}>
         <Routes>
           <Route path="customers" element={<ListPageWithRoute {...args} />} />
         </Routes>

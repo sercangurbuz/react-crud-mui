@@ -90,7 +90,7 @@ function useSegmentParams({
     ],
   );
 
-  return [segment, setSegment] as const;
+  return [segment, setSegment, { segmentParamName }] as const;
 }
 
 export default useSegmentParams;

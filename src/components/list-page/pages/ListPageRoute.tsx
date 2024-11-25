@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useSegmentParams, {
   UseSegmentParamsOptions,
 } from '../../detail-page/hooks/useSegmentParams';
-import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useURLSearchFilter from '../hooks/useURLSearchFilter';
 import ListPage, { ListPageProps } from './ListPage';
 import { ListPageMeta } from './ListPageFilter';
@@ -17,20 +17,25 @@ export interface ListPageRouteProps<
 > extends ListPageProps<TModel, TFilter, TDetailPageModel>,
     Omit<UseSegmentParamsOptions, 'paths' | 'enableSegmentRouting'> {
   enableQueryStringFilter?: boolean;
+  ignoreQueryStringFilter?: string[];
 }
 
+/**
+ * ListPage with routing based on react-router
+ */
 function ListPageRoute<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >({
-  enableQueryStringFilter = true,
-  enableNestedSegments,
-  fallbackSegmentIndex,
   defaultFilter,
-  tabs,
-  onNeedData,
   defaultMeta,
+  enableNestedSegments,
+  enableQueryStringFilter = true,
+  fallbackSegmentIndex,
+  ignoreQueryStringFilter = [],
+  onNeedData,
+  tabs,
   ...listPageProps
 }: ListPageRouteProps<TModel, TFilter, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
@@ -44,7 +49,7 @@ function ListPageRoute<
   /*                                   Filter                                   */
   /* -------------------------------------------------------------------------- */
 
-  const [segment, setSegment] = useSegmentParams({
+  const [segment, setSegment, { segmentParamName }] = useSegmentParams({
     enableNestedSegments,
     fallbackSegmentIndex,
     paths: tabs,
@@ -53,7 +58,9 @@ function ListPageRoute<
   const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>();
   const [defaultFilterProps] = useState(() => {
     if (enableQueryStringFilter) {
-      const { filter, meta } = getFiltersInQS();
+      const { filter, meta } = getFiltersInQS({
+        ignoreList: [segmentParamName, ...ignoreQueryStringFilter],
+      });
       return {
         defaultFilter: {
           ...filter,
@@ -73,12 +80,12 @@ function ListPageRoute<
   /*                                   Events                                   */
   /* -------------------------------------------------------------------------- */
 
-  const handleNeedData = (filter: TFilter, _meta: ListPageMeta) => {
+  const handleNeedData = (filter: TFilter, meta: ListPageMeta) => {
     if (enableQueryStringFilter) {
-      setFiltersInQS(filter, _meta);
+      setFiltersInQS(filter, meta);
     }
 
-    const { reason, selectedTabIndex } = _meta;
+    const { reason, selectedTabIndex } = meta;
 
     if (reason === 'tabChanged') {
       setSegment(selectedTabIndex);
@@ -88,7 +95,7 @@ function ListPageRoute<
       }
     }
 
-    onNeedData?.(filter, _meta);
+    onNeedData?.(filter, meta);
   };
 
   const handleNewItem = () => {

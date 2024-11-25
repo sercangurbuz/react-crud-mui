@@ -4,6 +4,7 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 
 import qs from 'qs';
 
+import { removeProps } from '../../misc';
 import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from '../pages/ListPageFilter';
 
@@ -16,33 +17,43 @@ function useURLSearchFilter<TFilter extends FieldValues>() {
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const [, setSearchParams] = useSearchParams();
+  const [currentSearchParams, setSearchParams] = useSearchParams();
   const { search } = useLocation();
 
-  const getFiltersInQS = useCallback(() => {
-    const {
-      page,
-      size,
-      sorting = [],
-      ...filter
-    } = qs.parse(search, {
-      ignoreQueryPrefix: true,
-    });
-    return {
-      filter,
-      meta: {
-        pagination: {
-          pageIndex: page ? Number(page) : DEFAULT_PAGEINDEX,
-          pageSize: size ? Number(size) : DEFAULT_PAGESIZE,
+  const getFiltersInQS = useCallback(
+    ({ ignoreList }: { ignoreList?: string[] } = {}) => {
+      const {
+        page,
+        size,
+        sorting = [],
+        ...filter
+      } = qs.parse(search, {
+        ignoreQueryPrefix: true,
+      });
+
+      if (ignoreList?.length) {
+        removeProps(filter, ignoreList);
+      }
+
+      return {
+        filter,
+        meta: {
+          pagination: {
+            pageIndex: page ? Number(page) : DEFAULT_PAGEINDEX,
+            pageSize: size ? Number(size) : DEFAULT_PAGESIZE,
+          },
+          sorting,
         },
-        sorting,
-      },
-    };
-  }, [search]);
+      };
+    },
+    [search],
+  );
 
   const setFiltersInQS = useCallback(
     (filter: TFilter, _meta: ListPageMeta) => {
+      const currentParams = Object.fromEntries(currentSearchParams.entries());
       const qsParams = {
+        ...currentParams,
         ...filter,
         page: _meta.pagination.pageIndex,
         size: _meta.pagination.pageSize,
@@ -70,7 +81,7 @@ function useURLSearchFilter<TFilter extends FieldValues>() {
 
       setSearchParams(filterQs);
     },
-    [setSearchParams],
+    [currentSearchParams, setSearchParams],
   );
 
   return { getFiltersInQS, setFiltersInQS };

@@ -3,6 +3,7 @@ import { DeepPartial, FieldValues } from 'react-hook-form';
 
 import merge from 'lodash.merge';
 
+import removeFalsy from '../../misc/removeFalsy';
 import { TabChangedPayload } from '../../page/components/DefaultTabs';
 import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from './ListPageFilter';
@@ -20,6 +21,10 @@ export interface ListPageProps<
    * Data fetcher function with given filter
    */
   onNeedData?: (filter: TFilter, _meta: ListPageMeta) => void;
+  /**
+   * Remove falsy values of filter before call OnNeedData
+   */
+  removeFalsyFilterValues?: boolean;
 }
 
 /* ---------------------------------- Const --------------------------------- */
@@ -41,7 +46,14 @@ function ListPage<
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >(props: ListPageProps<TModel, TFilter, TDetailPageModel>) {
-  const { onNeedData, defaultSegmentIndex = 0, activeSegmentIndex, tabs, defaultMeta } = props;
+  const {
+    onNeedData,
+    defaultSegmentIndex = 0,
+    activeSegmentIndex,
+    tabs,
+    defaultMeta,
+    removeFalsyFilterValues = true,
+  } = props;
 
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
@@ -73,7 +85,7 @@ function ListPage<
     const updatedMeta = merge({}, meta, updated) as ListPageMeta;
 
     setMeta(updatedMeta);
-    onNeedData?.(filter, updatedMeta);
+    onNeedData?.(removeFalsyFilterValues ? removeFalsy(filter) : filter, updatedMeta);
   };
 
   return <ListPageForm {...props} meta={meta} onChange={handleChange} />;
