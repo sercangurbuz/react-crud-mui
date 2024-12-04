@@ -11,6 +11,7 @@ import {
 import { getSortedRowModel, SortingState } from '@tanstack/react-table';
 
 import ActionCommands, { ActionCommandsProps } from '../action-commands/ActionCommands';
+import useSettings from '../crud-mui-provider/hooks/useSettings';
 import { DETAILPAGE_HOTKEYS_SCOPE } from '../detail-page/hooks/useDetailPageHotKeys';
 import useDetailPageModal, {
   UseDetailPageModalReturn,
@@ -28,7 +29,6 @@ import useValidationOptionsContext from '../form/hooks/useValidationOptionsConte
 import { HeaderProps } from '../header/Header';
 import useTranslation from '../i18n/hooks/useTranslation';
 import usePage from '../page/hooks/usePage';
-import useSettings from '../crud-mui-provider/hooks/useSettings';
 import Table, { TableColumn, TableProps } from '../table/Table';
 import DefaultEditableListLayout, {
   DefaultEditableListControlLayoutProps,
@@ -69,7 +69,7 @@ export interface EditableListProps<
   TModel extends FieldValues,
   TArrayModel extends FieldArray<TModel, TFieldArrayName> & FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
-> extends TableProps<TArrayModel>,
+> extends Omit<TableProps<TArrayModel>, 'data'>,
     Pick<ActionCommandsProps, 'canCopy' | 'canDelete' | 'canEdit'>,
     PropsWithChildren {
   /**
@@ -132,7 +132,7 @@ export interface EditableListProps<
   /**
    * Custom Commands on header
    */
-  commands?: (props: EditableListCommandsProps<TModel, TFieldArrayName>) => React.ReactNode;
+  onCommands?: (props: EditableListCommandsProps<TModel, TFieldArrayName>) => React.ReactNode;
   /**
    * Custom commands when needed to override the default buttons
    */
@@ -154,7 +154,7 @@ function EditableList<
   children,
   columns,
   commandColProps,
-  commands,
+  onCommands,
   onLayout,
   detailPageProps,
   detailType = 'drawer',
@@ -356,6 +356,7 @@ function EditableList<
     return (
       <Table<TArrayModel>
         size="small"
+        showEmptyImage={false}
         {...tableProps}
         rowIdField={UNIQUE_IDENTIFIER_FIELD_NAME as Path<TArrayModel>}
         data={fields as TArrayModel[]}
@@ -418,8 +419,8 @@ function EditableList<
       ...disabledProp,
     };
 
-    if (commands) {
-      return commands(props);
+    if (onCommands) {
+      return onCommands(props);
     }
 
     return <EditableListCommands {...props} />;

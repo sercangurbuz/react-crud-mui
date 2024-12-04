@@ -14,7 +14,7 @@ export interface DetailPageStepsProps extends Omit<StepperProps, 'onChange'> {
   items: StepPane[];
   status?: StepStatus;
   showFinishButton?: DetailPageStepCommandsProps['options']['showFinishButton'];
-  commands?: DetailPageStepCommandsProps['commands'];
+  onCommands?: DetailPageStepCommandsProps['onCommands'];
 }
 
 export type StepPane = Omit<StepProps & StepLabelProps, 'children' | 'key'> & {

@@ -83,6 +83,12 @@ type ListPageRouteStory = StoryObj<typeof ListPage.Route<UserSchema>>;
 
 export const Simple: ListPageStory = {};
 
+export const InitialLoad: ListPageStory = {
+  args: {
+    searchOnLoad: false,
+  },
+};
+
 export const WithDefaultValues: StoryObj<
   typeof ListPage<{ username: string }, { username: string }>
 > = {
@@ -162,6 +168,12 @@ export const WithValidation: ListPageStory = {
       website: z.string(),
       phone: z.string(),
     }),
+  },
+};
+
+export const UseListPageHook: ListPageStory = {
+  args: {
+    filterContent: <FilterContent useHook />,
   },
 };
 
@@ -379,6 +391,7 @@ export const AutoSearch: ListPageStory = {
   name: 'AutoSearch Mode',
   args: {
     autoSearch: true,
+    enableClear: true,
   },
 };
 
@@ -389,10 +402,29 @@ export const FilterFromQuerystring: ListPageRouteStory = {
     defaultMeta: {
       sorting: [{ id: 'name', desc: true }],
     },
+    tabs: [
+      {
+        key: 'tab1',
+        value: 'tab1',
+        label: 'Tab 1',
+      },
+      {
+        key: 'tab2',
+        value: 'tab2',
+        label: 'Tab 2',
+      },
+      {
+        key: 'tab3',
+        value: 'tab3',
+        label: 'Tab 3',
+      },
+    ],
+    enableCreateItem: true,
+    detailPage: EmbededDetailPage,
   },
   render: (args) => {
     return (
-      <MemoryRouter initialEntries={['/customers?username=K&name=C&ignoreMe=1']}>
+      <MemoryRouter initialEntries={['/customers']}>
         <Routes>
           <Route path="customers" element={<ListPageWithRoute {...args} />} />
         </Routes>

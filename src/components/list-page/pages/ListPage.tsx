@@ -41,6 +41,9 @@ const DEFAULT_LISTPAGE_META: ListPageMeta = {
   reason: 'init',
 };
 
+/**
+ * Simple list with filter and table
+ */
 function ListPage<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
@@ -60,7 +63,7 @@ function ListPage<
   /* -------------------------------------------------------------------------- */
 
   const [meta, setMeta] = useState<ListPageMeta>(() => {
-    let tabProps: TabChangedPayload | undefined;
+    let tabsMeta: TabChangedPayload | undefined;
     if (tabs) {
       const selectedTabIndex = activeSegmentIndex ?? defaultSegmentIndex;
       const selectedTabValue = tabs
@@ -68,13 +71,13 @@ function ListPage<
           ? tabs[selectedTabIndex].value
           : ''
         : '';
-      tabProps = {
+      tabsMeta = {
         selectedTabIndex,
         selectedTabValue,
       };
     }
 
-    return merge({}, DEFAULT_LISTPAGE_META, defaultMeta, tabProps);
+    return merge({}, DEFAULT_LISTPAGE_META, defaultMeta, tabsMeta);
   });
 
   /* -------------------------------------------------------------------------- */
@@ -82,10 +85,21 @@ function ListPage<
   /* -------------------------------------------------------------------------- */
 
   const handleChange = (filter: TFilter, updated: DeepPartial<ListPageMeta>) => {
-    const updatedMeta = merge({}, meta, updated) as ListPageMeta;
+    setMeta((prev) => {
+      const updatedMeta = {
+        ...prev,
+        ...updated,
+        pagination: {
+          ...prev.pagination,
+          ...updated.pagination,
+        },
+      } as ListPageMeta;
 
-    setMeta(updatedMeta);
-    onNeedData?.(removeFalsyFilterValues ? removeFalsy(filter) : filter, updatedMeta);
+      //as deps is omitted from useFormInitEffect ,meta is always equals to one in previous render.
+      //to overcome,updater function is used here and onNeedata called within the setter
+      onNeedData?.(removeFalsyFilterValues ? removeFalsy(filter) : filter, updatedMeta);
+      return updatedMeta;
+    });
   };
 
   return <ListPageForm {...props} meta={meta} onChange={handleChange} />;

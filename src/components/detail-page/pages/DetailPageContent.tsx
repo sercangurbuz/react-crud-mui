@@ -383,7 +383,7 @@ function DetailPageContent<TModel extends FieldValues>({
       onFinish: onSave,
       nextButtonTitle,
       prevButtonTitle,
-      commands: stepsProps?.commands,
+      onCommands: stepsProps?.onCommands,
       options: {
         showNextButton: !!nextButtonTitle,
         showPrevButton: !!prevButtonTitle,

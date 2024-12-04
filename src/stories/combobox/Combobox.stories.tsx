@@ -23,11 +23,17 @@ const meta: Meta<typeof Field.Combobox> = {
     return (
       <DetailPage
         schema={z.object({
-          user: z.object({
-            id: z.number(),
-            name: z.string(),
-          }),
+          user: z.object(
+            {
+              id: z.number(),
+              name: z.string(),
+            },
+            { message: 'User is missing' },
+          ),
         })}
+        validationOptions={{
+          callOutVisibility: 'all',
+        }}
         defaultValues={{ user: null }}
         showHeader={false}
       >

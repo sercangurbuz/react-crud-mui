@@ -4,10 +4,10 @@ import { ArrowLeft, ArrowRight, Save } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, Button } from '@mui/material';
 
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import { FlexBetween } from '../../flexbox';
 import useFormGroupIsInValid from '../../form/hooks/useFormGroupIsInValid';
 import useTranslation from '../../i18n/hooks/useTranslation';
-import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import { StepPane } from './DetailPageSteps';
 
 /* ---------------------------------- Types --------------------------------- */
@@ -43,7 +43,7 @@ export type StepCommandsLayout = {
 export type StepCommandsComponentProps = StepCommandsStates & StepCommandsLayout;
 
 export interface DetailPageStepCommandsProps extends StepCommandsStates {
-  commands?: React.ComponentType<StepCommandsComponentProps>;
+  onCommands?: (props: StepCommandsComponentProps) => ReactNode;
 }
 
 export enum DetailPageStepCommandNames {
@@ -53,11 +53,10 @@ export enum DetailPageStepCommandNames {
 
 /* ------------------------- StepsButtons Component ------------------------- */
 
-function DetailPageStepCommands({
-  commands: CustomCommands,
-  ...options
-}: DetailPageStepCommandsProps) {
+function DetailPageStepCommands({ onCommands, ...options }: DetailPageStepCommandsProps) {
   const {
+    nextButtonTitle,
+    prevButtonTitle,
     onNextClick,
     onPrevClick,
     onFinish,
@@ -102,7 +101,7 @@ function DetailPageStepCommands({
         disabled={disablePrevButton}
         title={`${t('prevstep')}\n(${SHORTCUT_PREV_STEP.toUpperCase()})`}
       >
-        {t('prevstep')}
+        {prevButtonTitle}
       </Button>
     );
   };
@@ -121,7 +120,7 @@ function DetailPageStepCommands({
         endIcon={<ArrowRight />}
         title={`${t('nextstep')}\n(${SHORTCUT_NEXT_STEP.toUpperCase()})`}
       >
-        {t('nextstep')}
+        {nextButtonTitle}
       </LoadingButton>
     );
   };
@@ -162,10 +161,13 @@ function DetailPageStepCommands({
       </FlexBetween>
     );
 
-    if (CustomCommands) {
-      return (
-        <CustomCommands {...options} finish={finishContent} next={nextContent} prev={prevContent} />
-      );
+    if (onCommands) {
+      return onCommands({
+        ...options,
+        finish: finishContent,
+        next: nextContent,
+        prev: prevContent,
+      });
     }
 
     return layout;

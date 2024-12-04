@@ -1,15 +1,18 @@
-import { PropsWithChildren, ReactNode } from 'react';
+import React, { PropsWithChildren, ReactNode } from 'react';
 import { ControllerFieldState } from 'react-hook-form';
 
-import { Box, FormHelperText } from '@mui/material';
+import { Box, BoxProps, FormHelperText } from '@mui/material';
 
 import { FlexBox } from '../../flexbox';
 import { Paragraph, Small } from '../../typography';
+import FieldError from './FieldError';
 
 export interface FormControlProps {
   label?: ReactNode;
   helperText?: ReactNode;
   placement?: 'left' | 'right' | 'top' | 'bottom';
+  labelProps?: BoxProps;
+  wrapperProps?: React.ComponentProps<typeof FlexBox>;
 }
 
 function FormControl({
@@ -19,23 +22,27 @@ function FormControl({
   helperText,
   error,
   invalid,
-}: PropsWithChildren<FormControlProps> & ControllerFieldState) {
+  labelProps,
+  wrapperProps,
+}: PropsWithChildren<FormControlProps> & Partial<ControllerFieldState>) {
   /* -------------------------------------------------------------------------- */
   /*                               Render helpers                               */
   /* -------------------------------------------------------------------------- */
 
   const renderErrorMessage = () => {
-    return error ? <FormHelperText error>{error.message}</FormHelperText> : null;
+    return error ? (
+      <FieldError message={<FormHelperText error>{error.message}</FormHelperText>} />
+    ) : null;
   };
 
   const renderControl = () => {
     const labelNode = (
-      <div key="label">
+      <Box key="label" {...labelProps}>
         <Paragraph fontWeight={500} lineHeight={1} color={invalid ? 'error.main' : 'text.primary'}>
           {label}
         </Paragraph>
         {helperText ? <Small color="text.secondary">{helperText}</Small> : null}
-      </div>
+      </Box>
     );
 
     const nodes =
@@ -47,6 +54,7 @@ function FormControl({
         justifyContent={placement === 'right' ? 'space-between' : 'flex-start'}
         flexDirection={placement === 'left' || placement === 'right' ? 'row' : 'column'}
         gap={1}
+        {...wrapperProps}
       >
         {nodes}
       </FlexBox>

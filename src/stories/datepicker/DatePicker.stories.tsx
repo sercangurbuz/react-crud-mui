@@ -48,3 +48,8 @@ export default meta;
 type DatePickerStory = StoryObj<typeof Field.DatePicker>;
 
 export const Simple: DatePickerStory = {};
+export const Disabled: DatePickerStory = {
+  args: {
+    disabled: true,
+  },
+};

@@ -60,14 +60,30 @@ export interface ListPageFilterProps<
    * Meta data of listpage
    */
   defaultMeta?: DeepPartial<ListPageMeta>;
+  /**
+   * Make search on mount,default true
+   */
+  searchOnLoad?: boolean;
 }
 
+/**
+ * ListPage with filtering features
+ */
 function ListPageFilter<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >(props: ListPageFilterProps<TModel, TFilter, TDetailPageModel>) {
-  const { form, meta, tableProps: extableProps, onChange, defaultSegmentIndex, onClear } = props;
+  const {
+    form,
+    meta,
+    tableProps: extableProps,
+    onChange,
+    defaultSegmentIndex,
+    onClear,
+    defaultMeta,
+    searchOnLoad = true,
+  } = props;
 
   const {
     reset,
@@ -126,19 +142,18 @@ function ListPageFilter<
   };
 
   const clearForm = () => {
-    // reset form filters
     reset(defaultValues as TFilter, { keepDefaultValues: true });
-    // reset form values
     void handleSearch({
-      ...extableProps?.initialState,
-      segmentIndex: defaultSegmentIndex,
+      ...defaultMeta,
+      selectedTabIndex: defaultSegmentIndex,
       pagination: {
         pageIndex: DEFAULT_PAGEINDEX,
         pageSize: DEFAULT_PAGESIZE,
-        ...extableProps?.initialState?.pagination,
+        ...defaultMeta?.pagination,
       },
-    } as DeepPartial<ListPageMeta>);
-    // clear callback
+      reason: 'clear',
+    });
+
     onClear?.();
   };
 
@@ -146,7 +161,9 @@ function ListPageFilter<
    * Wait RHF to init to call search on load
    */
   useFormInitEffect(() => {
-    void handleSearch({ reason: 'init' });
+    if (searchOnLoad) {
+      void handleSearch({ reason: 'init' });
+    }
   });
 
   /* --------------------------------- Render --------------------------------- */

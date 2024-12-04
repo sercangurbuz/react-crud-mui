@@ -209,30 +209,32 @@ function Select<T extends FieldValues>({
     return helperText ? <FormHelperText error>{helperText}</FormHelperText> : null;
   };
 
-  const renderLabelWrapper = (content: ReactNode) => {
-    return (
-      <FormControl fullWidth error={!!error} size="small">
-        <InputLabel shrink={!!value} id={`${id}-label`}>
-          {label}
-        </InputLabel>
-        {content}
-      </FormControl>
-    );
-  };
+  const renderLabelWrapper = (content: ReactNode, errorMessage: ReactNode) => (
+    <FormControl fullWidth error={!!error} size="small">
+      <InputLabel shrink={!!value} id={`${id}-label`}>
+        {label}
+      </InputLabel>
+      {content}
+      {errorMessage}
+    </FormControl>
+  );
 
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
 
   const selectContent = renderSelect();
-  const content = label ? renderLabelWrapper(selectContent) : selectContent;
-
-  return (
+  const errorMessage = renderErrorMessage();
+  const content = label ? (
+    renderLabelWrapper(selectContent, errorMessage)
+  ) : (
     <>
-      {content}
-      {renderErrorMessage()}
+      {selectContent}
+      {errorMessage}
     </>
   );
+
+  return content;
 }
 
 export default forwardRef<typeof Select, SelectProps>((props, ref) => (

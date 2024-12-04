@@ -44,6 +44,7 @@ export { default as Header, type HeaderProps } from './components/header/Header'
 export * from './components/hooks';
 export { default as IconWrapper } from './components/icon-wrapper/IconWrapper';
 export { default as Labels } from './components/labels';
+export { default as FormControl } from './components/form/components/FormControl';
 export { type CurrencyFormatProps } from './components/labels/CurrencyFormat';
 export { type DateFormatProps } from './components/labels/DateFormat';
 export { type NumberFormatProps } from './components/labels/NumberFormat';

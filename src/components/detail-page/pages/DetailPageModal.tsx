@@ -14,7 +14,7 @@ export interface DetailPageModalProps<TModel extends FieldValues> extends Detail
   /**
    * Antd modal options
    */
-  modalProps?: Omit<ModalProps, 'children'>;
+  modalProps?: Omit<ModalProps, 'children' | 'open'>;
   /**
    * Shortcut to open prop of Modal
    */

@@ -22,7 +22,8 @@ const meta: Meta<typeof Field.Select> = {
   decorators: (Story) => {
     return (
       <DetailPage
-        schema={z.object({ userId: z.number() })}
+        schema={z.object({ userId: z.number({ message: 'User is missing' }) })}
+        validationOptions={{ callOutVisibility: 'all' }}
         defaultValues={{ userId: 1 }}
         showHeader={false}
       >

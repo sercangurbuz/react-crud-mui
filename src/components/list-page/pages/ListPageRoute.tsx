@@ -15,9 +15,8 @@ export interface ListPageRouteProps<
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 > extends ListPageProps<TModel, TFilter, TDetailPageModel>,
-    Omit<UseSegmentParamsOptions, 'paths' | 'enableSegmentRouting'> {
+    Omit<UseSegmentParamsOptions, 'paths'> {
   enableQueryStringFilter?: boolean;
-  whiteListQueryStringFilter?: string[];
 }
 
 /**
@@ -32,11 +31,11 @@ function ListPageRoute<
   defaultMeta,
   enableNestedSegments,
   enableQueryStringFilter = true,
+  enableSegmentRouting = true,
   fallbackSegmentIndex,
   onNeedData,
   tabs,
   defaultValues,
-  whiteListQueryStringFilter,
   ...listPageProps
 }: ListPageRouteProps<TModel, TFilter, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
@@ -50,19 +49,17 @@ function ListPageRoute<
   /*                                   Filter                                   */
   /* -------------------------------------------------------------------------- */
 
-  const [segment, setSegment] = useSegmentParams({
+  const [segment, setSegment, { segmentParamName }] = useSegmentParams({
     enableNestedSegments,
     fallbackSegmentIndex,
+    enableSegmentRouting,
     paths: tabs,
   });
 
-  const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>();
+  const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>({ defaultValues });
   const [defaultFilterProps] = useState(() => {
     if (enableQueryStringFilter) {
-      const { filter, meta } = getFiltersInQS({
-        whiteList:
-          whiteListQueryStringFilter ?? (defaultValues ? Object.keys(defaultValues) : undefined),
-      });
+      const { filter, meta } = getFiltersInQS();
       return {
         defaultFilter: {
           ...filter,
@@ -83,18 +80,22 @@ function ListPageRoute<
   /* -------------------------------------------------------------------------- */
 
   const handleNeedData = (filter: TFilter, meta: ListPageMeta) => {
-    if (enableQueryStringFilter) {
-      setFiltersInQS(filter, meta);
-    }
-
     const { reason, selectedTabIndex } = meta;
 
-    if (reason === 'tabChanged') {
+    if (reason === 'tabChanged' && enableNestedSegments) {
       setSegment(selectedTabIndex);
+      return;
+    }
 
-      if (enableNestedSegments) {
-        return;
+    if (enableQueryStringFilter) {
+      let extraFilter: Record<string, unknown> | undefined = undefined;
+
+      if (enableSegmentRouting && !enableNestedSegments && selectedTabIndex) {
+        extraFilter = {
+          [segmentParamName]: selectedTabIndex,
+        };
       }
+      setFiltersInQS(filter, meta, extraFilter);
     }
 
     onNeedData?.(filter, meta);
@@ -115,18 +116,14 @@ function ListPageRoute<
     <ListPage
       onCreateItem={handleNewItem}
       activeSegmentIndex={segment}
-      onWrapperLayout={(props) =>
-        enableNestedSegments ? (
-          <>
-            {props.pageContent}
-            {props.detailPageContent}
-            {/* Placeholder here for possible DetailPageRouteModal */}
-            <Outlet />
-          </>
-        ) : (
-          props.pageContent
-        )
-      }
+      onWrapperLayout={(props) => (
+        <>
+          {props.pageContent}
+          {props.detailPageContent}
+          {/* Placeholder here for possible DetailPageRouteModal */}
+          {enableNestedSegments ? <Outlet /> : null}
+        </>
+      )}
       {...listPageProps}
       tabs={tabs}
       onNeedData={handleNeedData}

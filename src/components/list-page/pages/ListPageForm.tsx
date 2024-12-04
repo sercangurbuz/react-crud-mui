@@ -37,6 +37,9 @@ export interface ListPageFormProps<
   validationOptions?: ValidationOptions<TFilter>;
 }
 
+/**
+ * ListPage with form features for filter criterias
+ */
 function ListPageForm<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,

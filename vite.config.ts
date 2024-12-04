@@ -3,11 +3,8 @@ import { resolve } from 'path';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
+import { externalizeDeps } from 'vite-plugin-externalize-deps';
 import { defineConfig } from 'vitest/config';
-
-import pkg from './package.json';
-
-const deps = Object.keys(pkg.dependencies);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -23,11 +20,9 @@ export default defineConfig({
       formats: ['es'],
       fileName: 'coreui',
     },
-    rollupOptions: {
-      external: deps,
-    },
   },
   plugins: [
+    externalizeDeps(),
     nodeResolve(),
     react({
       jsxImportSource: '@emotion/react',

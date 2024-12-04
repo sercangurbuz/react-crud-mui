@@ -1,9 +1,11 @@
-import { Grid2 } from '@mui/material';
+import { Button, Grid2 } from '@mui/material';
 
 import Field from '../../../components/form/Field';
+import useListPage from '../../../components/list-page/hooks/useListPage';
 import Page from '../../../components/page/Page';
 
-function FilterContent() {
+function FilterContent({ useHook }: { useHook?: boolean }) {
+  const { search } = useListPage();
   return (
     <>
       <Page.Content>
@@ -20,10 +22,12 @@ function FilterContent() {
           <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.Input name="email" label="Email" />
           </Grid2>
-          <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.Search name="search" />
-          </Grid2>
         </Grid2>
+        {useHook && (
+          <Button sx={{ mt: 3 }} onClick={() => search()}>
+            Call search from hook
+          </Button>
+        )}
       </Page.Content>
     </>
   );

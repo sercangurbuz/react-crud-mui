@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { FieldValues, get } from 'react-hook-form';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 import qs from 'qs';
 
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from '../pages/ListPageFilter';
 
@@ -11,98 +11,97 @@ import { ListPageMeta } from '../pages/ListPageFilter';
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-function useURLSearchFilter<TFilter extends FieldValues>() {
+type UseURLSearchFilterOptions = {
+  defaultValues?: Record<string, unknown>;
+};
+function useURLSearchFilter<TFilter extends FieldValues>({
+  defaultValues,
+}: UseURLSearchFilterOptions) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const [currentSearchParams, setSearchParams] = useSearchParams();
+  const { segmentParamName } = useSettings();
+  const [, setSearchParams] = useSearchParams();
   const { search } = useLocation();
 
-  const getFiltersInQS = useCallback(
-    ({ whiteList }: { whiteList?: string[] } = {}) => {
-      const {
-        page,
-        size,
-        sorting = [],
-        ...filter
-      } = qs.parse(search, {
-        ignoreQueryPrefix: true,
-        decoder(value) {
-          if (/^(\d+|\d*\.\d+)$/.test(value)) {
-            return parseFloat(value);
-          }
+  const getFiltersInQS = () => {
+    const {
+      page,
+      size,
+      sorting = [],
+      [segmentParamName]: selectedTabIndex,
+      ...filter
+    } = qs.parse(search, {
+      ignoreQueryPrefix: true,
+      decoder(value) {
+        if (/^(\d+|\d*\.\d+)$/.test(value)) {
+          return parseFloat(value);
+        }
 
-          const keywords: Record<string, unknown> = {
-            true: true,
-            false: false,
-            null: null,
-            // eslint-disable-next-line object-shorthand
-            undefined: undefined,
-          };
-          if (value in keywords) {
-            return keywords[value];
-          }
+        const keywords: Record<string, unknown> = {
+          true: true,
+          false: false,
+          null: null,
+          // eslint-disable-next-line object-shorthand
+          undefined: undefined,
+        };
+        if (value in keywords) {
+          return keywords[value];
+        }
 
-          return value;
+        return value;
+      },
+    });
+
+    return {
+      filter,
+      meta: {
+        pagination: {
+          pageIndex: page ? Number(page) : DEFAULT_PAGEINDEX,
+          pageSize: size ? Number(size) : DEFAULT_PAGESIZE,
         },
-      });
+        sorting,
+        selectedTabIndex,
+      },
+    };
+  };
 
-      let allowedFilters = filter;
-      if (whiteList) {
-        allowedFilters = whiteList
-          .filter({}.hasOwnProperty.bind(filter))
-          .reduce((r, c) => Object.assign(r, { [c]: filter[c] }), {});
-      }
+  const setFiltersInQS = (
+    filter: TFilter,
+    meta: ListPageMeta,
+    extraFilter?: Record<string, unknown>,
+  ) => {
+    const qsParams = {
+      ...filter,
+      ...extraFilter,
+      page: meta.pagination.pageIndex,
+      size: meta.pagination.pageSize,
+      sorting: meta.sorting,
+    };
 
-      return {
-        filter: allowedFilters,
-        meta: {
-          pagination: {
-            pageIndex: page ? Number(page) : DEFAULT_PAGEINDEX,
-            pageSize: size ? Number(size) : DEFAULT_PAGESIZE,
-          },
-          sorting,
-        },
-      };
-    },
-    [search],
-  );
+    const filterQs = qs.stringify(qsParams, {
+      skipNulls: true,
+      strictNullHandling: true,
+      charset: 'utf-8',
+      filter(prefix, value) {
+        if (prefix === 'page' && value === DEFAULT_PAGEINDEX) {
+          return;
+        }
+        if (prefix === 'size' && value === DEFAULT_PAGESIZE) {
+          return;
+        }
 
-  const setFiltersInQS = useCallback(
-    (filter: TFilter, _meta: ListPageMeta) => {
-      const currentParams = Object.fromEntries(currentSearchParams.entries());
-      const qsParams = {
-        ...currentParams,
-        ...filter,
-        page: _meta.pagination.pageIndex,
-        size: _meta.pagination.pageSize,
-        sorting: _meta.sorting,
-      };
+        if (value === '' || get(defaultValues, prefix) === value) {
+          return;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return value;
+      },
+    });
 
-      const filterQs = qs.stringify(qsParams, {
-        skipNulls: true,
-        strictNullHandling: true,
-        filter(prefix, value) {
-          if (prefix === 'page' && value === DEFAULT_PAGEINDEX) {
-            return;
-          }
-          if (prefix === 'size' && value === DEFAULT_PAGESIZE) {
-            return;
-          }
-
-          if (value === '') {
-            return;
-          }
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          return value;
-        },
-      });
-
-      setSearchParams(filterQs);
-    },
-    [currentSearchParams, setSearchParams],
-  );
+    setSearchParams(filterQs);
+  };
 
   return { getFiltersInQS, setFiltersInQS };
 }

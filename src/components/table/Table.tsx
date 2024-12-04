@@ -57,6 +57,7 @@ import { ExpandMore } from './components/ExpandButton';
 import { HeadTableCell } from './components/HeadTableCell';
 import { NewRowButton } from './components/NewRowButton';
 import { DEFAULT_ROW_KEY_FIELD, EXPANDER_COL_NAME, SELECTION_COL_NAME } from './constants';
+import { getPinningStyles } from './utils/getPinningStyle';
 
 /* -------------------------------------------------------------------------- */
 /*                              Type Augmentation                             */
@@ -399,6 +400,10 @@ function Table<TData extends FieldValues>({
     ) : (
       cellNode
     );
+
+    const pinningStyles = table.options.enableColumnPinning
+      ? getPinningStyles(header.column)
+      : null;
     const isSortingEnabled = header.column.getCanSort();
     const sortDirection = header.column.getIsSorted();
     const sortToggleHandler = header.column.getToggleSortingHandler();
@@ -409,6 +414,7 @@ function Table<TData extends FieldValues>({
         key={header.id}
         size={size}
         colSpan={header.colSpan}
+        style={{ ...pinningStyles }}
         sx={{
           backgroundColor: isSortingActive
             ? alpha(theme.palette.primary.main, 0.1)
@@ -481,6 +487,7 @@ function Table<TData extends FieldValues>({
     const isStandartCol = isStandartColumn(cell.column.id);
     const isIndentedCol = cell.row.depth > 0 && cell.column.getIndex() === 1;
     const isSortingActive = cell.column.getCanSort() && !!cell.column.getIsSorted();
+    const pinningStyles = table.options.enableColumnPinning ? getPinningStyles(cell.column) : null;
 
     if ((cell.column.columnDef as CoreColumn<TData>).link) {
       const uri = (cell.column.columnDef as CoreColumn<TData>).link!(cell.row);
@@ -503,6 +510,7 @@ function Table<TData extends FieldValues>({
         key={cell.id}
         title={cell.column.title}
         size={isStandartCol ? 'small' : size}
+        style={{ ...pinningStyles }}
         sx={{
           backgroundColor: isSortingActive
             ? isDark(theme)
@@ -733,6 +741,8 @@ function Table<TData extends FieldValues>({
           sx={{
             border: bordered ? '1px solid' : 'none',
             borderColor: (theme) => theme.palette.grey[700],
+            borderCollapse: 'separate',
+            borderSpacing: 0,
             ...sx,
           }}
         >

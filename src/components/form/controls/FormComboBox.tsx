@@ -1,6 +1,7 @@
 import { FieldValues } from 'react-hook-form';
 
 import ComboBox, { ComboBoxProps, CreatableModel } from '../../combobox/ComboBox';
+import FieldError from '../components/FieldError';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormComboBoxProps<
@@ -14,16 +15,16 @@ function FormComboBox<
   T extends CreatableModel,
   Creatable extends boolean,
   TFieldValues extends FieldValues,
->({ name, fieldProps, ...comboBoxProps }: FormComboBoxProps<T, Creatable, TFieldValues>) {
+>({ name, fieldProps, disabled, ...comboBoxProps }: FormComboBoxProps<T, Creatable, TFieldValues>) {
   return (
     <Field
       name={name}
-      render={(field, { invalid, error }) => (
-        <ComboBox
+      render={(field, { invalid, error, isTouched }) => (
+        <ComboBox<T, Creatable>
           {...comboBoxProps}
           {...field}
-          error={invalid}
-          helperText={error?.message}
+          error={isTouched && invalid}
+          helperText={<FieldError message={error?.message} />}
           onChange={(e, value, reason, details) => {
             if (reason === 'createOption' && typeof value === 'string') {
               return;
@@ -34,6 +35,7 @@ function FormComboBox<
           }}
         />
       )}
+      disabled={disabled}
       {...fieldProps}
     />
   );

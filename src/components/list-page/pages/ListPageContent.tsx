@@ -1,8 +1,6 @@
 import React, { ComponentType, ReactNode, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import { Visibility } from '@mui/icons-material';
-
 import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useDetailPageModal from '../../detail-page/hooks/useDetailPageModal';
@@ -11,7 +9,6 @@ import { DetailPageModalProps } from '../../detail-page/pages/DetailPageModal';
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
 import useTranslation from '../../i18n/hooks/useTranslation';
-import Edit from '../../icons/Edit';
 import SearchIcon from '../../icons/SearchIcon';
 import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
@@ -449,7 +446,6 @@ function ListPageContent<
         enableCreate: true,
         enableCopy: true,
         enableDiscardChanges: false,
-        icon: isDisabled ? <Visibility /> : <Edit />,
         header: isDisabled
           ? t('browse')
           : dpProps?.reason === 'fetch'

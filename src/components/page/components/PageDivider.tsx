@@ -6,7 +6,7 @@ function PageDivider(props: PageDividerProps) {
   return (
     <Divider
       sx={{
-        my: 3,
+        my: 1,
       }}
       {...props}
     />

@@ -124,7 +124,7 @@ export const CustomHeight: TableStory = {
 
 export const FixedWidth: TableStory = {
   args: {
-    columns: columns!.map((item) => ({ ...item, size: 300 })),
+    columns: columns.map((item) => ({ ...item, size: 300 })),
     scrollProps: {
       style: {
         maxHeight: 400,
@@ -315,5 +315,18 @@ export const Footer: TableStory = {
   args: {
     size: 'small',
     footerContent: 'This is footer content',
+  },
+};
+
+export const Pinning: TableStory = {
+  args: {
+    size: 'small',
+    columns: columns.map((item) => ({ ...item, size: 300 })),
+    enableColumnPinning: true,
+    initialState: {
+      columnPinning: {
+        left: ['name', 'username'],
+      },
+    },
   },
 };

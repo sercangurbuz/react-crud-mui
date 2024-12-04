@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -61,6 +60,9 @@ const meta: Meta<typeof DetailPage<UserSchema>> = {
     createCommandLabel: 'New User',
     defaultValues: UserDefaultValues,
     schema: userSchema,
+    validationOptions: {
+      callOutVisibility: 'all',
+    },
   },
 };
 
@@ -430,7 +432,7 @@ export const StepsWithCustomCommands: DetailPageStory = {
     ...WithSteps.args,
     stepsProps: {
       showFinishButton: false,
-      commands: CustomStepCommands,
+      onCommands: (props) => <CustomStepCommands {...props} />,
     },
   },
 };

@@ -123,7 +123,10 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
     throw new Error(`missing render function in field ${name}`);
   }
 
-  const fieldStates = isEnabledFieldCallout ? fieldState : { ...fieldState, error: undefined };
+  const fieldStates =
+    isEnabledFieldCallout && !disabledProp?.disabled
+      ? fieldState
+      : { ...fieldState, error: undefined };
   const controlNode = renderControl?.({ ...field, ...disabledProp }, fieldStates);
 
   /* -------------------------------------------------------------------------- */
