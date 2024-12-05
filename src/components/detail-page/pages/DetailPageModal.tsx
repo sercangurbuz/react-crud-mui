@@ -30,6 +30,7 @@ function DetailPageModal<TModel extends FieldValues>({
   onClose,
   open,
   confirmDirtyChanges = true,
+  enableClose = true,
   ...rest
 }: DetailPageModalProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -43,10 +44,15 @@ function DetailPageModal<TModel extends FieldValues>({
   });
 
   return (
-    <Modal open={!!open} onClose={() => handleCloseEvent('backdrop')} {...modalProps}>
+    <Modal
+      open={!!open}
+      onClose={() => handleCloseEvent('backdrop')}
+      closable={enableClose}
+      {...modalProps}
+    >
       <DetailPage<TModel>
         defaultSaveMode="save-close"
-        enableClose
+        enableClose={enableClose}
         enableDelete
         enableDiscardChanges={false}
         commandsPosition="bottom-right"

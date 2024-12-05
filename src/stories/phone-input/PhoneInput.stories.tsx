@@ -10,17 +10,17 @@ const meta: Meta<typeof Field.PhoneInput> = {
   title: 'Components/PhoneInput',
   args: {
     name: 'phone',
-    label: 'Numeric value',
+    label: 'Phone',
   },
   component: Field.PhoneInput,
   decorators: (Story) => {
     return (
       <DetailPage
         schema={z.object({
-          phone: z.string().length(10),
+          phone: z.string()
         })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ phone: '5332133393' }}
+        defaultValues={{ phone: '' }}
         showHeader={false}
       >
         <Page.Content>

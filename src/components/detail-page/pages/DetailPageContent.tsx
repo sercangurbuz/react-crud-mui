@@ -312,13 +312,6 @@ function DetailPageContent<TModel extends FieldValues>({
     const phProps: DetailPageHeaderProps = {
       ...props,
       reason,
-      /* headerCommands: (
-        <>
-          {renderDevToolToggle()}
-          {renderNavigationButtons()}
-          {props.headerCommands}
-        </>
-      ), */
     };
 
     if (onHeader) {

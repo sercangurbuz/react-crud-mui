@@ -64,6 +64,12 @@ export const Disabled: ComboboxStory = {
   },
 };
 
+export const DefaultOptionTemplate: ComboboxStory = {
+  args: {
+    optionTemplate: undefined,
+  },
+};
+
 export const WithDescription: ComboboxStory = {
   args: {
     descriptionTemplate: '${email}',

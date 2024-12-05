@@ -1,11 +1,11 @@
 import { FieldValues } from 'react-hook-form';
 
-import PhoneInput, { PhoneInputProps } from '../../phone-input/PhoneInput';
+import PhoneInput, { MUIPhoneProps } from '../../phone-input/PhoneInput';
 import FieldError from '../components/FieldError';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormPhoneInputProps<TFieldValues extends FieldValues = FieldValues>
-  extends Omit<PhoneInputProps, 'name'>,
+  extends Omit<MUIPhoneProps, 'name'>,
     ControlCommonProps<TFieldValues> {}
 
 function FormPhoneInput<TFieldValues extends FieldValues = FieldValues>({

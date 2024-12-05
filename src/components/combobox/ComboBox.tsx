@@ -50,13 +50,15 @@ export interface ComboBoxProps<T extends CreatableModel, Creatable extends boole
     Pick<StandardTextFieldProps, 'autoFocus' | 'label' | 'error' | 'helperText'> {
   data?: T[];
   direction?: 'row' | 'column';
-  optionTemplate: ComboboxTemplate<T>;
+  optionTemplate?: ComboboxTemplate<T>;
   displayTemplate?: ComboboxTemplate<T>;
   descriptionTemplate?: ComboboxTemplate<T>;
   creatable?: Creatable;
   onCreate?: (text: string) => Promise<T>;
   selectRef?: Ref<unknown>;
 }
+
+const DEFAULT_OPTION_TEMPLATE = '${name}';
 
 function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   autoFocus,
@@ -71,7 +73,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   loading,
   onBlur,
   onCreate,
-  optionTemplate,
+  optionTemplate = DEFAULT_OPTION_TEMPLATE,
   label,
   renderOption: onRenderOption,
   selectRef,
@@ -231,7 +233,6 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   /* -------------------------------------------------------------------------- */
   return (
     <Autocomplete<T, false, true, typeof creatable>
-      disablePortal
       {...rest}
       options={data}
       noOptionsText={t('nodatafound')}

@@ -196,6 +196,11 @@ const componentsOverride = (theme: Theme): Components => {
 
     MuiPopover: {
       styleOverrides: {
+        root: {
+          '&.MuiAutocomplete-popper': {
+            position: '',
+          },
+        },
         paper: { borderRadius: 12, boxShadow: theme.shadows[2] },
       },
     },

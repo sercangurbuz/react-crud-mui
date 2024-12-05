@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/rules-of-hooks */
+ 
 
 import { Card } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
@@ -29,6 +29,7 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
       defaultValues: UserDefaultValues,
       children: <FormContent />,
       header: 'User Detail',
+      commandsPosition: 'bottom',
     },
     headerProps: {
       header: 'Top performing users',

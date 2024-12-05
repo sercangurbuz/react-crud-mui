@@ -1,47 +1,109 @@
-import { forwardRef, Ref } from 'react';
-import { PatternFormat, PatternFormatProps } from 'react-number-format';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import 'react-international-phone/style.css';
 
-import { StandardTextFieldProps, TextField } from '@mui/material';
+import React from 'react';
+import {
+  CountryIso2,
+  defaultCountries,
+  FlagImage,
+  parseCountry,
+  usePhoneInput,
+} from 'react-international-phone';
 
-import { ControlledFormProps } from '../utils';
+import {
+  BaseTextFieldProps,
+  InputAdornment,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material';
 
-const DEFAULT_PHONE_FORMAT = '+90 (###) ###-##-##';
-
-export type PhoneInputProps = Omit<
-  PatternFormatProps<StandardTextFieldProps>,
-  'format' | 'onChange'
-> &
-  ControlledFormProps<string> & {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getRef?: Ref<any>;
-    format?: string;
-  };
-
-function PhoneInput({ onChange, ...props }: PhoneInputProps) {
-  return (
-    <PatternFormat
-      mask="_"
-      allowEmptyFormatting
-      onValueChange={({ value }, e) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-        if (e.source === 'event') {
-          onChange?.(value);
-        }
-      }}
-      customInput={TextField}
-      getInputRef={props?.getRef}
-      format={DEFAULT_PHONE_FORMAT}
-      {...props}
-      sx={{
-        '& .MuiInputBase-input': {
-          fontVariantNumeric: 'tabular-nums',
-        },
-        ...props?.sx,
-      }}
-    />
-  );
+export interface MUIPhoneProps extends BaseTextFieldProps {
+  value: string;
+  onChange: (phone: string) => void;
 }
 
-export default forwardRef<typeof PhoneInput, PhoneInputProps>((props, ref) => (
-  <PhoneInput {...props} getRef={ref} />
-));
+const MuiPhone: React.FC<MUIPhoneProps> = ({ value, onChange, ...restProps }) => {
+  const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } = usePhoneInput({
+    defaultCountry: 'tr',
+    value,
+    countries: defaultCountries,
+    onChange: (data) => {
+      onChange(data.phone);
+    },
+  });
+
+  return (
+    <TextField
+      variant="outlined"
+      label="Phone number"
+      color="primary"
+      placeholder="Phone number"
+      value={inputValue}
+      onChange={handlePhoneValueChange}
+      type="tel"
+      inputRef={inputRef}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start" style={{ marginRight: '2px', marginLeft: '-8px' }}>
+            <Select
+              MenuProps={{
+                style: {
+                  height: '300px',
+                  width: '360px',
+                  top: '10px',
+                  left: '-34px',
+                },
+                transformOrigin: {
+                  vertical: 'top',
+                  horizontal: 'left',
+                },
+              }}
+              sx={{
+                width: 'max-content',
+                // Remove default outline (display only on focus)
+                fieldset: {
+                  display: 'none',
+                },
+                '&.Mui-focused:has(div[aria-expanded="false"])': {
+                  fieldset: {
+                    display: 'block',
+                  },
+                },
+                // Update default spacing
+                '.MuiSelect-select': {
+                  padding: '8px',
+                  paddingRight: '24px !important',
+                },
+                svg: {
+                  right: 0,
+                },
+              }}
+              value={country.iso2}
+              onChange={(e) => setCountry(e.target.value as CountryIso2)}
+              renderValue={(value) => <FlagImage iso2={value} style={{ display: 'flex' }} />}
+            >
+              {defaultCountries.map((c) => {
+                const country = parseCountry(c);
+                return (
+                  <MenuItem key={country.iso2} value={country.iso2}>
+                    <FlagImage iso2={country.iso2} style={{ marginRight: '8px' }} />
+                    <Typography marginRight="8px">{country.name}</Typography>
+                    <Typography color="gray">+{country.dialCode}</Typography>
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </InputAdornment>
+        ),
+      }}
+      {...restProps}
+    />
+  );
+};
+
+export default MuiPhone;
