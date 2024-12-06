@@ -1,16 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import 'react-international-phone/style.css';
 
-import React from 'react';
+import React, { forwardRef, useState } from 'react';
 import {
   CountryIso2,
   defaultCountries,
   FlagImage,
   parseCountry,
   usePhoneInput,
+  UsePhoneInputConfig,
 } from 'react-international-phone';
 
 import {
@@ -22,31 +19,54 @@ import {
   Typography,
 } from '@mui/material';
 
-export interface MUIPhoneProps extends BaseTextFieldProps {
-  value: string;
-  onChange: (phone: string) => void;
+import useTranslation from '../i18n/hooks/useTranslation';
+
+export interface PhoneInputProps extends BaseTextFieldProps {
+  value?: string;
+  onChange?: (phone: string) => void;
+  phoneInputconfig?: UsePhoneInputConfig;
+  getRef?: React.MutableRefObject<typeof PhoneInput>;
 }
 
-const MuiPhone: React.FC<MUIPhoneProps> = ({ value, onChange, ...restProps }) => {
+const DEFAULT_COUNTRY = 'tr';
+
+function PhoneInput({
+  value,
+  onChange,
+  phoneInputconfig,
+  onBlur,
+  sx,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getRef,
+  ...restProps
+}: PhoneInputProps) {
+  /* -------------------------------------------------------------------------- */
+  /*                                    Hooks                                   */
+  /* -------------------------------------------------------------------------- */
+
+  const { t } = useTranslation();
+  const [shrink, setShrink] = useState(!value);
+
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } = usePhoneInput({
-    defaultCountry: 'tr',
     value,
     countries: defaultCountries,
     onChange: (data) => {
-      onChange(data.phone);
+      onChange?.(data.phone);
     },
+    disableDialCodeAndPrefix: true,
+    defaultCountry: DEFAULT_COUNTRY,
+    ...phoneInputconfig,
   });
 
   return (
     <TextField
-      variant="outlined"
-      label="Phone number"
-      color="primary"
-      placeholder="Phone number"
+      label={t('phone_number')}
       value={inputValue}
       onChange={handlePhoneValueChange}
       type="tel"
       inputRef={inputRef}
+      onFocus={() => setShrink(true)}
+      InputLabelProps={{ shrink }}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start" style={{ marginRight: '2px', marginLeft: '-8px' }}>
@@ -101,9 +121,24 @@ const MuiPhone: React.FC<MUIPhoneProps> = ({ value, onChange, ...restProps }) =>
           </InputAdornment>
         ),
       }}
+      onBlur={(e) => {
+        setShrink(!!e.target.value);
+        onBlur?.(e);
+      }}
+      sx={{
+        '& .MuiInputBase-input': {
+          pl: 1,
+        },
+        '& > .MuiInputLabel-root[data-shrink="false"]': {
+          left: 50,
+        },
+        ...sx,
+      }}
       {...restProps}
     />
   );
-};
+}
 
-export default MuiPhone;
+export default forwardRef<typeof PhoneInput, PhoneInputProps>((props, ref) => (
+  <PhoneInput {...props} getRef={ref as React.MutableRefObject<typeof PhoneInput>} />
+));

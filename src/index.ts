@@ -91,3 +91,4 @@ export * from './components/typography';
 export * from './components/utils';
 export * from './components/theme/colors';
 export * from './components/theme';
+export * as schemas from './components/form/schema';

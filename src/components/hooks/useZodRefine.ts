@@ -89,7 +89,6 @@ function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>)
 }
 
 function nullable<TSchema extends z.AnyZodObject>(schema: TSchema) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const entries = Object.entries(schema.shape) as [keyof TSchema['shape'], z.ZodTypeAny][];
 
   const newProps = entries.reduce(

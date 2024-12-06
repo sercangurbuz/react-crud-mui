@@ -1,7 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
 import ComboBox, { ComboBoxProps, CreatableModel } from '../../combobox/ComboBox';
-import FieldError from '../components/FieldError';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormComboBoxProps<
@@ -24,7 +23,7 @@ function FormComboBox<
           {...comboBoxProps}
           {...field}
           error={isTouched && invalid}
-          helperText={<FieldError message={error?.message} />}
+          helperText={error?.message}
           onChange={(e, value, reason, details) => {
             if (reason === 'createOption' && typeof value === 'string') {
               return;

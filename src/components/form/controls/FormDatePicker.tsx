@@ -7,7 +7,6 @@ import {
 } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 
-import FieldError from '../components/FieldError';
 import Field, { ControlCommonProps } from '../Field';
 
 export type FormDatePickerProps<TFieldValues extends FieldValues = FieldValues> = Partial<
@@ -43,7 +42,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
               fullWidth: true,
               autoFocus,
               error: isTouched && invalid,
-              helperText: <FieldError message={error?.message} />,
+              helperText: error?.message,
             },
           }}
         />

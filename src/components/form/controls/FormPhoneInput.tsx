@@ -1,11 +1,10 @@
 import { FieldValues } from 'react-hook-form';
 
-import PhoneInput, { MUIPhoneProps } from '../../phone-input/PhoneInput';
-import FieldError from '../components/FieldError';
+import PhoneInput, { PhoneInputProps } from '../../phone-input/PhoneInput';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormPhoneInputProps<TFieldValues extends FieldValues = FieldValues>
-  extends Omit<MUIPhoneProps, 'name'>,
+  extends Omit<PhoneInputProps, 'name'>,
     ControlCommonProps<TFieldValues> {}
 
 function FormPhoneInput<TFieldValues extends FieldValues = FieldValues>({
@@ -25,7 +24,7 @@ function FormPhoneInput<TFieldValues extends FieldValues = FieldValues>({
           {...inputProps}
           {...field}
           error={isTouched && invalid}
-          helperText={<FieldError message={error?.message} />}
+          helperText={error?.message}
           onChange={(e) => {
             field.onChange(e);
             inputProps?.onChange?.(e);

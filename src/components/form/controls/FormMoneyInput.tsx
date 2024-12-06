@@ -1,7 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
 import MoneyInput, { MoneyInputProps } from '../../money-input/MoneyInput';
-import FieldError from '../components/FieldError';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormMoneyInputProps<TFieldValues extends FieldValues = FieldValues>
@@ -25,7 +24,7 @@ function FormMoneyInput<TFieldValues extends FieldValues = FieldValues>({
           {...inputProps}
           {...field}
           error={isTouched && invalid}
-          helperText={<FieldError message={error?.message} />}
+          helperText={error?.message}
           onChange={(e) => {
             field.onChange(e);
             inputProps?.onChange?.(e);

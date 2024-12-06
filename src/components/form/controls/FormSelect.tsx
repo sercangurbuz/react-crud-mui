@@ -1,7 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
 import Select, { SelectProps } from '../../select/Select';
-import FieldError from '../components/FieldError';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormSelectProps<
@@ -25,7 +24,7 @@ function FormSelect<T extends FieldValues, TFieldValues extends FieldValues>({
           {...field}
           id={name}
           error={isTouched && invalid}
-          helperText={<FieldError message={error?.message} />}
+          helperText={error?.message}
           onChange={(e, child) => {
             field.onChange(e.target.value);
             selectProps?.onChange?.(e, child);

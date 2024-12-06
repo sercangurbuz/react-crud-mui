@@ -5,7 +5,6 @@ import { Box, BoxProps, FormHelperText } from '@mui/material';
 
 import { FlexBox } from '../../flexbox';
 import { Paragraph, Small } from '../../typography';
-import FieldError from './FieldError';
 
 export interface FormControlProps {
   label?: ReactNode;
@@ -30,9 +29,7 @@ function FormControl({
   /* -------------------------------------------------------------------------- */
 
   const renderErrorMessage = () => {
-    return error ? (
-      <FieldError message={<FormHelperText error>{error.message}</FormHelperText>} />
-    ) : null;
+    return error ? <FormHelperText error>{error.message}</FormHelperText> : null;
   };
 
   const renderControl = () => {

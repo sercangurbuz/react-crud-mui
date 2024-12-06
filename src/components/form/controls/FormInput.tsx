@@ -2,7 +2,6 @@ import { FieldValues } from 'react-hook-form';
 
 import { TextField, TextFieldProps } from '@mui/material';
 
-import FieldError from '../components/FieldError';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormInputProps<TFieldValues extends FieldValues = FieldValues>
@@ -26,7 +25,7 @@ function FormInput<TFieldValues extends FieldValues = FieldValues>({
           {...inputProps}
           {...field}
           error={isTouched && invalid}
-          helperText={<FieldError message={error?.message} />}
+          helperText={error?.message}
           onChange={(e) => {
             field.onChange(e);
             inputProps?.onChange?.(e);

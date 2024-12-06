@@ -2,6 +2,7 @@ import { Box, Stack } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 
+import { schemas } from '../..';
 import DetailPage from '../../components/detail-page';
 import Field from '../../components/form/Field';
 import Page from '../../components/page/Page';
@@ -17,7 +18,7 @@ const meta: Meta<typeof Field.DatePicker> = {
     return (
       <DetailPage
         schema={z.object({
-          value: Field.schemas.dateSchema,
+          value: schemas.dateSchema,
         })}
         validationOptions={{ callOutVisibility: 'all' }}
         defaultValues={{ value: null }}

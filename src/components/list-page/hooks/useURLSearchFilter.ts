@@ -95,7 +95,7 @@ function useURLSearchFilter<TFilter extends FieldValues>({
         if (value === '' || get(defaultValues, prefix) === value) {
           return;
         }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+
         return value;
       },
     });

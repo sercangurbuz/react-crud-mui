@@ -118,6 +118,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       return (
         <Box
           {...props}
+          key={props.key}
           component="li"
           sx={{
             '&.MuiAutocomplete-option': {

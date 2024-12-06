@@ -8,6 +8,5 @@ export default (value: any) => {
     ref.current = value;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return ref.current;
 };

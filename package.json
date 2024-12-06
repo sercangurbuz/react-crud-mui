@@ -39,6 +39,7 @@
     "dayjs": "^1.11.13",
     "i18next": "^23.15.1",
     "immer": "^10.1.1",
+    "libphonenumber-js": "^1.11.16",
     "lodash.debounce": "^4.0.8",
     "lodash.groupby": "^4.6.0",
     "lodash.kebabcase": "^4.1.1",

@@ -1,7 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
 import NumberInput, { NumberInputProps } from '../../number-input/NumberInput';
-import FieldError from '../components/FieldError';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormNumberInputProps<TFieldValues extends FieldValues = FieldValues>
@@ -25,7 +24,7 @@ function FormNumberInput<TFieldValues extends FieldValues = FieldValues>({
           {...inputProps}
           {...field}
           error={isTouched && invalid}
-          helperText={<FieldError message={error?.message} />}
+          helperText={error?.message}
           onChange={(e) => {
             field.onChange(e);
             inputProps?.onChange?.(e);

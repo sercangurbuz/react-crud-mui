@@ -27,7 +27,6 @@ import FormSelect from './controls/FormSelect';
 import FormSwitch from './controls/FormSwitch';
 import useRegisterField from './hooks/useRegisterField';
 import useValidationOptionsContext from './hooks/useValidationOptionsContext';
-import * as schemas from './schema';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -159,5 +158,4 @@ Field.DatePicker = FormDatePicker;
 Field.Button = FormButton;
 Field.Watch = FieldWatch;
 
-Field.schemas = schemas;
 Field.Group = FieldGroupProvider;

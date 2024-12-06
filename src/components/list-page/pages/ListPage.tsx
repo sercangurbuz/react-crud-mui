@@ -48,16 +48,15 @@ function ListPage<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
->(props: ListPageProps<TModel, TFilter, TDetailPageModel>) {
-  const {
-    onNeedData,
-    defaultSegmentIndex = 0,
-    activeSegmentIndex,
-    tabs,
-    defaultMeta,
-    removeFalsyFilterValues = true,
-  } = props;
-
+>({
+  onNeedData,
+  defaultSegmentIndex = 0,
+  activeSegmentIndex,
+  tabs,
+  defaultMeta,
+  removeFalsyFilterValues = true,
+  ...lpProps
+}: ListPageProps<TModel, TFilter, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -102,7 +101,17 @@ function ListPage<
     });
   };
 
-  return <ListPageForm {...props} meta={meta} onChange={handleChange} />;
+  return (
+    <ListPageForm
+      {...lpProps}
+      meta={meta}
+      onChange={handleChange}
+      defaultSegmentIndex={defaultSegmentIndex}
+      activeSegmentIndex={activeSegmentIndex}
+      tabs={tabs}
+      defaultMeta={defaultMeta}
+    />
+  );
 }
 
 ListPage.Selection = ListPageSelection;

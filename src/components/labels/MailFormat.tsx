@@ -9,6 +9,10 @@ interface MailLabelProps extends BoxProps {
 }
 
 function MailFormat({ value: email, showIcon = true, ...rest }: MailLabelProps) {
+  if (!email) {
+    return '';
+  }
+
   return (
     <Box {...rest}>
       <FlexBox gap={0.8} alignItems="center">

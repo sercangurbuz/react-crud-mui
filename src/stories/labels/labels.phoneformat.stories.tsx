@@ -6,7 +6,7 @@ const meta: Meta<typeof Labels.PhoneFormat> = {
   title: 'Components/Labels/PhoneFormat',
   component: Labels.PhoneFormat,
   args: {
-    value: '5332153336',
+    value: '+905332153336',
   },
 };
 export default meta;

@@ -44,8 +44,13 @@ function ListPageForm<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
->(props: ListPageFormProps<TModel, TFilter, TDetailPageModel>) {
-  const { schema, defaultValues, defaultFilter, validationOptions } = props;
+>({
+  schema,
+  defaultValues,
+  defaultFilter,
+  validationOptions,
+  ...lpProps
+}: ListPageFormProps<TModel, TFilter, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */
@@ -62,11 +67,11 @@ function ListPageForm<
     values: defaultFilter as unknown as TFilter,
   });
 
-  const formMethods = props.form ?? form;
+  const formMethods = lpProps.form ?? form;
 
   return (
     <FormProvider form={formMethods} validationOptions={validationOptions}>
-      <ListPageFilter {...props} form={formMethods} />
+      <ListPageFilter {...lpProps} form={formMethods} />
     </FormProvider>
   );
 }

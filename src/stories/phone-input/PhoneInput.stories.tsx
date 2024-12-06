@@ -4,20 +4,21 @@ import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
 import Field from '../../components/form/Field';
+import { phoneSchema } from '../../components/form/schema';
 import Page from '../../components/page/Page';
 
 const meta: Meta<typeof Field.PhoneInput> = {
   title: 'Components/PhoneInput',
   args: {
     name: 'phone',
-    label: 'Phone',
+    label: 'Phone number',
   },
   component: Field.PhoneInput,
   decorators: (Story) => {
     return (
       <DetailPage
         schema={z.object({
-          phone: z.string()
+          phone: phoneSchema,
         })}
         validationOptions={{ callOutVisibility: 'all' }}
         defaultValues={{ phone: '' }}

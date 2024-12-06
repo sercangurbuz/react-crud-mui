@@ -73,18 +73,17 @@ function ListPageFilter<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
->(props: ListPageFilterProps<TModel, TFilter, TDetailPageModel>) {
-  const {
-    form,
-    meta,
-    tableProps: extableProps,
-    onChange,
-    defaultSegmentIndex,
-    onClear,
-    defaultMeta,
-    searchOnLoad = true,
-  } = props;
-
+>({
+  form,
+  meta,
+  tableProps: extableProps,
+  onChange,
+  defaultSegmentIndex,
+  onClear,
+  defaultMeta,
+  searchOnLoad = true,
+  ...lpProps
+}: ListPageFilterProps<TModel, TFilter, TDetailPageModel>) {
   const {
     reset,
     formState: { defaultValues },
@@ -170,7 +169,7 @@ function ListPageFilter<
 
   return (
     <ListPageContent<TModel, TDetailPageModel>
-      {...props}
+      {...lpProps}
       onSearch={() =>
         void handleSearch({
           reason: 'search',

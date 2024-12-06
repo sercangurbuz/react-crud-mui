@@ -181,5 +181,7 @@
     "export": "Dışa aktar",
     "import": "İçe aktar",
     "report.initiate": "Rapor indiriliyor...",
-    "new_row": "Yeni Satır Ekle"
+    "new_row": "Yeni Satır Ekle",
+    "phone_number": "Telefon num.",
+    "phone_number_val_message": "Geçerli bir telefon numarası giriniz (Ülke kodu ile ile birlikte)"
 }

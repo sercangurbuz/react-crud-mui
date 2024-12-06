@@ -300,13 +300,6 @@ function ListPageContent<
 
     const phProps: ListPageHeaderProps = {
       ...props,
-      /* headerCommands: (
-        <>
-          {renderDevToolToggle()}
-          {renderNavigationButtons()}
-          {props.headerCommands}
-        </>
-      ), */
     };
 
     if (onHeader) {
