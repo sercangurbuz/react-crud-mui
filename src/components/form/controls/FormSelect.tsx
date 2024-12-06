@@ -9,7 +9,7 @@ export interface FormSelectProps<
 > extends Omit<SelectProps<T>, 'name'>,
     ControlCommonProps<TFieldValues> {}
 
-function FormSelect<T extends FieldValues, TFieldValues extends FieldValues>({
+function FormSelect<T extends FieldValues, TFieldValues extends FieldValues = FieldValues>({
   name,
   fieldProps,
   disabled,

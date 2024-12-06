@@ -13,7 +13,7 @@ export interface FormComboBoxProps<
 function FormComboBox<
   T extends CreatableModel,
   Creatable extends boolean,
-  TFieldValues extends FieldValues,
+  TFieldValues extends FieldValues = FieldValues,
 >({ name, fieldProps, disabled, ...comboBoxProps }: FormComboBoxProps<T, Creatable, TFieldValues>) {
   return (
     <Field

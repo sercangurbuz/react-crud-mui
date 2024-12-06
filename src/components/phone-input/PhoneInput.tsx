@@ -45,7 +45,7 @@ function PhoneInput({
   /* -------------------------------------------------------------------------- */
 
   const { t } = useTranslation();
-  const [shrink, setShrink] = useState(!value);
+  const [shrink, setShrink] = useState(!!value);
 
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } = usePhoneInput({
     value,
@@ -127,6 +127,7 @@ function PhoneInput({
       }}
       sx={{
         '& .MuiInputBase-input': {
+          fontVariantNumeric: 'tabular-nums',
           pl: 1,
         },
         '& > .MuiInputLabel-root[data-shrink="false"]': {
