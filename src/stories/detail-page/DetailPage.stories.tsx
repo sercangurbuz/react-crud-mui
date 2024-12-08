@@ -12,7 +12,6 @@ import {
 import { Assignment, Done, Pending } from '@mui/icons-material';
 import { Button, Grid2 } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
-import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
 import useDetailPageRouteParams from '../../components/detail-page/hooks/useDetailPageRouteParams';
@@ -397,13 +396,6 @@ export const WithSteps: DetailPageStory = {
   args: {
     children: undefined,
     reason: 'create',
-    schema: [
-      z.object({
-        name: z.string().min(1),
-        username: z.string().min(1),
-      }),
-      userSchema.pick({ phone: true, email: true, website: true }),
-    ],
     steps: [
       {
         label: 'Person Info',

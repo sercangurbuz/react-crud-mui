@@ -16,14 +16,14 @@ function FormMoneyInput<TFieldValues extends FieldValues = FieldValues>({
   return (
     <Field
       name={name}
-      render={(field, { invalid, error, isTouched }) => (
+      render={(field, { invalid, error }) => (
         <MoneyInput
           sx={{
             width: '100%',
           }}
           {...inputProps}
           {...field}
-          error={isTouched && invalid}
+          error={invalid}
           helperText={error?.message}
           onChange={(e) => {
             field.onChange(e);

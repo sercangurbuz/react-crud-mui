@@ -11,7 +11,7 @@ import DetailPageData, { DetailPageDataProps } from './DetailPageData';
 export interface DetailPageFormProps<TModel extends FieldValues>
   extends Omit<DetailPageDataProps<TModel>, 'form' | 'defaultValues' | 'schema'> {
   form?: UseFormReturn<TModel>;
-  schema?: z.ZodType<Partial<TModel>> | z.ZodType<Partial<TModel>>[];
+  schema?: z.ZodType<Partial<TModel>>;
   defaultValues?: DeepNullable<TModel>;
   /**
    * Optional validation options
@@ -30,13 +30,10 @@ function DetailPageForm<TModel extends FieldValues>({
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */
 
-  // array schema only used in steps
-  const formSchema = Array.isArray(schema) ? schema[activeSegmentIndex] : schema;
-
   const form = useForm<TModel>({
     reValidateMode: 'onChange',
     mode: 'onChange',
-    schema: formSchema,
+    schema,
     defaultValues: defaultValues as DefaultValues<TModel>,
   });
 
@@ -48,8 +45,6 @@ function DetailPageForm<TModel extends FieldValues>({
         {...dpProps}
         activeSegmentIndex={activeSegmentIndex}
         form={formMethods}
-        defaultValues={defaultValues}
-        schema={formSchema}
       />
     </FormProvider>
   );

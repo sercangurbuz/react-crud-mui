@@ -22,6 +22,7 @@ export type StepsButtonsOptions = {
   activeStepIndex: number;
   steps: StepPane[];
   showFinishButton?: boolean;
+  finishButtonText?: string;
   loading?: boolean;
 };
 
@@ -53,7 +54,7 @@ export enum DetailPageStepCommandNames {
 
 /* ------------------------- StepsButtons Component ------------------------- */
 
-function DetailPageStepCommands({ onCommands, ...options }: DetailPageStepCommandsProps) {
+function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageStepCommandsProps) {
   const {
     nextButtonTitle,
     prevButtonTitle,
@@ -61,6 +62,7 @@ function DetailPageStepCommands({ onCommands, ...options }: DetailPageStepComman
     onPrevClick,
     onFinish,
     options: {
+      finishButtonText,
       showNextButton,
       showPrevButton,
       disableNextButton,
@@ -72,7 +74,7 @@ function DetailPageStepCommands({ onCommands, ...options }: DetailPageStepComman
       steps,
       showFinishButton,
     },
-  } = options;
+  } = stepCommandProps;
 
   /* ---------------------------------- Hooks --------------------------------- */
 
@@ -81,6 +83,8 @@ function DetailPageStepCommands({ onCommands, ...options }: DetailPageStepComman
     hotkeys: { nextStep: SHORTCUT_NEXT_STEP, prevStep: SHORTCUT_PREV_STEP },
   } = useSettings();
   const isInValid = useFormGroupIsInValid({ groupName: currentKey });
+  const isNextButtonDisabled = isInValid || disableNextButton;
+  const isFinishButtonDisabled = isInValid || disableFinishButton;
 
   /* -------------------------------------------------------------------------- */
   /*                               Render helpers                               */
@@ -116,7 +120,7 @@ function DetailPageStepCommands({ onCommands, ...options }: DetailPageStepComman
         onClick={onNextClick}
         color="primary"
         loading={loading}
-        disabled={isInValid || disableNextButton}
+        disabled={isNextButtonDisabled}
         endIcon={<ArrowRight />}
         title={`${t('nextstep')}\n(${SHORTCUT_NEXT_STEP.toUpperCase()})`}
       >
@@ -138,10 +142,10 @@ function DetailPageStepCommands({ onCommands, ...options }: DetailPageStepComman
         onClick={onFinish}
         color="success"
         loading={loading}
-        disabled={isInValid || disableFinishButton}
+        disabled={isFinishButtonDisabled}
         startIcon={<Save />}
       >
-        {t('finish')}
+        {finishButtonText || t('finish')}
       </LoadingButton>
     );
   };
@@ -163,7 +167,12 @@ function DetailPageStepCommands({ onCommands, ...options }: DetailPageStepComman
 
     if (onCommands) {
       return onCommands({
-        ...options,
+        ...stepCommandProps,
+        options: {
+          ...stepCommandProps.options,
+          disableNextButton: isNextButtonDisabled,
+          disableFinishButton: isFinishButtonDisabled,
+        },
         finish: finishContent,
         next: nextContent,
         prev: prevContent,

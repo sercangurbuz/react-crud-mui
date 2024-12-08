@@ -14,6 +14,7 @@ export interface DetailPageStepsProps extends Omit<StepperProps, 'onChange'> {
   items: StepPane[];
   status?: StepStatus;
   showFinishButton?: DetailPageStepCommandsProps['options']['showFinishButton'];
+  finishButtonText?: DetailPageStepCommandsProps['options']['finishButtonText'];
   onCommands?: DetailPageStepCommandsProps['onCommands'];
 }
 
@@ -39,7 +40,7 @@ function DetailPageSteps({ activeStep = 0, items, status, ...stepperProps }: Det
 
   return (
     <>
-      <Page.Content sx={{ pb: 5, pt: 1 }}>
+      <Page.Content sx={{ pb: 2, pt: 2 }}>
         <Stepper {...stepperProps} activeStep={activeStep}>
           {items.map(
             ({ key, completed, disabled, expanded, error, icon, optional, label }, index) => (
@@ -53,9 +54,7 @@ function DetailPageSteps({ activeStep = 0, items, status, ...stepperProps }: Det
         </Stepper>
       </Page.Content>
       {/* Step Content */}
-      <Field.Group group={items[activeStep].key}>
-        {items[activeStep].children}
-      </Field.Group>
+      <Field.Group group={items[activeStep].key}>{items[activeStep].children}</Field.Group>
     </>
   );
 }

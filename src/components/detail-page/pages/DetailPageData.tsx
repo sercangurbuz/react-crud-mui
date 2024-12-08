@@ -2,12 +2,11 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
-import { UseFormOptions, UseFormReturn } from '../../form/hooks/useForm';
-import { useRunAsync, useUpdateEffect } from '../../hooks';
+import { UseFormReturn } from '../../form/hooks/useForm';
+import { useRunAsync } from '../../hooks';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
 import { Message } from '../../page/hooks/useNormalizeMessages';
-import { DeepNullable } from '../../utils';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -47,12 +46,10 @@ export type NavigationDirection = 'next' | 'prev';
 
 export interface DetailPageDataProps<TModel extends FieldValues>
   extends Omit<
-      DetailPageContentProps<TModel>,
-      'onSave' | 'onDelete' | 'onDiscardChanges' | 'onCopy' | 'onSaveCreate' | 'onSaveClose'
-    >,
-    Pick<UseFormOptions<TModel>, 'schema'> {
+    DetailPageContentProps<TModel>,
+    'onSave' | 'onDelete' | 'onDiscardChanges' | 'onCopy' | 'onSaveCreate' | 'onSaveClose'
+  > {
   form: UseFormReturn<TModel>;
-  defaultValues?: Readonly<DeepNullable<TModel>>;
   /**
    * Navigation buttons event when navigation is active
    * @returns if returns data,either in promise or object will bind to form data
@@ -97,7 +94,6 @@ function DetailPageData<TModel extends FieldValues>({
   alerts,
   autoSave,
   data,
-  defaultValues,
   error,
   form,
   loading,
@@ -109,7 +105,6 @@ function DetailPageData<TModel extends FieldValues>({
   onReasonChange,
   onSave,
   reason = 'create',
-  schema,
   showSuccessMessages = true,
   ...dpProps
 }: DetailPageDataProps<TModel>) {
@@ -127,7 +122,13 @@ function DetailPageData<TModel extends FieldValues>({
   /*                                Form Methods                                */
   /* -------------------------------------------------------------------------- */
 
-  const { reset, trigger, getFormModel, getValues } = form;
+  const {
+    reset,
+    trigger,
+    getFormModel,
+    getValues,
+    formState: { defaultValues },
+  } = form;
 
   // reset and revalidate form (if "onchange" in validationoptions is set)
   const updateForm = useCallback(
@@ -157,14 +158,6 @@ function DetailPageData<TModel extends FieldValues>({
       updateForm(data);
     }
   }, [data, updateForm]);
-
-  // re-trigger validations when schema is changed
-  // be sure data already set
-  useUpdateEffect(() => {
-    if (schema && prevDataRef.current) {
-      void trigger();
-    }
-  }, [schema, trigger]);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Alerts                                   */

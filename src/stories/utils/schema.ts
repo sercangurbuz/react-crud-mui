@@ -6,7 +6,7 @@ export const IdNameSchema = z.object({
 });
 
 export const userSchema = z.object({
-  name: z.string().optional(),
+  name: z.string().min(1),
   username: z.string().optional(),
   email: z.string().email().min(1, { message: 'Email is missing' }),
   website: z.string().min(1, { message: 'Website is missing' }),

@@ -27,7 +27,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
   return (
     <Field
       name={name}
-      render={(field, { invalid, error, isTouched }) => (
+      render={(field, { invalid, error }) => (
         <MuiDatePicker
           {...dateProps}
           {...field}
@@ -41,7 +41,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
               size,
               fullWidth: true,
               autoFocus,
-              error: isTouched && invalid,
+              error: invalid,
               helperText: error?.message,
             },
           }}

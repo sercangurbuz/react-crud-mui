@@ -18,12 +18,12 @@ function FormSelect<T extends FieldValues, TFieldValues extends FieldValues = Fi
   return (
     <Field
       name={name}
-      render={(field, { invalid, error, isTouched }) => (
+      render={(field, { invalid, error }) => (
         <Select<T>
           {...selectProps}
           {...field}
           id={name}
-          error={isTouched && invalid}
+          error={invalid}
           helperText={error?.message}
           onChange={(e, child) => {
             field.onChange(e.target.value);
