@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import Error from '@mui/icons-material/Error';
 // MUI ICON COMPONENTS
@@ -14,10 +15,10 @@ const standardStyle = (color: PaletteColor) => ({
   backgroundColor: color[50],
 });
 
-const outlinedStyle = (color: PaletteColor) => ({
-  color: color.main,
+const outlinedStyle = (color: PaletteColor, theme: Theme) => ({
+  color: isDark(theme) ? color[50] : color,
   borderColor: color.main,
-  backgroundColor: color[50],
+  backgroundColor: isDark(theme) ? color[900] : color[50],
 });
 
 const actionBtnStyle = (primary: string, secondary: string) => ({
@@ -57,14 +58,14 @@ const Alert = (theme: Theme): Components['MuiAlert'] => {
         '& .MuiAlert-icon': { color: primary.main },
       },
 
-      outlinedError: outlinedStyle(error),
-      outlinedSuccess: outlinedStyle(success),
-      outlinedWarning: outlinedStyle(warning),
+      outlinedError: outlinedStyle(error, theme) as any,
+      outlinedSuccess: outlinedStyle(success, theme) as any,
+      outlinedWarning: outlinedStyle(warning, theme) as any,
       outlinedInfo: {
-        ...outlinedStyle(primary),
+        ...outlinedStyle(primary, theme),
         '& .MuiAlert-icon': { color: primary.main },
         ...(isDark(theme) && { backgroundColor: grey[700] }),
-      },
+      } as any,
 
       filledWarning: { color: common.white },
       filledSuccess: {

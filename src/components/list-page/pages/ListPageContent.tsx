@@ -332,9 +332,16 @@ function ListPageContent<
   const renderAlerts = () => {
     const messages = alerts ?? [];
 
-    if (error?.message) {
-      messages.unshift(error?.message);
+    if (error) {
+      if (error.errors) {
+        messages.push(...error.errors.map((item) => item.message));
+      } else {
+        if (error.message) {
+          messages.push(error.message);
+        }
+      }
     }
+
     return (
       <>
         <Alerts messages={messages} />

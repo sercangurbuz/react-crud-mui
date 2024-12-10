@@ -59,9 +59,6 @@ const meta: Meta<typeof DetailPage<UserSchema>> = {
     createCommandLabel: 'New User',
     defaultValues: UserDefaultValues,
     schema: userSchema,
-    validationOptions: {
-      callOutVisibility: 'all',
-    },
   },
 };
 
@@ -76,6 +73,29 @@ export const Simple: DetailPageStory = {};
 export const LoadingState: DetailPageStory = {
   args: {
     loading: true,
+  },
+};
+
+export const WithAlerts: DetailPageStory = {
+  args: {
+    alerts: [
+      {
+        message: 'Success message',
+        type: 'success',
+      },
+      {
+        message: 'Info message',
+        type: 'info',
+      },
+      {
+        message: 'Warning message',
+        type: 'warning',
+      },
+      {
+        message: 'Error message',
+        type: 'error',
+      },
+    ],
   },
 };
 
@@ -158,7 +178,11 @@ export const WithErrorAsyncData: DetailPageStory = {
         onSave={() => {
           setloading(true);
           callError('Save mutation failed');
-          return Promise.reject(new Error('Failure message (internal)'));
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+          return Promise.reject({
+            message: 'Failure message (internal)',
+            errors: [{ message: 'Inner exception' }, { message: 'Inner exception 2' }],
+          });
         }}
       />
     );

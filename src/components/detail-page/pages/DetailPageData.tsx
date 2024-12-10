@@ -7,6 +7,7 @@ import { useRunAsync } from '../../hooks';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
 import { Message } from '../../page/hooks/useNormalizeMessages';
+import { ServerError } from '../../utils';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -166,16 +167,28 @@ function DetailPageData<TModel extends FieldValues>({
   const messages = useMemo<Message[]>(() => {
     const result: Message[] = [];
 
+    const addErrors = (err: ServerError) => {
+      if (err) {
+        if (err.errors) {
+          result.push(...err.errors.map((item) => item.message));
+        } else {
+          if (err.message) {
+            result.push(err.message);
+          }
+        }
+      }
+    };
+
     if (alerts) {
       result.push(...alerts);
     }
 
-    if (error?.message) {
-      result.push(error.message);
+    if (error) {
+      addErrors(error);
     }
 
-    if (errorState?.message) {
-      result.push(errorState.message);
+    if (errorState) {
+      addErrors(errorState);
     }
 
     return result;

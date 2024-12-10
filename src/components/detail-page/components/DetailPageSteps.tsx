@@ -40,7 +40,7 @@ function DetailPageSteps({ activeStep = 0, items, status, ...stepperProps }: Det
 
   return (
     <>
-      <Page.Content sx={{ pb: 2, pt: 2 }}>
+      <Page.Content sx={{ py: 2 }}>
         <Stepper {...stepperProps} activeStep={activeStep}>
           {items.map(
             ({ key, completed, disabled, expanded, error, icon, optional, label }, index) => (

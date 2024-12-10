@@ -66,7 +66,7 @@ export const success = {
 
 export const warning = {
   25: '#FFFCF5',
-  50: '#FFF8E',
+  50: '#FFF8EE',
   100: '#FFF8E6',
   200: '#FFEBB3',
   300: '#FEDE80',

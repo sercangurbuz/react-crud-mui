@@ -2,6 +2,9 @@ import { Theme } from '@mui/material';
 
 export type ServerError = {
   message?: string;
+  statusCode?: string;
+  errors?: { message: string; property?: string }[];
+  _metadata?: Record<string, unknown>;
   [key: string]: unknown;
 };
 

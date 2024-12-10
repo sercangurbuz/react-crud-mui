@@ -10,6 +10,10 @@ export {
   type DetailPageProps,
 } from './components/detail-page/pages/DetailPage';
 export {
+  default as DetailPageSteps,
+  type DetailPageStepsProps,
+} from './components/detail-page/components/DetailPageSteps';
+export {
   default as DetailPageModal,
   type DetailPageModalProps,
 } from './components/detail-page/pages/DetailPageModal';
@@ -72,6 +76,10 @@ export {
 } from './components/number-input/NumberInput';
 export { default as MoreButton, type MoreButtonProps } from './components/more-button/MoreButton';
 export { default as Page, type PageProps } from './components/page/Page';
+export {
+  default as DefaultTabs,
+  type DefaultTabsProps,
+} from './components/page/components/DefaultTabs';
 export { default as usePage } from './components/page/hooks/usePage';
 export { default as PhoneInput, type PhoneInputProps } from './components/phone-input/PhoneInput';
 export { default as Scrollbar, type ScrollbarProps } from './components/scrollbar/Scrollbar';

@@ -118,7 +118,8 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
       <LoadingButton
         key="next"
         onClick={onNextClick}
-        color="primary"
+        variant="outlined"
+        color="secondary"
         loading={loading}
         disabled={isNextButtonDisabled}
         endIcon={<ArrowRight />}
@@ -130,12 +131,6 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
   };
 
   const renderFinish = () => {
-    const visible = showFinishButton && steps.length === activeStepIndex + 1;
-
-    if (!visible) {
-      return null;
-    }
-
     return (
       <LoadingButton
         key="finish"
@@ -159,7 +154,7 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
       <FlexBetween width="100%">
         <Box>{prevContent}</Box>
         <Box>
-          {finishContent}
+          {showFinishButton && steps.length === activeStepIndex + 1 ? finishContent : null}
           {nextContent}
         </Box>
       </FlexBetween>

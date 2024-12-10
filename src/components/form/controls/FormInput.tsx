@@ -1,11 +1,11 @@
 import { FieldValues } from 'react-hook-form';
 
-import { TextField, TextFieldProps } from '@mui/material';
-
+import Input from '../../input';
+import { InputProps } from '../../input/Input';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormInputProps<TFieldValues extends FieldValues = FieldValues>
-  extends Omit<TextFieldProps<'standard'>, 'name'>,
+  extends Omit<InputProps, 'name'>,
     ControlCommonProps<TFieldValues> {}
 
 function FormInput<TFieldValues extends FieldValues = FieldValues>({
@@ -18,7 +18,7 @@ function FormInput<TFieldValues extends FieldValues = FieldValues>({
     <Field
       name={name}
       render={(field, { invalid, error }) => (
-        <TextField
+        <Input
           sx={{
             width: '100%',
           }}

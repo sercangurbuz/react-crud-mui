@@ -5,7 +5,7 @@ interface UseScrollOptions {
   scrollOptions?: object;
 }
 
-function useScroll({ scrollOptions }: UseScrollOptions) {
+function useScroll(scrollOptions?: UseScrollOptions) {
   const scrollTo = useCallback(
     (elem: string) => {
       scroller.scrollTo(elem, {
@@ -15,7 +15,8 @@ function useScroll({ scrollOptions }: UseScrollOptions) {
         ...scrollOptions,
       });
     },
-    [scrollOptions]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
   return scrollTo;
