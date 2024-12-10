@@ -17,9 +17,6 @@ function FilterContent({ useHook }: { useHook?: boolean }) {
             <Field.Input name="username" label="User name" />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.PhoneInput name="phone" label="Phone" />
-          </Grid2>
-          <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.Input name="email" label="Email" />
           </Grid2>
         </Grid2>
