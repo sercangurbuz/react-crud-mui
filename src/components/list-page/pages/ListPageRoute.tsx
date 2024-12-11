@@ -6,6 +6,7 @@ import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useSegmentParams, {
   UseSegmentParamsOptions,
 } from '../../detail-page/hooks/useSegmentParams';
+import { updateQueryString } from '../../misc';
 import useURLSearchFilter from '../hooks/useURLSearchFilter';
 import ListPage, { ListPageProps } from './ListPage';
 import { ListPageMeta } from './ListPageFilter';
@@ -13,7 +14,7 @@ import { ListPageMeta } from './ListPageFilter';
 export interface ListPageRouteProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = TModel,
 > extends ListPageProps<TModel, TFilter, TDetailPageModel>,
     Omit<UseSegmentParamsOptions, 'paths'> {
   enableQueryStringFilter?: boolean;
@@ -25,7 +26,7 @@ export interface ListPageRouteProps<
 function ListPageRoute<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = TModel,
 >({
   defaultFilter,
   defaultMeta,
@@ -42,7 +43,7 @@ function ListPageRoute<
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const { newItemParamValue } = useSettings();
+  const { newItemParamValue, uniqueIdParamName } = useSettings();
   const navigate = useNavigate();
 
   /* -------------------------------------------------------------------------- */
@@ -101,8 +102,27 @@ function ListPageRoute<
     onNeedData?.(filter, meta);
   };
 
-  const handleNewItem = () => {
+  const handleNavigateCreate = () => {
     const pathname = `./${newItemParamValue}`;
+
+    navigate(
+      {
+        pathname,
+      },
+      { relative: 'path' },
+    );
+  };
+
+  const handleNavigate = (model: TModel, options: { copy?: boolean; disabled?: boolean } = {}) => {
+    let pathname = `./${model[uniqueIdParamName]}`;
+
+    if (options?.copy) {
+      pathname = updateQueryString(pathname, { copy: '' });
+    }
+
+    if (options?.disabled) {
+      pathname = updateQueryString(pathname, { disabled: '' });
+    }
 
     navigate(
       {
@@ -114,7 +134,10 @@ function ListPageRoute<
 
   return (
     <ListPage
-      onCreateItem={handleNewItem}
+      onCreate={handleNavigateCreate}
+      onEdit={(model) => handleNavigate(model)}
+      onCopy={(model) => handleNavigate(model, { copy: true })}
+      onView={(model) => handleNavigate(model, { disabled: true })}
       activeSegmentIndex={segment}
       onWrapperLayout={(props) => (
         <>

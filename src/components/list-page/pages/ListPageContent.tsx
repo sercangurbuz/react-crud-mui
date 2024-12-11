@@ -1,9 +1,10 @@
-import React, { ComponentType, ReactNode, useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useDetailPageModal from '../../detail-page/hooks/useDetailPageModal';
+import { NeedDataReason } from '../../detail-page/pages/DetailPageContent';
 import { DetailPageDrawerProps } from '../../detail-page/pages/DetailPageDrawer';
 import { DetailPageModalProps } from '../../detail-page/pages/DetailPageModal';
 import ValidationAlerts from '../../form/components/ValidationAlerts';
@@ -21,6 +22,10 @@ import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeade
 import ListPageShortCuts from '../components/ListPageShortCuts';
 import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isDetailPageComponentObject = (value: any): value is DetailPageComponentOptions =>
+  'create' in value || 'fetch' in value || 'copy' in value;
+
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
@@ -33,12 +38,23 @@ export type ListPageWrapperLayoutProps = {
   detailPageContent: ReactNode;
 };
 
+export type DetailPageComponentType<TDetailPageModel extends FieldValues = FieldValues> =
+  React.ComponentType<
+    DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel>
+  >;
+export type DetailPageComponentOptions<TDetailPageModel extends FieldValues = FieldValues> =
+  Partial<Record<NeedDataReason, DetailPageComponentType<TDetailPageModel>>>;
+
+export type DetailPageComponent<TDetailPageModel extends FieldValues = FieldValues> =
+  | DetailPageComponentOptions<TDetailPageModel>
+  | DetailPageComponentType<TDetailPageModel>;
+
 export interface ListPageContentProps<
   TModel extends FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = TModel,
 > extends Omit<
       PageProps,
-      'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange'
+      'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange' | 'onCopy'
     >,
     Pick<ListPageCommandsProps, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
   /**
@@ -128,7 +144,19 @@ export interface ListPageContentProps<
   /**
    * New item event fired when new item button pressed
    */
-  onCreateItem?: () => void;
+  onCreate?: () => void;
+  /**
+   * Edit event fired when edit action of the row clicked
+   */
+  onEdit?: (model: TModel) => void;
+  /**
+   * Copy event fired when copy action of the row clicked
+   */
+  onCopy?: (model: TModel) => void;
+  /**
+   * View event fired when view action of the row clicked
+   */
+  onView?: (model: TModel) => void;
   /**
    * Custom header function
    */
@@ -141,9 +169,7 @@ export interface ListPageContentProps<
   /**
    * Embedded detail page component
    */
-  detailPage?: ComponentType<
-    DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel>
-  >;
+  detailPage?: DetailPageComponent<TDetailPageModel>;
   /**
    * Render action commands used with detailPage on every row
    */
@@ -160,7 +186,7 @@ export interface ListPageContentProps<
 
 function ListPageContent<
   TModel extends FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = TModel,
 >({
   activeSegmentIndex,
   actionCommandsProps,
@@ -170,7 +196,7 @@ function ListPageContent<
   createCommandLabel,
   data,
   dataCount,
-  detailPage: EmbededDetailPageComponent,
+  detailPage,
   disabled,
   disableShortCuts,
   enableActionCommands = true,
@@ -186,13 +212,16 @@ function ListPageContent<
   onClear,
   onClose,
   onCommands,
-  onCreateItem,
+  onCopy,
+  onCreate,
   onDelete,
+  onEdit,
   onExcelExport,
   onExtraCommands,
   onHeader,
   onSearch,
   onTabChanged,
+  onView,
   tableProps,
   onWrapperLayout,
   showHeader = true,
@@ -210,6 +239,15 @@ function ListPageContent<
     models: data,
     uniqueIdParamName,
   });
+
+  const [CreateDetailPage, EditDetailPage, CopyDetailPage] = useMemo(() => {
+    if (isDetailPageComponentObject(detailPage)) {
+      return [detailPage['create'], detailPage['fetch'], detailPage['copy']] as Array<
+        DetailPageComponentType<TDetailPageModel>
+      >;
+    }
+    return [detailPage, detailPage, detailPage] as Array<DetailPageComponentType<TDetailPageModel>>;
+  }, [detailPage]);
 
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
@@ -282,7 +320,7 @@ function ListPageContent<
     return (
       <ListPageShortCuts
         onSearch={onSearch}
-        onCreateItem={onCreateItem}
+        onCreateItem={CreateDetailPage ? onOpen : onCreate}
         onClear={onClear}
         scopes={hotkeyScopes}
         onExport={onExcelExport}
@@ -316,7 +354,7 @@ function ListPageContent<
     const commandProps: ListPageCommandsProps = {
       onExcelExport,
       onSearch,
-      onCreateItem: enableActionCommands && EmbededDetailPageComponent ? onOpen : onCreateItem,
+      onCreateItem: CreateDetailPage ? onOpen : onCreate,
       onClear,
       onCommands,
       onExtraCommands,
@@ -372,41 +410,48 @@ function ListPageContent<
   const renderTable = () => {
     const props: Partial<TableProps<TModel>> = {
       ...tableProps,
-      columns:
-        enableActionCommands && EmbededDetailPageComponent
-          ? [
-              ...columns,
-              {
-                accessorKey: 'commands',
-                align: 'center',
-                header: () => null,
-                enableSorting: false,
-                cell(cell) {
-                  const data = cell.row.original as unknown as TDetailPageModel;
-                  return (
-                    <ActionCommands
-                      onDelete={() => onDelete?.(cell.row.original)}
-                      onView={() =>
-                        onOpen({
-                          data,
-                          disabled: true,
-                        })
-                      }
-                      onEdit={() => onOpen({ data, disabled })}
-                      onCopy={() =>
-                        onOpen({
-                          data,
-                          disabled,
-                          reason: 'copy',
-                        })
-                      }
-                      {...actionCommandsProps}
-                    />
-                  );
-                },
+      columns: enableActionCommands
+        ? [
+            ...columns,
+            {
+              accessorKey: 'commands',
+              align: 'center',
+              header: () => null,
+              enableSorting: false,
+              cell(cell) {
+                const data = cell.row.original;
+                return (
+                  <ActionCommands
+                    onDelete={() => onDelete?.(cell.row.original)}
+                    onView={() =>
+                      EditDetailPage
+                        ? onOpen({
+                            data: data as unknown as TDetailPageModel,
+                            disabled: true,
+                          })
+                        : onView?.(data)
+                    }
+                    onEdit={() =>
+                      EditDetailPage
+                        ? onOpen({ data: data as unknown as TDetailPageModel, disabled })
+                        : onEdit?.(data)
+                    }
+                    onCopy={() =>
+                      CopyDetailPage
+                        ? onOpen({
+                            data: data as unknown as TDetailPageModel,
+                            disabled,
+                            reason: 'copy',
+                          })
+                        : onCopy?.(data)
+                    }
+                    {...actionCommandsProps}
+                  />
+                );
               },
-            ]
-          : columns,
+            },
+          ]
+        : columns,
       rowCount: dataCount || data?.length || 0,
       data,
       loading,
@@ -436,7 +481,15 @@ function ListPageContent<
    * Render DetailPage opened from new item button
    */
   const renderDetailPage = () => {
-    if (!EmbededDetailPageComponent || !dpProps?.open) {
+    if (!dpProps?.open) {
+      return null;
+    }
+
+    const reason = dpProps?.reason;
+    const EmbededDetailPageComponent =
+      reason === 'create' ? CreateDetailPage : reason === 'fetch' ? EditDetailPage : CopyDetailPage;
+
+    if (!EmbededDetailPageComponent) {
       return null;
     }
 
@@ -448,10 +501,10 @@ function ListPageContent<
         enableDiscardChanges: false,
         header: isDisabled
           ? t('browse')
-          : dpProps?.reason === 'fetch'
+          : reason === 'fetch'
             ? t('edit')
             : (createCommandLabel ?? t('newitem')),
-        helperText: dpProps?.reason === 'copy' ? t('tags.copy') : null,
+        helperText: reason === 'copy' ? t('tags.copy') : null,
         createCommandLabel,
         ...dpProps,
       };

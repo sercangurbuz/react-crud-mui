@@ -31,7 +31,7 @@ export type SearchReason =
 export interface ListPageFilterProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = TModel,
 > extends Omit<
     ListPageContentProps<TModel, TDetailPageModel>,
     'onSearch' | 'onExcelExport' | 'tableProps' | 'onTabChanged'
@@ -72,7 +72,7 @@ export interface ListPageFilterProps<
 function ListPageFilter<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
+  TDetailPageModel extends FieldValues = TModel,
 >({
   form,
   meta,

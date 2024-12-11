@@ -266,6 +266,20 @@ export const WithDetailPage: ListPageStory = {
   },
 };
 
+export const WithDetailPagesByReason: ListPageStory = {
+  args: {
+    enableCreateItem: true,
+    detailPage: {
+      create: EmbededDetailPage,
+      fetch: EmbededDrawerDetailPage,
+    },
+    onCopy() {
+      alert('Fallback event for copy reason');
+    },
+    createCommandLabel: 'New User',
+  },
+};
+
 export const WithDetailPageDrawer: ListPageStory = {
   name: 'With DetailPage (Drawer)',
   args: {
@@ -427,6 +441,28 @@ export const FilterFromQuerystring: ListPageRouteStory = {
       <MemoryRouter initialEntries={['/customers']}>
         <Routes>
           <Route path="customers" element={<ListPageWithRoute {...args} />} />
+        </Routes>
+      </MemoryRouter>
+    );
+  },
+};
+
+export const WithRoutedDetailPage: ListPageStory = {
+  args: {
+    enableCreateItem: true,
+    detailPage: {
+      create: EmbededDetailPage,
+    },
+    createCommandLabel: 'New User',
+  },
+  render: (args) => {
+    return (
+      <MemoryRouter initialEntries={['/customers']}>
+        <Routes>
+          <Route path="customers">
+            <Route index element={<ListPageWithRoute {...args} />} />
+            <Route path=":id" element={<h1>Edit Detail Page</h1>} />
+          </Route>
         </Routes>
       </MemoryRouter>
     );
