@@ -90,3 +90,10 @@ export const WithTabs: PageStory = {
     ],
   },
 };
+
+export const TabsInSubRow: PageStory = {
+  args: {
+    ...WithTabs.args,
+    tabsPosition: 'in-subrow',
+  },
+};

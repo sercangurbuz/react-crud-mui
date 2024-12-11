@@ -26,6 +26,7 @@ export type CommandsPosition =
   | 'bottom-right'
   | 'bottom'
   | 'top';
+export type TabsPosition = 'in-center' | 'in-subrow';
 
 export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
   commandsContent?: ReactNode;
@@ -41,6 +42,7 @@ export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
   loading?: boolean;
   disableShortCuts?: boolean;
   tabs?: TabPane[];
+  tabsPosition?: TabsPosition;
   selectedTabIndex?: number;
   onTabChanged?: (selected: TabChangedPayload) => void;
   onTabs?: (props: DefaultTabsProps) => ReactNode;
@@ -81,6 +83,7 @@ function Page({
   tabs,
   onTabChanged,
   selectedTabIndex = 0,
+  tabsPosition = 'in-center',
   ...headerProps
 }: PageProps) {
   /* -------------------------------------------------------------------------- */
@@ -97,7 +100,7 @@ function Page({
       ? 'bottom'
       : 'top';
 
-  const renderTabs = () => {
+  const renderTabs = (tabProps?: Partial<DefaultTabsProps>) => {
     if (!tabs?.length) {
       return null;
     }
@@ -113,6 +116,7 @@ function Page({
         const selIndex = tabs.findIndex((item) => item.value === value);
         onTabChanged?.({ selectedTabIndex: selIndex, selectedTabValue: value });
       },
+      ...tabProps,
     };
 
     if (onTabs) {
@@ -169,7 +173,8 @@ function Page({
       },
       p: PagePadding[size],
       rightContent: commandsVertPos === 'top' ? renderCommands() : null,
-      centerContent: renderTabs(),
+      centerContent: tabsPosition === 'in-center' ? renderTabs() : null,
+      children: tabsPosition === 'in-subrow' ? renderTabs({ bordered: true, sx: { px: 2 } }) : null,
     };
 
     return onHeader ? onHeader(props) : <Header {...props} />;

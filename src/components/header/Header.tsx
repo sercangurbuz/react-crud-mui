@@ -15,6 +15,7 @@ export interface HeaderProps extends React.ComponentProps<typeof FlexBetween> {
   headerProps?: BoxProps;
   icon?: ReactNode;
   moreOptions?: MoreButtonProps['options'];
+  useIconWrapper?: boolean;
 }
 
 function Header({
@@ -25,27 +26,34 @@ function Header({
   rightContent,
   helperText,
   centerContent,
+  children,
+  useIconWrapper = true,
   ...flexProps
 }: HeaderProps) {
   return (
-    <FlexBetween flexWrap="wrap" p={3} gap={1} {...flexProps}>
-      <Box>
-        <FlexBox alignItems="center">
-          {icon ? <IconWrapper>{icon}</IconWrapper> : null}
-          <FlexBox flexDirection="column">
-            <Box fontSize={14} component={H6} {...headerProps}>
-              {header}
-            </Box>
-            <Small color="text.secondary">{helperText}</Small>
+    <>
+      <FlexBetween flexWrap="wrap" p={3} gap={1} {...flexProps}>
+        <Box>
+          <FlexBox alignItems="center">
+            {icon ? useIconWrapper ? <IconWrapper>{icon}</IconWrapper> : icon : null}
+            <FlexBox flexDirection="column">
+              {header ? (
+                <Box fontSize={14} component={H6} {...headerProps}>
+                  {header}
+                </Box>
+              ) : null}
+              {helperText ? <Small color="text.secondary">{helperText}</Small> : null}
+            </FlexBox>
           </FlexBox>
-        </FlexBox>
-      </Box>
-      {centerContent}
-      <Stack direction="row" alignItems="center" gap={2}>
-        {rightContent}
-        {moreOptions?.length ? <MoreButton options={moreOptions} /> : null}
-      </Stack>
-    </FlexBetween>
+        </Box>
+        {centerContent}
+        <Stack direction="row" alignItems="center" gap={2}>
+          {rightContent}
+          {moreOptions?.length ? <MoreButton options={moreOptions} /> : null}
+        </Stack>
+      </FlexBetween>
+      {children}
+    </>
   );
 }
 

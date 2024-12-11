@@ -51,7 +51,7 @@ export type DetailPageComponent<TDetailPageModel extends FieldValues = FieldValu
 
 export interface ListPageContentProps<
   TModel extends FieldValues,
-  TDetailPageModel extends FieldValues = TModel,
+  TDetailPageModel extends FieldValues = FieldValues,
 > extends Omit<
       PageProps,
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange' | 'onCopy'
@@ -186,7 +186,7 @@ export interface ListPageContentProps<
 
 function ListPageContent<
   TModel extends FieldValues,
-  TDetailPageModel extends FieldValues = TModel,
+  TDetailPageModel extends FieldValues = FieldValues,
 >({
   activeSegmentIndex,
   actionCommandsProps,

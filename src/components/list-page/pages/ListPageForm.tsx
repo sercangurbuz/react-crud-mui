@@ -18,7 +18,7 @@ import ListPageFilter, { ListPageFilterProps } from './ListPageFilter';
 export interface ListPageFormProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = TModel,
+  TDetailPageModel extends FieldValues = FieldValues,
 > extends Omit<ListPageFilterProps<TModel, TFilter, TDetailPageModel>, 'form'>,
     Partial<Pick<UseFormOptions<TFilter>, 'schema'>> {
   form?: UseFormReturn<TFilter>;
@@ -43,7 +43,7 @@ export interface ListPageFormProps<
 function ListPageForm<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = TModel,
+  TDetailPageModel extends FieldValues = FieldValues,
 >({
   schema,
   defaultValues,

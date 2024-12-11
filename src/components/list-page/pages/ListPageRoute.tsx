@@ -14,7 +14,7 @@ import { ListPageMeta } from './ListPageFilter';
 export interface ListPageRouteProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = TModel,
+  TDetailPageModel extends FieldValues = FieldValues,
 > extends ListPageProps<TModel, TFilter, TDetailPageModel>,
     Omit<UseSegmentParamsOptions, 'paths'> {
   enableQueryStringFilter?: boolean;
@@ -26,7 +26,7 @@ export interface ListPageRouteProps<
 function ListPageRoute<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = TModel,
+  TDetailPageModel extends FieldValues = FieldValues,
 >({
   defaultFilter,
   defaultMeta,
