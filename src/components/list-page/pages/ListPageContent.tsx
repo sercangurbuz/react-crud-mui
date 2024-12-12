@@ -241,6 +241,10 @@ function ListPageContent<
   });
 
   const [CreateDetailPage, EditDetailPage, CopyDetailPage] = useMemo(() => {
+    if (!detailPage) {
+      return [];
+    }
+
     if (isDetailPageComponentObject(detailPage)) {
       return [detailPage['create'], detailPage['fetch'], detailPage['copy']] as Array<
         DetailPageComponentType<TDetailPageModel>

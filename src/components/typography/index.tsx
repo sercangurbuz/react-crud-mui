@@ -3,7 +3,7 @@ import styled from '@mui/material/styles/styled';
 import clsx from 'clsx';
 
 // ==============================================================
-type Ellipsis = { ellipsis: number; component: string };
+type Ellipsis = { ellipsis: number };
 export interface Props extends BoxProps {
   ellipsis?: boolean;
 }

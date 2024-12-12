@@ -3,7 +3,6 @@ import { FieldValues } from 'react-hook-form';
 
 import useArrayFieldHelpers from '../../form/hooks/useArrayFieldHelpers';
 import { NeedDataReason } from '../pages/DetailPageContent';
-import { NavigatePayload } from '../pages/DetailPageData';
 import { DetailPageModalProps } from '../pages/DetailPageModal';
 
 export type SelectedModelOptions<TModel> = {
@@ -24,7 +23,6 @@ export type UseDetailPageModalReturn<TModel extends FieldValues> = Pick<
   HelperModelFields & {
     onOpen(model?: SelectedModelOptions<TModel>): void;
     onClose(): void;
-    onNavigate(paylaod: Pick<NavigatePayload<TModel>, 'direction'>): void;
   };
 
 export interface UseDetailPageModalProps {
@@ -43,7 +41,7 @@ function useDetailPageModal<TModel extends FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   const [dpProps, setProps] = useState<DetailPageModalProps<TModel> & HelperModelFields>();
-  const { getUID, findNext, findPrev, findIndex } = useArrayFieldHelpers({
+  const { getUID, findIndex } = useArrayFieldHelpers({
     models,
     uniqueIdParamName,
   });
@@ -105,26 +103,10 @@ function useDetailPageModal<TModel extends FieldValues>({
     }
   }, []);
 
-  const navigateModel = ({ direction }: Pick<NavigatePayload<TModel>, 'direction'>) => {
-    if (!dpProps?.uid) {
-      return;
-    }
-
-    const { uid } = dpProps;
-    const data = direction === 'next' ? findNext(uid) : findPrev(uid);
-
-    if (data) {
-      onOpen({
-        data: data as TModel,
-      });
-    }
-  };
-
   return [
     onOpen,
     {
       ...dpProps,
-      onNavigate: navigateModel,
       onReasonChange: setReason,
       onClose,
     },

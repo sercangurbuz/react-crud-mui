@@ -36,12 +36,6 @@ export interface DeletePayload<TModel = FieldValues> extends BasePayload {
   model: TModel;
   data?: TModel;
 }
-export interface NavigatePayload<TModel = FieldValues> extends BasePayload {
-  direction: NavigationDirection;
-  model: TModel;
-}
-
-export type NavigationDirection = 'next' | 'prev';
 
 /* --------------------------- DetailPageDataProps -------------------------- */
 
@@ -51,11 +45,6 @@ export interface DetailPageDataProps<TModel extends FieldValues>
     'onSave' | 'onDelete' | 'onDiscardChanges' | 'onCopy' | 'onSaveCreate' | 'onSaveClose'
   > {
   form: UseFormReturn<TModel>;
-  /**
-   * Navigation buttons event when navigation is active
-   * @returns if returns data,either in promise or object will bind to form data
-   */
-  onNavigate?: DataEvent<TModel, NavigatePayload<TModel>>;
   /**
    * Save event
    * @returns if returns data,either in promise or object will bind to form data

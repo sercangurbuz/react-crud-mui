@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, Ref } from 'react';
 
 import { TextField, TextFieldProps } from '@mui/material';
 import capitalize from 'lodash.capitalize';
@@ -7,9 +7,11 @@ export type CaseType = 'firstUpper' | 'upperCase' | 'lowerCase' | 'normal';
 
 export interface InputProps extends TextFieldProps<'standard'> {
   caseType?: CaseType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getRef?: Ref<any>;
 }
 
-function Input({ caseType, ...inputProps }: InputProps) {
+function Input({ caseType, getRef, ...inputProps }: InputProps) {
   const setCase = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = e.target.value;
     switch (caseType) {
@@ -30,6 +32,7 @@ function Input({ caseType, ...inputProps }: InputProps) {
   return (
     <TextField
       {...inputProps}
+      ref={getRef}
       onChange={(e) => {
         setCase(e);
         inputProps.onChange?.(e);
@@ -38,4 +41,6 @@ function Input({ caseType, ...inputProps }: InputProps) {
   );
 }
 
-export default Input;
+export default forwardRef<typeof Input, InputProps>((props, ref) => (
+  <Input {...props} getRef={ref} />
+));
