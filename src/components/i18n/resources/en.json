@@ -183,5 +183,7 @@
     "report.initiate": "Initiating report download...",
     "new_row": "Add new row",
     "phone_number": "Phone number",
-    "phone_number_val_message": "Please specify a valid phone number (include the international prefix)."
+    "phone_number_val_message": "Please specify a valid phone number (include the international prefix).",
+    "show_less": "Show less",
+    "show_more": "Show more"
 }

@@ -1,12 +1,12 @@
 import { Assignment, Done, Pending } from '@mui/icons-material';
-import { Button, Switch } from '@mui/material';
+import { Box, Button, LinearProgress, Switch } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 
-import { FlexBetween } from '../../components/flexbox';
+import { FlexBetween, FlexBox } from '../../components/flexbox';
 import Add from '../../components/icons/Add';
 import GroupSenior from '../../components/icons/GroupSenior';
 import Page from '../../components/page/Page';
-import { Paragraph, Small } from '../../components/typography';
+import { H5, Paragraph, Small, Tiny } from '../../components/typography';
 
 const meta: Meta<typeof Page> = {
   title: 'Components/Page',
@@ -55,6 +55,39 @@ export const Simple: PageStory = {};
 export const CommandsOnFooter: PageStory = {
   args: {
     commandsPosition: 'bottom-right',
+  },
+};
+
+export const WithMoreContent: PageStory = {
+  args: {
+    morePanelProps: {
+      extraContent: (
+        <Box minWidth={200} ml={1}>
+          <Tiny color="text.secondary" mb={0.5}>
+            Profil tamamlanma oranı
+          </Tiny>
+          <FlexBox alignItems="center">
+            <LinearProgress
+              value={60}
+              color="success"
+              variant="determinate"
+              sx={{ flexGrow: 1, mr: 1 }}
+            />
+            <Tiny fontWeight={600} color="text.secondary">
+              {`${60}%`}
+            </Tiny>
+          </FlexBox>
+        </Box>
+      ),
+    },
+    moreContent: (
+      <>
+        <Page.Divider />
+        <Page.Content>
+          <H5>This is more content</H5>
+        </Page.Content>
+      </>
+    ),
   },
 };
 

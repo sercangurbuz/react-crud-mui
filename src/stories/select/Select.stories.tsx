@@ -39,7 +39,7 @@ const meta: Meta<typeof Field.Select> = {
         </Page.Content>
         <Page.Divider />
         <Page.Content>
-          <Field.Watch name="userId" label="User ID" />
+          <Field.Watch name="userId" label="Selected User" showAsJson />
         </Page.Content>
       </DetailPage>
     );
@@ -59,6 +59,12 @@ export const Disabled: SelectStory = {
 export const WithDescription: SelectStory = {
   args: {
     descriptionTemplate: '${email}',
+  },
+};
+
+export const OptionAsValue: SelectStory = {
+  args: {
+    optionAsValue: true,
   },
 };
 

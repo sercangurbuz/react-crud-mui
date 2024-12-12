@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, Ref } from 'react';
+import { forwardRef, ReactNode, Ref, useMemo } from 'react';
 import { FieldValues, Path } from 'react-hook-form';
 
 import { ClearRounded } from '@mui/icons-material';
@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { get, groupBy } from 'lodash';
 
+import { DEFAULT_OPTION_TEMPLATE } from '../combobox/ComboBox';
 import useComboboxTemplate, { ComboboxTemplate } from '../combobox/hooks/useComboboxTemplate';
 import { FlexBox } from '../flexbox';
 import isNil from '../misc/isNil';
@@ -29,16 +30,17 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<MuiSelect
   valueField?: string;
   groupBy?: (model: T) => string;
   data?: T[];
-  optionTemplate: ComboboxTemplate<T>;
+  optionTemplate?: ComboboxTemplate<T>;
   displayTemplate?: ComboboxTemplate<T>;
   descriptionTemplate?: ComboboxTemplate<T>;
   optionImg?: Path<T>;
   optionImgProps?: AvatarProps;
   helperText?: ReactNode;
   selectRef?: Ref<unknown>;
+  optionAsValue?: boolean;
 };
 
-function Select<T extends FieldValues>({
+function Select<T extends FieldValues = FieldValues>({
   allowClear = true,
   children,
   data,
@@ -54,11 +56,13 @@ function Select<T extends FieldValues>({
   onChange,
   optionImg,
   optionImgProps,
-  optionTemplate,
+  optionTemplate = DEFAULT_OPTION_TEMPLATE,
+  optionAsValue,
   selectRef,
   sx,
   value,
   valueField = 'id',
+  multiple,
   ...rest
 }: SelectProps<T>) {
   /* -------------------------------------------------------------------------- */
@@ -70,6 +74,16 @@ function Select<T extends FieldValues>({
     displayTemplate,
     descriptionTemplate,
   });
+
+  const selectedValue = useMemo(() => {
+    if (optionAsValue) {
+      return multiple
+        ? (value as T[])?.map((item) => get(item, valueField))
+        : get(value as T, valueField);
+    }
+
+    return value;
+  }, [multiple, optionAsValue, value, valueField]);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
@@ -135,11 +149,11 @@ function Select<T extends FieldValues>({
     });
   };
 
-  const findModelByKey = (key: number) => {
-    return data?.find((item) => get(item, valueField) === key);
+  const findModelByKey = (key: number | string) => {
+    return data?.find((item) => get(item, valueField) === key) as T;
   };
 
-  const renderValue = (value: number) => {
+  const renderValue = (value: number | string) => {
     if (!value) {
       return;
     }
@@ -153,12 +167,31 @@ function Select<T extends FieldValues>({
         {...rest}
         notched={!!value}
         error={error}
+        multiple={multiple}
         ref={selectRef}
         labelId={`${id}-label`}
         id={`${id}-select`}
         label={label}
-        value={value}
-        onChange={onChange}
+        value={selectedValue}
+        onChange={(e, child) => {
+          if (optionAsValue) {
+            const selValue = e.target.value as string;
+
+            if (selValue) {
+              const selectedModel = Array.isArray(selValue)
+                ? selValue.map((record) => findModelByKey(record))
+                : findModelByKey(selValue);
+
+              onChange?.(
+                { target: { value: selectedModel } } as unknown as SelectChangeEvent,
+                child,
+              );
+              return;
+            }
+          }
+
+          onChange?.(e, child);
+        }}
         disabled={disabled}
         MenuProps={{
           PaperProps: { sx: { maxHeight: dropDownHeight } },

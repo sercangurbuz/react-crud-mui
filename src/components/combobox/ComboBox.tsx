@@ -58,7 +58,7 @@ export interface ComboBoxProps<T extends CreatableModel, Creatable extends boole
   selectRef?: Ref<unknown>;
 }
 
-const DEFAULT_OPTION_TEMPLATE = '${name}';
+export const DEFAULT_OPTION_TEMPLATE = '${name}';
 
 function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   autoFocus,

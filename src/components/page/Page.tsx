@@ -4,6 +4,7 @@ import { Box, BoxProps, LinearProgress, styled } from '@mui/material';
 
 import { FlexBox } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';
+import MorePanel, { MorePanelProps } from '../more-panel/MorePanel';
 import DefaultLayout, { PageLayoutProps } from './components/DefaultLayout';
 import DefaultTabs, {
   DefaultTabsProps,
@@ -37,6 +38,8 @@ export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
   showHeader?: boolean;
   footerContent?: ReactNode;
   alertsContent?: ReactNode;
+  moreContent?: ReactNode;
+  morePanelProps?: MorePanelProps;
   size?: PaddingSize;
   disabled?: boolean;
   loading?: boolean;
@@ -76,6 +79,8 @@ function Page({
   loading,
   onHeader,
   onLayout,
+  moreContent,
+  morePanelProps,
   showHeader = true,
   size = 'small',
   style,
@@ -204,6 +209,7 @@ function Page({
       footerContent: renderFooter(),
       progressContent: renderProgress(),
       alertsContent,
+      moreContent: moreContent ? <MorePanel {...morePanelProps}>{moreContent}</MorePanel> : null,
       options: {
         size,
         disabled,
