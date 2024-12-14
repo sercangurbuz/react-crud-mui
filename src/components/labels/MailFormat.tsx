@@ -16,7 +16,7 @@ function MailFormat({ value: email, showIcon = true, ...rest }: MailLabelProps) 
   return (
     <Box {...rest}>
       <FlexBox gap={0.8} alignItems="center">
-        {showIcon ? <Email sx={{ fontSize: '1.2em', color: 'text.disabled' }} /> : null}
+        {showIcon ? <Email sx={{ fontSize: '1.2em', color: 'currentColor' }} /> : null}
         <a style={{ color: 'inherit' }} href={`mailto:${email}`}>
           {email}
         </a>

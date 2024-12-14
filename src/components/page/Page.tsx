@@ -29,7 +29,7 @@ export type CommandsPosition =
   | 'top';
 export type TabsPosition = 'in-center' | 'in-subrow';
 
-export interface PageProps extends Omit<HeaderProps, 'rightContent'> {
+export interface PageProps extends HeaderProps {
   commandsContent?: ReactNode;
   commandsPosition?: CommandsPosition;
   onHeader?: (props: HeaderProps) => ReactNode;
@@ -89,6 +89,8 @@ function Page({
   onTabChanged,
   selectedTabIndex = 0,
   tabsPosition = 'in-center',
+  rightContent,
+  centerContent,
   ...headerProps
 }: PageProps) {
   /* -------------------------------------------------------------------------- */
@@ -177,8 +179,8 @@ function Page({
         fontWeight: 600,
       },
       p: PagePadding[size],
-      rightContent: commandsVertPos === 'top' ? renderCommands() : null,
-      centerContent: tabsPosition === 'in-center' ? renderTabs() : null,
+      rightContent: commandsVertPos === 'top' ? renderCommands() : rightContent,
+      centerContent: tabsPosition === 'in-center' ? renderTabs() : centerContent,
       children: tabsPosition === 'in-subrow' ? renderTabs({ bordered: true, sx: { px: 2 } }) : null,
     };
 

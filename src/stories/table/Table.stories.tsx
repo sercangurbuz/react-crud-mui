@@ -80,6 +80,12 @@ export const WithSkeleton: TableStory = {
   },
 };
 
+export const WithNoHeader: TableStory = {
+  args: {
+    showHeader: false,
+  },
+};
+
 export const Empty: TableStory = {
   args: {
     data: [],

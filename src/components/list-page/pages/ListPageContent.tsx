@@ -138,6 +138,10 @@ export interface ListPageContentProps<
    */
   dataCount?: number;
   /**
+   * Enable table pagination default true
+   */
+  enablePagination?: boolean;
+  /**
    * Custom list region component
    */
   list?: React.ComponentType<TableProps<TModel>>;
@@ -456,6 +460,7 @@ function ListPageContent<
             },
           ]
         : columns,
+      // this is for manual server pagination
       rowCount: dataCount || data?.length || 0,
       data,
       loading,

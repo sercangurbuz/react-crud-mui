@@ -56,6 +56,8 @@ import EmptyText, { EmptyTextProps } from './components/EmptyText';
 import { ExpandMore } from './components/ExpandButton';
 import { HeadTableCell } from './components/HeadTableCell';
 import { NewRowButton } from './components/NewRowButton';
+import TableMoreMenu from './components/TableMoreMenu';
+import TableMoreMenuItem from './components/TableMoreMenuItem';
 import { DEFAULT_ROW_KEY_FIELD, EXPANDER_COL_NAME, SELECTION_COL_NAME } from './constants';
 import { getPinningStyles } from './utils/getPinningStyle';
 
@@ -103,7 +105,7 @@ export interface TableProps<TData extends FieldValues>
   columns: TableColumn<TData>[];
   descriptionField?: Path<TData> | ((row: Row<TData>) => ReactNode);
   enableNestedComponent?: boolean | ((row: Row<TData>) => boolean | undefined);
-  enablePaging?: boolean;
+  enablePagination?: boolean;
   enableSkeleton?: boolean;
   enableRowClickSelect?: boolean;
   footerContent?: ReactNode | ((table: ReactTable<TData>) => ReactNode);
@@ -119,9 +121,11 @@ export interface TableProps<TData extends FieldValues>
   scrollProps?: Partial<ScrollbarProps>;
   skeletonRows?: number;
   showNewRowButton?: boolean;
+  showHeader?: boolean;
   paginationProps?: Partial<TablePaginationProps>;
   headerSx?: TableRowProps['sx'];
   rowSx?: TableRowProps['sx'];
+  newRowButtonContent?: ReactNode;
 }
 
 const DEFAULT_SKELETON_ROW_NUMBER = 10;
@@ -136,7 +140,7 @@ function Table<TData extends FieldValues>({
   data,
   descriptionField,
   emptyText,
-  enablePaging,
+  enablePagination,
   enableRowClickSelect,
   enableNestedComponent,
   enableSkeleton = true,
@@ -144,6 +148,7 @@ function Table<TData extends FieldValues>({
   headerSx,
   loading,
   newRowButtonText,
+  newRowButtonContent,
   onNewRow,
   onRenderNestedComponent,
   onRowClick,
@@ -154,6 +159,7 @@ function Table<TData extends FieldValues>({
   rowIdField = DEFAULT_ROW_KEY_FIELD as Path<TData>,
   rowSx,
   size = 'medium',
+  showHeader = true,
   stickyHeader = true,
   scrollProps,
   showEmptyImage,
@@ -569,6 +575,17 @@ function Table<TData extends FieldValues>({
       return null;
     }
 
+    const newRowContent = newRowButtonContent ?? (
+      <NewRowButton disableRipple onClick={onNewRow}>
+        <Stack flexDirection="row" alignItems="center" gap={0.5} p={0.4}>
+          <Add sx={{ color: 'text.secondary', fontSize: '18px' }} />
+          <Tiny color="text.secondary" fontWeight={600}>
+            {newRowButtonText ?? t('new_row')}
+          </Tiny>
+        </Stack>
+      </NewRowButton>
+    );
+
     const cols = table?.getVisibleFlatColumns();
     return (
       <TableRow key="new-row">
@@ -579,14 +596,7 @@ function Table<TData extends FieldValues>({
           }}
           colSpan={cols?.length}
         >
-          <NewRowButton disableRipple onClick={onNewRow}>
-            <Stack flexDirection="row" alignItems="center" gap={0.5} p={0.4}>
-              <Add sx={{ color: 'text.secondary', fontSize: '18px' }} />
-              <Tiny color="text.secondary" fontWeight={600}>
-                {newRowButtonText ?? t('new_row')}
-              </Tiny>
-            </Stack>
-          </NewRowButton>
+          {newRowContent}
         </TableCell>
       </TableRow>
     );
@@ -649,7 +659,7 @@ function Table<TData extends FieldValues>({
   };
 
   const renderPagination = () => {
-    if (!enablePaging) {
+    if (!enablePagination) {
       return null;
     }
 
@@ -746,7 +756,7 @@ function Table<TData extends FieldValues>({
             ...sx,
           }}
         >
-          {renderHeader()}
+          {showHeader ? renderHeader() : null}
           {renderBody()}
           {renderFooter()}
         </MuiTable>
@@ -756,5 +766,8 @@ function Table<TData extends FieldValues>({
     </>
   );
 }
+
+Table.MoreMenu = TableMoreMenu;
+Table.MoreMenuItem = TableMoreMenuItem;
 
 export default Table;

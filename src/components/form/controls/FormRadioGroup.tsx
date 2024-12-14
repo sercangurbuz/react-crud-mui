@@ -24,7 +24,8 @@ export interface FormRadioGroupProps<TFieldValues extends FieldValues = FieldVal
   extends Omit<MuiRadioGroupProps, 'name'>,
     ControlCommonProps<TFieldValues>,
     FormControlProps {
-  data: RadioGroupData[];
+  data?: RadioGroupData[];
+  disabled?: boolean;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -41,6 +42,7 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
   helperText,
   placement = 'bottom',
   fieldProps,
+  disabled,
   data,
   ...radioGroupProps
 }: FormRadioGroupProps<TFieldValues>) {
@@ -62,8 +64,14 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
             radioGroupProps?.onChange?.(e, value);
           }}
         >
-          {data.map(({ label, value }) => (
-            <StyledFormControlLabel value={value} key={value} control={<Radio />} label={label} />
+          {data?.map(({ label, value }) => (
+            <StyledFormControlLabel
+              value={value}
+              key={value}
+              control={<Radio />}
+              label={label}
+              disabled={disabled}
+            />
           ))}
         </RadioGroup>
       )}

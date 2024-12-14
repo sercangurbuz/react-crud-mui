@@ -79,6 +79,7 @@ function ListPageFilter<
   tableProps: extableProps,
   onChange,
   defaultSegmentIndex,
+  enablePagination = true,
   onClear,
   defaultMeta,
   searchOnLoad = true,
@@ -96,8 +97,10 @@ function ListPageFilter<
 
   const tableProps = {
     enableSorting: true,
-    enablePaging: true,
-    manualPagination: true,
+    enablePagination,
+    // default server base pagination is enabled
+    manualPagination: enablePagination,
+    // default server base sorting is enabled
     manualSorting: true,
     manualFiltering: true,
     // setters
@@ -105,10 +108,14 @@ function ListPageFilter<
       const columnFilters = updater instanceof Function ? updater(meta.columnFilters) : updater;
       void handleSearch({ columnFilters, reason: 'columnfilter' } as DeepPartial<ListPageMeta>);
     },
-    onPaginationChange: (updater) => {
-      const pagination = updater instanceof Function ? updater(meta.pagination) : updater;
-      void handleSearch({ pagination, reason: 'pagination' });
-    },
+    ...(enablePagination
+      ? {
+          onPaginationChange: (updater) => {
+            const pagination = updater instanceof Function ? updater(meta.pagination) : updater;
+            void handleSearch({ pagination, reason: 'pagination' });
+          },
+        }
+      : undefined),
     onSortingChange: (updater) => {
       const sorting = updater instanceof Function ? updater(meta.sorting) : updater;
       void handleSearch({ sorting, reason: 'sorting' });
@@ -116,7 +123,7 @@ function ListPageFilter<
     ...extableProps,
     // states
     state: {
-      pagination: meta?.pagination,
+      ...(enablePagination ? { pagination: meta?.pagination } : undefined),
       sorting: meta?.sorting,
       columnFilters: meta?.columnFilters,
       ...extableProps?.state,

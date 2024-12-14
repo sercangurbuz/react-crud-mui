@@ -3,9 +3,9 @@ import { forwardRef, Ref } from 'react';
 import { BoxProps } from '@mui/system/Box';
 import dayjs, { Dayjs } from 'dayjs';
 
+import useSettings from '../crud-mui-provider/hooks/useSettings';
 import { FlexBox } from '../flexbox';
 import Calendar from '../icons/sidebar/Calendar';
-import useSettings from '../crud-mui-provider/hooks/useSettings';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -82,7 +82,7 @@ function DateFormat(
 
   return (
     <FlexBox alignItems="center" title={tooltip} {...rest} ref={ref} gap={1}>
-      {showIcon && <Calendar sx={{ color: 'text.secondary' }} />} {formattedDate}
+      {showIcon && <Calendar sx={{ color: 'currentColor' }} />} {formattedDate}
     </FlexBox>
   );
 }

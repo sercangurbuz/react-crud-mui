@@ -39,7 +39,7 @@ function PhoneFormat({ value: phoneNumber, showIcon = true, ...rest }: PhoneLabe
   return (
     <Box {...rest} onClick={handleClick}>
       <FlexBox gap={0.5} alignItems="center">
-        {showIcon && <LocalPhone sx={{ fontSize: '1.2em', color: 'text.secondary' }} />}
+        {showIcon && <LocalPhone sx={{ fontSize: '1.2em', color: 'currentColor' }} />}
         <a style={{ color: 'inherit' }} href={`tel:${phoneNumber}`}>
           {formattedPhoneNumber}
         </a>

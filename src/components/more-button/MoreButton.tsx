@@ -15,6 +15,7 @@ export type MoreButtonItem = {
   children: ReactNode;
   key: Key;
   danger?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 };
 
 export interface MoreButtonProps extends IconButtonProps {
@@ -54,10 +55,13 @@ export default function MoreButton({
       >
         {renderOptions
           ? renderOptions(handleClose)
-          : options?.map(({ children, key, danger, icon }) => (
+          : options?.map(({ children, key, danger, icon, onClick }) => (
               <MenuItem
                 key={key}
-                onClick={handleClose}
+                onClick={(e) => {
+                  onClick?.(e);
+                  handleClose();
+                }}
                 sx={{
                   color: danger ? 'error.main' : null,
                   '& .MuiSvgIcon-root': {

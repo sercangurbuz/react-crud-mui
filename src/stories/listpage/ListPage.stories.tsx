@@ -134,6 +134,12 @@ export const WithNoFilter: ListPageStory = {
   },
 };
 
+export const NoPaging: ListPageStory = {
+  args: {
+    enablePagination: false,
+  },
+};
+
 export const WithTabbedFilter: ListPageStory = {
   args: {
     tabs: [
