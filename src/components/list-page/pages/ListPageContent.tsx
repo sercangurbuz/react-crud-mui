@@ -380,10 +380,12 @@ function ListPageContent<
 
     if (error) {
       if (error.errors) {
-        messages.push(...error.errors.map((item) => item.message));
+        messages.push(
+          ...error.errors.map((item) => `${item.message}.Error code : ${error.statusCode}`),
+        );
       } else {
         if (error.message) {
-          messages.push(error.message);
+          messages.push(`${error.message}.Error code : ${error.statusCode}`);
         }
       }
     }

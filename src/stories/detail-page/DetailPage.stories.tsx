@@ -150,7 +150,7 @@ export const WithErrorAsyncData: DetailPageStory = {
     const callError = useCallback((error: string) => {
       setTimeout(() => {
         setloading(false);
-        setError({ message: `${error} (external)` });
+        setError({ message: `${error} (external)`, statusCode: 5000 });
       }, 1500);
     }, []);
 
@@ -181,6 +181,7 @@ export const WithErrorAsyncData: DetailPageStory = {
           // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
           return Promise.reject({
             message: 'Failure message (internal)',
+            statusCode: 5001,
             errors: [{ message: 'Inner exception' }, { message: 'Inner exception 2' }],
           });
         }}

@@ -159,10 +159,12 @@ function DetailPageData<TModel extends FieldValues>({
     const addErrors = (err: ServerError) => {
       if (err) {
         if (err.errors) {
-          result.push(...err.errors.map((item) => item.message));
+          result.push(
+            ...err.errors.map((item) => `${item.message}.Error code : ${err.statusCode}`),
+          );
         } else {
           if (err.message) {
-            result.push(err.message);
+            result.push(`${err.message}.Error code : ${err.statusCode}`);
           }
         }
       }
