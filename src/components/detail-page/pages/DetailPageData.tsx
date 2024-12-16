@@ -163,9 +163,7 @@ function DetailPageData<TModel extends FieldValues>({
             ...err.errors.map((item) => `${item.message}.Error code : ${err.statusCode}`),
           );
         } else {
-          if (err.message) {
-            result.push(`${err.message}.Error code : ${err.statusCode}`);
-          }
+          result.push(`${err._error ?? err.message}.Error code : ${err.statusCode}`);
         }
       }
     };

@@ -384,9 +384,7 @@ function ListPageContent<
           ...error.errors.map((item) => `${item.message}.Error code : ${error.statusCode}`),
         );
       } else {
-        if (error.message) {
-          messages.push(`${error.message}.Error code : ${error.statusCode}`);
-        }
+        messages.push(`${error._error ?? error.message}.Error code : ${error.statusCode}`);
       }
     }
 
@@ -420,48 +418,49 @@ function ListPageContent<
   const renderTable = () => {
     const props: Partial<TableProps<TModel>> = {
       ...tableProps,
-      columns: enableActionCommands
-        ? [
-            ...columns,
-            {
-              accessorKey: 'commands',
-              align: 'center',
-              header: () => null,
-              enableSorting: false,
-              cell(cell) {
-                const data = cell.row.original;
-                return (
-                  <ActionCommands
-                    onDelete={() => onDelete?.(cell.row.original)}
-                    onView={() =>
-                      EditDetailPage
-                        ? onOpen({
-                            data: data as unknown as TDetailPageModel,
-                            disabled: true,
-                          })
-                        : onView?.(data)
-                    }
-                    onEdit={() =>
-                      EditDetailPage
-                        ? onOpen({ data: data as unknown as TDetailPageModel, disabled })
-                        : onEdit?.(data)
-                    }
-                    onCopy={() =>
-                      CopyDetailPage
-                        ? onOpen({
-                            data: data as unknown as TDetailPageModel,
-                            disabled,
-                            reason: 'copy',
-                          })
-                        : onCopy?.(data)
-                    }
-                    {...actionCommandsProps}
-                  />
-                );
+      columns:
+        enableActionCommands && EditDetailPage
+          ? [
+              ...columns,
+              {
+                accessorKey: 'commands',
+                align: 'center',
+                header: () => null,
+                enableSorting: false,
+                cell(cell) {
+                  const data = cell.row.original;
+                  return (
+                    <ActionCommands
+                      onDelete={() => onDelete?.(cell.row.original)}
+                      onView={() =>
+                        EditDetailPage
+                          ? onOpen({
+                              data: data as unknown as TDetailPageModel,
+                              disabled: true,
+                            })
+                          : onView?.(data)
+                      }
+                      onEdit={() =>
+                        EditDetailPage
+                          ? onOpen({ data: data as unknown as TDetailPageModel, disabled })
+                          : onEdit?.(data)
+                      }
+                      onCopy={() =>
+                        CopyDetailPage
+                          ? onOpen({
+                              data: data as unknown as TDetailPageModel,
+                              disabled,
+                              reason: 'copy',
+                            })
+                          : onCopy?.(data)
+                      }
+                      {...actionCommandsProps}
+                    />
+                  );
+                },
               },
-            },
-          ]
-        : columns,
+            ]
+          : columns,
       // this is for manual server pagination
       rowCount: dataCount || data?.length || 0,
       data,

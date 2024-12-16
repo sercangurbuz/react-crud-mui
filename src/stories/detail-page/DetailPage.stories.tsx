@@ -150,7 +150,7 @@ export const WithErrorAsyncData: DetailPageStory = {
     const callError = useCallback((error: string) => {
       setTimeout(() => {
         setloading(false);
-        setError({ message: `${error} (external)`, statusCode: 5000 });
+        setError({ message: `${error} (external)`, statusCode: '5000' });
       }, 1500);
     }, []);
 
