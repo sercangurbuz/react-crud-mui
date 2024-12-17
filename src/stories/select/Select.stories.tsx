@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { MenuItem, Stack } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 
@@ -65,6 +65,23 @@ export const WithDescription: SelectStory = {
 export const OptionAsValue: SelectStory = {
   args: {
     optionAsValue: true,
+  },
+};
+
+export const WithSmallerSize: SelectStory = {
+  args: {
+    size: 'smaller',
+  },
+};
+
+export const WithExtraItem: SelectStory = {
+  args: {
+    allowClear: false,
+    children: (
+      <MenuItem key="-1" value={-1}>
+        All users
+      </MenuItem>
+    ),
   },
 };
 

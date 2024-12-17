@@ -24,7 +24,11 @@ import { FlexBox } from '../flexbox';
 import isNil from '../misc/isNil';
 import { Tiny } from '../typography';
 
-export type SelectProps<T extends FieldValues = FieldValues> = Partial<MuiSelectProps> & {
+export type SelectSize = MuiSelectProps['size'] | 'smaller';
+
+export type SelectProps<T extends FieldValues = FieldValues> = Partial<
+  Omit<MuiSelectProps, 'size'>
+> & {
   dropDownHeight?: number;
   allowClear?: boolean;
   valueField?: string;
@@ -38,6 +42,7 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<MuiSelect
   helperText?: ReactNode;
   selectRef?: Ref<unknown>;
   optionAsValue?: boolean;
+  size?: SelectSize;
 };
 
 function Select<T extends FieldValues = FieldValues>({
@@ -63,6 +68,7 @@ function Select<T extends FieldValues = FieldValues>({
   value,
   valueField = 'id',
   multiple,
+  size = 'small',
   ...rest
 }: SelectProps<T>) {
   /* -------------------------------------------------------------------------- */
@@ -112,7 +118,11 @@ function Select<T extends FieldValues = FieldValues>({
       const imgNode = optionImg ? get(item, optionImg) : null;
 
       let optionNode = (
-        <Box width="100%" height="100%">
+        <Box
+          width="100%"
+          height="100%"
+          sx={{ fontSize: size === 'smaller' ? 'smaller' : undefined }}
+        >
           {textNode}
           {typeof descNode === 'string' ? <Tiny color="text.secondary">{descNode}</Tiny> : descNode}
         </Box>
@@ -208,7 +218,7 @@ function Select<T extends FieldValues = FieldValues>({
               onChange?.({ target: { value: null } } as unknown as SelectChangeEvent, null)
             }
           >
-            <ClearRounded sx={{ fontSize: rest.size === 'small' ? '0.8em' : '1em' }} />
+            <ClearRounded sx={{ fontSize: size === 'small' ? '0.8em' : '1em' }} />
           </IconButton>
         }
         sx={{
@@ -218,6 +228,9 @@ function Select<T extends FieldValues = FieldValues>({
           },
           '&:hover .MuiIconButton-root': {
             visibility: value ? 'visible' : 'hidden',
+          },
+          '& > .MuiSelect-select': {
+            padding: size === 'smaller' ? '8px 12px' : undefined,
           },
           ...sx,
         }}
@@ -233,7 +246,8 @@ function Select<T extends FieldValues = FieldValues>({
               : undefined
         }
       >
-        {children ?? (groupByFn ? renderGroupOptions(data) : renderOptions(data))}
+        {children}
+        {groupByFn ? renderGroupOptions(data) : renderOptions(data)}
       </MuiSelect>
     );
   };
