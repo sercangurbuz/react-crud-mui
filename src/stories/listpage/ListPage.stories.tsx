@@ -264,6 +264,7 @@ export const TemporaryFilter: ListPageStory = {
 export const WithDetailPage: ListPageStory = {
   args: {
     enableCreateItem: true,
+    enableActionCommands: true,
     detailPage: EmbededDetailPage,
     actionCommandsProps: {
       showCopy: false,
@@ -275,6 +276,7 @@ export const WithDetailPage: ListPageStory = {
 export const WithDetailPagesByReason: ListPageStory = {
   args: {
     enableCreateItem: true,
+    enableActionCommands: true,
     detailPage: {
       create: EmbededDetailPage,
       fetch: EmbededDrawerDetailPage,
@@ -290,6 +292,7 @@ export const WithDetailPageDrawer: ListPageStory = {
   name: 'With DetailPage (Drawer)',
   args: {
     enableCreateItem: true,
+    enableActionCommands: true,
     detailPage: EmbededDrawerDetailPage,
     actionCommandsProps: {
       showCopy: false,

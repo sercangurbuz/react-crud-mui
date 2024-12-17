@@ -15,6 +15,8 @@ function FormSwitch<TFieldValues extends FieldValues = FieldValues>({
   label,
   helperText,
   placement = 'right',
+  labelProps,
+  wrapperProps,
   fieldProps,
   ...switchProps
 }: FormSwitchProps<TFieldValues>) {
@@ -25,6 +27,8 @@ function FormSwitch<TFieldValues extends FieldValues = FieldValues>({
         label,
         helperText,
         placement,
+        labelProps,
+        wrapperProps,
       }}
       render={(field) => (
         <Switch

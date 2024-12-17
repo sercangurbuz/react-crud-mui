@@ -53,8 +53,29 @@ export const Disabled: SwitchStory = {
   },
 };
 
+export const FullWidth: SwitchStory = {
+  args: {
+    wrapperProps: {
+      justifyContent: 'space-between',
+    },
+  },
+};
+
 export const WithDescription: SwitchStory = {
   args: {
     helperText: 'Uncheck if user is disabled',
+  },
+};
+
+export const WithCustomStyle: SwitchStory = {
+  args: {
+    size: 'small',
+    label: ['Passive', 'Active'],
+    labelProps: {
+      sx: {
+        fontSize: 12,
+        color: 'text.secondary',
+      },
+    },
   },
 };

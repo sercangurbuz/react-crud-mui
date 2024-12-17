@@ -6,6 +6,7 @@ import { UseFormReturn } from '../../form/hooks/useForm';
 import { useRunAsync } from '../../hooks';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
+import normalizeServerError from '../../misc/normalizeError';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import { ServerError } from '../../utils';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
@@ -157,15 +158,7 @@ function DetailPageData<TModel extends FieldValues>({
     const result: Message[] = [];
 
     const addErrors = (err: ServerError) => {
-      if (err) {
-        if (err.errors) {
-          result.push(
-            ...err.errors.map((item) => `${item.message}.Error code : ${err.statusCode}`),
-          );
-        } else {
-          result.push(`${err._error ?? err.message}.Error code : ${err.statusCode}`);
-        }
-      }
+      result.push(...normalizeServerError(err));
     };
 
     if (alerts) {

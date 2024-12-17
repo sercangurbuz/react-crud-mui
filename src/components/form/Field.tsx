@@ -133,7 +133,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   return formControlProps?.label ? (
-    <FormControl {...formControlProps} {...fieldStates}>
+    <FormControl {...formControlProps} {...fieldStates} {...disabledProp}>
       {controlNode}
     </FormControl>
   ) : (

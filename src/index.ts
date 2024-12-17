@@ -26,6 +26,11 @@ export {
   type DetailPageRouteModalProps,
 } from './components/detail-page/pages/DetailPageRouteModal';
 export * from './components/detail-page/hooks';
+export type {
+  SaveMode,
+  SavePayload,
+  DeletePayload,
+} from './components/detail-page/pages/DetailPageData';
 export {
   default as EditableList,
   type EditableListProps,

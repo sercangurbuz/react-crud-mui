@@ -1,4 +1,4 @@
-import { Fragment, MouseEvent, PropsWithChildren } from 'react';
+import { Fragment, MouseEvent, PropsWithChildren, ReactNode } from 'react';
 
 // MUI ICON COMPONENT
 import MoreVert from '@mui/icons-material/MoreVert';
@@ -12,16 +12,17 @@ interface TableMoreMenuProps extends PropsWithChildren {
   handleClose: () => void;
   handleOpen: (event: MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  moreIcon?: ReactNode;
 }
 // ==============================================================
 
 export default function TableMoreMenu(props: TableMoreMenuProps) {
-  const { disabled, open, children, handleClose, handleOpen } = props;
+  const { moreIcon, disabled, open, children, handleClose, handleOpen } = props;
 
   return (
     <Fragment>
       <IconButton color="secondary" onClick={handleOpen} disabled={disabled}>
-        <MoreVert fontSize="small" />
+        {moreIcon ?? <MoreVert fontSize="small" />}
       </IconButton>
 
       <Menu

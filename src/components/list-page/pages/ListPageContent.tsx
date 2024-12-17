@@ -11,6 +11,7 @@ import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import SearchIcon from '../../icons/SearchIcon';
+import normalizeServerError from '../../misc/normalizeError';
 import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
@@ -203,7 +204,7 @@ function ListPageContent<
   detailPage,
   disabled,
   disableShortCuts,
-  enableActionCommands = true,
+  enableActionCommands,
   enableClear,
   enableCreateItem = true,
   enableExport,
@@ -379,13 +380,7 @@ function ListPageContent<
     const messages = alerts ?? [];
 
     if (error) {
-      if (error.errors) {
-        messages.push(
-          ...error.errors.map((item) => `${item.message}.Error code : ${error.statusCode}`),
-        );
-      } else {
-        messages.push(`${error._error ?? error.message}.Error code : ${error.statusCode}`);
-      }
+      messages.push(...normalizeServerError(error));
     }
 
     return (
@@ -418,49 +413,48 @@ function ListPageContent<
   const renderTable = () => {
     const props: Partial<TableProps<TModel>> = {
       ...tableProps,
-      columns:
-        enableActionCommands && EditDetailPage
-          ? [
-              ...columns,
-              {
-                accessorKey: 'commands',
-                align: 'center',
-                header: () => null,
-                enableSorting: false,
-                cell(cell) {
-                  const data = cell.row.original;
-                  return (
-                    <ActionCommands
-                      onDelete={() => onDelete?.(cell.row.original)}
-                      onView={() =>
-                        EditDetailPage
-                          ? onOpen({
-                              data: data as unknown as TDetailPageModel,
-                              disabled: true,
-                            })
-                          : onView?.(data)
-                      }
-                      onEdit={() =>
-                        EditDetailPage
-                          ? onOpen({ data: data as unknown as TDetailPageModel, disabled })
-                          : onEdit?.(data)
-                      }
-                      onCopy={() =>
-                        CopyDetailPage
-                          ? onOpen({
-                              data: data as unknown as TDetailPageModel,
-                              disabled,
-                              reason: 'copy',
-                            })
-                          : onCopy?.(data)
-                      }
-                      {...actionCommandsProps}
-                    />
-                  );
-                },
+      columns: enableActionCommands
+        ? [
+            ...columns,
+            {
+              accessorKey: 'commands',
+              align: 'center',
+              header: () => null,
+              enableSorting: false,
+              cell(cell) {
+                const data = cell.row.original;
+                return (
+                  <ActionCommands
+                    onDelete={() => onDelete?.(cell.row.original)}
+                    onView={() =>
+                      EditDetailPage
+                        ? onOpen({
+                            data: data as unknown as TDetailPageModel,
+                            disabled: true,
+                          })
+                        : onView?.(data)
+                    }
+                    onEdit={() =>
+                      EditDetailPage
+                        ? onOpen({ data: data as unknown as TDetailPageModel, disabled })
+                        : onEdit?.(data)
+                    }
+                    onCopy={() =>
+                      CopyDetailPage
+                        ? onOpen({
+                            data: data as unknown as TDetailPageModel,
+                            disabled,
+                            reason: 'copy',
+                          })
+                        : onCopy?.(data)
+                    }
+                    {...actionCommandsProps}
+                  />
+                );
               },
-            ]
-          : columns,
+            },
+          ]
+        : columns,
       // this is for manual server pagination
       rowCount: dataCount || data?.length || 0,
       data,
