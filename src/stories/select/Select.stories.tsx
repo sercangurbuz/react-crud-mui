@@ -24,14 +24,14 @@ const meta: Meta<typeof Field.Select> = {
       <DetailPage
         schema={z.object({ userId: z.number({ message: 'User is missing' }) })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ userId: 1 }}
+        defaultValues={{ userId: null }}
         showHeader={false}
       >
         <Page.Content>
           <Stack direction="row" spacing={3}>
             <Story />
             <Field.Button
-              onClick={(form) => form.setValue('userId', null, { shouldValidate: true })}
+              onClick={(form) => form.setValue('userId', 3, { shouldValidate: true })}
             >
               Reset
             </Field.Button>
@@ -65,6 +65,21 @@ export const WithDescription: SelectStory = {
 export const OptionAsValue: SelectStory = {
   args: {
     optionAsValue: true,
+  },
+};
+
+export const SelectFirstOption: SelectStory = {
+  args: {
+    selectFirstOption: true,
+    data: undefined,
+  },
+  loaders: [
+    async () => ({
+      users: await (await fetch('https://jsonplaceholder.typicode.com/users')).json(),
+    }),
+  ],
+  render(args, { loaded: { users } }) {
+    return <Field.Select {...args} data={users} />;
   },
 };
 

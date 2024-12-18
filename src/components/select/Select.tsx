@@ -21,6 +21,7 @@ import { get, groupBy } from 'lodash';
 import { DEFAULT_OPTION_TEMPLATE } from '../combobox/ComboBox';
 import useComboboxTemplate, { ComboboxTemplate } from '../combobox/hooks/useComboboxTemplate';
 import { FlexBox } from '../flexbox';
+import useFormInitEffect from '../form/hooks/useFormInitEffect';
 import isNil from '../misc/isNil';
 import { Tiny } from '../typography';
 
@@ -43,6 +44,7 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<
   selectRef?: Ref<unknown>;
   optionAsValue?: boolean;
   size?: SelectSize;
+  selectFirstOption?: boolean;
 };
 
 function Select<T extends FieldValues = FieldValues>({
@@ -63,6 +65,7 @@ function Select<T extends FieldValues = FieldValues>({
   optionImgProps,
   optionTemplate = DEFAULT_OPTION_TEMPLATE,
   optionAsValue,
+  selectFirstOption,
   selectRef,
   sx,
   value,
@@ -90,6 +93,15 @@ function Select<T extends FieldValues = FieldValues>({
 
     return value;
   }, [multiple, optionAsValue, value, valueField]);
+
+  useFormInitEffect(() => {
+    if (data?.length && !selectedValue && selectFirstOption) {
+      handleChange(
+        { target: { value: get(data[0], valueField) } } as SelectChangeEvent<unknown>,
+        null,
+      );
+    }
+  }, [data]);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
@@ -171,6 +183,23 @@ function Select<T extends FieldValues = FieldValues>({
     return model ? renderDisplay?.(model) : null;
   };
 
+  const handleChange = (e: SelectChangeEvent<unknown>, child: React.ReactNode) => {
+    if (optionAsValue) {
+      const selValue = e.target.value;
+
+      if (selValue) {
+        const selectedModel = Array.isArray(selValue)
+          ? selValue.map((record) => findModelByKey(record))
+          : findModelByKey(selValue as number);
+
+        onChange?.({ target: { value: selectedModel } } as unknown as SelectChangeEvent, child);
+        return;
+      }
+    }
+
+    onChange?.(e, child);
+  };
+
   const renderSelect = () => {
     return (
       <MuiSelect
@@ -183,25 +212,7 @@ function Select<T extends FieldValues = FieldValues>({
         id={`${id}-select`}
         label={label}
         value={selectedValue}
-        onChange={(e, child) => {
-          if (optionAsValue) {
-            const selValue = e.target.value as string;
-
-            if (selValue) {
-              const selectedModel = Array.isArray(selValue)
-                ? selValue.map((record) => findModelByKey(record))
-                : findModelByKey(selValue);
-
-              onChange?.(
-                { target: { value: selectedModel } } as unknown as SelectChangeEvent,
-                child,
-              );
-              return;
-            }
-          }
-
-          onChange?.(e, child);
-        }}
+        onChange={handleChange}
         disabled={disabled}
         MenuProps={{
           PaperProps: { sx: { maxHeight: dropDownHeight } },

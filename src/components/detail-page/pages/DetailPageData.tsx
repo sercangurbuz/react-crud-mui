@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { Control, FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
@@ -23,17 +23,20 @@ export interface DataEvent<TModel, TVariables> {
 
 export type SaveMode = 'save' | 'save-close' | 'save-create';
 
-export interface BasePayload {
+export interface BasePayload<TModel extends FieldValues = FieldValues> {
   reason: NeedDataReason;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: Control<TModel, any>;
 }
 
-export interface SavePayload<TModel = FieldValues> extends BasePayload {
+export interface SavePayload<TModel extends FieldValues = FieldValues> extends BasePayload<TModel> {
   model: TModel;
   data?: TModel;
   mode: SaveMode;
 }
 
-export interface DeletePayload<TModel = FieldValues> extends BasePayload {
+export interface DeletePayload<TModel extends FieldValues = FieldValues>
+  extends BasePayload<TModel> {
   model: TModel;
   data?: TModel;
 }
@@ -119,6 +122,7 @@ function DetailPageData<TModel extends FieldValues>({
     getFormModel,
     getValues,
     formState: { defaultValues },
+    control,
   } = form;
 
   // reset and revalidate form (if "onchange" in validationoptions is set)
@@ -190,6 +194,7 @@ function DetailPageData<TModel extends FieldValues>({
       model,
       data: prevDataRef.current,
       mode,
+      control,
     };
 
     let result = onSave?.(variables);
@@ -239,6 +244,7 @@ function DetailPageData<TModel extends FieldValues>({
       reason,
       data: prevDataRef.current,
       model,
+      control,
     };
 
     const result = onDelete?.(variables);

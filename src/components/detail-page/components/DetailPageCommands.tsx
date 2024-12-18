@@ -4,12 +4,12 @@ import { Close, Save, Undo } from '@mui/icons-material';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
 import { Button } from '@mui/material';
 
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
 import Delete from '../../icons/Delete';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
 import { CloseReason, CommandsPosition } from '../../page/Page';
-import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useDetailPageStates from '../hooks/useDetailPageStates';
 import { SaveMode } from '../pages/DetailPageData';
 
@@ -262,7 +262,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         startIcon={<Close />}
         onClick={() => onClose?.('close-button')}
         // eslint-disable-next-line react/no-children-prop
-        children={t('close')}
+        children={t('cancel')}
         {...commandsExtraProps['close']}
       />
     );
