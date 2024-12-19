@@ -119,10 +119,6 @@ export interface ListPageContentProps<
    */
   autoSearch?: boolean;
   /**
-   * Table row key
-   */
-  rowKey?: string;
-  /**
    * Disable all keyboard shortcuts,default all enabled
    */
   disableShortCuts?: boolean;
@@ -197,6 +193,7 @@ function ListPageContent<
   actionCommandsProps,
   alerts,
   autoSearch = true,
+  children,
   columns,
   createCommandLabel,
   data,
@@ -400,6 +397,7 @@ function ListPageContent<
 
     return (
       <>
+        {children}
         {filterContent}
         {tableContent}
         {autoSearchContent}

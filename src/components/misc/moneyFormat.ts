@@ -8,7 +8,7 @@ import {
 } from './getCurrencySymbolProps';
 
 type MoneyFormatOptions = {
-  currency: Currency;
+  currency?: Currency;
   decimalDigit?: number;
   thousandSeparator?: string;
   decimalSeparator?: string;
@@ -21,7 +21,7 @@ const moneyFormat = (
     decimalDigit = DEFAULT_DECIMAL_DIGIT,
     decimalSeparator = '.',
     thousandSeparator = ',',
-  }: MoneyFormatOptions,
+  }: MoneyFormatOptions = {},
 ) => {
   const decimalPart = Array.from({ length: decimalDigit }).reduce<string>((m) => (m += '0'), '');
   const numFormat = `0${thousandSeparator}0${decimalSeparator}${decimalPart}`;

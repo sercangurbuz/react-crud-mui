@@ -10,6 +10,7 @@ import { z } from 'zod';
 
 import { FlexBox } from '../../components/flexbox';
 import ListPage from '../../components/list-page/pages/ListPage';
+import { H1 } from '../../components/typography';
 import { ServerError } from '../../components/utils';
 import { UserDefaultValues } from '../utils/api';
 import { UserSchema } from '../utils/schema';
@@ -137,6 +138,12 @@ export const WithNoFilter: ListPageStory = {
 export const NoPaging: ListPageStory = {
   args: {
     enablePagination: false,
+  },
+};
+
+export const WithChildren: ListPageStory = {
+  args: {
+    children: <H1>this is children</H1>,
   },
 };
 

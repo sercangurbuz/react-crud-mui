@@ -8,6 +8,7 @@ import Field from '../../components/form/Field';
 import Page from '../../components/page/Page';
 import { Small, Tiny } from '../../components/typography';
 import mockData from '../../test-setup/mockUsers.json';
+import { UserSchema } from '../utils/schema';
 
 const meta: Meta<typeof Field.Select> = {
   title: 'Components/Select',
@@ -30,9 +31,7 @@ const meta: Meta<typeof Field.Select> = {
         <Page.Content>
           <Stack direction="row" spacing={3}>
             <Story />
-            <Field.Button
-              onClick={(form) => form.setValue('userId', 3, { shouldValidate: true })}
-            >
+            <Field.Button onClick={(form) => form.setValue('userId', 3, { shouldValidate: true })}>
               Reset
             </Field.Button>
           </Stack>
@@ -92,6 +91,9 @@ export const WithSmallerSize: SelectStory = {
 export const WithExtraItem: SelectStory = {
   args: {
     allowClear: false,
+    displayTemplate(model: UserSchema) {
+      return model.email;
+    },
     children: (
       <MenuItem key="-1" value={-1}>
         All users

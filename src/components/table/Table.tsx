@@ -177,10 +177,7 @@ function Table<TData extends FieldValues>({
   const bodyRef = useRef(null);
   const firstLoadRef = useRef<boolean>(true);
   const defaultData = useMemo(() => [], []);
-  const extractRowId = useCallback(
-    (row: TData) => String((row as FieldValues)[rowIdField]),
-    [rowIdField],
-  );
+  const extractRowId = useCallback((row: TData) => get(row, rowIdField), [rowIdField]);
   const theme = useTheme();
 
   /* -------------------------------------------------------------------------- */

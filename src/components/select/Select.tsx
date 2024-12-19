@@ -175,6 +175,14 @@ function Select<T extends FieldValues = FieldValues>({
     return data?.find((item) => get(item, valueField) === key) as T;
   };
 
+  const hasDataKey = (key: number | string) => {
+    if (!data) {
+      return false;
+    }
+    const found = findModelByKey(key);
+    return !!found;
+  };
+
   const renderValue = (value: number | string) => {
     if (!value) {
       return;
@@ -252,7 +260,7 @@ function Select<T extends FieldValues = FieldValues>({
         renderValue={
           isNil(value)
             ? () => null
-            : displayTemplate
+            : displayTemplate && hasDataKey(value as number)
               ? () => renderValue(value as number)
               : undefined
         }
