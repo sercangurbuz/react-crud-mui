@@ -76,6 +76,12 @@ export const WithDescription: ComboboxStory = {
   },
 };
 
+export const WithSmallerSize: ComboboxStory = {
+  args: {
+    size: 'smaller',
+  },
+};
+
 export const WithCustomDisplay: ComboboxStory = {
   args: {
     ...WithDescription.args,

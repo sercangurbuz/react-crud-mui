@@ -22,7 +22,7 @@ export interface ListPageFormProps<
 > extends Omit<ListPageFilterProps<TModel, TFilter, TDetailPageModel>, 'form'>,
     Partial<Pick<UseFormOptions<TFilter>, 'schema'>> {
   form?: UseFormReturn<TFilter>;
-  schema?: z.ZodType<Partial<TFilter>>;
+  schema?: z.ZodType<TFilter>;
   /**
    * External filter criteries
    */
@@ -64,7 +64,7 @@ function ListPageForm<
       keepDefaultValues: true,
       keepDirty: true,
     },
-    values: defaultFilter as unknown as TFilter,
+    values: defaultFilter as TFilter,
   });
 
   const formMethods = lpProps.form ?? form;

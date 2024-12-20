@@ -17,6 +17,7 @@ export const UserDefaultValues: DeepNullable<UserSchema> = {
   website: '',
   isActive: false,
   address: null,
+  position: null,
 };
 
 export const handleSaveUser = async ({ model, reason }: SavePayload<UserSchema>) => {

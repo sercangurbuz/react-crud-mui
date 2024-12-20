@@ -45,8 +45,10 @@ const filter = createFilterOptions();
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
+export type ComboboxSize = AutocompleteProps<FieldValues, false, false, false>['size'] | 'smaller';
+
 export interface ComboBoxProps<T extends CreatableModel, Creatable extends boolean = false>
-  extends Partial<AutocompleteProps<T, false, true, Creatable>>,
+  extends Partial<Omit<AutocompleteProps<T, false, true, Creatable>, 'size'>>,
     Pick<StandardTextFieldProps, 'autoFocus' | 'label' | 'error' | 'helperText'> {
   data?: T[];
   direction?: 'row' | 'column';
@@ -56,6 +58,7 @@ export interface ComboBoxProps<T extends CreatableModel, Creatable extends boole
   creatable?: Creatable;
   onCreate?: (text: string) => Promise<T>;
   selectRef?: Ref<unknown>;
+  size?: ComboboxSize;
 }
 
 export const DEFAULT_OPTION_TEMPLATE = '${name}';
@@ -75,6 +78,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   onCreate,
   optionTemplate = DEFAULT_OPTION_TEMPLATE,
   label,
+  size,
   renderOption: onRenderOption,
   selectRef,
   ...rest
@@ -215,7 +219,15 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
         error={error}
         helperText={helperText}
         sx={{
-          '.MuiInputBase-root': showNewItemTag ? { paddingRight: '10px !important' } : null,
+          '& > .MuiFormLabel-root': {
+            lineHeight: size === 'smaller' ? 1.2 : undefined,
+          },
+          '.MuiInputBase-root': {
+            fontSize: size === 'smaller' ? 'smaller' : undefined,
+            paddingTop: size === 'smaller' ? '6px !important' : undefined,
+            paddingBottom: size === 'smaller' ? '6px !important' : undefined,
+            paddingRight: showNewItemTag ? '10px !important' : null,
+          },
         }}
         slotProps={{
           input: {

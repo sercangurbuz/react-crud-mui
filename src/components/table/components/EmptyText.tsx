@@ -1,12 +1,11 @@
 import React, { PropsWithChildren } from 'react';
 
-import { BoxProps } from '@mui/material';
-
 import { FlexBox } from '../../flexbox';
+import { FlexBoxProps } from '../../flexbox/FlexBox';
 import { Small } from '../../typography';
 import DEFAULT_EMPTY_IMAGE from './general-no-results-found.svg';
 
-export interface EmptyTextProps extends BoxProps {
+export interface EmptyTextProps extends FlexBoxProps {
   emptyText: React.ReactNode;
   showEmptyImage?: boolean;
   emptyImageUrl?: string;
@@ -28,7 +27,7 @@ function EmptyText({
       flexDirection="column"
       alignItems="center"
       gap={2}
-      {...(boxProps as React.ComponentProps<typeof FlexBox>)}
+      {...boxProps}
     >
       {showEmptyImage && <img src={emptyImageUrl} width={150} height={150} alt="no record" />}
       <FlexBox alignItems="center" flexDirection="column" gap={1}>

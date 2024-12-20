@@ -52,6 +52,12 @@ type PageStory = StoryObj<typeof Page>;
 
 export const Simple: PageStory = {};
 
+export const RightContent: PageStory = {
+  args: {
+    rightContent: <Paragraph>This is right content</Paragraph>,
+  },
+};
+
 export const CommandsOnFooter: PageStory = {
   args: {
     commandsPosition: 'bottom-right',

@@ -277,7 +277,13 @@ function Select<T extends FieldValues = FieldValues>({
 
   const renderLabelWrapper = (content: ReactNode, errorMessage: ReactNode) => (
     <FormControl fullWidth error={!!error} size="small">
-      <InputLabel shrink={!!value} id={`${id}-label`}>
+      <InputLabel
+        shrink={!!value}
+        id={`${id}-label`}
+        sx={{
+          lineHeight: size === 'smaller' ? 1.4 : undefined,
+        }}
+      >
         {label}
       </InputLabel>
       {content}

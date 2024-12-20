@@ -1,9 +1,10 @@
-import React, { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 import { ControllerFieldState } from 'react-hook-form';
 
 import { Box, BoxProps, FormHelperText } from '@mui/material';
 
 import { FlexBox } from '../../flexbox';
+import { FlexBoxProps } from '../../flexbox/FlexBox';
 import { Paragraph, Small } from '../../typography';
 
 export interface FormControlProps {
@@ -11,7 +12,7 @@ export interface FormControlProps {
   helperText?: ReactNode;
   placement?: 'left' | 'right' | 'top' | 'bottom';
   labelProps?: BoxProps;
-  wrapperProps?: React.ComponentProps<typeof FlexBox>;
+  wrapperProps?: FlexBoxProps;
   disabled?: boolean;
 }
 

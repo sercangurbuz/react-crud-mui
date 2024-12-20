@@ -179,8 +179,18 @@ function Page({
         fontWeight: 600,
       },
       p: PagePadding[size],
-      rightContent: commandsVertPos === 'top' ? renderCommands() : rightContent,
-      centerContent: tabsPosition === 'in-center' ? renderTabs() : centerContent,
+      rightContent: (
+        <>
+          {commandsVertPos === 'top' ? renderCommands() : null}
+          {rightContent}
+        </>
+      ),
+      centerContent: (
+        <>
+          {tabsPosition === 'in-center' ? renderTabs() : null}
+          {centerContent}
+        </>
+      ),
       children: tabsPosition === 'in-subrow' ? renderTabs({ bordered: true, sx: { px: 2 } }) : null,
     };
 

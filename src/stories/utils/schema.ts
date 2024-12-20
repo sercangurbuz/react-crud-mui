@@ -21,6 +21,10 @@ export const userSchema = z.object({
       zipcode: z.string(),
     })
     .nullable(),
+  position: z.object({
+    id: z.number(),
+    title: z.string(),
+  }),
 });
 
 export type UserSchema = z.infer<typeof userSchema>;

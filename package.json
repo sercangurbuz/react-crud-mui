@@ -1,7 +1,7 @@
 {
   "name": "react-crud-mui",
   "private": false,
-  "version": "0.0.1-beta.29",
+  "version": "0.0.1-beta.30",
   "type": "module",
   "main": "./dist/coreui.js",
   "module": "./dist/coreui.js",

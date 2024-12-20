@@ -395,13 +395,11 @@ function Table<TData extends FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   const renderHeaderCell = (header: Header<TData, unknown>, isLeafHeader: boolean) => {
-    const cellNode = flexRender(header.column.columnDef.header, header.getContext());
-    const cellNodeWithIcon = header.column.icon ? (
-      <FlexRowAlign gap={1}>
-        {header.column.icon} {cellNode}
+    const cellNode = (
+      <FlexRowAlign gap={1} sx={{ textAlign: 'center' }}>
+        {header.column.icon}
+        {flexRender(header.column.columnDef.header, header.getContext())}
       </FlexRowAlign>
-    ) : (
-      cellNode
     );
 
     const pinningStyles = table.options.enableColumnPinning
@@ -419,6 +417,7 @@ function Table<TData extends FieldValues>({
         colSpan={header.colSpan}
         style={{ ...pinningStyles }}
         sx={{
+          textAlign: 'center',
           backgroundColor: isSortingActive
             ? alpha(theme.palette.primary.main, 0.1)
             : 'background.header',
@@ -441,10 +440,10 @@ function Table<TData extends FieldValues>({
               },
             }}
           >
-            {cellNodeWithIcon}
+            {cellNode}
           </TableSortLabel>
         ) : (
-          cellNodeWithIcon
+          cellNode
         )}
       </HeadTableCell>
     );

@@ -10,7 +10,7 @@ import { Small, Tiny } from '../../components/typography';
 import mockData from '../../test-setup/mockUsers.json';
 import { UserSchema } from '../utils/schema';
 
-const meta: Meta<typeof Field.Select> = {
+const meta: Meta<typeof Field.Select<UserSchema>> = {
   title: 'Components/Select',
   args: {
     data: mockData,
@@ -46,7 +46,7 @@ const meta: Meta<typeof Field.Select> = {
 };
 
 export default meta;
-type SelectStory = StoryObj<typeof Field.Select>;
+type SelectStory = StoryObj<typeof Field.Select<UserSchema>>;
 
 export const Simple: SelectStory = {};
 export const Disabled: SelectStory = {
@@ -120,7 +120,7 @@ export const Grouping: SelectStory = {
   args: {
     data: mockData.sort((a, b) => a.position.id - b.position.id),
     groupBy(option) {
-      return option?.position.title;
+      return option.position.title;
     },
   },
 };
