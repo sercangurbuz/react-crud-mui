@@ -12,7 +12,7 @@ import Calendar from '../icons/sidebar/Calendar';
 /* -------------------------------------------------------------------------- */
 
 export interface DateFormatProps extends BoxProps {
-  date?: Dayjs | Date;
+  date?: Dayjs | Date | string;
   /**
    * Enable time
    */
@@ -40,7 +40,7 @@ function DateFormat(
     date,
     enableTime = false,
     isMonthView = false,
-    showIcon = true,
+    showIcon = false,
     convertToLocal,
     ...rest
   }: DateFormatProps,

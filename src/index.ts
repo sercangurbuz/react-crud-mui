@@ -98,6 +98,7 @@ export {
   type CrudMuiProviderProps as SettingsProviderProps,
 } from './components/crud-mui-provider/CrudMuiProvider';
 export { default as Table } from './components/table/Table';
+export { default as EmptyText } from './components/table/components/EmptyText';
 export type { CellAlignment, TableProps, TableColumn } from './components/table/Table';
 export { default as Tag, type TagProps } from './components/tag/Tag';
 export * from './components/typography';

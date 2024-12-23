@@ -38,7 +38,7 @@ function Header({
             {icon ? useIconWrapper ? <IconWrapper>{icon}</IconWrapper> : icon : null}
             <FlexBox flexDirection="column">
               {header ? (
-                <Box fontSize={14} component={H6} {...headerProps}>
+                <Box fontSize={16} fontWeight={600} component={H6} {...headerProps}>
                   {header}
                 </Box>
               ) : null}

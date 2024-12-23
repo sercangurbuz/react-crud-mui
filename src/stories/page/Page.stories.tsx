@@ -64,6 +64,12 @@ export const CommandsOnFooter: PageStory = {
   },
 };
 
+export const NoCommands: PageStory = {
+  args: {
+    showCommands: false,
+  },
+};
+
 export const WithMoreContent: PageStory = {
   args: {
     morePanelProps: {

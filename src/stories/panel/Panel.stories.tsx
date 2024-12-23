@@ -8,8 +8,9 @@ import { FlexBetween } from '../../components/flexbox';
 import Add from '../../components/icons/Add';
 import Edit from '../../components/icons/Edit';
 import GroupSenior from '../../components/icons/GroupSenior';
+import Page from '../../components/page/Page';
 import Panel from '../../components/panel/Panel';
-import { Paragraph, Small } from '../../components/typography';
+import { H1, Paragraph, Small } from '../../components/typography';
 
 const meta: Meta<typeof Panel> = {
   title: 'Components/Panel',
@@ -72,6 +73,42 @@ export const WithMoreOptions: PanelStory = {
       { key: 'edit', children: 'Edit row', icon: <Edit fontSize="small" /> },
       { key: 'add', children: 'Add new row', icon: <Add fontSize="small" /> },
       { key: 'delete', children: 'Delete', icon: <Delete fontSize="small" />, danger: true },
+    ],
+  },
+};
+
+export const WithTabs: PanelStory = {
+  args: {
+    ...WithMoreOptions.args,
+    tabs: [
+      {
+        key: 'tab1',
+        value: 'debt-list',
+        title: (
+          <Paragraph ellipsis lineHeight={1} fontWeight={500} color="text.secondary">
+            Debt list
+          </Paragraph>
+        ),
+        children: (
+          <Page.Content>
+            <H1>Tab1 content</H1>
+          </Page.Content>
+        ),
+      },
+      {
+        key: 'tab2',
+        value: 'account-statement',
+        title: (
+          <Paragraph ellipsis lineHeight={1} fontWeight={500} color="text.secondary">
+            Account Statement
+          </Paragraph>
+        ),
+        children: (
+          <Page.Content>
+            <H1>Account Statement</H1>
+          </Page.Content>
+        ),
+      },
     ],
   },
 };

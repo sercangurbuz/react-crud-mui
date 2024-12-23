@@ -69,7 +69,7 @@ export const OptionAsValue: SelectStory = {
 
 export const SelectFirstOption: SelectStory = {
   args: {
-    selectFirstOption: true,
+    selectInitialOption: true,
     data: undefined,
   },
   loaders: [
@@ -79,6 +79,16 @@ export const SelectFirstOption: SelectStory = {
   ],
   render(args, { loaded: { users } }) {
     return <Field.Select {...args} data={users} />;
+  },
+};
+
+export const SelectInitialOption: SelectStory = {
+  ...SelectFirstOption,
+  args: {
+    selectInitialOption(model) {
+      return model.id === 3;
+    },
+    data: undefined,
   },
 };
 

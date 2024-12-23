@@ -8,7 +8,7 @@ import DetailPage, { DetailPageProps } from './DetailPage';
 
 export interface DetailPagePopoverProps<TModel extends FieldValues>
   extends DetailPageProps<TModel> {
-  popoverOptions?: PopoverProps;
+  popoverOptions?: Partial<PopoverProps>;
   onClose: () => void;
   anchorEl: HTMLElement | null;
 }
@@ -48,7 +48,6 @@ function DetailPagePopover<TModel extends FieldValues>({
       <DetailPage<TModel>
         onAfterSave={() => handleClose()}
         onAfterDelete={() => handleClose()}
-        showHeader={false}
         commandsPosition="bottom-right"
         onClose={() => handleClose()}
         {...rest}

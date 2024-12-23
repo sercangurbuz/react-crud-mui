@@ -44,7 +44,7 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<
   selectRef?: Ref<unknown>;
   optionAsValue?: boolean;
   size?: SelectSize;
-  selectFirstOption?: boolean;
+  selectInitialOption?: boolean | ((model: T) => boolean);
 };
 
 function Select<T extends FieldValues = FieldValues>({
@@ -65,7 +65,7 @@ function Select<T extends FieldValues = FieldValues>({
   optionImgProps,
   optionTemplate = DEFAULT_OPTION_TEMPLATE,
   optionAsValue,
-  selectFirstOption,
+  selectInitialOption,
   selectRef,
   sx,
   value,
@@ -95,11 +95,14 @@ function Select<T extends FieldValues = FieldValues>({
   }, [multiple, optionAsValue, value, valueField]);
 
   useFormInitEffect(() => {
-    if (data?.length && !selectedValue && selectFirstOption) {
-      handleChange(
-        { target: { value: get(data[0], valueField) } } as SelectChangeEvent<unknown>,
-        null,
-      );
+    if (data?.length && !selectedValue && selectInitialOption) {
+      const model =
+        typeof selectInitialOption === 'function' ? data.find(selectInitialOption) : data[0];
+      const initialValue = get(model, valueField);
+
+      if (initialValue) {
+        handleChange({ target: { value: initialValue } } as SelectChangeEvent<unknown>, null);
+      }
     }
   }, [data]);
 

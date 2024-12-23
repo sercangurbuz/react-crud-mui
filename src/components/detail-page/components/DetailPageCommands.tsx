@@ -164,9 +164,10 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   /* -------------------------------------------------------------------------- */
 
   const renderSave = (mode: SaveMode) => {
-    /*   const menus = Object.values(saveCommandMenus).filter(
-      ({ visible, key }) => visible && key !== mode,
-    ); */
+    if (!visible.save) {
+      return null;
+    }
+
     return (
       <LoadingButton
         {...(saveCommandMenus[mode] as unknown as LoadingButtonProps)}
@@ -191,19 +192,6 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         title={`${createCommandLabel ?? t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
         disabled={disabled.create}
         onClick={onCreate}
-        /* menu={
-          visible.copy
-            ? [
-                {
-                  key: 'copy-item',
-                  disabled: disabled.create,
-                  onClick: onCopy as MenuItemType['onClick'],
-                  icon: <CopyOutlined />,
-                  label: t('copyitem'),
-                },
-              ]
-            : undefined
-        } */
         // eslint-disable-next-line react/no-children-prop
         children={createCommandLabel ?? t('newitem')}
         {...commandsExtraProps['create']}

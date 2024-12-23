@@ -36,6 +36,7 @@ export interface PageProps extends HeaderProps {
   onLayout?: (props: PageLayoutProps) => ReactNode;
   onClose?: (reason?: CloseReason) => void;
   showHeader?: boolean;
+  showCommands?: boolean;
   footerContent?: ReactNode;
   alertsContent?: ReactNode;
   moreContent?: ReactNode;
@@ -82,6 +83,7 @@ function Page({
   moreContent,
   morePanelProps,
   showHeader = true,
+  showCommands = true,
   size = 'small',
   style,
   sx,
@@ -143,6 +145,10 @@ function Page({
   };
 
   const renderCommands = () => {
+    if (!showCommands) {
+      return null;
+    }
+
     let justifyContent: BoxProps['justifyContent'] = 'flex-end';
 
     switch (commandsPosition) {
@@ -174,10 +180,6 @@ function Page({
 
     const props: HeaderProps = {
       ...headerProps,
-      headerProps: {
-        fontSize: 16,
-        fontWeight: 600,
-      },
       p: PagePadding[size],
       rightContent: (
         <>
