@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -16,6 +17,7 @@ const columns: TableColumn<UserSchema>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
+    footer: () => 'this is footer content',
   },
   {
     accessorKey: 'username',
@@ -25,8 +27,9 @@ const columns: TableColumn<UserSchema>[] = [
     accessorKey: 'email',
     header: 'EMail',
     cell(props) {
-      return <a href={`mailto:${props.getValue()}`}>{props.renderValue() as string}</a>;
+      return <a href={`mailto:${props.getValue() as string}`}>{props.renderValue() as string}</a>;
     },
+    footer: () => 'this is footer content',
   },
   {
     id: 'address',
@@ -320,7 +323,7 @@ export const CustomRow: TableStory = {
 export const Footer: TableStory = {
   args: {
     size: 'small',
-    footerContent: 'This is footer content',
+    showFooter: true,
   },
 };
 

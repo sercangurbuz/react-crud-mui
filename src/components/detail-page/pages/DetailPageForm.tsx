@@ -11,7 +11,7 @@ import DetailPageData, { DetailPageDataProps } from './DetailPageData';
 export interface DetailPageFormProps<TModel extends FieldValues>
   extends Omit<DetailPageDataProps<TModel>, 'form' | 'defaultValues' | 'schema'> {
   form?: UseFormReturn<TModel>;
-  schema?: z.ZodType<Partial<TModel>>;
+  schema?: z.ZodType<TModel>;
   defaultValues?: DeepNullable<TModel>;
   /**
    * Optional validation options

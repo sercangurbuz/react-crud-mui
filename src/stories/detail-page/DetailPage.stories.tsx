@@ -341,7 +341,7 @@ export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
 };
 
 export const WithPopover: DetailPagePopoverStory = {
-  args: { schema: userSchema.pick({ name: true }) },
+  args: { schema: userSchema.pick({ name: true }) as any },
   render: (args) => {
     const [elem, setElem] = useState<HTMLElement | null>(null);
     return (

@@ -35,7 +35,6 @@ import {
   type Cell,
   type ColumnDef,
   type CoreColumn,
-  type Table as ReactTable,
   type Row,
   type RowData,
   type TableOptions,
@@ -108,7 +107,6 @@ export interface TableProps<TData extends FieldValues>
   enablePagination?: boolean;
   enableSkeleton?: boolean;
   enableRowClickSelect?: boolean;
-  footerContent?: ReactNode | ((table: ReactTable<TData>) => ReactNode);
   loading?: boolean;
   newRowButtonText?: string;
   onNewRow?: () => void;
@@ -122,6 +120,7 @@ export interface TableProps<TData extends FieldValues>
   skeletonRows?: number;
   showNewRowButton?: boolean;
   showHeader?: boolean;
+  showFooter?: boolean;
   paginationProps?: Partial<TablePaginationProps>;
   headerSx?: TableRowProps['sx'];
   rowSx?: TableRowProps['sx'];
@@ -144,7 +143,6 @@ function Table<TData extends FieldValues>({
   enableRowClickSelect,
   enableNestedComponent,
   enableSkeleton = true,
-  footerContent,
   headerSx,
   loading,
   newRowButtonText,
@@ -160,6 +158,7 @@ function Table<TData extends FieldValues>({
   rowSx,
   size = 'medium',
   showHeader = true,
+  showFooter,
   stickyHeader = true,
   scrollProps,
   showEmptyImage,
@@ -704,18 +703,23 @@ function Table<TData extends FieldValues>({
   };
 
   const renderFooter = () => {
-    if (!footerContent) {
+    if (!showFooter) {
       return null;
     }
-    const cols = table?.getVisibleFlatColumns();
-    const node = typeof footerContent === 'function' ? footerContent(table) : footerContent;
+
     return (
       <TableFooter>
-        <TableRow>
-          <BodyTableCell size={size} colSpan={cols?.length}>
-            {node}
-          </BodyTableCell>
-        </TableRow>
+        {table.getFooterGroups().map((footerGroup) => (
+          <TableRow key={footerGroup.id}>
+            {footerGroup.headers.map((header) => (
+              <BodyTableCell size={size} key={header.id} colSpan={header.colSpan}>
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(header.column.columnDef.footer, header.getContext())}
+              </BodyTableCell>
+            ))}
+          </TableRow>
+        ))}
       </TableFooter>
     );
   };

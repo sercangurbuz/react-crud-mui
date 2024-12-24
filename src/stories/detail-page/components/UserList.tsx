@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { alpha, useTheme } from '@mui/material';
 
@@ -35,7 +35,6 @@ function UserList() {
         size="small"
         columns={cols}
         data={data}
-        footerContent={<Link to="/new">New User</Link>}
         onRowProps={(row) =>
           `/${row.original.id}` === pathname
             ? { bgColor: alpha(theme.palette.primary.main, 0.1) }
