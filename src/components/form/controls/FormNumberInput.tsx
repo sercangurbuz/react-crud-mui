@@ -29,6 +29,10 @@ function FormNumberInput<TFieldValues extends FieldValues = FieldValues>({
             field.onChange(e);
             inputProps?.onChange?.(e);
           }}
+          onBlur={(e) => {
+            field.onBlur();
+            inputProps?.onBlur?.(e);
+          }}
         />
       )}
       disabled={disabled}

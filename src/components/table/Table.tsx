@@ -125,6 +125,7 @@ export interface TableProps<TData extends FieldValues>
   headerSx?: TableRowProps['sx'];
   rowSx?: TableRowProps['sx'];
   newRowButtonContent?: ReactNode;
+  alternateColor?: boolean;
 }
 
 const DEFAULT_SKELETON_ROW_NUMBER = 10;
@@ -133,6 +134,7 @@ function isStandartColumn(colId: string) {
 }
 
 function Table<TData extends FieldValues>({
+  alternateColor,
   autoFocus,
   bordered,
   columns,
@@ -620,7 +622,13 @@ function Table<TData extends FieldValues>({
               <BodyTableRow
                 bordered={!descriptionText}
                 indicatorColor={isSelected ? theme.palette.primary.main : undefined}
-                bgColor={isSelected ? theme.palette.action.selected : undefined}
+                bgColor={
+                  isSelected
+                    ? theme.palette.action.selected
+                    : alternateColor && row.index % 2
+                      ? theme.palette.action.hover
+                      : undefined
+                }
                 onClick={() => {
                   handleRowClick(row);
                 }}
@@ -710,7 +718,10 @@ function Table<TData extends FieldValues>({
     return (
       <TableFooter>
         {table.getFooterGroups().map((footerGroup) => (
-          <TableRow key={footerGroup.id}>
+          <TableRow
+            key={footerGroup.id}
+            sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.05) }}
+          >
             {footerGroup.headers.map((header) => (
               <BodyTableCell size={size} key={header.id} colSpan={header.colSpan}>
                 {header.isPlaceholder

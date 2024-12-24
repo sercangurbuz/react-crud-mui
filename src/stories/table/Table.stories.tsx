@@ -105,9 +105,16 @@ export const Creatable: TableStory = {
   },
 };
 
+export const AlternateColor: TableStory = {
+  args: {
+    alternateColor:true
+  },
+};
+
 export const Selection: TableStory = {
   args: {
     enableRowSelection: true,
+    alternateColor:true
   },
   render(args) {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
