@@ -50,6 +50,7 @@ function DetailPagePopover<TModel extends FieldValues>({
         onAfterDelete={() => handleClose()}
         commandsPosition="bottom-right"
         onClose={() => handleClose()}
+        bordered
         {...rest}
       >
         {children}

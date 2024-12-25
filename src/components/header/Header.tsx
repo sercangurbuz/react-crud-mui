@@ -19,14 +19,14 @@ export interface HeaderProps extends React.ComponentProps<typeof FlexBetween> {
 }
 
 function Header({
-  moreOptions,
-  header,
-  headerProps,
-  icon,
-  rightContent,
-  helperText,
   centerContent,
   children,
+  header,
+  headerProps,
+  helperText,
+  icon,
+  moreOptions,
+  rightContent,
   useIconWrapper = true,
   ...flexProps
 }: HeaderProps) {

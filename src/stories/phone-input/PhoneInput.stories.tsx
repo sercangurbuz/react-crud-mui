@@ -29,14 +29,14 @@ const meta: Meta<typeof Field.PhoneInput> = {
             <Box sx={{ flex: 1 / 2 }}>
               <Story />
             </Box>
-            <Field.Button onClick={(form) => form.setValue('phone', '', { shouldValidate: true })}>
+            <Field.Button onClick={(form) => form.setValue('phone', '+905332133393', { shouldValidate: true })}>
               Reset
             </Field.Button>
           </Stack>
         </Page.Content>
         <Page.Divider />
         <Page.Content>
-          <Field.Watch name="phone" label="Selected Value" />
+          <Field.Watch name="phone" label="Selected Value" />         
         </Page.Content>
       </DetailPage>
     );

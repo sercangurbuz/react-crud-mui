@@ -1,6 +1,6 @@
 import 'react-international-phone/style.css';
 
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import {
   CountryIso2,
   defaultCountries,
@@ -46,6 +46,10 @@ function PhoneInput({
 
   const { t } = useTranslation();
   const [shrink, setShrink] = useState(!!value);
+
+  useEffect(() => {
+    setShrink(!!value);
+  }, [value]);
 
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } = usePhoneInput({
     value,

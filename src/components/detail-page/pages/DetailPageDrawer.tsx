@@ -58,6 +58,7 @@ function DetailPageDrawer<TModel extends FieldValues>({
         enableCreate={false}
         enableClose={false}
         enableDelete={false}
+        bordered
         {...dpProps}
         onClose={handleCloseEvent}
       />

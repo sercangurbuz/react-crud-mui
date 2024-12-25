@@ -267,7 +267,12 @@ export const OpenInModal: DetailPageModalStory = {
     return (
       <>
         <Button onClick={() => setVisible(true)}>Toggle DetailPage Modal</Button>
-        <DetailPage.Modal {...args} open={visible} onClose={() => setVisible(false)} />
+        <DetailPage.Modal
+          {...args}
+          open={visible}
+          defaultSaveMode="save"
+          onClose={() => setVisible(false)}
+        />
       </>
     );
   },

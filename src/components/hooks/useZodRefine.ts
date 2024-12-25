@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { RefinementCtx, util, z, ZodIssueBase, ZodObject, ZodRawShape, ZodTypeAny } from 'zod';
 
+import nullable from '../misc/nullableSchema';
+
 export interface UseZodRefineOptions<T extends ZodRawShape> {
   schema: ZodObject<T>;
 }
@@ -86,22 +88,6 @@ function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>)
   );
 
   return [defaultSchema as ZodObject<T>, { addRefine, addSuperRefine }] as const;
-}
-
-function nullable<TSchema extends z.AnyZodObject>(schema: TSchema) {
-  const entries = Object.entries(schema.shape) as [keyof TSchema['shape'], z.ZodTypeAny][];
-
-  const newProps = entries.reduce(
-    (acc, [key, value]) => {
-      acc[key] = value.nullable();
-      return acc;
-    },
-    {} as {
-      [key in keyof TSchema['shape']]: z.ZodNullable<TSchema['shape'][key]>;
-    },
-  );
-
-  return z.object(newProps);
 }
 
 export default useZodRefine;

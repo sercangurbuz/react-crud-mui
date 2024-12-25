@@ -65,6 +65,7 @@ function DetailPageModal<TModel extends FieldValues>({
             />
           </>
         )}
+        bordered
         {...rest}
         onClose={handleCloseEvent}
       />

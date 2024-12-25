@@ -50,6 +50,7 @@ export interface PageProps extends HeaderProps {
   selectedTabIndex?: number;
   onTabChanged?: (selected: TabChangedPayload) => void;
   onTabs?: (props: DefaultTabsProps) => ReactNode;
+  bordered?: boolean;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -63,7 +64,7 @@ export const PagePadding: Record<PaddingSize, number> = { large: 4, normal: 3, s
 /* -------------------------------------------------------------------------- */
 
 const LoadingProgress = styled(LinearProgress)({
-  height: 1.5,
+  height: 1,
   borderRadius: 0,
   margin: 0,
   flexGrow: 0,
@@ -71,6 +72,7 @@ const LoadingProgress = styled(LinearProgress)({
 
 function Page({
   alertsContent,
+  bordered,
   children,
   commandsContent,
   commandsPosition = 'top-right',
@@ -211,7 +213,13 @@ function Page({
   };
 
   const renderProgress = () => {
-    return <LoadingProgress style={{ visibility: loading ? 'visible' : 'hidden' }} />;
+    return (
+      <LoadingProgress
+        style={{ visibility: loading || bordered ? 'visible' : 'hidden' }}
+        variant={loading ? 'indeterminate' : 'determinate'}
+        value={0}
+      />
+    );
   };
 
   const renderLayout = () => {

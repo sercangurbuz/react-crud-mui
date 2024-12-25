@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-import { Card, Divider, Stack, styled } from '@mui/material';
+import { Card, Stack, styled } from '@mui/material';
 
 import { FlexBetween } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';
@@ -13,7 +13,6 @@ export type PanelTab = {
   title: ReactNode;
 };
 export interface PanelProps extends HeaderProps {
-  bordered?: boolean;
   tabs?: PanelTab[];
 }
 
@@ -35,7 +34,7 @@ const BoxWrapper = styled('div', {
   ...(active && { backgroundColor: theme.palette.action.selected }),
 }));
 
-function Panel({ tabs, bordered = true, children, ...headerProps }: PanelProps) {
+function Panel({ tabs, children, ...headerProps }: PanelProps) {
   const [selectedItem, setSelectedItem] = useState(tabs ? tabs[0].value : '');
 
   const handleChange = (id: string) => () => setSelectedItem(id);
@@ -71,8 +70,6 @@ function Panel({ tabs, bordered = true, children, ...headerProps }: PanelProps) 
       ) : (
         <Header {...headerProps} />
       )}
-
-      {bordered && !tabs ? <Divider /> : null}
       {tabs ? renderTabContent() : children}
     </Card>
   );

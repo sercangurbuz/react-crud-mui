@@ -58,6 +58,12 @@ export const RightContent: PageStory = {
   },
 };
 
+export const Bordered: PageStory = {
+  args: {
+    bordered: true,
+  },
+};
+
 export const CommandsOnFooter: PageStory = {
   args: {
     commandsPosition: 'bottom-right',
