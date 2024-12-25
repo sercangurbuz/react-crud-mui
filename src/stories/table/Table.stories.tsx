@@ -76,6 +76,19 @@ export const Loading: TableStory = {
   },
 };
 
+export const HiddenColumns: TableStory = {
+  args: {
+    columns: [
+      {
+        id: 'name',
+        header: 'This is hidden column',
+        hidden: true,
+      },
+      ...columns.slice(1),
+    ],
+  },
+};
+
 export const WithSkeleton: TableStory = {
   args: {
     loading: true,
@@ -107,14 +120,14 @@ export const Creatable: TableStory = {
 
 export const AlternateColor: TableStory = {
   args: {
-    alternateColor:true
+    alternateColor: true,
   },
 };
 
 export const Selection: TableStory = {
   args: {
     enableRowSelection: true,
-    alternateColor:true
+    alternateColor: true,
   },
   render(args) {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});

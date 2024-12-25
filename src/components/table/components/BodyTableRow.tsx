@@ -46,6 +46,6 @@ export const BodyTableRow = styled(TableRow, {
     backgroundColor: alpha(theme.palette.primary.main, 0.1),
   },
   '&:focus:not(.description-row),&:focus+tr.description-row': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.3),
+    backgroundColor: alpha(theme.palette.primary.main, 0.2),
   },
 }));

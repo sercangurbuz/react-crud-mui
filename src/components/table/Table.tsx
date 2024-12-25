@@ -190,7 +190,7 @@ function Table<TData extends FieldValues>({
   const columnVisibility = useMemo<VisibilityState>(() => {
     const ids = columns
       .filter((col) => !isNil(col.hidden))
-      .reduce((result, col) => ({ [col.id!]: !!col.hidden, ...result }), {});
+      .reduce((result, col) => ({ [col.id!]: !col.hidden, ...result }), {});
     return ids;
   }, [columns]);
 
@@ -624,7 +624,7 @@ function Table<TData extends FieldValues>({
                 indicatorColor={isSelected ? theme.palette.primary.main : undefined}
                 bgColor={
                   isSelected
-                    ? theme.palette.action.selected
+                    ? `${alpha(theme.palette.primary.main, 0.3)} !important`
                     : alternateColor && row.index % 2
                       ? theme.palette.action.hover
                       : undefined
