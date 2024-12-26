@@ -26,7 +26,7 @@ function ValidationAlerts<TFieldValues extends FieldValues>() {
 
   /* ------------------------------ Render Helper ----------------------------- */
 
-  return <Alerts messages={errors} defaultType="warning" />;
+  return <Alerts messages={errors} defaultType="error" />;
 }
 
 export default ValidationAlerts;

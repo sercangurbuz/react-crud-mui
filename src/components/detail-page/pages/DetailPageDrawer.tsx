@@ -21,7 +21,7 @@ function DetailPageDrawer<TModel extends FieldValues>({
   drawerProps,
   open,
   onClose,
-  confirmDirtyChanges = true,
+  promptOptions,
   ...dpProps
 }: DetailPageDrawerProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -30,7 +30,7 @@ function DetailPageDrawer<TModel extends FieldValues>({
 
   // Confirm dirty change either leave or stay on form
   const { setFormDirtyChange, handleCloseEvent } = useFormConfirmDirtyChange({
-    enabled: confirmDirtyChanges,
+    ...promptOptions,
     onClose,
   });
   return (

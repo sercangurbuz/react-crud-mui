@@ -63,7 +63,6 @@ export const WithIcon: PanelStory = {
   args: {
     icon: <GroupSenior sx={{ color: 'primary.main' }} />,
     p: 3,
-    bordered: false,
   },
 };
 

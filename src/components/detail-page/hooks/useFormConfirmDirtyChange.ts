@@ -2,20 +2,20 @@ import { useCallback, useRef } from 'react';
 
 import useTranslation from '../../i18n/hooks/useTranslation';
 import { CloseReason } from '../../page/Page';
+import { UseFormPromptProps } from './useFormPrompt';
 
-interface UseFormConfirmDirtyChangeOptions {
-  /**
-   * Whether to leave modal without saving when form is dirty,default true
-   */
-  enabled?: boolean;
-
+interface UseFormConfirmDirtyChangeOptions extends UseFormPromptProps {
   onClose?: (reason?: CloseReason) => void;
 }
 
 /**
  *  Confirm dirty change either leave or stay on form
  */
-function useFormConfirmDirtyChange({ onClose, enabled }: UseFormConfirmDirtyChangeOptions) {
+function useFormConfirmDirtyChange({
+  promptMessage,
+  onClose,
+  confirmDirtyChanges = true,
+}: UseFormConfirmDirtyChangeOptions) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -28,8 +28,8 @@ function useFormConfirmDirtyChange({ onClose, enabled }: UseFormConfirmDirtyChan
   }, []);
 
   const handleCloseEvent = (reason?: CloseReason) => {
-    if (enabled && formDirtyRef.current && reason !== 'action') {
-      if (window.confirm(t('promptunsavedchanges'))) {
+    if (confirmDirtyChanges && formDirtyRef.current && reason !== 'action') {
+      if (window.confirm(promptMessage ?? t('promptunsavedchanges'))) {
         onClose?.(reason);
       }
       return;

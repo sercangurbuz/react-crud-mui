@@ -27,12 +27,14 @@ export interface UseFormPromptProps {
   confirmDirtyChanges?: boolean;
   ignoreSearchParams?: boolean;
   beforeUnload?: boolean;
+  promptMessage?: string;
 }
 
 function useFormPrompt({
   ignoreSearchParams,
   beforeUnload = true,
   confirmDirtyChanges = true,
+  promptMessage,
 }: UseFormPromptProps) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
@@ -40,7 +42,7 @@ function useFormPrompt({
   const { isDirty } = useFormState();
   const { t } = useTranslation();
 
-  const promptText = t('promptunsavedchanges');
+  const promptText = promptMessage ?? t('promptunsavedchanges');
   const when = isDirty && !!confirmDirtyChanges;
 
   const blocker = useBlocker(

@@ -4,6 +4,7 @@ import FormDirtyTracker from '../../form/components/FormDirtyTracker';
 import Modal, { ModalProps } from '../../modal/Modal';
 import Page from '../../page/Page';
 import useFormConfirmDirtyChange from '../hooks/useFormConfirmDirtyChange';
+import { UseFormPromptProps } from '../hooks/useFormPrompt';
 import DetailPage, { DetailPageProps } from './DetailPage';
 
 /* -------------------------------------------------------------------------- */
@@ -22,24 +23,24 @@ export interface DetailPageModalProps<TModel extends FieldValues> extends Detail
   /**
    * Whether to leave modal without saving when form is dirty,default true
    */
-  confirmDirtyChanges?: boolean;
+  promptOptions?: UseFormPromptProps;
 }
 
 function DetailPageModal<TModel extends FieldValues>({
   modalProps,
   onClose,
   open,
-  confirmDirtyChanges = true,
   enableClose = true,
+  promptOptions,
   ...rest
 }: DetailPageModalProps<TModel>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  // Confirm dirty change either leave or stay on form
+  // Confirm dirty changes either leave or stay on form
   const { setFormDirtyChange, handleCloseEvent } = useFormConfirmDirtyChange({
-    enabled: confirmDirtyChanges,
+    ...promptOptions,
     onClose,
   });
 
