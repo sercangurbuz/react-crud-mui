@@ -63,7 +63,7 @@ const meta: Meta<typeof DetailPage<UserSchema>> = {
 };
 
 export default meta;
-type DetailPageStory = StoryObj<typeof DetailPage>;
+type DetailPageStory = StoryObj<typeof DetailPage<UserSchema>>;
 type DetailPageModalStory = StoryObj<typeof DetailPage.Modal<UserSchema>>;
 type DetailPageRouteStory = StoryObj<typeof DetailPage.Route<UserSchema>>;
 type DetailPagePopoverStory = StoryObj<typeof DetailPage.Popover<UserSchema>>;
@@ -73,6 +73,21 @@ export const Simple: DetailPageStory = {};
 export const LoadingState: DetailPageStory = {
   args: {
     loading: true,
+  },
+};
+
+export const WithAsyncDefaultValues: DetailPageStory = {
+  args: {
+    defaultValues() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            ...UserDefaultValues,
+            name: 'Async resolved name',
+          });
+        }, 5000);
+      });
+    },
   },
 };
 

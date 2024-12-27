@@ -9,8 +9,8 @@ export type ServerError = {
   [key: string]: unknown;
 };
 
-export type DeepPartial<T> = {
-  [K in keyof T]: DeepPartial<T[K]> | null | undefined;
+export type DeepNullish<T> = {
+  [K in keyof T]: DeepNullish<T[K]> | null | undefined;
 };
 
 export type DeepNullable<T> = {

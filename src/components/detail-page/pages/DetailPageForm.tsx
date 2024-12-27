@@ -1,4 +1,4 @@
-import { DefaultValues, FieldValues } from 'react-hook-form';
+import { FieldValues, UseFormProps } from 'react-hook-form';
 
 import { z } from 'zod';
 
@@ -12,10 +12,7 @@ export interface DetailPageFormProps<TModel extends FieldValues>
   extends Omit<DetailPageDataProps<TModel>, 'form' | 'defaultValues' | 'schema'> {
   form?: UseFormReturn<TModel>;
   schema?: z.ZodType<TModel>;
-  defaultValues?: DeepNullable<TModel>;
-  /**
-   * Optional validation options
-   */
+  defaultValues?: DeepNullable<TModel> | (() => Promise<DeepNullable<TModel>>);
   validationOptions?: ValidationOptions<TModel>;
 }
 
@@ -34,7 +31,7 @@ function DetailPageForm<TModel extends FieldValues>({
     reValidateMode: 'onChange',
     mode: 'onChange',
     schema,
-    defaultValues: defaultValues as DefaultValues<TModel>,
+    defaultValues: defaultValues as UseFormProps<TModel>['defaultValues'],
   });
 
   const formMethods = dpProps.form ?? form;

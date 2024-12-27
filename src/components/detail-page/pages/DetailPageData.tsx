@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Control, FieldValues } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
@@ -17,26 +17,23 @@ import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './Det
 
 export type DataResult<TModel> = TModel | Promise<TModel | void | undefined> | undefined | void;
 
-export interface DataEvent<TModel, TVariables> {
-  (variables: TVariables): DataResult<TModel>;
+export interface DataEvent<TModel extends FieldValues, TVariables> {
+  (variables: TVariables, form: UseFormReturn<TModel>): DataResult<TModel>;
 }
 
 export type SaveMode = 'save' | 'save-close' | 'save-create';
 
-export interface BasePayload<TModel extends FieldValues = FieldValues> {
+export interface BasePayload {
   reason: NeedDataReason;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<TModel, any>;
 }
 
-export interface SavePayload<TModel extends FieldValues = FieldValues> extends BasePayload<TModel> {
+export interface SavePayload<TModel extends FieldValues = FieldValues> extends BasePayload {
   model: TModel;
   data?: TModel;
   mode: SaveMode;
 }
 
-export interface DeletePayload<TModel extends FieldValues = FieldValues>
-  extends BasePayload<TModel> {
+export interface DeletePayload<TModel extends FieldValues = FieldValues> extends BasePayload {
   model: TModel;
   data?: TModel;
 }
@@ -121,16 +118,14 @@ function DetailPageData<TModel extends FieldValues>({
     trigger,
     getFormModel,
     getValues,
-    formState: { defaultValues },
-    control,
+    formState: { defaultValues, isLoading: isDefaultValuesLoading },
   } = form;
 
-  // reset and revalidate form (if "onchange" in validationoptions is set)
+  // reset and trigger validation for every data changes
   const updateForm = useCallback(
     (data: TModel | undefined): void => {
       if (data) {
-        // reset and trigger validation for every data changes
-        reset(data);
+        reset(data, { keepDefaultValues: true });
       }
 
       void trigger();
@@ -194,10 +189,9 @@ function DetailPageData<TModel extends FieldValues>({
       model,
       data: prevDataRef.current,
       mode,
-      control,
     };
 
-    let result = onSave?.(variables);
+    let result = onSave?.(variables, form);
 
     if (isPromise(result)) {
       result = await runAsync(result);
@@ -244,10 +238,9 @@ function DetailPageData<TModel extends FieldValues>({
       reason,
       data: prevDataRef.current,
       model,
-      control,
     };
 
-    const result = onDelete?.(variables);
+    const result = onDelete?.(variables, form);
 
     if (isPromise(result)) {
       await runAsync(result);
@@ -282,7 +275,7 @@ function DetailPageData<TModel extends FieldValues>({
       error={error}
       data={prevDataRef.current}
       autoSave={autoSave}
-      loading={loading || loadingState}
+      loading={loading || loadingState || isDefaultValuesLoading}
       reason={reason}
       onCreate={() => handleCreate()}
       onCopy={() => handleCreate('copy')}
