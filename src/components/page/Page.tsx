@@ -14,6 +14,8 @@ import DefaultTabs, {
 import PageContent from './components/PageContent';
 import PageDivider from './components/PageDivider';
 import PageProvider, { PaddingSize } from './components/PageProvider';
+import PageDrawer from './PageDrawer';
+import PageModal from './PageModal';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -257,3 +259,5 @@ Page.Content = PageContent;
 Page.Divider = PageDivider;
 Page.Layout = DefaultLayout;
 Page.Tabs = DefaultTabs;
+Page.Modal = PageModal;
+Page.Drawer = PageDrawer;

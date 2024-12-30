@@ -1,4 +1,8 @@
-import { Assignment, Done, Pending } from '@mui/icons-material';
+/* eslint-disable react/no-children-prop */
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useState } from 'react';
+
+import { Assignment, Done, Pending, SettingsApplications } from '@mui/icons-material';
 import { Box, Button, LinearProgress, Switch } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 
@@ -146,5 +150,97 @@ export const TabsInSubRow: PageStory = {
   args: {
     ...WithTabs.args,
     tabsPosition: 'in-subrow',
+  },
+};
+
+export const OpenInModal: PageStory = {
+  args: {},
+  render: (args) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    return (
+      <>
+        <Button onClick={() => setVisible(true)}>Toggle Page Modal</Button>
+        <Page.Modal
+          {...args}
+          useHeaderIconWrapper={false}
+          icon={<SettingsApplications />}
+          commandsPosition="bottom-right"
+          open={visible}
+          onClose={() => setVisible(false)}
+        />
+      </>
+    );
+  },
+};
+
+export const OpenInModalWithLargeContent: PageStory = {
+  args: {},
+  render: (args) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    return (
+      <>
+        <Button onClick={() => setVisible(true)}>Toggle Page Modal</Button>
+        <Page.Modal
+          {...args}
+          children={
+            <>
+              {args.children}
+              {args.children}
+              {args.children}
+              {args.children}
+              {args.children}
+            </>
+          }
+          commandsPosition="bottom-right"
+          open={visible}
+          onClose={() => setVisible(false)}
+        />
+      </>
+    );
+  },
+};
+
+export const OpenInDrawer: PageStory = {
+  args: {},
+  render: (args) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    return (
+      <>
+        <Button onClick={() => setVisible(true)}>Toggle Page Modal</Button>
+        <Page.Drawer
+          {...args}
+          commandsPosition="bottom-right"
+          open={visible}
+          onClose={() => setVisible(false)}
+        />
+      </>
+    );
+  },
+};
+
+export const OpenInDrawerWithLArgeContent: PageStory = {
+  args: {},
+  render: (args) => {
+    const [visible, setVisible] = useState<boolean>(true);
+    return (
+      <>
+        <Button onClick={() => setVisible(true)}>Toggle Page Modal</Button>
+        <Page.Drawer
+          {...args}
+          loading
+          children={
+            <>
+              {args.children}
+              {args.children}
+              {args.children}
+              {args.children}
+              {args.children}
+            </>
+          }
+          open={visible}
+          onClose={() => setVisible(false)}
+        />
+      </>
+    );
   },
 };

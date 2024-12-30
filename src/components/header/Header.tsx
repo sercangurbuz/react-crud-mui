@@ -15,7 +15,7 @@ export interface HeaderProps extends React.ComponentProps<typeof FlexBetween> {
   headerProps?: BoxProps;
   icon?: ReactNode;
   moreOptions?: MoreButtonProps['options'];
-  useIconWrapper?: boolean;
+  useHeaderIconWrapper?: boolean;
 }
 
 function Header({
@@ -27,15 +27,15 @@ function Header({
   icon,
   moreOptions,
   rightContent,
-  useIconWrapper = true,
+  useHeaderIconWrapper = true,
   ...flexProps
 }: HeaderProps) {
   return (
     <>
       <FlexBetween flexWrap="wrap" p={3} gap={1} {...flexProps}>
         <Box>
-          <FlexBox alignItems="center">
-            {icon ? useIconWrapper ? <IconWrapper>{icon}</IconWrapper> : icon : null}
+          <FlexBox alignItems="center" gap={1}>
+            {icon ? useHeaderIconWrapper ? <IconWrapper>{icon}</IconWrapper> : icon : null}
             <FlexBox flexDirection="column">
               {header ? (
                 <Box fontSize={16} fontWeight={600} component={H6} {...headerProps}>

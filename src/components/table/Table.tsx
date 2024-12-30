@@ -1,5 +1,10 @@
 import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { FieldValues, get, Path } from 'react-hook-form';
+import {
+  IntersectionObserverProps,
+  IntersectionOptions,
+  InView,
+} from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
 
 import { Add, KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
@@ -126,6 +131,10 @@ export interface TableProps<TData extends FieldValues>
   rowSx?: TableRowProps['sx'];
   newRowButtonContent?: ReactNode;
   alternateColor?: boolean;
+  infiniteScrollOptions?: IntersectionOptions & {
+    hasMore: boolean;
+    onFetchMore: () => void;
+  };
 }
 
 const DEFAULT_SKELETON_ROW_NUMBER = 10;
@@ -146,6 +155,7 @@ function Table<TData extends FieldValues>({
   enableNestedComponent,
   enableSkeleton = true,
   headerSx,
+  infiniteScrollOptions,
   loading,
   newRowButtonText,
   newRowButtonContent,
@@ -177,6 +187,7 @@ function Table<TData extends FieldValues>({
   const { t } = useTranslation();
   const bodyRef = useRef(null);
   const firstLoadRef = useRef<boolean>(true);
+  const scrollBarRef = useRef(null);
   const defaultData = useMemo(() => [], []);
   const extractRowId = useCallback((row: TData) => get(row, rowIdField), [rowIdField]);
   const theme = useTheme();
@@ -599,61 +610,92 @@ function Table<TData extends FieldValues>({
     );
   };
 
+  const renderInifiniteScrollElem = () => {
+    if (!infiniteScrollOptions || !data?.length) {
+      return null;
+    }
+
+    const { hasMore, onFetchMore, ...options } = infiniteScrollOptions;
+
+    return (
+      <InView
+        rootMargin="50px"
+        skip={loading || !hasMore}
+        {...(options as IntersectionObserverProps)}
+        root={scrollBarRef.current}
+        as="tr"
+        onChange={(inView) => {
+          if (inView) {
+            onFetchMore?.();
+          }
+        }}
+      />
+    );
+  };
+
+  const renderBodyRows = () => {
+    const rows = table.getRowModel().rows;
+    const rowNodes = rows.map((row) => {
+      let descriptionText;
+
+      if (descriptionField) {
+        descriptionText = (
+          typeof descriptionField === 'function'
+            ? descriptionField(row)
+            : get(row.original, descriptionField)
+        ) as string;
+      }
+
+      const isCanNested = onRenderNestedComponent && row.getIsExpanded();
+      const isSelected = row.getIsSelected();
+      const exRowProps = onRowProps?.(row);
+
+      return (
+        <Fragment key={row.id}>
+          <BodyTableRow
+            bordered={!descriptionText}
+            indicatorColor={isSelected ? theme.palette.primary.main : undefined}
+            bgColor={
+              isSelected
+                ? `${alpha(theme.palette.primary.main, 0.3)} !important`
+                : alternateColor && row.index % 2
+                  ? theme.palette.action.hover
+                  : undefined
+            }
+            onClick={() => {
+              handleRowClick(row);
+            }}
+            {...exRowProps}
+            sx={
+              {
+                ...rowSx,
+                ...exRowProps?.sx,
+                cursor: onRowClick || enableRowClickSelect ? 'pointer' : 'default',
+              } as TableRowProps['sx']
+            }
+            // for keyboard navigation
+            id={row.id}
+            tabIndex={0}
+            onKeyDown={(e) => handleKeyDown(e, row)}
+            key={row.id}
+          >
+            {row.getVisibleCells().map(renderCell)}
+          </BodyTableRow>
+
+          {descriptionText ? renderDescriptionRow(descriptionText, row) : null}
+          {isCanNested && renderNestedRow(row)}
+        </Fragment>
+      );
+    });
+
+    return rowNodes;
+  };
+
   const renderBody = () => {
     return (
       <TableBody ref={bodyRef}>
-        {table.getRowModel().rows.map((row) => {
-          let descriptionText;
-
-          if (descriptionField) {
-            descriptionText = (
-              typeof descriptionField === 'function'
-                ? descriptionField(row)
-                : get(row.original, descriptionField)
-            ) as string;
-          }
-
-          const isCanNested = onRenderNestedComponent && row.getIsExpanded();
-          const isSelected = row.getIsSelected();
-          const exRowProps = onRowProps?.(row);
-
-          return (
-            <Fragment key={row.id}>
-              <BodyTableRow
-                bordered={!descriptionText}
-                indicatorColor={isSelected ? theme.palette.primary.main : undefined}
-                bgColor={
-                  isSelected
-                    ? `${alpha(theme.palette.primary.main, 0.3)} !important`
-                    : alternateColor && row.index % 2
-                      ? theme.palette.action.hover
-                      : undefined
-                }
-                onClick={() => {
-                  handleRowClick(row);
-                }}
-                {...exRowProps}
-                sx={
-                  {
-                    ...rowSx,
-                    ...exRowProps?.sx,
-                    cursor: onRowClick || enableRowClickSelect ? 'pointer' : 'default',
-                  } as TableRowProps['sx']
-                }
-                // for keyboard navigation
-                id={row.id}
-                tabIndex={0}
-                onKeyDown={(e) => handleKeyDown(e, row)}
-                key={row.id}
-              >
-                {row.getVisibleCells().map(renderCell)}
-              </BodyTableRow>
-
-              {descriptionText ? renderDescriptionRow(descriptionText, row) : null}
-              {isCanNested && renderNestedRow(row)}
-            </Fragment>
-          );
-        })}
+        {renderBodyRows()}
+        {renderInifiniteScrollElem()}
         {renderSkeleton(skeletonRows)}
         {renderEmptyImage()}
         {renderNewRow()}
@@ -755,7 +797,12 @@ function Table<TData extends FieldValues>({
 
   return (
     <>
-      <Scrollbar autoHide={false} forceVisible {...scrollProps}>
+      <Scrollbar
+        scrollableNodeProps={{ ref: scrollBarRef }}
+        autoHide={false}
+        forceVisible
+        {...scrollProps}
+      >
         <MuiTable
           stickyHeader={stickyHeader}
           size={size}

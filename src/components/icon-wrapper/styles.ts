@@ -10,6 +10,5 @@ export const Wrapper = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   borderRadius: '5px',
-  marginRight: '0.5rem',
   backgroundColor: alpha(theme.palette.primary.main, 0.1),
 }))
