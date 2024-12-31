@@ -5,7 +5,7 @@ import DefaultLayout from './components/DefaultLayout';
 import Page from './Page';
 import { PageModalProps } from './PageModal';
 
-interface PageDrawerProps extends Omit<PageModalProps, 'modalProps'> {
+export interface PageDrawerProps extends Omit<PageModalProps, 'modalProps'> {
   /**
    * Antd drawer options
    */

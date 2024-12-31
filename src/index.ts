@@ -81,6 +81,8 @@ export {
 } from './components/number-input/NumberInput';
 export { default as MoreButton, type MoreButtonProps } from './components/more-button/MoreButton';
 export { default as Page, type PageProps } from './components/page/Page';
+export { type PageModalProps } from './components/page/PageModal';
+export { type PageDrawerProps } from './components/page/PageDrawer';
 export {
   default as DefaultTabs,
   type DefaultTabsProps,

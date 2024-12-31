@@ -71,11 +71,15 @@ export interface DetailPageDataProps<TModel extends FieldValues>
   /**
    * Event called after succesfull save
    */
-  onAfterSave?: (result: Awaited<DataResult<TModel>>, variables: SavePayload<TModel>) => void;
+  onAfterSave?: (
+    result: Awaited<DataResult<TModel>>,
+    variables: SavePayload<TModel>,
+    form: UseFormReturn<TModel>,
+  ) => void;
   /**
    * Event called after succesfull delete
    */
-  onAfterDelete?: (variables: DeletePayload<TModel>) => void;
+  onAfterDelete?: (variables: DeletePayload<TModel>, form: UseFormReturn<TModel>) => void;
 }
 
 /**
@@ -205,7 +209,7 @@ function DetailPageData<TModel extends FieldValues>({
       toast.success(t('savedsuccesfully'));
     }
 
-    onAfterSave?.(result as Awaited<DataResult<TModel>>, variables);
+    onAfterSave?.(result as Awaited<DataResult<TModel>>, variables, form);
   };
 
   const handleSave = async () => {
@@ -250,7 +254,7 @@ function DetailPageData<TModel extends FieldValues>({
       toast.success(t('deletedsuccesfully'));
     }
 
-    onAfterDelete?.(variables);
+    onAfterDelete?.(variables, form);
   };
 
   const handleDiscard = () => {
@@ -273,7 +277,7 @@ function DetailPageData<TModel extends FieldValues>({
       {...dpProps}
       alerts={messages}
       error={error}
-      data={prevDataRef.current}
+      data={data}
       autoSave={autoSave}
       loading={loading || loadingState || isDefaultValuesLoading}
       reason={reason}
