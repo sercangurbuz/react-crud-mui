@@ -176,9 +176,9 @@ export interface ListPageContentProps<
    */
   enableActionCommands?: boolean;
   /**
-   * Actionm commands extra props
+   * Custom function for action commands
    */
-  actionCommandsProps?: ActionCommandsProps;
+  onActionCommands?: (props: ActionCommandsProps) => ReactNode;
   /**
    * Delete event when detailPage props is set
    */
@@ -190,7 +190,6 @@ function ListPageContent<
   TDetailPageModel extends FieldValues = FieldValues,
 >({
   activeSegmentIndex,
-  actionCommandsProps,
   alerts,
   autoSearch = true,
   children,
@@ -211,6 +210,7 @@ function ListPageContent<
   hotkeyScopes,
   list: ListComponent,
   loading,
+  onActionCommands,
   onClear,
   onClose,
   onCommands,
@@ -242,17 +242,22 @@ function ListPageContent<
     uniqueIdParamName,
   });
 
-  const [CreateDetailPage, EditDetailPage, CopyDetailPage] = useMemo(() => {
+  const [CreateDetailPage, EditDetailPage, CopyDetailPage, ViewDetailPage] = useMemo(() => {
     if (!detailPage) {
       return [];
     }
 
     if (isDetailPageComponentObject(detailPage)) {
-      return [detailPage['create'], detailPage['fetch'], detailPage['copy']] as Array<
-        DetailPageComponentType<TDetailPageModel>
-      >;
+      return [
+        detailPage['create'],
+        detailPage['fetch'],
+        detailPage['copy'],
+        detailPage['view'],
+      ] as Array<DetailPageComponentType<TDetailPageModel>>;
     }
-    return [detailPage, detailPage, detailPage] as Array<DetailPageComponentType<TDetailPageModel>>;
+    return [detailPage, detailPage, detailPage, detailPage] as Array<
+      DetailPageComponentType<TDetailPageModel>
+    >;
   }, [detailPage]);
 
   /* -------------------------------------------------------------------------- */
@@ -421,34 +426,35 @@ function ListPageContent<
               enableSorting: false,
               cell(cell) {
                 const data = cell.row.original;
-                return (
-                  <ActionCommands
-                    onDelete={() => onDelete?.(cell.row.original)}
-                    onView={() =>
-                      EditDetailPage
-                        ? onOpen({
-                            data: data as unknown as TDetailPageModel,
-                            disabled: true,
-                          })
-                        : onView?.(data)
-                    }
-                    onEdit={() =>
-                      EditDetailPage
-                        ? onOpen({ data: data as unknown as TDetailPageModel, disabled })
-                        : onEdit?.(data)
-                    }
-                    onCopy={() =>
-                      CopyDetailPage
-                        ? onOpen({
-                            data: data as unknown as TDetailPageModel,
-                            disabled,
-                            reason: 'copy',
-                          })
-                        : onCopy?.(data)
-                    }
-                    {...actionCommandsProps}
-                  />
-                );
+
+                const props: ActionCommandsProps = {
+                  onDelete: () => onDelete?.(cell.row.original),
+                  onView: () =>
+                    ViewDetailPage
+                      ? onOpen({
+                          data: data as unknown as TDetailPageModel,
+                          reason: 'view',
+                        })
+                      : onView?.(data),
+                  onEdit: () =>
+                    EditDetailPage
+                      ? onOpen({ data: data as unknown as TDetailPageModel, disabled })
+                      : onEdit?.(data),
+                  onCopy: () =>
+                    CopyDetailPage
+                      ? onOpen({
+                          data: data as unknown as TDetailPageModel,
+                          disabled,
+                          reason: 'copy',
+                        })
+                      : onCopy?.(data),
+                };
+
+                if (onActionCommands) {
+                  return onActionCommands(props);
+                }
+
+                return <ActionCommands {...props} />;
               },
             },
           ]
@@ -487,9 +493,14 @@ function ListPageContent<
       return null;
     }
 
-    const reason = dpProps?.reason;
-    const EmbededDetailPageComponent =
-      reason === 'create' ? CreateDetailPage : reason === 'fetch' ? EditDetailPage : CopyDetailPage;
+    const reason = dpProps.reason ?? 'create';
+    const dpPage: DetailPageComponentOptions<TDetailPageModel> = {
+      copy: CopyDetailPage,
+      create: CreateDetailPage,
+      fetch: EditDetailPage,
+      view: ViewDetailPage,
+    };
+    const EmbededDetailPageComponent = dpPage[reason];
 
     if (!EmbededDetailPageComponent) {
       return null;

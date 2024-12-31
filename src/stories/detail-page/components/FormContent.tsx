@@ -30,17 +30,6 @@ function FormContent() {
           <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.Input name="website" label="Web site" />
           </Grid2>
-          <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.Combobox
-              name="website1"
-              label="Web site2"
-              data={[
-                { id: 1, name: 'dwdw' },
-                { id: 2, name: 'dwdwfe' },
-                { id: 3, name: 'dwdf ew' },
-              ]}
-            />
-          </Grid2>
         </Grid2>
       </Page.Content>
     </>

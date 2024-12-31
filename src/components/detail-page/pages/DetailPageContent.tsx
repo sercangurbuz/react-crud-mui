@@ -27,8 +27,7 @@ import { SaveMode } from './DetailPageData';
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-export type NeedDataReason = 'create' | 'fetch' | 'copy';
-export type NavigationDirection = 'next' | 'prev';
+export type NeedDataReason = 'create' | 'fetch' | 'copy' | 'view';
 
 export type DetailPageWrapperLayoutProps = {
   content: ReactNode;
@@ -403,9 +402,9 @@ function DetailPageContent<TModel extends FieldValues>({
     const isStepper = !!steps?.length;
     return (
       <Page
-        title={reason === 'fetch' ? t('edit') : t('newitem')}
+        title={reason === 'fetch' ? t('edit') : reason === 'view' ? t('browse') : t('newitem')}
         {...pageProps}
-        disabled={disabled || loading}
+        disabled={disabled || loading || reason === 'view'}
         commandsContent={commands}
         commandsPosition={isStepper ? 'bottom' : commandsPosition}
         onHeader={renderPageHeader}

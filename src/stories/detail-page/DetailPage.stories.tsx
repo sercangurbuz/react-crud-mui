@@ -124,6 +124,14 @@ export const WithAsyncData: DetailPageStory = {
   },
 };
 
+export const ViewMode: DetailPageStory = {
+  ...WithAsyncData,
+  args: {
+    reason: 'view',
+    ...WithAsyncData.args,
+  },
+};
+
 export const WithExtraCommands: DetailPageStory = {
   args: {
     onExtraCommands: () => (

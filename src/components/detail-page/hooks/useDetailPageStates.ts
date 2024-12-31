@@ -28,7 +28,7 @@ function useDetailPageStates() {
   // Flags
   const { isValid, isDirty } = formStates;
 
-  const isNewMode = reason !== 'fetch';
+  const isNewMode = reason !== 'fetch' && reason !== 'view';
   const isDisabled = disabled;
 
   /* ------------------------------ Button states ----------------------------- */

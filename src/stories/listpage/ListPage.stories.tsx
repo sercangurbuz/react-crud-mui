@@ -2,14 +2,16 @@
 import { useState } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
-import { Assignment, Close, Done, Pending, Search } from '@mui/icons-material';
-import { Alert, AlertTitle, Button, Stack } from '@mui/material';
+import { Assignment, Close, Done, Pending, SaveAltOutlined, Search } from '@mui/icons-material';
+import { Alert, AlertTitle, Button, Divider, Stack } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { RowSelectionState } from '@tanstack/react-table';
 import { z } from 'zod';
 
+import ActionCommands from '../../components/action-commands/ActionCommands';
 import { FlexBox } from '../../components/flexbox';
 import ListPage from '../../components/list-page/pages/ListPage';
+import Table from '../../components/table/Table';
 import { H1 } from '../../components/typography';
 import { ServerError } from '../../components/utils';
 import { UserDefaultValues } from '../utils/api';
@@ -273,10 +275,15 @@ export const WithDetailPage: ListPageStory = {
     enableCreateItem: true,
     enableActionCommands: true,
     detailPage: EmbededDetailPage,
-    actionCommandsProps: {
-      showCopy: false,
-    },
     createCommandLabel: 'New User',
+    onActionCommands(props) {
+      return (
+        <ActionCommands {...props} showCopy={false}>
+          <Divider />
+          <Table.MoreMenuItem title="Custom Menu" Icon={SaveAltOutlined} />
+        </ActionCommands>
+      );
+    },
   },
 };
 
@@ -301,9 +308,6 @@ export const WithDetailPageDrawer: ListPageStory = {
     enableCreateItem: true,
     enableActionCommands: true,
     detailPage: EmbededDrawerDetailPage,
-    actionCommandsProps: {
-      showCopy: false,
-    },
     createCommandLabel: 'New User',
   },
 };
