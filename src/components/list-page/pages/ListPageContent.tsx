@@ -178,7 +178,7 @@ export interface ListPageContentProps<
   /**
    * Custom function for action commands
    */
-  onActionCommands?: (props: ActionCommandsProps) => ReactNode;
+  onActionCommands?: (props: ActionCommandsProps<TModel>) => ReactNode;
   /**
    * Delete event when detailPage props is set
    */
@@ -427,7 +427,7 @@ function ListPageContent<
               cell(cell) {
                 const data = cell.row.original;
 
-                const props: ActionCommandsProps = {
+                const props: ActionCommandsProps<TModel> = {
                   onDelete: () => onDelete?.(cell.row.original),
                   onView: () =>
                     ViewDetailPage
@@ -448,6 +448,7 @@ function ListPageContent<
                           reason: 'copy',
                         })
                       : onCopy?.(data),
+                  model: data,
                 };
 
                 if (onActionCommands) {

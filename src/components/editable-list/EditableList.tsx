@@ -59,10 +59,9 @@ export const EditableListContext = React.createContext<EditableListContextValue<
 /* -------------------------------------------------------------------------- */
 
 export interface EditingListCommandsProps<TModel extends FieldValues = FieldValues>
-  extends ActionCommandsProps {
+  extends ActionCommandsProps<TModel> {
   editable?: boolean;
   onCancel?: () => void;
-  model?: TModel;
 }
 
 export interface EditableListProps<
@@ -70,7 +69,7 @@ export interface EditableListProps<
   TArrayModel extends FieldArray<TModel, TFieldArrayName> & FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
 > extends Omit<TableProps<TArrayModel>, 'data'>,
-    Pick<ActionCommandsProps, 'canCopy' | 'canDelete' | 'canEdit'>,
+    Pick<ActionCommandsProps<TArrayModel>, 'canCopy' | 'canDelete' | 'canEdit'>,
     PropsWithChildren {
   /**
    * Array model name of form
