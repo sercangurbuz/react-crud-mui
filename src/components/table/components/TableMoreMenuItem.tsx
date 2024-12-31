@@ -2,10 +2,10 @@
 import { SvgIconComponent } from '@mui/icons-material';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MenuItem from '@mui/material/MenuItem';
+import MenuItem, { MenuItemProps } from '@mui/material/MenuItem';
 
 // ==============================================================
-interface TableMoreMenuItemProps {
+export interface TableMoreMenuItemProps extends MenuItemProps {
   title: string;
   Icon: SvgIconComponent;
   handleClick?: () => void;
@@ -14,12 +14,12 @@ interface TableMoreMenuItemProps {
 // ==============================================================
 
 export default function TableMoreMenuItem(props: TableMoreMenuItemProps) {
-  const { disabled, Icon, title, handleClick } = props;
+  const { disabled, Icon, title, handleClick, ...rest } = props;
 
   return (
-    <MenuItem onClick={handleClick} disabled={disabled}>
-      <ListItemIcon>
-        <Icon fontSize="small" color="inherit" />
+    <MenuItem onClick={handleClick} disabled={disabled} {...rest}>
+      <ListItemIcon sx={{ color: 'inherit' }}>
+        <Icon fontSize="small" />
       </ListItemIcon>
 
       <ListItemText disableTypography>{title}</ListItemText>

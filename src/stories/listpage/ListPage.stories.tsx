@@ -279,8 +279,16 @@ export const WithDetailPage: ListPageStory = {
     onActionCommands(props) {
       return (
         <ActionCommands {...props} showCopy={false}>
-          <Divider />
-          <Table.MoreMenuItem title="Custom Menu" Icon={SaveAltOutlined} />
+          {(close) => (
+            <>
+              <Divider />
+              <Table.MoreMenuItem
+                title="Custom Menu"
+                Icon={SaveAltOutlined}
+                onClick={() => close()}
+              />
+            </>
+          )}
         </ActionCommands>
       );
     },
@@ -292,7 +300,7 @@ export const WithDetailPagesByReason: ListPageStory = {
     enableCreateItem: true,
     enableActionCommands: true,
     detailPage: {
-      create: EmbededDetailPage,
+      view: EmbededDetailPage,
       fetch: EmbededDrawerDetailPage,
     },
     onCopy() {

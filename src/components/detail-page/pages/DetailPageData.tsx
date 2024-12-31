@@ -122,14 +122,14 @@ function DetailPageData<TModel extends FieldValues>({
     trigger,
     getFormModel,
     getValues,
-    formState: { defaultValues, isLoading: isDefaultValuesLoading },
+    formState: { isLoading: isDefaultValuesLoading },
   } = form;
 
   // reset and trigger validation for every data changes
   const updateForm = useCallback(
     (data: TModel | undefined): void => {
       if (data) {
-        reset(data, { keepDefaultValues: true });
+        reset(data);
       }
 
       void trigger();
@@ -137,15 +137,6 @@ function DetailPageData<TModel extends FieldValues>({
     },
     [reset, trigger],
   );
-
-  /**
-   * run onNeedData when reason and id changes.Be aware that onNeedData must be memoized
-   */
-  useEffect(() => {
-    if (reason === 'create' && defaultValues) {
-      updateForm(defaultValues as TModel);
-    }
-  }, [defaultValues, updateForm, reason]);
 
   useEffect(() => {
     if (data) {

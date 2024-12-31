@@ -1,4 +1,4 @@
-import { MouseEvent, PropsWithChildren, useState } from 'react';
+import { MouseEvent, ReactNode, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { DeleteOutline, Edit, RemoveRedEye } from '@mui/icons-material';
@@ -9,7 +9,7 @@ import Copy from '../icons/Copy';
 import TableMoreMenu from '../table/components/TableMoreMenu';
 import TableMoreMenuItem from '../table/components/TableMoreMenuItem';
 
-export interface ActionCommandsProps<TModel extends FieldValues> extends PropsWithChildren {
+export interface ActionCommandsProps<TModel extends FieldValues> {
   onEdit?: () => void;
   onView?: () => void;
   onCopy?: () => void;
@@ -26,6 +26,7 @@ export interface ActionCommandsProps<TModel extends FieldValues> extends PropsWi
   confirmOnDelete?: boolean;
   model?: TModel;
   titles?: Record<NeedDataReason, string>;
+  children?: (closeEvent: () => void) => ReactNode;
 }
 
 function ActionCommands<TModel extends FieldValues>({
@@ -64,7 +65,7 @@ function ActionCommands<TModel extends FieldValues>({
       {showView ? (
         <TableMoreMenuItem
           Icon={RemoveRedEye}
-          title={titles ? titles['view'] : t('browse')}
+          title={titles?.['view'] ?? t('browse')}
           handleClick={() => {
             onView?.();
             handleCloseOpenMenu();
@@ -75,7 +76,7 @@ function ActionCommands<TModel extends FieldValues>({
       {showEdit ? (
         <TableMoreMenuItem
           Icon={Edit}
-          title={titles ? titles['fetch'] : t('edit')}
+          title={titles?.['fetch'] ?? t('edit')}
           handleClick={() => {
             onEdit?.();
             handleCloseOpenMenu();
@@ -86,7 +87,7 @@ function ActionCommands<TModel extends FieldValues>({
       {showCopy ? (
         <TableMoreMenuItem
           Icon={Copy}
-          title={titles ? titles['create'] : t('copyitem')}
+          title={titles?.['create'] ?? t('copyitem')}
           handleClick={() => {
             onCopy?.();
             handleCloseOpenMenu();
@@ -97,7 +98,9 @@ function ActionCommands<TModel extends FieldValues>({
       {showDelete ? (
         <TableMoreMenuItem
           Icon={DeleteOutline}
-          title={titles ? titles['view'] : t('delete')}
+          title={titles?.['view'] ?? t('delete')}
+          color="error.main"
+          sx={{ color: 'error.main' }}
           handleClick={() => {
             onDelete?.();
             handleCloseOpenMenu();
@@ -105,7 +108,7 @@ function ActionCommands<TModel extends FieldValues>({
           disabled={!canDelete}
         />
       ) : null}
-      {children}
+      {children ? children(handleCloseOpenMenu) : null}
     </TableMoreMenu>
   );
 }

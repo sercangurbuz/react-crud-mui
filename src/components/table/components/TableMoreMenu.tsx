@@ -1,23 +1,19 @@
-import { Fragment, MouseEvent, PropsWithChildren, ReactNode } from 'react';
+import { Fragment, MouseEvent, ReactNode } from 'react';
 
-// MUI ICON COMPONENT
 import MoreVert from '@mui/icons-material/MoreVert';
 import IconButton from '@mui/material/IconButton';
-// MUI
-import Menu from '@mui/material/Menu';
+import Menu, { MenuProps } from '@mui/material/Menu';
 
-// ==============================================================
-interface TableMoreMenuProps extends PropsWithChildren {
+export interface TableMoreMenuProps extends Omit<MenuProps, 'open'> {
   open: HTMLElement | null;
   handleClose: () => void;
   handleOpen: (event: MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   moreIcon?: ReactNode;
 }
-// ==============================================================
 
 export default function TableMoreMenu(props: TableMoreMenuProps) {
-  const { moreIcon, disabled, open, children, handleClose, handleOpen } = props;
+  const { moreIcon, disabled, open, children, handleClose, handleOpen, ...rest } = props;
 
   return (
     <Fragment>
@@ -30,6 +26,7 @@ export default function TableMoreMenu(props: TableMoreMenuProps) {
         open={Boolean(open)}
         onClose={handleClose}
         transformOrigin={{ vertical: 'center', horizontal: 'right' }}
+        {...rest}
       >
         {children}
       </Menu>
