@@ -7,6 +7,7 @@ import {
 } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
 
+import { parseDate } from '../../misc';
 import Field, { ControlCommonProps } from '../Field';
 
 export type FormDatePickerProps<TFieldValues extends FieldValues = FieldValues> = Partial<
@@ -31,6 +32,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
         <MuiDatePicker
           {...dateProps}
           {...field}
+          value={parseDate(field.value)}
           onChange={(e, c) => {
             field.onChange(e);
             dateProps?.onChange?.(e, c);

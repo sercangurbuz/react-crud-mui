@@ -21,7 +21,7 @@ const meta: Meta<typeof Field.DatePicker> = {
           value: schemas.dateSchema,
         })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ value: null }}
+        defaultValues={{ value: '2024-12-27T06:36:20.000Z' }}
         showHeader={false}
       >
         <Page.Content>

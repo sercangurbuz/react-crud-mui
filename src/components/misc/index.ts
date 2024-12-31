@@ -4,3 +4,4 @@ export { default as reactNodeToString } from './reactNodeToString';
 export { default as updateQueryString } from './updateQueryString';
 export { default as moneyFormat } from './moneyFormat';
 export { default as nullableZodSchema } from './nullableSchema';
+export { default as parseDate } from './parseDate';
