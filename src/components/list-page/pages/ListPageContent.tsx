@@ -25,7 +25,7 @@ import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isDetailPageComponentObject = (value: any): value is DetailPageComponentOptions =>
-  'create' in value || 'fetch' in value || 'copy' in value;
+  'create' in value || 'fetch' in value || 'copy' in value || 'view' in value;
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */

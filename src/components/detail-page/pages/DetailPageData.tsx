@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
@@ -107,7 +107,6 @@ function DetailPageData<TModel extends FieldValues>({
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const prevDataRef = useRef<TModel | undefined>();
   const { t } = useTranslation();
   const [runAsync, { loading: loadingState, error: errorState, reset: resetState }] = useRunAsync<
     TModel | void | undefined
@@ -122,27 +121,21 @@ function DetailPageData<TModel extends FieldValues>({
     trigger,
     getFormModel,
     getValues,
-    formState: { isLoading: isDefaultValuesLoading },
+    formState: { defaultValues, isLoading: isDefaultValuesLoading },
   } = form;
-
-  // reset and trigger validation for every data changes
-  const updateForm = useCallback(
-    (data: TModel | undefined): void => {
-      if (data) {
-        reset(data);
-      }
-
-      void trigger();
-      prevDataRef.current = data;
-    },
-    [reset, trigger],
-  );
 
   useEffect(() => {
     if (data) {
-      updateForm(data);
+      reset(data);
+      void trigger();
     }
-  }, [data, updateForm]);
+  }, [data, reset, trigger]);
+
+  useEffect(() => {
+    if (reason === 'create' && defaultValues) {
+      void trigger();
+    }
+  }, [defaultValues, reason, trigger]);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Alerts                                   */
@@ -182,7 +175,7 @@ function DetailPageData<TModel extends FieldValues>({
     const variables: SavePayload<TModel> = {
       reason,
       model,
-      data: prevDataRef.current,
+      data,
       mode,
     };
 
@@ -193,7 +186,8 @@ function DetailPageData<TModel extends FieldValues>({
     }
 
     if (result) {
-      updateForm(result);
+      reset(result);
+      void trigger();
     }
 
     if (showSuccessMessages && !autoSave) {
@@ -231,7 +225,7 @@ function DetailPageData<TModel extends FieldValues>({
 
     const variables: DeletePayload<TModel> = {
       reason,
-      data: prevDataRef.current,
+      data,
       model,
     };
 
@@ -257,6 +251,8 @@ function DetailPageData<TModel extends FieldValues>({
   const handleCreate = (reason: NeedDataReason = 'create') => {
     onReasonChange?.(reason);
     resetState();
+    reset(defaultValues as TModel);
+    void trigger();
   };
 
   /* -------------------------------------------------------------------------- */

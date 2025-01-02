@@ -21,6 +21,7 @@ function DetailPageForm<TModel extends FieldValues>({
   schema,
   defaultValues,
   validationOptions,
+  data,
   ...dpProps
 }: DetailPageFormProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -42,6 +43,7 @@ function DetailPageForm<TModel extends FieldValues>({
         {...dpProps}
         activeSegmentIndex={activeSegmentIndex}
         form={formMethods}
+        data={data}
       />
     </FormProvider>
   );
