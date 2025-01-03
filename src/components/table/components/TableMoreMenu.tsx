@@ -15,9 +15,14 @@ export interface TableMoreMenuProps extends Omit<MenuProps, 'open'> {
 export default function TableMoreMenu(props: TableMoreMenuProps) {
   const { moreIcon, disabled, open, children, handleClose, handleOpen, ...rest } = props;
 
+  const handleIconClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    handleOpen(event);
+  };
+
   return (
     <Fragment>
-      <IconButton color="secondary" onClick={handleOpen} disabled={disabled}>
+      <IconButton color="secondary" onClick={handleIconClick} disabled={disabled}>
         {moreIcon ?? <MoreVert fontSize="small" />}
       </IconButton>
 

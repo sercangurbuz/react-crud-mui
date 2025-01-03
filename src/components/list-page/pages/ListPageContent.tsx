@@ -183,6 +183,10 @@ export interface ListPageContentProps<
    * Delete event when detailPage props is set
    */
   onDelete?: (model: TModel) => void;
+  /**
+   * Open detailPage in view mode as default or in which reason provided
+   */
+  enableRowClickToDetails?: boolean | NeedDataReason;
 }
 
 function ListPageContent<
@@ -201,6 +205,7 @@ function ListPageContent<
   disabled,
   disableShortCuts,
   enableActionCommands,
+  enableRowClickToDetails,
   enableClear,
   enableCreateItem = true,
   enableExport,
@@ -233,9 +238,10 @@ function ListPageContent<
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
+  const { t } = useTranslation();
+
   /* --------------------------- Embeded DetailPage --------------------------- */
 
-  const { t } = useTranslation();
   const { uniqueIdParamName } = useSettings();
   const [onOpen, dpProps] = useDetailPageModal<TDetailPageModel>({
     models: data,
@@ -259,6 +265,48 @@ function ListPageContent<
       DetailPageComponentType<TDetailPageModel>
     >;
   }, [detailPage]);
+
+  const openDetailPage = (reason: NeedDataReason, row: TModel) => {
+    const data = row as unknown as TDetailPageModel;
+
+    switch (reason) {
+      case 'view':
+        if (ViewDetailPage) {
+          onOpen({
+            data,
+            reason: 'view',
+          });
+        } else {
+          onView?.(row);
+        }
+        break;
+      case 'fetch':
+        if (EditDetailPage) {
+          onOpen({ data, disabled });
+        } else {
+          onEdit?.(row);
+        }
+        break;
+      case 'create':
+        if (CreateDetailPage) {
+          onOpen();
+        } else {
+          onCreate?.();
+        }
+        break;
+      case 'copy':
+        if (CopyDetailPage) {
+          onOpen({
+            data,
+            disabled,
+            reason: 'copy',
+          });
+        } else {
+          onCopy?.(row);
+        }
+        break;
+    }
+  };
 
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
@@ -365,7 +413,7 @@ function ListPageContent<
     const commandProps: ListPageCommandsProps = {
       onExcelExport,
       onSearch,
-      onCreateItem: CreateDetailPage ? onOpen : onCreate,
+      onCreateItem: () => openDetailPage('create', {} as TModel),
       onClear,
       onCommands,
       onExtraCommands,
@@ -429,25 +477,9 @@ function ListPageContent<
 
                 const props: ActionCommandsProps<TModel> = {
                   onDelete: () => onDelete?.(cell.row.original),
-                  onView: () =>
-                    ViewDetailPage
-                      ? onOpen({
-                          data: data as unknown as TDetailPageModel,
-                          reason: 'view',
-                        })
-                      : onView?.(data),
-                  onEdit: () =>
-                    EditDetailPage
-                      ? onOpen({ data: data as unknown as TDetailPageModel, disabled })
-                      : onEdit?.(data),
-                  onCopy: () =>
-                    CopyDetailPage
-                      ? onOpen({
-                          data: data as unknown as TDetailPageModel,
-                          disabled,
-                          reason: 'copy',
-                        })
-                      : onCopy?.(data),
+                  onView: () => openDetailPage('view', data),
+                  onEdit: () => openDetailPage('fetch', data),
+                  onCopy: () => openDetailPage('copy', data),
                   model: data,
                 };
 
@@ -465,6 +497,15 @@ function ListPageContent<
       data,
       loading,
     };
+
+    if (enableRowClickToDetails) {
+      props.onRowClick = (row) => {
+        openDetailPage(
+          typeof enableRowClickToDetails === 'string' ? enableRowClickToDetails : 'view',
+          row.original,
+        );
+      };
+    }
 
     const tableNode = ListComponent ? (
       <ListComponent {...(props as TableProps<TModel>)} />

@@ -310,6 +310,14 @@ export const WithDetailPagesByReason: ListPageStory = {
   },
 };
 
+export const WithRowClickToDetails: ListPageStory = {
+  ...WithDetailPagesByReason,
+  args: {
+    ...WithDetailPagesByReason.args,
+    enableRowClickToDetails: "fetch",
+  },
+};
+
 export const WithDetailPageDrawer: ListPageStory = {
   name: 'With DetailPage (Drawer)',
   args: {

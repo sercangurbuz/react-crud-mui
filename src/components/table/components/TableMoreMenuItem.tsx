@@ -1,4 +1,5 @@
-// MUI ICON COMPONENT TYPE
+import { MouseEvent } from 'react';
+
 import { SvgIconComponent } from '@mui/icons-material';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -16,8 +17,13 @@ export interface TableMoreMenuItemProps extends MenuItemProps {
 export default function TableMoreMenuItem(props: TableMoreMenuItemProps) {
   const { disabled, Icon, title, handleClick, ...rest } = props;
 
+  const handleMenuClick = (event: MouseEvent<HTMLLIElement>) => {
+    event.stopPropagation();
+    handleClick?.();
+  };
+
   return (
-    <MenuItem onClick={handleClick} disabled={disabled} {...rest}>
+    <MenuItem onClick={handleMenuClick} disabled={disabled} {...rest}>
       <ListItemIcon sx={{ color: 'inherit' }}>
         <Icon fontSize="small" />
       </ListItemIcon>
