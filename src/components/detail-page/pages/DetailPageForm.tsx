@@ -6,6 +6,7 @@ import FormProvider from '../../form/components/FormProvider';
 import { useForm } from '../../form/hooks';
 import { UseFormReturn, ValidationOptions } from '../../form/hooks/useForm';
 import { DeepNullable } from '../../utils';
+import TriggerValidation from '../components/TriggerValidation';
 import DetailPageData, { DetailPageDataProps } from './DetailPageData';
 
 export interface DetailPageFormProps<TModel extends FieldValues>
@@ -33,6 +34,7 @@ function DetailPageForm<TModel extends FieldValues>({
     mode: 'onChange',
     schema,
     defaultValues: defaultValues as UseFormProps<TModel>['defaultValues'],
+    values: data,
   });
 
   const formMethods = dpProps.form ?? form;
@@ -45,6 +47,7 @@ function DetailPageForm<TModel extends FieldValues>({
         form={formMethods}
         data={data}
       />
+      <TriggerValidation />
     </FormProvider>
   );
 }

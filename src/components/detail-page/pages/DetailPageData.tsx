@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
@@ -118,24 +118,11 @@ function DetailPageData<TModel extends FieldValues>({
 
   const {
     reset,
-    trigger,
     getFormModel,
     getValues,
-    formState: { defaultValues, isLoading: isDefaultValuesLoading },
+    formState: { isLoading: isDefaultValuesLoading },
+    initialValues,
   } = form;
-
-  useEffect(() => {
-    if (data) {
-      reset(data);
-      void trigger();
-    }
-  }, [data, reset, trigger]);
-
-  useEffect(() => {
-    if (reason === 'create' && defaultValues) {
-      void trigger();
-    }
-  }, [defaultValues, reason, trigger]);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Alerts                                   */
@@ -187,7 +174,6 @@ function DetailPageData<TModel extends FieldValues>({
 
     if (result) {
       reset(result);
-      void trigger();
     }
 
     if (showSuccessMessages && !autoSave) {
@@ -244,15 +230,13 @@ function DetailPageData<TModel extends FieldValues>({
 
   const handleDiscard = () => {
     reset();
-    void trigger();
     onDiscardChanges?.();
   };
 
   const handleCreate = (reason: NeedDataReason = 'create') => {
     onReasonChange?.(reason);
     resetState();
-    reset(defaultValues as TModel);
-    void trigger();
+    reset(initialValues as TModel);
   };
 
   /* -------------------------------------------------------------------------- */

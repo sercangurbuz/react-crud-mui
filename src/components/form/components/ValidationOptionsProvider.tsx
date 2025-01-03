@@ -10,6 +10,7 @@ export type ValidationOptionsProviderProps<TFieldValues extends FieldValues = Fi
 export const ValidationOptionsContext = React.createContext<ValidationOptions>({
   alertVisibility: 'only-unbound-fields',
   callOutVisibility: 'invisible',
+  runValidationsOnDataChange: true,
 });
 
 function ValidationOptionsProvider<TFieldValues extends FieldValues = FieldValues>({
