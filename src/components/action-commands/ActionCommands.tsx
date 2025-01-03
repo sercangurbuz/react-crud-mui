@@ -6,10 +6,11 @@ import { DeleteOutline, Edit, RemoveRedEye } from '@mui/icons-material';
 import { NeedDataReason } from '../detail-page/pages/DetailPageContent';
 import useTranslation from '../i18n/hooks/useTranslation';
 import Copy from '../icons/Copy';
-import TableMoreMenu from '../table/components/TableMoreMenu';
+import TableMoreMenu, { TableMoreMenuProps } from '../table/components/TableMoreMenu';
 import TableMoreMenuItem from '../table/components/TableMoreMenuItem';
 
-export interface ActionCommandsProps<TModel extends FieldValues> {
+export interface ActionCommandsProps<TModel extends FieldValues>
+  extends Omit<TableMoreMenuProps, 'children' | 'open' | 'handleClose' | 'handleOpen'> {
   onEdit?: () => void;
   onView?: () => void;
   onCopy?: () => void;
@@ -45,6 +46,7 @@ function ActionCommands<TModel extends FieldValues>({
   disabled,
   children,
   titles,
+  ...tableMoreProps
 }: ActionCommandsProps<TModel>) {
   const { t } = useTranslation();
   const [openMenuEl, setOpenMenuEl] = useState<null | HTMLElement>(null);
@@ -61,6 +63,7 @@ function ActionCommands<TModel extends FieldValues>({
       handleOpen={handleOpenMenu}
       handleClose={handleCloseOpenMenu}
       disabled={disabled}
+      {...tableMoreProps}
     >
       {showView ? (
         <TableMoreMenuItem

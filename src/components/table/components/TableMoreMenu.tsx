@@ -1,4 +1,4 @@
-import { Fragment, MouseEvent, ReactNode } from 'react';
+import React, { Fragment, MouseEvent, ReactNode } from 'react';
 
 import MoreVert from '@mui/icons-material/MoreVert';
 import IconButton from '@mui/material/IconButton';
@@ -29,7 +29,10 @@ export default function TableMoreMenu(props: TableMoreMenuProps) {
       <Menu
         anchorEl={open}
         open={Boolean(open)}
-        onClose={handleClose}
+        onClose={(e) => {
+          (e as React.SyntheticEvent).stopPropagation();
+          handleClose();
+        }}
         transformOrigin={{ vertical: 'center', horizontal: 'right' }}
         {...rest}
       >
