@@ -3,6 +3,8 @@ import React, { forwardRef, Ref } from 'react';
 import { TextField, TextFieldProps } from '@mui/material';
 import capitalize from 'lodash.capitalize';
 
+import useFloatingLabelProps from './hooks/useFloatingLabelProps';
+
 export type CaseType = 'firstUpper' | 'upperCase' | 'lowerCase' | 'normal';
 
 export interface InputProps extends TextFieldProps<'standard'> {
@@ -11,7 +13,7 @@ export interface InputProps extends TextFieldProps<'standard'> {
   getRef?: Ref<any>;
 }
 
-function Input({ caseType, getRef, ...inputProps }: InputProps) {
+function Input({ caseType, getRef, value, onBlur, onFocus, ...inputProps }: InputProps) {
   const setCase = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const value = e.target.value;
     switch (caseType) {
@@ -29,9 +31,13 @@ function Input({ caseType, getRef, ...inputProps }: InputProps) {
     }
   };
 
+  const floatingLabelProps = useFloatingLabelProps({ value, onBlur, onFocus });
+
   return (
     <TextField
       {...inputProps}
+      {...floatingLabelProps}
+      value={value}
       ref={getRef}
       onChange={(e) => {
         setCase(e);

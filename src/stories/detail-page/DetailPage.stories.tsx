@@ -78,6 +78,8 @@ export const LoadingState: DetailPageStory = {
 
 export const WithAsyncDefaultValues: DetailPageStory = {
   args: {
+    data: undefined,
+    reason: 'fetch',
     defaultValues() {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -85,7 +87,7 @@ export const WithAsyncDefaultValues: DetailPageStory = {
             ...UserDefaultValues,
             name: 'Async resolved name',
           });
-        }, 5000);
+        }, 2000);
       });
     },
   },

@@ -1,6 +1,6 @@
 import 'react-international-phone/style.css';
 
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef } from 'react';
 import {
   CountryIso2,
   defaultCountries,
@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 
 import useTranslation from '../i18n/hooks/useTranslation';
+import useFloatingLabelProps from '../input/hooks/useFloatingLabelProps';
 
 export interface PhoneInputProps extends BaseTextFieldProps {
   value?: string;
@@ -35,6 +36,7 @@ function PhoneInput({
   onChange,
   phoneInputconfig,
   onBlur,
+  onFocus,
   sx,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getRef,
@@ -43,13 +45,8 @@ function PhoneInput({
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
-
   const { t } = useTranslation();
-  const [shrink, setShrink] = useState(!!value);
-
-  useEffect(() => {
-    setShrink(!!value);
-  }, [value]);
+  const floatingLabelProps = useFloatingLabelProps({ value, onBlur, onFocus });
 
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } = usePhoneInput({
     value,
@@ -69,8 +66,6 @@ function PhoneInput({
       onChange={handlePhoneValueChange}
       type="tel"
       inputRef={inputRef}
-      onFocus={() => setShrink(true)}
-      InputLabelProps={{ shrink }}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start" style={{ marginRight: '2px', marginLeft: '-8px' }}>
@@ -125,10 +120,6 @@ function PhoneInput({
           </InputAdornment>
         ),
       }}
-      onBlur={(e) => {
-        setShrink(!!e.target.value);
-        onBlur?.(e);
-      }}
       sx={{
         '& .MuiInputBase-input': {
           fontVariantNumeric: 'tabular-nums',
@@ -140,6 +131,7 @@ function PhoneInput({
         ...sx,
       }}
       {...restProps}
+      {...floatingLabelProps}
     />
   );
 }
