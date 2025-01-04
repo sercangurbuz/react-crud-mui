@@ -10,7 +10,7 @@ import TriggerValidation from '../components/TriggerValidation';
 import DetailPageData, { DetailPageDataProps } from './DetailPageData';
 
 export interface DetailPageFormProps<TModel extends FieldValues>
-  extends Omit<DetailPageDataProps<TModel>, 'form' | 'defaultValues' | 'schema'> {
+  extends Omit<DetailPageDataProps<TModel>, 'form' | 'schema'> {
   form?: UseFormReturn<TModel>;
   schema?: z.ZodType<TModel>;
   validationOptions?: ValidationOptions<TModel>;
@@ -19,7 +19,7 @@ export interface DetailPageFormProps<TModel extends FieldValues>
 function DetailPageForm<TModel extends FieldValues>({
   activeSegmentIndex = 0,
   schema,
-  defaultData,
+  defaultValues,
   validationOptions,
   data,
   reason,
@@ -34,7 +34,7 @@ function DetailPageForm<TModel extends FieldValues>({
     mode: 'onChange',
     schema,
     defaultValues: () => {
-      const values = typeof defaultData === 'function' ? defaultData?.(reason!) : defaultData;
+      const values = typeof defaultValues === 'function' ? defaultValues?.(reason!) : defaultValues;
 
       if (isPromise(values)) {
         return values as Promise<TModel>;
@@ -55,7 +55,7 @@ function DetailPageForm<TModel extends FieldValues>({
         form={formMethods}
         data={data}
         reason={reason}
-        defaultData={defaultData}
+        defaultValues={defaultValues}
       />
       <TriggerValidation />
     </FormProvider>

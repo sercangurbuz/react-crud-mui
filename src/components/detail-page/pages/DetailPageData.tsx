@@ -55,7 +55,7 @@ export interface DetailPageDataProps<TModel extends FieldValues>
   /**
    * Get default form values for each particular reason
    */
-  defaultData?: DefaultData<TModel>;
+  defaultValues?: DefaultData<TModel>;
   /**
    * Save event
    * @returns if returns data,either in promise or object will bind to form data
@@ -99,7 +99,7 @@ function DetailPageData<TModel extends FieldValues>({
   alerts,
   autoSave,
   data,
-  defaultData,
+  defaultValues,
   error,
   form,
   loading,
@@ -247,7 +247,7 @@ function DetailPageData<TModel extends FieldValues>({
     onReasonChange?.(reason);
     resetState();
 
-    const values = typeof defaultData === 'function' ? defaultData?.(reason, data) : defaultData;
+    const values = typeof defaultValues === 'function' ? defaultValues?.(reason, data) : defaultValues;
     reset(values as TModel);
   };
 

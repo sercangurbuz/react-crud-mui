@@ -57,7 +57,7 @@ const meta: Meta<typeof DetailPage<UserSchema>> = {
     onSave: handleSaveUser,
     onDelete: handleDeleteUser,
     createCommandLabel: 'New User',
-    defaultData: UserDefaultValues,
+    defaultValues: UserDefaultValues,
     schema: userSchema,
   },
 };
@@ -80,7 +80,7 @@ export const WithAsyncDefaultValues: DetailPageStory = {
   args: {
     data: undefined,
     reason: 'fetch',
-    defaultData(reason) {
+    defaultValues(reason) {
       if (reason === 'create') {
         return UserDefaultValues;
       }
