@@ -13,7 +13,7 @@ import Table, { TableColumn } from '../../components/table/Table';
 import mockData from '../../test-setup/mockUsers.json';
 import { UserSchema } from '../utils/schema';
 
-const columns: TableColumn<UserSchema>[] = [
+export const columns: TableColumn<UserSchema>[] = [
   {
     accessorKey: 'name',
     header: 'Name',

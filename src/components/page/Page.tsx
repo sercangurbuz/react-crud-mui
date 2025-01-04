@@ -6,6 +6,7 @@ import { FlexBox } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';
 import MorePanel, { MorePanelProps } from '../more-panel/MorePanel';
 import DefaultLayout, { PageLayoutProps } from './components/DefaultLayout';
+import DefaultPanels, { PanelPane } from './components/DefaultPanels';
 import DefaultTabs, {
   DefaultTabsProps,
   TabChangedPayload,
@@ -53,6 +54,7 @@ export interface PageProps extends HeaderProps {
   onTabChanged?: (selected: TabChangedPayload) => void;
   onTabs?: (props: DefaultTabsProps) => ReactNode;
   bordered?: boolean;
+  panels?: PanelPane[];
 }
 
 /* -------------------------------------------------------------------------- */
@@ -86,6 +88,7 @@ function Page({
   onLayout,
   moreContent,
   morePanelProps,
+  panels,
   showHeader = true,
   showCommands = true,
   size = 'small',
@@ -224,11 +227,20 @@ function Page({
     );
   };
 
+  const renderPanels = () => {
+    if (!panels?.length) {
+      return null;
+    }
+
+    return <DefaultPanels panels={panels} />;
+  };
+
   const renderLayout = () => {
     const pageProps: PageLayoutProps = {
       commandsContent,
       content: children,
       tabsContent: renderTabContent(),
+      panelsContent: renderPanels(),
       pageHeader: renderHeader(),
       footerContent: renderFooter(),
       progressContent: renderProgress(),

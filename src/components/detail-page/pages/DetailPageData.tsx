@@ -8,7 +8,7 @@ import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
 import normalizeServerError from '../../misc/normalizeError';
 import { Message } from '../../page/hooks/useNormalizeMessages';
-import { ServerError } from '../../utils';
+import { DeepNullable, ServerError } from '../../utils';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -20,6 +20,12 @@ export type DataResult<TModel> = TModel | Promise<TModel | void | undefined> | u
 export interface DataEvent<TModel extends FieldValues, TVariables> {
   (variables: TVariables, form: UseFormReturn<TModel>): DataResult<TModel>;
 }
+
+export type DefaultDataFn<TModel extends FieldValues> = (
+  reason: NeedDataReason,
+  data?: TModel,
+) => DeepNullable<TModel> | Promise<DeepNullable<TModel>>;
+export type DefaultData<TModel extends FieldValues> = DeepNullable<TModel> | DefaultDataFn<TModel>;
 
 export type SaveMode = 'save' | 'save-close' | 'save-create';
 
@@ -46,6 +52,10 @@ export interface DetailPageDataProps<TModel extends FieldValues>
     'onSave' | 'onDelete' | 'onDiscardChanges' | 'onCopy' | 'onSaveCreate' | 'onSaveClose'
   > {
   form: UseFormReturn<TModel>;
+  /**
+   * Get default form values for each particular reason
+   */
+  defaultData?: DefaultData<TModel>;
   /**
    * Save event
    * @returns if returns data,either in promise or object will bind to form data
@@ -89,6 +99,7 @@ function DetailPageData<TModel extends FieldValues>({
   alerts,
   autoSave,
   data,
+  defaultData,
   error,
   form,
   loading,
@@ -121,7 +132,6 @@ function DetailPageData<TModel extends FieldValues>({
     getFormModel,
     getValues,
     formState: { isLoading: isDefaultValuesLoading },
-    initialValues,
   } = form;
 
   /* -------------------------------------------------------------------------- */
@@ -236,7 +246,9 @@ function DetailPageData<TModel extends FieldValues>({
   const handleCreate = (reason: NeedDataReason = 'create') => {
     onReasonChange?.(reason);
     resetState();
-    reset(initialValues as TModel);
+
+    const values = typeof defaultData === 'function' ? defaultData?.(reason, data) : defaultData;
+    reset(values as TModel);
   };
 
   /* -------------------------------------------------------------------------- */

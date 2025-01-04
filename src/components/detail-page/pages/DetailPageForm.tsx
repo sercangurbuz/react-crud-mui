@@ -1,11 +1,11 @@
-import { FieldValues, UseFormProps } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
 
 import { z } from 'zod';
 
 import FormProvider from '../../form/components/FormProvider';
 import { useForm } from '../../form/hooks';
 import { UseFormReturn, ValidationOptions } from '../../form/hooks/useForm';
-import { DeepNullable } from '../../utils';
+import { isPromise } from '../../misc/isPromise';
 import TriggerValidation from '../components/TriggerValidation';
 import DetailPageData, { DetailPageDataProps } from './DetailPageData';
 
@@ -13,16 +13,16 @@ export interface DetailPageFormProps<TModel extends FieldValues>
   extends Omit<DetailPageDataProps<TModel>, 'form' | 'defaultValues' | 'schema'> {
   form?: UseFormReturn<TModel>;
   schema?: z.ZodType<TModel>;
-  defaultValues?: DeepNullable<TModel> | (() => Promise<DeepNullable<TModel>>);
   validationOptions?: ValidationOptions<TModel>;
 }
 
 function DetailPageForm<TModel extends FieldValues>({
   activeSegmentIndex = 0,
   schema,
-  defaultValues,
+  defaultData,
   validationOptions,
   data,
+  reason,
   ...dpProps
 }: DetailPageFormProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -33,7 +33,15 @@ function DetailPageForm<TModel extends FieldValues>({
     reValidateMode: 'onChange',
     mode: 'onChange',
     schema,
-    defaultValues: defaultValues as UseFormProps<TModel>['defaultValues'],
+    defaultValues: () => {
+      const values = typeof defaultData === 'function' ? defaultData?.(reason!) : defaultData;
+
+      if (isPromise(values)) {
+        return values as Promise<TModel>;
+      }
+
+      return Promise.resolve(values as TModel);
+    },
     values: data,
   });
 
@@ -46,6 +54,8 @@ function DetailPageForm<TModel extends FieldValues>({
         activeSegmentIndex={activeSegmentIndex}
         form={formMethods}
         data={data}
+        reason={reason}
+        defaultData={defaultData}
       />
       <TriggerValidation />
     </FormProvider>

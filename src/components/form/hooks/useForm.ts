@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import {
   FieldPath,
   FieldValues,
@@ -9,8 +9,6 @@ import {
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-
-import { DeepNullable } from '../../utils';
 
 export type ValidationCallOutType = 'tooltip' | 'label' | 'none';
 export type ValidationVisibilityOptions =
@@ -40,10 +38,6 @@ export interface UseFormReturn<TFieldValues extends FieldValues>
    * @returns Returns form model when validation successed
    */
   getFormModel(): Promise<TFieldValues>;
-  /**
-   * Initial defaultValues of form
-   */
-  initialValues: DeepNullable<TFieldValues>;
 }
 
 /**
@@ -57,22 +51,13 @@ function useForm<TFieldValues extends FieldValues = FieldValues>({
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const initialValuesRef = useRef<DeepNullable<TFieldValues> | null>(null);
-
   // RHF useForm hook
   const formMethods = useRHF<TFieldValues>({
     resolver: schema && zodResolver(schema),
     ...options,
   });
 
-  const {
-    handleSubmit,
-    formState: { defaultValues },
-  } = formMethods;
-
-  if (defaultValues && !initialValuesRef.current) {
-    initialValuesRef.current = defaultValues as DeepNullable<TFieldValues>;
-  }
+  const { handleSubmit } = formMethods;
 
   const getFormModel = useCallback((): Promise<TFieldValues> => {
     return new Promise<TFieldValues>((resolve, reject) => {
@@ -83,7 +68,6 @@ function useForm<TFieldValues extends FieldValues = FieldValues>({
   return {
     ...formMethods,
     getFormModel,
-    initialValues: initialValuesRef.current,
   } as UseFormReturn<TFieldValues>;
 }
 

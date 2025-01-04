@@ -10,7 +10,10 @@ import { FlexBetween, FlexBox } from '../../components/flexbox';
 import Add from '../../components/icons/Add';
 import GroupSenior from '../../components/icons/GroupSenior';
 import Page from '../../components/page/Page';
+import Table from '../../components/table/Table';
 import { H5, Paragraph, Small, Tiny } from '../../components/typography';
+import mockData from '../../test-setup/mockUsers.json';
+import { columns } from '../table/Table.stories';
 
 const meta: Meta<typeof Page> = {
   title: 'Components/Page',
@@ -153,6 +156,37 @@ export const TabsInSubRow: PageStory = {
   },
 };
 
+export const WithPanels: PageStory = {
+  args: {
+    children: null,
+    bordered: true,
+    panels: [
+      {
+        key: 'panel1',
+        label: 'Assigned',
+        defaultExpanded: true,
+        children: 'By Uko to save tons and more to time money projects are listed and outstanding.',
+      },
+      {
+        key: 'panel2',
+        label: 'Pending',
+        defaultExpanded: true,
+        children: `The vows and named is he seven his origin myself any is decision-making. The interface
+            of Jeni’s is simple and clean, with the section includes questions that are very
+            specific to their customer group. First thing first, you need to sort out what explicit.
+            The advice is to see mails and phone call data, then make a rundown of the top questions
+            that show up continually.`,
+      },
+      {
+        key: 'panel3',
+        label: 'Done',
+        defaultExpanded: true,
+        detailsProps: { sx: { p: 0 } },
+        children: <Table data={mockData} columns={columns} />,
+      },
+    ],
+  },
+};
 export const OpenInModal: PageStory = {
   args: {},
   render: (args) => {

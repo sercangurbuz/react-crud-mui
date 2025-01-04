@@ -10,7 +10,7 @@ import { UserSchema } from './schema';
 
 export const UserDefaultValues: DeepNullable<UserSchema> = {
   id: null,
-  name: '',
+  name: 'A',
   username: '',
   email: '',
   phone: '',
