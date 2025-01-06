@@ -165,17 +165,25 @@ export const WithPanels: PageStory = {
         key: 'panel1',
         label: 'Assigned',
         defaultExpanded: true,
-        children: 'By Uko to save tons and more to time money projects are listed and outstanding.',
+        children: (
+          <Page.Content paddingTop={0}>
+            By Uko to save tons and more to time money projects are listed and outstanding.
+          </Page.Content>
+        ),
       },
       {
         key: 'panel2',
         label: 'Pending',
         defaultExpanded: true,
-        children: `The vows and named is he seven his origin myself any is decision-making. The interface
+        children: (
+          <Page.Content>
+            The vows and named is he seven his origin myself any is decision-making. The interface
             of Jeni’s is simple and clean, with the section includes questions that are very
             specific to their customer group. First thing first, you need to sort out what explicit.
             The advice is to see mails and phone call data, then make a rundown of the top questions
-            that show up continually.`,
+            that show up continually.
+          </Page.Content>
+        ),
       },
       {
         key: 'panel3',

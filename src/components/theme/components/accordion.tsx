@@ -49,10 +49,11 @@ export const AccordionDetails = (theme: Theme) => ({
   styleOverrides: {
     root: {
       fontSize: 14,
-      paddingTop: 4,
       fontWeight: 400,
-      paddingInline: 24,
-      paddingBottom: 24,
+      /* paddingTop: 0,
+      paddingInline: 0,
+      paddingBottom: 0, */
+      padding: 0,
       color: theme.palette.grey[400],
     },
   },
@@ -63,14 +64,14 @@ export const AccordionSummery = (theme: Theme) => ({
     root: {
       fontSize: 14,
       fontWeight: 600,
-      padding: '0 1.5rem',
+      padding: '0 16px ',
       color: theme.palette.grey[400],
       transition: `all 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms`,
       '&.Mui-expanded': {
         color: theme.palette.grey[isDark(theme) ? 100 : 700],
       },
     },
-    content: { alignItems: 'center' },
+    content: {},
     expandIconWrapper: { color: theme.palette.grey[400] },
   },
 });

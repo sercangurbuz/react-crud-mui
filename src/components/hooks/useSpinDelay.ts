@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-interface SpinDelayOptions {
+export interface SpinDelayOptions {
   /**
    * The delay in milliseconds before the spinner is displayed.
    * @default 500

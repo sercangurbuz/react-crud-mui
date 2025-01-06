@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 
 import { LinearProgress, LinearProgressProps, styled } from '@mui/material';
 
-import { useSpinDelay } from '../hooks/useSpinDelay';
+import { SpinDelayOptions, useSpinDelay } from '../hooks/useSpinDelay';
 import useTranslation from '../i18n/hooks/useTranslation';
 
 const LoadingProgress = styled(LinearProgress)({
@@ -13,16 +13,37 @@ const LoadingProgress = styled(LinearProgress)({
   flexGrow: 0,
 });
 
+export type ProgressProps = SpinDelayOptions &
+  LinearProgressProps & {
+    loading?: boolean;
+    visible?: boolean;
+    showTooLongNotification?: boolean;
+  };
+
 function Progress({
   loading,
   visible,
+  delay,
+  minDuration,
+  maxDuration,
+  ssr,
+  showTooLongNotification = true,
   ...rest
-}: LinearProgressProps & { loading?: boolean; visible?: boolean }) {
-  const { isLoading: showSpinner, state } = useSpinDelay(!!loading);
+}: ProgressProps) {
+  const { isLoading: showSpinner, state } = useSpinDelay(!!loading, {
+    delay,
+    minDuration,
+    maxDuration,
+    ssr,
+  });
   const toastRef = useRef<string | null>(null);
   const { t } = useTranslation();
 
   useEffect(() => {
+    if (!showTooLongNotification) {
+      return;
+    }
+
     switch (state) {
       case 'TOO_LONG':
         toastRef.current = toast.loading(t('takingtoolong'), { position: 'top-center' });
@@ -34,7 +55,7 @@ function Progress({
         }
         break;
     }
-  }, [state, t]);
+  }, [state, t, showTooLongNotification]);
 
   if (!visible && !showSpinner) {
     return null;
