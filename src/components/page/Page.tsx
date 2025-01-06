@@ -4,9 +4,8 @@ import { Box, BoxProps } from '@mui/material';
 
 import { FlexBox } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';
-import { SpinDelayOptions } from '../hooks/useSpinDelay';
 import MorePanel, { MorePanelProps } from '../more-panel/MorePanel';
-import Progress from '../progress/Progress';
+import Progress, { ProgressProps } from '../progress/Progress';
 import DefaultLayout, { PageLayoutProps } from './components/DefaultLayout';
 import DefaultPanels, { PanelPane } from './components/DefaultPanels';
 import DefaultTabs, {
@@ -49,7 +48,7 @@ export interface PageProps extends HeaderProps {
   size?: PaddingSize;
   disabled?: boolean;
   loading?: boolean;
-  loadingOptions?: SpinDelayOptions;
+  progressProps?: ProgressProps;
   disableShortCuts?: boolean;
   tabs?: TabPane[];
   tabsPosition?: TabsPosition;
@@ -80,7 +79,7 @@ function Page({
   disabled,
   footerContent,
   loading,
-  loadingOptions,
+  progressProps,
   moreContent,
   morePanelProps,
   onHeader,
@@ -212,7 +211,7 @@ function Page({
   };
 
   const renderProgress = () => {
-    return <Progress loading={loading} visible={bordered} {...loadingOptions} />;
+    return <Progress loading={loading} visible={bordered} {...progressProps} />;
   };
 
   const renderPanels = () => {

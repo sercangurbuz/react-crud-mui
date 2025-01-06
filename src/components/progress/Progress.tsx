@@ -27,7 +27,7 @@ function Progress({
   minDuration,
   maxDuration,
   ssr,
-  showTooLongNotification = true,
+  showTooLongNotification,
   ...rest
 }: ProgressProps) {
   const { isLoading: showSpinner, state } = useSpinDelay(!!loading, {

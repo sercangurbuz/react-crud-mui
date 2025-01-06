@@ -351,6 +351,7 @@ function ListPageContent<
     return (
       <Page
         icon={<SearchIcon />}
+        progressProps={{ showTooLongNotification: true }}
         {...pageProps}
         disabled={disabled}
         commandsContent={commands}

@@ -48,9 +48,9 @@ export const useFetchUsers = (filter: UserSchema, _meta: ListPageMeta) => {
           email_like: email ? `^${email}` : '',
           website_like: website ? `^${website}` : '',
           phone_like: phone ? `^${phone}` : '',
-          _page: String(_meta?.pagination.pageIndex ?? 1),
+          _page: String(_meta?.pagination?.pageIndex ?? 1),
           _limit: String(_meta?.pagination?.pageSize),
-          _sort: _meta.sorting.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
+          _sort: _meta?.sorting?.map(({ desc, id }) => `${desc ? '-' : ''}${id}`).join(),
         }).toString()}`,
       ).then(async (response) => {
         const data = (await response.json()) as UserSchema[];

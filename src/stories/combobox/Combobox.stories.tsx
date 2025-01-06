@@ -8,6 +8,7 @@ import Field from '../../components/form/Field';
 import Page from '../../components/page/Page';
 import { Paragraph } from '../../components/typography';
 import mockData from '../../test-setup/mockUsers.json';
+import { useFetchUsers } from '../utils/api';
 
 const meta: Meta<typeof Field.Combobox> = {
   title: 'Components/Combobox',
@@ -27,6 +28,7 @@ const meta: Meta<typeof Field.Combobox> = {
             {
               id: z.number(),
               name: z.string(),
+              username: z.string(),
             },
             { message: 'User is missing' },
           ),
@@ -34,7 +36,13 @@ const meta: Meta<typeof Field.Combobox> = {
         validationOptions={{
           callOutVisibility: 'all',
         }}
-        defaultValues={{ user: null }}
+        defaultValues={{
+          user: {
+            id: 6,
+            name: 'Mrs. Dennis Schulist',
+            username: 'Leopoldo_Corkery',
+          },
+        }}
         showHeader={false}
       >
         <Page.Content>
@@ -61,6 +69,13 @@ export const Simple: ComboboxStory = {};
 export const Disabled: ComboboxStory = {
   args: {
     disabled: true,
+  },
+};
+
+export const WithAsyncData: ComboboxStory = {
+  render(args) {
+    const [data, loading] = useFetchUsers({}, { pageIndex: 0, pageSize: 10 });
+    return <Field.Combobox {...args} data={data} loading={loading} />;
   },
 };
 

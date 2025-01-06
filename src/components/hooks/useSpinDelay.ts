@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+import merge from 'lodash.merge';
+
 export interface SpinDelayOptions {
   /**
    * The delay in milliseconds before the spinner is displayed.
@@ -11,7 +13,9 @@ export interface SpinDelayOptions {
    * @default 200
    */
   minDuration?: number;
-
+  /**
+   * Max duration to set state to TOO_LONG
+   */
   maxDuration?: number;
   /**
    * Whether to enable the spinner on the server side. If true, `delay` will be
@@ -42,7 +46,7 @@ function useIsSSR() {
 
 // inspired from https://github.com/smeijer/spin-delay/blob/main/src/index.ts
 export function useSpinDelay(loading: boolean, options?: SpinDelayOptions) {
-  options = Object.assign({}, defaultOptions, options);
+  options = merge({}, defaultOptions, options);
 
   const isSSR = useIsSSR() && options.ssr;
   const initialState = isSSR && loading ? 'DISPLAY' : 'IDLE';
