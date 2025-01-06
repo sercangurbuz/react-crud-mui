@@ -88,7 +88,7 @@ export const WithAsyncDefaultValues: DetailPageStory = {
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve(mockData[1]);
-        }, 2000);
+        }, 5000);
       });
     },
   },
@@ -285,8 +285,18 @@ export const WithZodRefine: DetailPageStory = {
 export const OpenInModal: DetailPageModalStory = {
   args: {
     defaultReason: 'fetch',
-    data: mockData[0] as unknown as UserSchema,
     enableDelete: false,
+    defaultValues(reason) {
+      if (reason === 'create') {
+        return UserDefaultValues;
+      }
+
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(mockData[1]);
+        }, 5000);
+      });
+    },
   },
   render: (args) => {
     const [visible, setVisible] = useState<boolean>(true);

@@ -1,4 +1,4 @@
-import { FieldValues } from 'react-hook-form';
+import { DefaultValues, FieldValues } from 'react-hook-form';
 
 import { z } from 'zod';
 
@@ -33,15 +33,18 @@ function DetailPageForm<TModel extends FieldValues>({
     reValidateMode: 'onChange',
     mode: 'onChange',
     schema,
-    defaultValues: () => {
-      const values = typeof defaultValues === 'function' ? defaultValues?.(reason!) : defaultValues;
+    defaultValues:
+      typeof defaultValues === 'function'
+        ? () => {
+            const values = defaultValues?.(reason!);
 
-      if (isPromise(values)) {
-        return values as Promise<TModel>;
-      }
+            if (isPromise(values)) {
+              return values as Promise<TModel>;
+            }
 
-      return Promise.resolve(values as TModel);
-    },
+            return Promise.resolve(values as TModel);
+          }
+        : (defaultValues as DefaultValues<TModel>),
     values: data,
   });
 

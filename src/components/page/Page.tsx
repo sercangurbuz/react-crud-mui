@@ -1,10 +1,11 @@
 import { ReactNode } from 'react';
 
-import { Box, BoxProps, LinearProgress, styled } from '@mui/material';
+import { Box, BoxProps } from '@mui/material';
 
 import { FlexBox } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';
 import MorePanel, { MorePanelProps } from '../more-panel/MorePanel';
+import Progress from '../progress/Progress';
 import DefaultLayout, { PageLayoutProps } from './components/DefaultLayout';
 import DefaultPanels, { PanelPane } from './components/DefaultPanels';
 import DefaultTabs, {
@@ -67,13 +68,6 @@ export const PagePadding: Record<PaddingSize, number> = { large: 4, normal: 3, s
 /*                                   Styled                                   */
 /* -------------------------------------------------------------------------- */
 
-const LoadingProgress = styled(LinearProgress)({
-  height: 1,
-  borderRadius: 0,
-  margin: 0,
-  flexGrow: 0,
-});
-
 function Page({
   alertsContent,
   bordered,
@@ -102,9 +96,6 @@ function Page({
   centerContent,
   ...headerProps
 }: PageProps) {
-  /* -------------------------------------------------------------------------- */
-  /*                                    Hooks                                   */
-  /* -------------------------------------------------------------------------- */
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
   /* -------------------------------------------------------------------------- */
@@ -218,13 +209,7 @@ function Page({
   };
 
   const renderProgress = () => {
-    return (
-      <LoadingProgress
-        style={{ visibility: loading || bordered ? 'visible' : 'hidden' }}
-        variant={loading ? 'indeterminate' : 'determinate'}
-        value={0}
-      />
-    );
+    return <Progress loading={loading} visible={bordered} />;
   };
 
   const renderPanels = () => {

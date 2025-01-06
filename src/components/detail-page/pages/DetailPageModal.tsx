@@ -2,7 +2,7 @@ import { FieldValues } from 'react-hook-form';
 
 import FormDirtyTracker from '../../form/components/FormDirtyTracker';
 import Modal, { ModalProps } from '../../modal/Modal';
-import Page from '../../page/Page';
+import DetailPageModalLayout from '../components/DetailPageModalLayout';
 import useFormConfirmDirtyChange from '../hooks/useFormConfirmDirtyChange';
 import { UseFormPromptProps } from '../hooks/useFormPrompt';
 import DetailPage, { DetailPageProps } from './DetailPage';
@@ -60,10 +60,7 @@ function DetailPageModal<TModel extends FieldValues>({
         onLayout={(props) => (
           <>
             <FormDirtyTracker onDirtyStateChange={setFormDirtyChange} />
-            <Page.Layout
-              {...props}
-              content={<Modal.Scroll autoHide={false}>{props.content}</Modal.Scroll>}
-            />
+            <DetailPageModalLayout {...props} />
           </>
         )}
         bordered
@@ -74,4 +71,5 @@ function DetailPageModal<TModel extends FieldValues>({
   );
 }
 
+DetailPageModal.Layout = DetailPageModalLayout;
 export default DetailPageModal;
