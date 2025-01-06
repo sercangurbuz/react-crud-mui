@@ -22,6 +22,7 @@ import { DEFAULT_OPTION_TEMPLATE } from '../combobox/ComboBox';
 import useComboboxTemplate, { ComboboxTemplate } from '../combobox/hooks/useComboboxTemplate';
 import { FlexBox } from '../flexbox';
 import useFormInitEffect from '../form/hooks/useFormInitEffect';
+import { toNull } from '../misc';
 import isNil from '../misc/isNil';
 import { Tiny } from '../typography';
 
@@ -85,13 +86,15 @@ function Select<T extends FieldValues = FieldValues>({
   });
 
   const selectedValue = useMemo(() => {
+    let currentValue = value;
+
     if (optionAsValue) {
-      return multiple
+      currentValue = multiple
         ? (value as T[])?.map((item) => get(item, valueField))
         : get(value as T, valueField);
     }
 
-    return value;
+    return toNull(currentValue);
   }, [multiple, optionAsValue, value, valueField]);
 
   useFormInitEffect(() => {

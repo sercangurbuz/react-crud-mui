@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 
 import useTranslation from '../i18n/hooks/useTranslation';
+import { toNull } from '../misc';
 import { Tiny } from '../typography';
 import useComboboxTemplate, { ComboboxTemplate } from './hooks/useComboboxTemplate';
 
@@ -79,6 +80,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   optionTemplate = DEFAULT_OPTION_TEMPLATE,
   label,
   size,
+  value,
   renderOption: onRenderOption,
   selectRef,
   ...rest
@@ -244,6 +246,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
+
   return (
     <Autocomplete<T, false, true, typeof creatable>
       {...rest}
@@ -290,6 +293,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
       filterOptions={handleFilterOptions}
       renderOption={renderOptionItem}
       renderInput={renderInput}
+      value={toNull(value) as T}
     />
   );
 }
