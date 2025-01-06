@@ -5,11 +5,10 @@ import useArrayFieldHelpers from '../../form/hooks/useArrayFieldHelpers';
 import { NeedDataReason } from '../pages/DetailPageContent';
 import { DetailPageModalProps } from '../pages/DetailPageModal';
 
-export type SelectedModelOptions<TModel> = {
-  data?: TModel;
-  reason?: NeedDataReason;
-  disabled?: boolean;
-};
+export type SelectedModelOptions<TModel extends FieldValues> = Pick<
+  DetailPageModalProps<TModel>,
+  'reason' | 'data' | 'disabled' | 'onAfterSave' | 'onAfterDelete'
+>;
 
 type HelperModelFields = {
   uid?: string;
@@ -18,7 +17,7 @@ type HelperModelFields = {
 
 export type UseDetailPageModalReturn<TModel extends FieldValues> = Pick<
   DetailPageModalProps<TModel>,
-  'reason' | 'open' | 'onReasonChange' | 'data' | 'disabled'
+  'reason' | 'open' | 'onReasonChange' | 'data' | 'disabled' | 'onAfterSave' | 'onAfterDelete'
 > &
   HelperModelFields & {
     onOpen(model?: SelectedModelOptions<TModel>): void;
@@ -78,7 +77,7 @@ function useDetailPageModal<TModel extends FieldValues>({
   }, [onVisibleChange]);
 
   const onOpen = useCallback(
-    ({ data, disabled, reason }: SelectedModelOptions<TModel> = {}) => {
+    ({ data, disabled, reason, onAfterDelete, onAfterSave }: SelectedModelOptions<TModel> = {}) => {
       const pageReason = reason ?? (data ? 'fetch' : 'create');
       setProps({
         data,
@@ -88,6 +87,8 @@ function useDetailPageModal<TModel extends FieldValues>({
         // this is needed for array field usage
         uid: pageReason === 'fetch' ? getUID(data) : undefined,
         index: pageReason === 'fetch' ? findIndex(data) : undefined,
+        onAfterDelete,
+        onAfterSave,
       });
 
       onVisibleChange?.(true);

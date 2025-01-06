@@ -295,6 +295,13 @@ export const WithDetailPage: ListPageStory = {
   },
 };
 
+export const RefreshAfterActions: ListPageStory = {
+  args: {
+    ...WithDetailPage.args,
+    enableRefreshDataAfterActions: true,
+  },
+};
+
 export const WithDetailPagesByReason: ListPageStory = {
   args: {
     enableCreateItem: true,
@@ -314,7 +321,7 @@ export const WithRowClickToDetails: ListPageStory = {
   ...WithDetailPagesByReason,
   args: {
     ...WithDetailPagesByReason.args,
-    enableRowClickToDetails: "fetch",
+    enableRowClickToDetails: 'fetch',
   },
 };
 

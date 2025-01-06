@@ -3,6 +3,8 @@ import { ReactNode } from 'react';
 
 import { styled, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
 
+import { FlexBox } from '../../flexbox';
+
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
@@ -11,6 +13,7 @@ export type TabPane = Omit<TabProps, 'children' | 'key'> & { children?: ReactNod
 export interface DefaultTabsProps extends TabsProps {
   tabs: TabPane[];
   bordered?: boolean;
+  extra?: ReactNode;
 }
 
 export type TabChangedPayload = { selectedTabIndex: number; selectedTabValue: string };
@@ -24,13 +27,16 @@ const TabListWrapper = styled(Tabs)<{ bordered?: boolean }>(({ theme, bordered }
   [theme.breakpoints.down(727)]: { order: 3 },
 }));
 
-function DefaultTabs({ tabs, ...tabsProps }: DefaultTabsProps) {
+function DefaultTabs({ tabs, extra, sx, ...tabsProps }: DefaultTabsProps) {
   return (
-    <TabListWrapper variant="scrollable" {...tabsProps}>
-      {tabs.map(({ children, key, ...tabProps }) => (
-        <Tab disableRipple iconPosition="start" key={key} {...tabProps} />
-      ))}
-    </TabListWrapper>
+    <FlexBox sx={sx} alignItems="center">
+      <TabListWrapper variant="scrollable" {...tabsProps} sx={{ flexGrow: 1 }}>
+        {tabs.map(({ children, key, ...tabProps }) => (
+          <Tab disableRipple iconPosition="start" key={key} {...tabProps} />
+        ))}
+      </TabListWrapper>
+      {extra}
+    </FlexBox>
   );
 }
 

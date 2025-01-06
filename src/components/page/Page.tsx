@@ -52,6 +52,7 @@ export interface PageProps extends HeaderProps {
   disableShortCuts?: boolean;
   tabs?: TabPane[];
   tabsPosition?: TabsPosition;
+  tabExtraContent?: ReactNode;
   selectedTabIndex?: number;
   onTabChanged?: (selected: TabChangedPayload) => void;
   onTabs?: (props: DefaultTabsProps) => ReactNode;
@@ -95,6 +96,7 @@ function Page({
   style,
   sx,
   tabs,
+  tabExtraContent,
   tabsPosition = 'in-center',
   ...headerProps
 }: PageProps) {
@@ -125,6 +127,7 @@ function Page({
         const selIndex = tabs.findIndex((item) => item.value === value);
         onTabChanged?.({ selectedTabIndex: selIndex, selectedTabValue: value });
       },
+      extra: tabExtraContent,
       ...tabProps,
     };
 
@@ -193,7 +196,7 @@ function Page({
           {centerContent}
         </>
       ),
-      children: tabsPosition === 'in-subrow' ? renderTabs({ bordered: true, sx: { px: 2 } }) : null,
+      children: tabsPosition === 'in-subrow' ? renderTabs({ sx: { px: 2, mb: '-1px' } }) : null,
     };
 
     return onHeader ? onHeader(props) : <Header {...props} />;

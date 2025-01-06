@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 import { Assignment, Done, Pending, SettingsApplications } from '@mui/icons-material';
-import { Box, Button, LinearProgress, Switch } from '@mui/material';
+import { Box, Button, Chip, LinearProgress, Switch } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { FlexBetween, FlexBox } from '../../components/flexbox';
@@ -152,7 +152,16 @@ export const WithTabs: PageStory = {
 export const TabsInSubRow: PageStory = {
   args: {
     ...WithTabs.args,
+    bordered: true,
+    loading: true,
     tabsPosition: 'in-subrow',
+  },
+};
+
+export const TabsExtraContent: PageStory = {
+  args: {
+    ...TabsInSubRow.args,
+    tabExtraContent: <Chip size="small" label="Credit 500" />,
   },
 };
 

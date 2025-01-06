@@ -187,6 +187,10 @@ export interface ListPageContentProps<
    * Open detailPage in view mode as default or in which reason provided
    */
   enableRowClickToDetails?: boolean | NeedDataReason;
+  /**
+   * Call onNeedData after delete or save actions of DetailPage,default false
+   */
+  enableRefreshDataAfterActions?: boolean;
 }
 
 function ListPageContent<
@@ -209,6 +213,7 @@ function ListPageContent<
   enableClear,
   enableCreateItem = true,
   enableExport,
+  enableRefreshDataAfterActions,
   enableSearch,
   error,
   filterContent,
@@ -282,14 +287,20 @@ function ListPageContent<
         break;
       case 'fetch':
         if (EditDetailPage) {
-          onOpen({ data, disabled });
+          onOpen({
+            data,
+            disabled,
+            ...(enableRefreshDataAfterActions
+              ? { onAfterSave: onSearch, onAfterDelete: onSearch }
+              : {}),
+          });
         } else {
           onEdit?.(row);
         }
         break;
       case 'create':
         if (CreateDetailPage) {
-          onOpen();
+          onOpen(enableRefreshDataAfterActions ? { onAfterSave: onSearch } : undefined);
         } else {
           onCreate?.();
         }
@@ -300,6 +311,9 @@ function ListPageContent<
             data,
             disabled,
             reason: 'copy',
+            ...(enableRefreshDataAfterActions
+              ? { onAfterSave: onSearch, onAfterDelete: onSearch }
+              : {}),
           });
         } else {
           onCopy?.(row);

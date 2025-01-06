@@ -131,7 +131,7 @@ function DetailPageData<TModel extends FieldValues>({
     reset,
     getFormModel,
     getValues,
-    formState: { isLoading: isDefaultValuesLoading },
+    formState: { defaultValues: initialValues, isLoading: isDefaultValuesLoading },
   } = form;
 
   /* -------------------------------------------------------------------------- */
@@ -247,7 +247,8 @@ function DetailPageData<TModel extends FieldValues>({
     onReasonChange?.(reason);
     resetState();
 
-    const values = typeof defaultValues === 'function' ? defaultValues?.(reason, data) : defaultValues;
+    const values =
+      typeof defaultValues === 'function' ? defaultValues?.(reason, data) : defaultValues;
     reset(values as TModel);
   };
 
@@ -260,7 +261,8 @@ function DetailPageData<TModel extends FieldValues>({
       {...dpProps}
       alerts={messages}
       error={error}
-      data={data}
+      //data is passed only for context
+      data={data ?? initialValues}
       autoSave={autoSave}
       loading={loading || loadingState || isDefaultValuesLoading}
       reason={reason}
