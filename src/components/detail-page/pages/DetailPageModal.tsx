@@ -32,7 +32,7 @@ function DetailPageModal<TModel extends FieldValues>({
   open,
   enableClose = true,
   promptOptions,
-  ...rest
+  ...dpProps
 }: DetailPageModalProps<TModel>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
@@ -63,8 +63,8 @@ function DetailPageModal<TModel extends FieldValues>({
             <DetailPageModalLayout {...props} />
           </>
         )}
-        bordered
-        {...rest}
+        bordered={!dpProps.tabs}
+        {...dpProps}
         onClose={handleCloseEvent}
       />
     </Modal>

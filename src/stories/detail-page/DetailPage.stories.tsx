@@ -285,7 +285,29 @@ export const WithZodRefine: DetailPageStory = {
 export const OpenInModal: DetailPageModalStory = {
   args: {
     defaultReason: 'fetch',
-    enableDelete: false,
+    enableDelete: true,
+    tabs: [
+      {
+        key: 'tab1',
+        value: 'assigned',
+        label: 'Assigned',
+        icon: <Assignment />,
+      },
+      {
+        key: 'tab2',
+        value: 'pending',
+        label: 'Pending',
+        disabled: true,
+        icon: <Pending />,
+      },
+      {
+        key: 'tab3',
+        value: 'done',
+        label: 'Done',
+        icon: <Done />,
+      },
+    ],  
+    tabsPosition: 'in-subrow',
     defaultValues(reason) {
       if (reason === 'create') {
         return UserDefaultValues;

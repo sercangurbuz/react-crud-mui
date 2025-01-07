@@ -13,6 +13,7 @@ export const Tab = (theme: Theme): Components['MuiTab'] => ({
       minWidth: 'auto',
       textTransform: 'none',
       '&.Mui-selected': { fontWeight: 600 },
+      '&.Mui-disabled': { color: theme.palette.action.disabled },
     },
     labelIcon: ({ ownerState: { iconPosition } }) => ({
       // marginBottom: 0,

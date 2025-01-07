@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ReactNode } from 'react';
 
-import { styled, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
+import { styled, SxProps, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
 
 import { FlexBox } from '../../flexbox';
 
@@ -14,6 +14,7 @@ export interface DefaultTabsProps extends TabsProps {
   tabs: TabPane[];
   bordered?: boolean;
   extra?: ReactNode;
+  wrapperSx?: SxProps;
 }
 
 export type TabChangedPayload = { selectedTabIndex: number; selectedTabValue: string };
@@ -27,10 +28,10 @@ const TabListWrapper = styled(Tabs)<{ bordered?: boolean }>(({ theme, bordered }
   [theme.breakpoints.down(727)]: { order: 3 },
 }));
 
-function DefaultTabs({ tabs, extra, sx, ...tabsProps }: DefaultTabsProps) {
+function DefaultTabs({ tabs, extra, wrapperSx, sx, ...tabsProps }: DefaultTabsProps) {
   return (
-    <FlexBox sx={sx} alignItems="center">
-      <TabListWrapper variant="scrollable" {...tabsProps} sx={{ flexGrow: 1 }}>
+    <FlexBox sx={wrapperSx} alignItems="center">
+      <TabListWrapper variant="scrollable" {...tabsProps} sx={{ flexGrow: 1, ...sx }}>
         {tabs.map(({ children, key, ...tabProps }) => (
           <Tab disableRipple iconPosition="start" key={key} {...tabProps} />
         ))}

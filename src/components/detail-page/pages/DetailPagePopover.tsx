@@ -24,7 +24,8 @@ function DetailPagePopover<TModel extends FieldValues>({
 }: DetailPagePopoverProps<TModel>) {
   /* ------------------------------- Main Hooks ------------------------------- */
 
-  const handleClose = () => {
+  const handleClose = (e?: unknown) => {
+    (e as React.SyntheticEvent)?.stopPropagation();
     onClose();
   };
 

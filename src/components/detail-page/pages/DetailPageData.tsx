@@ -236,6 +236,7 @@ function DetailPageData<TModel extends FieldValues>({
     }
 
     onAfterDelete?.(variables, form);
+    onClose?.('action');
   };
 
   const handleDiscard = () => {

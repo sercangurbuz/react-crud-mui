@@ -152,8 +152,7 @@ export const WithTabs: PageStory = {
 export const TabsInSubRow: PageStory = {
   args: {
     ...WithTabs.args,
-    bordered: true,
-    loading: true,
+    bordered: false,
     tabsPosition: 'in-subrow',
   },
 };
@@ -205,7 +204,9 @@ export const WithPanels: PageStory = {
   },
 };
 export const OpenInModal: PageStory = {
-  args: {},
+  args: {
+    ...TabsInSubRow.args,
+  },
   render: (args) => {
     const [visible, setVisible] = useState<boolean>(true);
     return (

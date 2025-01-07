@@ -20,6 +20,7 @@ export type PageLayoutProps = {
   alertsContent?: ReactNode;
   options: PageLayoutOptions;
   tabsContent?: ReactNode;
+  tabsHeaderContent?: ReactNode;
   panelsContent?: ReactNode;
   progressContent?: ReactNode;
   moreContent?: ReactNode;
@@ -35,12 +36,14 @@ function DefaultLayout({
   pageHeader,
   moreContent,
   tabsContent,
+  tabsHeaderContent,
 }: PageLayoutProps) {
   return (
     <Card style={options?.style} sx={options?.sx}>
       {pageHeader}
       {progressContent}
       {alertsContent}
+      {tabsHeaderContent}
       {content}
       {tabsContent}
       {panelsContent}

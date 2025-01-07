@@ -196,7 +196,6 @@ function Page({
           {centerContent}
         </>
       ),
-      children: tabsPosition === 'in-subrow' ? renderTabs({ sx: { px: 2, mb: '-1px' } }) : null,
     };
 
     return onHeader ? onHeader(props) : <Header {...props} />;
@@ -230,6 +229,13 @@ function Page({
       commandsContent,
       content: children,
       tabsContent: renderTabContent(),
+      tabsHeaderContent:
+        tabsPosition === 'in-subrow'
+          ? renderTabs({
+              bordered: true,
+              sx: { '& .MuiTabs-scroller': { left: PagePadding[size] * 8 } },
+            })
+          : null,
       panelsContent: renderPanels(),
       pageHeader: renderHeader(),
       footerContent: renderFooter(),

@@ -13,6 +13,7 @@ function DetailPageModalLayout({
   panelsContent,
   progressContent,
   tabsContent,
+  tabsHeaderContent,
 }: PageLayoutProps) {
   return (
     <Card style={options?.style} sx={options?.sx}>
@@ -21,6 +22,7 @@ function DetailPageModalLayout({
       {alertsContent}
       <Modal.Scroll autoHide={false}>
         {content}
+        {tabsHeaderContent}
         {tabsContent}
         {panelsContent}
         {moreContent}
