@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, useTheme } from '@mui/material';
 
 import { FlexBox } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';
@@ -100,6 +100,7 @@ function Page({
   tabsPosition = 'in-center',
   ...headerProps
 }: PageProps) {
+  const theme = useTheme();
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
   /* -------------------------------------------------------------------------- */
@@ -233,7 +234,10 @@ function Page({
         tabsPosition === 'in-subrow'
           ? renderTabs({
               bordered: true,
-              sx: { '& .MuiTabs-scroller': { left: PagePadding[size] * 8 } },
+              wrapperSx: {
+                borderBottom: `1px solid ${theme.palette.divider}`,
+                px: PagePadding[size],
+              },
             })
           : null,
       panelsContent: renderPanels(),

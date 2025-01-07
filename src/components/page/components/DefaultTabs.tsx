@@ -23,8 +23,8 @@ export type TabChangedPayload = { selectedTabIndex: number; selectedTabValue: st
 /*                                   Styled                                   */
 /* -------------------------------------------------------------------------- */
 
-const TabListWrapper = styled(Tabs)<{ bordered?: boolean }>(({ theme, bordered }) => ({
-  borderBottom: bordered ? undefined : 0,
+const TabListWrapper = styled(Tabs)(({ theme }) => ({
+  borderBottom: 0,
   [theme.breakpoints.down(727)]: { order: 3 },
 }));
 
