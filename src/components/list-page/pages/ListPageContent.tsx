@@ -513,7 +513,7 @@ function ListPageContent<
     };
 
     if (enableRowClickToDetails) {
-      props.onRowClick = (row) => {
+      props.onRowClick = (_e, row) => {
         openDetailPage(
           typeof enableRowClickToDetails === 'string' ? enableRowClickToDetails : 'view',
           row.original,

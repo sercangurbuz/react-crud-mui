@@ -6,6 +6,7 @@ import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
 
 import type { Preview } from '@storybook/react';
+import { ConfirmProvider } from 'material-ui-confirm';
 
 import CrudMuiProvider from '../src/components/crud-mui-provider/CrudMuiProvider';
 import i18nInstance from '../src/components/i18n';
@@ -62,18 +63,20 @@ const preview: Preview = {
     (Story, context) => {
       useEffect(() => {
         if (context.globals.lang) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+           
           void i18nInstance.changeLanguage(context.globals.lang);
         }
       }, [context.globals.lang]);
 
       return (
-        <CrudMuiProvider
-          theme={context.globals.theme}
-          themeOptions={{ typography: { fontFamily: "'Inter', sans-serif" } }}
-        >
-          <Story />
-        </CrudMuiProvider>
+        <ConfirmProvider>
+          <CrudMuiProvider
+            theme={context.globals.theme}
+            themeOptions={{ typography: { fontFamily: "'Inter', sans-serif" } }}
+          >
+            <Story />
+          </CrudMuiProvider>
+        </ConfirmProvider>
       );
     },
   ],

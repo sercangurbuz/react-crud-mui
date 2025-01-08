@@ -10,8 +10,9 @@ import {
 } from 'react-router-dom';
 
 import { Assignment, Done, Pending } from '@mui/icons-material';
-import { Button, Chip, Grid2 } from '@mui/material';
+import { Button, Grid2 } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
+import { ConfirmProvider as MuiConfirmProvider, useConfirm } from 'material-ui-confirm';
 
 import DetailPage from '../../components/detail-page';
 import useDetailPageRouteParams from '../../components/detail-page/hooks/useDetailPageRouteParams';

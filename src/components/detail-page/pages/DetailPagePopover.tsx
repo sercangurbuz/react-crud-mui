@@ -20,7 +20,7 @@ function DetailPagePopover<TModel extends FieldValues>({
   children,
   onClose,
   anchorEl,
-  ...rest
+  ...dpProps
 }: DetailPagePopoverProps<TModel>) {
   /* ------------------------------- Main Hooks ------------------------------- */
 
@@ -51,8 +51,8 @@ function DetailPagePopover<TModel extends FieldValues>({
         onAfterDelete={() => handleClose()}
         commandsPosition="bottom-right"
         onClose={() => handleClose()}
-        bordered
-        {...rest}
+        bordered={!dpProps.tabs}
+        {...dpProps}
       >
         {children}
       </DetailPage>

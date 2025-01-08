@@ -7,6 +7,7 @@ import {
   AccordionDetailsProps,
   AccordionProps,
   AccordionSummary,
+  BoxProps,
 } from '@mui/material';
 
 import Page from '../Page';
@@ -18,11 +19,11 @@ export type PanelPane = Omit<AccordionProps, 'children' | 'key'> & {
   detailsProps?: AccordionDetailsProps;
 };
 
-export interface DefaultAccordionsProps {
+export interface DefaultAccordionsProps extends BoxProps {
   panels: PanelPane[];
 }
 
-function DefaultPanels({ panels }: DefaultAccordionsProps) {
+function DefaultPanels({ panels, ...boxProps }: DefaultAccordionsProps) {
   const panelContent = panels.map(({ detailsProps, ...panel }) => (
     <Accordion {...panel} key={panel.key}>
       <AccordionSummary expandIcon={<ExpandMore />}>{panel.label}</AccordionSummary>
@@ -30,7 +31,7 @@ function DefaultPanels({ panels }: DefaultAccordionsProps) {
     </Accordion>
   ));
 
-  return <Page.Content>{panelContent}</Page.Content>;
+  return <Page.Content {...boxProps}>{panelContent}</Page.Content>;
 }
 
 export default DefaultPanels;

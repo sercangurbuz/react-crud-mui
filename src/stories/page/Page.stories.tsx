@@ -166,8 +166,7 @@ export const TabsExtraContent: PageStory = {
 
 export const WithPanels: PageStory = {
   args: {
-    children: null,
-    bordered: true,
+    children: null,    
     panels: [
       {
         key: 'panel1',
@@ -203,6 +202,7 @@ export const WithPanels: PageStory = {
     ],
   },
 };
+
 export const OpenInModal: PageStory = {
   args: {
     ...TabsInSubRow.args,

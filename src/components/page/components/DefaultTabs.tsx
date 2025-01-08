@@ -12,7 +12,6 @@ export type TabPane = Omit<TabProps, 'children' | 'key'> & { children?: ReactNod
 
 export interface DefaultTabsProps extends TabsProps {
   tabs: TabPane[];
-  bordered?: boolean;
   extra?: ReactNode;
   wrapperSx?: SxProps;
 }

@@ -222,7 +222,7 @@ function Page({
       return null;
     }
 
-    return <DefaultPanels panels={panels} />;
+    return <DefaultPanels panels={panels} sx={{ pt: bordered ? undefined : 0 }} />;
   };
 
   const renderLayout = () => {
@@ -233,7 +233,6 @@ function Page({
       tabsHeaderContent:
         tabsPosition === 'in-subrow'
           ? renderTabs({
-              bordered: true,
               wrapperSx: {
                 borderBottom: `1px solid ${theme.palette.divider}`,
                 px: PagePadding[size],

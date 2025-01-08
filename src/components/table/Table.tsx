@@ -116,7 +116,7 @@ export interface TableProps<TData extends FieldValues>
   newRowButtonText?: string;
   onNewRow?: () => void;
   onRenderNestedComponent?: (props: RenderSubComponentProps<TData>) => React.ReactNode;
-  onRowClick?: (row: Row<TData>) => void;
+  onRowClick?: (e: React.MouseEvent<HTMLTableRowElement>, row: Row<TData>) => void;
   onRowEnterPress?: (row: Row<TData>) => void;
   onRowProps?: (row: Row<TData>) => React.ComponentProps<typeof BodyTableRow> | undefined;
   onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
@@ -374,11 +374,15 @@ function Table<TData extends FieldValues>({
     }
   };
 
-  const handleRowClick = (row: Row<TData>) => {
+  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, row: Row<TData>) => {
+    if ((e.target as HTMLElement).tagName !== 'TD') {
+      return;
+    }
+
     if (enableRowClickSelect) {
       selectRow(row);
     }
-    onRowClick?.(row);
+    onRowClick?.(e, row);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>, row: Row<TData>) => {
@@ -662,8 +666,8 @@ function Table<TData extends FieldValues>({
                   ? theme.palette.action.hover
                   : undefined
             }
-            onClick={() => {
-              handleRowClick(row);
+            onClick={(e) => {
+              handleRowClick(e, row);
             }}
             {...exRowProps}
             sx={
