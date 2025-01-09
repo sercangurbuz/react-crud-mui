@@ -11,8 +11,8 @@ export interface FormComboBoxProps<
     ControlCommonProps<TFieldValues> {}
 
 function FormComboBox<
-  T extends CreatableModel,
-  Creatable extends boolean,
+  T extends CreatableModel = CreatableModel,
+  Creatable extends boolean = false,
   TFieldValues extends FieldValues = FieldValues,
 >({ name, fieldProps, disabled, ...comboBoxProps }: FormComboBoxProps<T, Creatable, TFieldValues>) {
   return (

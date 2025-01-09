@@ -349,6 +349,7 @@ function Table<TData extends FieldValues>({
 
   useEffect(() => {
     if (data?.length) {
+      //for skeleton render
       firstLoadRef.current = false;
     }
   }, [data]);
@@ -375,6 +376,7 @@ function Table<TData extends FieldValues>({
   };
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, row: Row<TData>) => {
+    // prevent event of inner element of td
     if ((e.target as HTMLElement).tagName !== 'TD') {
       return;
     }

@@ -14,6 +14,7 @@ import ListPage from '../../components/list-page/pages/ListPage';
 import Table from '../../components/table/Table';
 import { H1 } from '../../components/typography';
 import { ServerError } from '../../components/utils';
+import mockUsers from '../../test-setup/mockUsers.json';
 import { UserDefaultValues } from '../utils/api';
 import { UserSchema } from '../utils/schema';
 import useSession from '../utils/useSession';
@@ -140,6 +141,35 @@ export const WithNoFilter: ListPageStory = {
 export const NoPaging: ListPageStory = {
   args: {
     enablePagination: false,
+    defaultMeta: {
+      pagination: {
+        pageSize: 99,
+      },
+    },
+  },
+};
+
+export const ClientPaging: ListPageStory = {
+  args: {
+    tableMode: 'client',
+  },
+  render(args) {
+    const [data, setdata] = useState<typeof mockUsers>([]);
+    const [loading, setloading] = useState<boolean>();
+    return (
+      <ListPage
+        {...args}
+        data={data}
+        loading={loading}
+        onNeedData={() => {
+          setloading(true);
+          setTimeout(() => {
+            setloading(false);
+            setdata(mockUsers);
+          }, 2000);
+        }}
+      />
+    );
   },
 };
 

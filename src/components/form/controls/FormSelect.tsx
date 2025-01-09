@@ -4,7 +4,7 @@ import Select, { SelectProps } from '../../select/Select';
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormSelectProps<
-  T extends FieldValues,
+  T extends FieldValues = FieldValues,
   TFieldValues extends FieldValues = FieldValues,
 > extends Omit<SelectProps<T>, 'name'>,
     ControlCommonProps<TFieldValues> {}

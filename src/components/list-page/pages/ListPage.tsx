@@ -49,12 +49,13 @@ function ListPage<
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >({
-  onNeedData,
-  defaultSegmentIndex = 0,
   activeSegmentIndex,
-  tabs,
   defaultMeta,
+  defaultSegmentIndex = 0,
+  onNeedData,
   removeFalsyFilterValues = true,
+  tableMode = 'server',
+  tabs,
   ...lpProps
 }: ListPageProps<TModel, TFilter, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
@@ -94,6 +95,14 @@ function ListPage<
         },
       } as ListPageMeta;
 
+      if (
+        tableMode === 'client' &&
+        (updatedMeta.reason === 'pagination' ||
+          updatedMeta.reason === 'sorting' ||
+          updatedMeta.reason === 'columnfilter')
+      ) {
+        return updatedMeta;
+      }
       //as deps is omitted from useFormInitEffect ,meta is always equals to one in previous render.
       //to overcome,updater function is used here and onNeedata called within the setter
       onNeedData?.(removeFalsyFilterValues ? removeFalsy(filter) : filter, updatedMeta);
@@ -110,6 +119,7 @@ function ListPage<
       activeSegmentIndex={activeSegmentIndex}
       tabs={tabs}
       defaultMeta={defaultMeta}
+      tableMode={tableMode}
     />
   );
 }

@@ -1,6 +1,6 @@
 import { DeepPartial, FieldValues } from 'react-hook-form';
 
-import { TableState } from '@tanstack/react-table';
+import { getPaginationRowModel, getSortedRowModel, TableState } from '@tanstack/react-table';
 
 import { UseFormReturn } from '../../form/hooks/useForm';
 import useFormInitEffect from '../../form/hooks/useFormInitEffect';
@@ -12,6 +12,8 @@ import ListPageContent, { ListPageContentProps } from './ListPageContent';
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
+
+export type TableMode = 'server' | 'client';
 
 export type ListPageMeta = Pick<TableState, 'pagination' | 'sorting' | 'columnFilters'> &
   TabChangedPayload & {
@@ -64,6 +66,18 @@ export interface ListPageFilterProps<
    * Make search on mount,default true
    */
   searchOnLoad?: boolean;
+  /**
+   * Enable table pagination default true
+   */
+  enablePagination?: boolean;
+  /**
+   * Enable table sorting default true
+   */
+  enableSorting?: boolean;
+  /**
+   * Table sorting and
+   */
+  tableMode?: TableMode;
 }
 
 /**
@@ -74,15 +88,17 @@ function ListPageFilter<
   TFilter extends FieldValues = FieldValues,
   TDetailPageModel extends FieldValues = FieldValues,
 >({
-  form,
-  meta,
-  tableProps: extableProps,
-  onChange,
+  defaultMeta,
   defaultSegmentIndex,
   enablePagination = true,
+  enableSorting = true,
+  form,
+  meta,
+  onChange,
   onClear,
-  defaultMeta,
   searchOnLoad = true,
+  tableMode,
+  tableProps: extableProps,
   ...lpProps
 }: ListPageFilterProps<TModel, TFilter, TDetailPageModel>) {
   const {
@@ -96,13 +112,11 @@ function ListPageFilter<
   /* -------------------------------------------------------------------------- */
 
   const tableProps = {
-    enableSorting: true,
+    enableSorting,
     enablePagination,
-    // default server base pagination is enabled
-    manualPagination: enablePagination,
-    // default server base sorting is enabled
-    manualSorting: true,
-    manualFiltering: true,
+    manualPagination: enablePagination && tableMode === 'server',
+    manualSorting: tableMode === 'server',
+    manualFiltering: tableMode === 'server',
     // setters
     onColumnFiltersChange: (updater) => {
       const columnFilters = updater instanceof Function ? updater(meta.columnFilters) : updater;
@@ -114,17 +128,25 @@ function ListPageFilter<
             const pagination = updater instanceof Function ? updater(meta.pagination) : updater;
             void handleSearch({ pagination, reason: 'pagination' });
           },
+          ...(tableMode === 'client'
+            ? { getPaginationRowModel: getPaginationRowModel() }
+            : undefined),
         }
       : undefined),
-    onSortingChange: (updater) => {
-      const sorting = updater instanceof Function ? updater(meta.sorting) : updater;
-      void handleSearch({ sorting, reason: 'sorting' });
-    },
+    ...(enableSorting
+      ? {
+          onSortingChange: (updater) => {
+            const sorting = updater instanceof Function ? updater(meta.sorting) : updater;
+            void handleSearch({ sorting, reason: 'sorting' });
+          },
+          ...(tableMode === 'client' ? { getSortedRowModel: getSortedRowModel() } : undefined),
+        }
+      : undefined),
     ...extableProps,
     // states
     state: {
       ...(enablePagination ? { pagination: meta?.pagination } : undefined),
-      sorting: meta?.sorting,
+      ...(enableSorting ? { sorting: meta?.sorting } : undefined),
       columnFilters: meta?.columnFilters,
       ...extableProps?.state,
     },
