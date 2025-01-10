@@ -6,6 +6,7 @@ import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useSegmentParams, {
   UseSegmentParamsOptions,
 } from '../../detail-page/hooks/useSegmentParams';
+import { NeedDataReason } from '../../detail-page/pages/DetailPageContent';
 import { updateQueryString } from '../../misc';
 import useURLSearchFilter from '../hooks/useURLSearchFilter';
 import ListPage, { ListPageProps } from './ListPage';
@@ -37,6 +38,7 @@ function ListPageRoute<
   onNeedData,
   tabs,
   defaultValues,
+  onActionClick,
   ...listPageProps
 }: ListPageRouteProps<TModel, TFilter, TDetailPageModel>) {
   /* -------------------------------------------------------------------------- */
@@ -113,20 +115,22 @@ function ListPageRoute<
     );
   };
 
-  const handleNavigate = (model: TModel, options: { copy?: boolean; disabled?: boolean } = {}) => {
-    let pathname = `./${model[uniqueIdParamName]}`;
+  const handleNavigate = (reason: NeedDataReason | 'delete', model?: TModel) => {
+    const pathname = `./${model?.[uniqueIdParamName]}`;
+    let search = '';
 
-    if (options?.copy) {
-      pathname = updateQueryString(pathname, { copy: '' });
+    if (reason === 'copy') {
+      search = updateQueryString(search, { copy: '' });
     }
 
-    if (options?.disabled) {
-      pathname = updateQueryString(pathname, { disabled: '' });
+    if (reason === 'view') {
+      search = updateQueryString(search, { disabled: '' });
     }
 
     navigate(
       {
         pathname,
+        search,
       },
       { relative: 'path' },
     );
@@ -134,10 +138,13 @@ function ListPageRoute<
 
   return (
     <ListPage
-      onCreate={handleNavigateCreate}
-      onEdit={(model) => handleNavigate(model)}
-      onCopy={(model) => handleNavigate(model, { copy: true })}
-      onView={(model) => handleNavigate(model, { disabled: true })}
+      onActionClick={(reason, model) => {
+        if (reason !== 'delete') {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          reason === 'create' ? handleNavigateCreate() : handleNavigate(reason, model);
+        }
+        onActionClick?.(reason, model);
+      }}
       activeSegmentIndex={segment}
       onWrapperLayout={(props) => (
         <>

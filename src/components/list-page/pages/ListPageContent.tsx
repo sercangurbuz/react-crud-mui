@@ -23,10 +23,6 @@ import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeade
 import ListPageShortCuts from '../components/ListPageShortCuts';
 import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isDetailPageComponentObject = (value: any): value is DetailPageComponentOptions =>
-  'create' in value || 'fetch' in value || 'copy' in value || 'view' in value;
-
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
@@ -39,16 +35,13 @@ export type ListPageWrapperLayoutProps = {
   detailPageContent: ReactNode;
 };
 
-export type DetailPageComponentType<TDetailPageModel extends FieldValues = FieldValues> =
-  React.ComponentType<
-    DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel>
-  >;
-export type DetailPageComponentOptions<TDetailPageModel extends FieldValues = FieldValues> =
-  Partial<Record<NeedDataReason, DetailPageComponentType<TDetailPageModel>>>;
+type DetailPageRender<TDetailPageModel extends FieldValues> = (
+  props: DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel>,
+) => ReactNode;
 
-export type DetailPageComponent<TDetailPageModel extends FieldValues = FieldValues> =
-  | DetailPageComponentOptions<TDetailPageModel>
-  | DetailPageComponentType<TDetailPageModel>;
+export type OnDetailPage<TDetailPageModel extends FieldValues> =
+  | Partial<Record<NeedDataReason, DetailPageRender<TDetailPageModel>>>
+  | DetailPageRender<TDetailPageModel>;
 
 export interface ListPageContentProps<
   TModel extends FieldValues,
@@ -139,22 +132,6 @@ export interface ListPageContentProps<
    */
   list?: React.ComponentType<TableProps<TModel>>;
   /**
-   * New item event fired when new item button pressed
-   */
-  onCreate?: () => void;
-  /**
-   * Edit event fired when edit action of the row clicked
-   */
-  onEdit?: (model: TModel) => void;
-  /**
-   * Copy event fired when copy action of the row clicked
-   */
-  onCopy?: (model: TModel) => void;
-  /**
-   * View event fired when view action of the row clicked
-   */
-  onView?: (model: TModel) => void;
-  /**
    * Custom header function
    */
   onHeader?: (props: ListPageHeaderProps) => ReactNode;
@@ -164,29 +141,25 @@ export interface ListPageContentProps<
   activeSegmentIndex?: number;
   onWrapperLayout?: (props: ListPageWrapperLayoutProps) => React.ReactNode;
   /**
-   * Embedded detail page component
+   * Embedded detail page component render function
    */
-  detailPage?: DetailPageComponent<TDetailPageModel>;
+  onDetailPage?: OnDetailPage<TDetailPageModel>;
   /**
    * Render action commands used with detailPage on every row
    */
   enableActionCommands?: boolean;
   /**
-   * Custom function for action commands
+   * Custom render function for action commands
    */
   onActionCommands?: (props: ActionCommandsProps<TModel>) => ReactNode;
   /**
-   * Delete event when detailPage props is set
+   * Action click event.Its not get fired in case OnDetailPage provided for create,edit copy reasons
    */
-  onDelete?: (model: TModel) => void;
+  onActionClick?: (reason: NeedDataReason | 'delete', model?: TModel) => void;
   /**
    * Open detailPage in view mode as default or in which reason provided
    */
   enableRowClickToDetails?: boolean | NeedDataReason;
-  /**
-   * Call onNeedData after delete or save actions of DetailPage,default false
-   */
-  enableRefreshDataAfterActions?: boolean;
 }
 
 function ListPageContent<
@@ -201,7 +174,6 @@ function ListPageContent<
   createCommandLabel,
   data,
   dataCount,
-  detailPage,
   disabled,
   disableShortCuts,
   enableActionCommands,
@@ -209,27 +181,23 @@ function ListPageContent<
   enableClear,
   enableCreateItem = true,
   enableExport,
-  enableRefreshDataAfterActions,
   enableSearch,
   error,
   filterContent,
   hotkeyScopes,
   list: ListComponent,
   loading,
+  onActionClick,
   onActionCommands,
   onClear,
   onClose,
   onCommands,
-  onCopy,
-  onCreate,
-  onDelete,
-  onEdit,
+  onDetailPage,
   onExcelExport,
   onExtraCommands,
   onHeader,
   onSearch,
   onTabChanged,
-  onView,
   tableProps,
   onWrapperLayout,
   showHeader = true,
@@ -241,81 +209,26 @@ function ListPageContent<
 
   const { t } = useTranslation();
 
-  /* --------------------------- Embeded DetailPage --------------------------- */
+  /* ---------------------------- Action DetailPage --------------------------- */
 
   const { uniqueIdParamName } = useSettings();
-  const [onOpen, dpProps] = useDetailPageModal<TDetailPageModel>({
+  const [openDetailPage, detailPageProps] = useDetailPageModal<TDetailPageModel>({
     models: data,
     uniqueIdParamName,
   });
 
-  const [CreateDetailPage, EditDetailPage, CopyDetailPage, ViewDetailPage] = useMemo(() => {
-    if (!detailPage) {
-      return [];
-    }
+  const triggerAction = (reason: NeedDataReason, row?: TModel) => {
+    const useDetailPage = typeof onDetailPage === 'function' ? true : !!onDetailPage?.[reason];
 
-    if (isDetailPageComponentObject(detailPage)) {
-      return [
-        detailPage['create'],
-        detailPage['fetch'],
-        detailPage['copy'],
-        detailPage['view'],
-      ] as Array<DetailPageComponentType<TDetailPageModel>>;
+    if (useDetailPage) {
+      return openDetailPage({
+        data: row as unknown as TDetailPageModel,
+        reason,
+        disabled,
+      });
     }
-    return [detailPage, detailPage, detailPage, detailPage] as Array<
-      DetailPageComponentType<TDetailPageModel>
-    >;
-  }, [detailPage]);
-
-  const openDetailPage = (reason: NeedDataReason, row: TModel) => {
-    const data = row as unknown as TDetailPageModel;
-
-    switch (reason) {
-      case 'view':
-        if (ViewDetailPage) {
-          onOpen({
-            data,
-            reason: 'view',
-          });
-        } else {
-          onView?.(row);
-        }
-        break;
-      case 'fetch':
-        if (EditDetailPage) {
-          onOpen({
-            data,
-            disabled,
-            ...(enableRefreshDataAfterActions
-              ? { onAfterSave: onSearch, onAfterDelete: onSearch }
-              : {}),
-          });
-        } else {
-          onEdit?.(row);
-        }
-        break;
-      case 'create':
-        if (CreateDetailPage) {
-          onOpen(enableRefreshDataAfterActions ? { onAfterSave: onSearch } : undefined);
-        } else {
-          onCreate?.();
-        }
-        break;
-      case 'copy':
-        if (CopyDetailPage) {
-          onOpen({
-            data,
-            disabled,
-            reason: 'copy',
-            ...(enableRefreshDataAfterActions
-              ? { onAfterSave: onSearch, onAfterDelete: onSearch }
-              : {}),
-          });
-        } else {
-          onCopy?.(row);
-        }
-        break;
-    }
+    //call fallback action handler
+    onActionClick?.(reason, row);
   };
 
   /* -------------------------------------------------------------------------- */
@@ -389,7 +302,7 @@ function ListPageContent<
     return (
       <ListPageShortCuts
         onSearch={onSearch}
-        onCreateItem={CreateDetailPage ? onOpen : onCreate}
+        onCreateItem={() => triggerAction('create')}
         onClear={onClear}
         scopes={hotkeyScopes}
         onExport={onExcelExport}
@@ -423,7 +336,7 @@ function ListPageContent<
     const commandProps: ListPageCommandsProps = {
       onExcelExport,
       onSearch,
-      onCreateItem: () => openDetailPage('create', {} as TModel),
+      onCreateItem: () => triggerAction('create', {} as TModel),
       onClear,
       onCommands,
       onExtraCommands,
@@ -486,11 +399,12 @@ function ListPageContent<
                 const data = cell.row.original;
 
                 const props: ActionCommandsProps<TModel> = {
-                  onDelete: () => onDelete?.(cell.row.original),
-                  onView: () => openDetailPage('view', data),
-                  onEdit: () => openDetailPage('fetch', data),
-                  onCopy: () => openDetailPage('copy', data),
+                  onDelete: () => onActionClick?.('delete', data),
+                  onView: () => triggerAction('view', data),
+                  onEdit: () => triggerAction('fetch', data),
+                  onCopy: () => triggerAction('copy', data),
                   model: data,
+                  index: cell.row.index,
                 };
 
                 if (onActionCommands) {
@@ -510,7 +424,7 @@ function ListPageContent<
 
     if (enableRowClickToDetails) {
       props.onRowClick = (_e, row) => {
-        openDetailPage(
+        triggerAction(
           typeof enableRowClickToDetails === 'string' ? enableRowClickToDetails : 'view',
           row.original,
         );
@@ -541,40 +455,32 @@ function ListPageContent<
    * Render DetailPage opened from new item button
    */
   const renderDetailPage = () => {
-    if (!dpProps?.open) {
+    if (!detailPageProps?.open || !onDetailPage) {
       return null;
     }
 
-    const reason = dpProps.reason ?? 'create';
-    const dpPage: DetailPageComponentOptions<TDetailPageModel> = {
-      copy: CopyDetailPage,
-      create: CreateDetailPage,
-      fetch: EditDetailPage,
-      view: ViewDetailPage,
+    const reason = detailPageProps.reason!;
+    const isDisabled = detailPageProps.disabled;
+    const title = {
+      fetch: t('edit'),
+      copy: t('tags.copy'),
+      create: createCommandLabel ?? t('newitem'),
+      view: t('browse'),
     };
-    const EmbededDetailPageComponent = dpPage[reason];
-
-    if (!EmbededDetailPageComponent) {
-      return null;
-    }
-
-    const isDisabled = dpProps.disabled;
     const props: DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel> =
       {
         enableCreate: true,
         enableCopy: true,
         enableDiscardChanges: false,
-        header: isDisabled
-          ? t('browse')
-          : reason === 'fetch'
-            ? t('edit')
-            : (createCommandLabel ?? t('newitem')),
+        header: isDisabled ? t('browse') : title[reason],
         helperText: reason === 'copy' ? t('tags.copy') : null,
         createCommandLabel,
-        ...dpProps,
+        ...detailPageProps,
       };
 
-    return <EmbededDetailPageComponent {...props} />;
+    const detailPageContent =
+      typeof onDetailPage === 'function' ? onDetailPage(props) : onDetailPage[reason]?.(props);
+    return detailPageContent;
   };
 
   /* -------------------------------------------------------------------------- */
@@ -583,7 +489,7 @@ function ListPageContent<
 
   const contextValue = useMemo<ListPageContextType<TModel>>(
     () => ({
-      onShowDetailPage: onOpen,
+      onShowDetailPage: openDetailPage,
       loading,
       data,
       search: onSearch,
@@ -601,7 +507,7 @@ function ListPageContent<
       enableSearch,
       loading,
       onClear,
-      onOpen,
+      openDetailPage,
       onSearch,
     ],
   );

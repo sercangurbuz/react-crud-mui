@@ -304,8 +304,11 @@ export const WithDetailPage: ListPageStory = {
   args: {
     enableCreateItem: true,
     enableActionCommands: true,
-    detailPage: EmbededDetailPage,
+    onDetailPage: (props) => <EmbededDetailPage {...props} />,
     createCommandLabel: 'New User',
+    onActionClick(reason) {
+      alert(`Fallback event for reason ${reason}`);
+    },
     onActionCommands(props) {
       return (
         <ActionCommands {...props} showCopy={false}>
@@ -325,23 +328,16 @@ export const WithDetailPage: ListPageStory = {
   },
 };
 
-export const RefreshAfterActions: ListPageStory = {
-  args: {
-    ...WithDetailPage.args,
-    enableRefreshDataAfterActions: true,
-  },
-};
-
 export const WithDetailPagesByReason: ListPageStory = {
   args: {
     enableCreateItem: true,
     enableActionCommands: true,
-    detailPage: {
-      view: EmbededDetailPage,
-      fetch: EmbededDrawerDetailPage,
+    onDetailPage: {
+      fetch: (props) => <EmbededDetailPage {...props} />,
+      create: (props) => <EmbededDrawerDetailPage {...props} />,
     },
-    onCopy() {
-      alert('Fallback event for copy reason');
+    onActionClick(reason) {
+      alert(`Fallback event for reason ${reason}`);
     },
     createCommandLabel: 'New User',
   },
@@ -360,7 +356,7 @@ export const WithDetailPageDrawer: ListPageStory = {
   args: {
     enableCreateItem: true,
     enableActionCommands: true,
-    detailPage: EmbededDrawerDetailPage,
+    onDetailPage: (props) => <EmbededDrawerDetailPage {...props} />,
     createCommandLabel: 'New User',
   },
 };
@@ -507,7 +503,7 @@ export const FilterFromQuerystring: ListPageRouteStory = {
       },
     ],
     enableCreateItem: true,
-    detailPage: EmbededDetailPage,
+    onDetailPage: (props) => <EmbededDetailPage {...props} />,
   },
   render: (args) => {
     return (
@@ -523,10 +519,11 @@ export const FilterFromQuerystring: ListPageRouteStory = {
 export const WithRoutedDetailPage: ListPageStory = {
   args: {
     enableCreateItem: true,
-    detailPage: {
-      create: EmbededDetailPage,
+    onDetailPage: {
+      fetch: (props) => <EmbededDetailPage {...props} />,
     },
     createCommandLabel: 'New User',
+    enableActionCommands: true,
   },
   render: (args) => {
     return (
@@ -534,7 +531,7 @@ export const WithRoutedDetailPage: ListPageStory = {
         <Routes>
           <Route path="customers">
             <Route index element={<ListPageWithRoute {...args} />} />
-            <Route path=":id" element={<h1>Edit Detail Page</h1>} />
+            <Route path=":id" element={<h1>Create Detail Page</h1>} />
           </Route>
         </Routes>
       </MemoryRouter>

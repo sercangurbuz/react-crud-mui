@@ -250,6 +250,7 @@ function EditableList<
             canCopy,
             canDelete,
             canEdit,
+            index: cell.row.index,
             ...disabledProp,
           };
 

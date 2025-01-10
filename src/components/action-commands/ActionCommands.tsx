@@ -28,6 +28,7 @@ export interface ActionCommandsProps<TModel extends FieldValues>
   model?: TModel;
   titles?: Record<NeedDataReason, string>;
   children?: (closeEvent: () => void) => ReactNode;
+  index: number;
 }
 
 function ActionCommands<TModel extends FieldValues>({
