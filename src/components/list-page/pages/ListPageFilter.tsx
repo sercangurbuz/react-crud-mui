@@ -33,9 +33,8 @@ export type SearchReason =
 export interface ListPageFilterProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
 > extends Omit<
-    ListPageContentProps<TModel, TDetailPageModel>,
+    ListPageContentProps<TModel>,
     'onSearch' | 'onExcelExport' | 'tableProps' | 'onTabChanged'
   > {
   /**
@@ -83,11 +82,7 @@ export interface ListPageFilterProps<
 /**
  * ListPage with filtering features
  */
-function ListPageFilter<
-  TModel extends FieldValues,
-  TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
->({
+function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
   defaultMeta,
   defaultSegmentIndex,
   enablePagination = true,
@@ -100,7 +95,7 @@ function ListPageFilter<
   tableMode,
   tableProps: extableProps,
   ...lpProps
-}: ListPageFilterProps<TModel, TFilter, TDetailPageModel>) {
+}: ListPageFilterProps<TModel, TFilter>) {
   const {
     reset,
     formState: { defaultValues },
@@ -197,7 +192,7 @@ function ListPageFilter<
   /* --------------------------------- Render --------------------------------- */
 
   return (
-    <ListPageContent<TModel, TDetailPageModel>
+    <ListPageContent<TModel>
       {...lpProps}
       onSearch={() =>
         void handleSearch({

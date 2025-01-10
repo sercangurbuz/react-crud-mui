@@ -15,8 +15,7 @@ import ListPageSelection from './ListPageSelection';
 export interface ListPageProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
-> extends Omit<ListPageFormProps<TModel, TFilter, TDetailPageModel>, 'onChange' | 'meta'> {
+> extends Omit<ListPageFormProps<TModel, TFilter>, 'onChange' | 'meta'> {
   /**
    * Data fetcher function with given filter
    */
@@ -44,11 +43,7 @@ const DEFAULT_LISTPAGE_META: ListPageMeta = {
 /**
  * Simple list with filter and table
  */
-function ListPage<
-  TModel extends FieldValues,
-  TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
->({
+function ListPage<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
   activeSegmentIndex,
   defaultMeta,
   defaultSegmentIndex = 0,
@@ -57,7 +52,7 @@ function ListPage<
   tableMode = 'server',
   tabs,
   ...lpProps
-}: ListPageProps<TModel, TFilter, TDetailPageModel>) {
+}: ListPageProps<TModel, TFilter>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */

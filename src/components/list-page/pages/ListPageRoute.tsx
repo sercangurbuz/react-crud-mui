@@ -15,8 +15,7 @@ import { ListPageMeta } from './ListPageFilter';
 export interface ListPageRouteProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
-> extends ListPageProps<TModel, TFilter, TDetailPageModel>,
+> extends ListPageProps<TModel, TFilter>,
     Omit<UseSegmentParamsOptions, 'paths'> {
   enableQueryStringFilter?: boolean;
 }
@@ -24,11 +23,7 @@ export interface ListPageRouteProps<
 /**
  * ListPage with routing based on react-router
  */
-function ListPageRoute<
-  TModel extends FieldValues,
-  TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
->({
+function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
   defaultFilter,
   defaultMeta,
   enableNestedSegments,
@@ -40,7 +35,7 @@ function ListPageRoute<
   defaultValues,
   onActionClick,
   ...listPageProps
-}: ListPageRouteProps<TModel, TFilter, TDetailPageModel>) {
+}: ListPageRouteProps<TModel, TFilter>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */

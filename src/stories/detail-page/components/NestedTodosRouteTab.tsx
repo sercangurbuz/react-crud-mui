@@ -63,7 +63,7 @@ function NestedTodosRouteTab() {
       enableSearch={false}
       enableClear={false}
       enableCreateItem
-      detailPage={EmbeddedPage}
+      onDetailPage={(props) => <EmbeddedPage {...(props as DetailPageModalProps<ToDo>)} />}
       enableNestedSegments
       tabs={[
         {

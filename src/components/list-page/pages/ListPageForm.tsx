@@ -18,8 +18,7 @@ import ListPageFilter, { ListPageFilterProps } from './ListPageFilter';
 export interface ListPageFormProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
-> extends Omit<ListPageFilterProps<TModel, TFilter, TDetailPageModel>, 'form'>,
+> extends Omit<ListPageFilterProps<TModel, TFilter>, 'form'>,
     Partial<Pick<UseFormOptions<TFilter>, 'schema'>> {
   form?: UseFormReturn<TFilter>;
   schema?: z.ZodType<TFilter>;
@@ -40,17 +39,13 @@ export interface ListPageFormProps<
 /**
  * ListPage with form features for filter criterias
  */
-function ListPageForm<
-  TModel extends FieldValues,
-  TFilter extends FieldValues = FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
->({
+function ListPageForm<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
   schema,
   defaultValues,
   defaultFilter,
   validationOptions,
   ...lpProps
-}: ListPageFormProps<TModel, TFilter, TDetailPageModel>) {
+}: ListPageFormProps<TModel, TFilter>) {
   /* -------------------------------------------------------------------------- */
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */

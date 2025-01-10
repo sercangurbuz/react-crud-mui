@@ -43,10 +43,8 @@ export type OnDetailPage<TDetailPageModel extends FieldValues> =
   | Partial<Record<NeedDataReason, DetailPageRender<TDetailPageModel>>>
   | DetailPageRender<TDetailPageModel>;
 
-export interface ListPageContentProps<
-  TModel extends FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
-> extends Omit<
+export interface ListPageContentProps<TModel extends FieldValues>
+  extends Omit<
       PageProps,
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange' | 'onCopy'
     >,
@@ -143,7 +141,7 @@ export interface ListPageContentProps<
   /**
    * Embedded detail page component render function
    */
-  onDetailPage?: OnDetailPage<TDetailPageModel>;
+  onDetailPage?: OnDetailPage<TModel>;
   /**
    * Render action commands used with detailPage on every row
    */
@@ -162,10 +160,7 @@ export interface ListPageContentProps<
   enableRowClickToDetails?: boolean | NeedDataReason;
 }
 
-function ListPageContent<
-  TModel extends FieldValues,
-  TDetailPageModel extends FieldValues = FieldValues,
->({
+function ListPageContent<TModel extends FieldValues>({
   activeSegmentIndex,
   alerts,
   autoSearch = true,
@@ -202,7 +197,7 @@ function ListPageContent<
   onWrapperLayout,
   showHeader = true,
   ...pageProps
-}: ListPageContentProps<TModel, TDetailPageModel>) {
+}: ListPageContentProps<TModel>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -212,23 +207,23 @@ function ListPageContent<
   /* ---------------------------- Action DetailPage --------------------------- */
 
   const { uniqueIdParamName } = useSettings();
-  const [openDetailPage, detailPageProps] = useDetailPageModal<TDetailPageModel>({
+  const [openDetailPage, detailPageProps] = useDetailPageModal<TModel>({
     models: data,
     uniqueIdParamName,
   });
 
-  const triggerAction = (reason: NeedDataReason, row?: TModel) => {
+  const triggerAction = (reason: NeedDataReason, data?: TModel) => {
     const useDetailPage = typeof onDetailPage === 'function' ? true : !!onDetailPage?.[reason];
 
     if (useDetailPage) {
       return openDetailPage({
-        data: row as unknown as TDetailPageModel,
+        data,
         reason,
         disabled,
       });
     }
     //call fallback action handler
-    onActionClick?.(reason, row);
+    onActionClick?.(reason, data);
   };
 
   /* -------------------------------------------------------------------------- */
@@ -467,16 +462,15 @@ function ListPageContent<
       create: createCommandLabel ?? t('newitem'),
       view: t('browse'),
     };
-    const props: DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel> =
-      {
-        enableCreate: true,
-        enableCopy: true,
-        enableDiscardChanges: false,
-        header: isDisabled ? t('browse') : title[reason],
-        helperText: reason === 'copy' ? t('tags.copy') : null,
-        createCommandLabel,
-        ...detailPageProps,
-      };
+    const props: DetailPageModalProps<TModel> | DetailPageDrawerProps<TModel> = {
+      enableCreate: true,
+      enableCopy: true,
+      enableDiscardChanges: false,
+      header: isDisabled ? t('browse') : title[reason],
+      helperText: reason === 'copy' ? t('tags.copy') : null,
+      createCommandLabel,
+      ...detailPageProps,
+    };
 
     const detailPageContent =
       typeof onDetailPage === 'function' ? onDetailPage(props) : onDetailPage[reason]?.(props);

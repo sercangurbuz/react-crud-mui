@@ -1,5 +1,3 @@
-import { FieldValues } from 'react-hook-form';
-
 import { Save } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
@@ -7,9 +5,9 @@ import DetailPage from '../../../components/detail-page';
 import { DetailPageDrawerProps } from '../../../components/detail-page/pages/DetailPageDrawer';
 import FormContent from '../../detail-page/components/FormContent';
 import { UserDefaultValues } from '../../utils/api';
-import { userSchema } from '../../utils/schema';
+import { UserSchema, userSchema } from '../../utils/schema';
 
-function EmbededDrawerDetailPage(props: DetailPageDrawerProps<FieldValues>) {
+function EmbededDrawerDetailPage(props: DetailPageDrawerProps<UserSchema>) {
   return (
     <DetailPage.Drawer
       title="New Item"
