@@ -27,13 +27,11 @@ export type UseDetailPageModalReturn<TModel extends FieldValues> = Pick<
 export interface UseDetailPageModalProps {
   models?: unknown[];
   uniqueIdParamName?: string;
-  onVisibleChange?: (open: boolean) => void;
 }
 
 function useDetailPageModal<TModel extends FieldValues>({
   models,
   uniqueIdParamName,
-  onVisibleChange,
 }: UseDetailPageModalProps = {}) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
@@ -72,9 +70,7 @@ function useDetailPageModal<TModel extends FieldValues>({
       index: undefined,
       uid: undefined,
     }));
-
-    onVisibleChange?.(false);
-  }, [onVisibleChange]);
+  }, []);
 
   const onOpen = useCallback(
     ({ data, disabled, reason, onAfterDelete, onAfterSave }: SelectedModelOptions<TModel> = {}) => {
@@ -90,10 +86,8 @@ function useDetailPageModal<TModel extends FieldValues>({
         onAfterDelete,
         onAfterSave,
       });
-
-      onVisibleChange?.(true);
     },
-    [getUID, findIndex, onVisibleChange],
+    [getUID, findIndex],
   );
 
   const setReason = useCallback((reason: NeedDataReason) => {

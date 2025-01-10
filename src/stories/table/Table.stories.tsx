@@ -20,6 +20,10 @@ export const columns: TableColumn<UserSchema>[] = [
     footer: () => 'this is footer content',
   },
   {
+    accessorKey: 'dummy',
+    header: 'Dummy',
+  },
+  {
     accessorKey: 'username',
     header: 'User name',
   },
@@ -153,7 +157,7 @@ export const CustomHeight: TableStory = {
 
 export const FixedWidth: TableStory = {
   args: {
-    columns: columns.map((item) => ({ ...item, size: 300 })),
+    columns: columns.map((item) => ({ ...item, size: 200 })),
     scrollProps: {
       style: {
         maxHeight: 400,

@@ -37,6 +37,7 @@ export type ListPageWrapperLayoutProps = {
 
 type DetailPageRender<TDetailPageModel extends FieldValues> = (
   props: DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel>,
+  open: ReturnType<typeof useDetailPageModal<TDetailPageModel>>[0],
 ) => ReactNode;
 
 export type OnDetailPage<TDetailPageModel extends FieldValues> =
@@ -473,7 +474,9 @@ function ListPageContent<TModel extends FieldValues>({
     };
 
     const detailPageContent =
-      typeof onDetailPage === 'function' ? onDetailPage(props) : onDetailPage[reason]?.(props);
+      typeof onDetailPage === 'function'
+        ? onDetailPage(props, openDetailPage)
+        : onDetailPage[reason]?.(props, openDetailPage);
     return detailPageContent;
   };
 

@@ -677,6 +677,8 @@ function Table<TData extends FieldValues>({
                 ...rowSx,
                 ...exRowProps?.sx,
                 cursor: onRowClick || enableRowClickSelect ? 'pointer' : 'default',
+                wordWrap: 'break-word',
+                wordBreak: 'break-all',
               } as TableRowProps['sx']
             }
             // for keyboard navigation
