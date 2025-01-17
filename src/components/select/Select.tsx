@@ -1,21 +1,16 @@
 import { forwardRef, ReactNode, Ref, useMemo } from 'react';
 import { FieldValues, Path } from 'react-hook-form';
 
-import { ClearRounded } from '@mui/icons-material';
-import {
-  Avatar,
-  AvatarProps,
-  Box,
-  FormControl,
-  FormHelperText,
-  IconButton,
-  InputLabel,
-  ListSubheader,
-  MenuItem,
-  Select as MuiSelect,
-  SelectProps as MuiSelectProps,
-  SelectChangeEvent,
-} from '@mui/material';
+import ClearRounded from '@mui/icons-material/ClearRounded';
+import Avatar, { AvatarProps } from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import ListSubheader from '@mui/material/ListSubheader';
+import MenuItem from '@mui/material/MenuItem';
+import MuiSelect, { SelectProps as MuiSelectProps, SelectChangeEvent } from '@mui/material/Select';
 import { get, groupBy } from 'lodash';
 
 import { DEFAULT_OPTION_TEMPLATE } from '../combobox/ComboBox';

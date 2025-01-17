@@ -1,4 +1,4 @@
-import { Input } from '@mui/material';
+import Input from '@mui/material/Input';
 import { describe, expect, test } from 'vitest';
 
 import { renderWithAct, screen } from '../../../test-setup/test-utils';

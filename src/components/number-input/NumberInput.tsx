@@ -1,7 +1,7 @@
 import { forwardRef, Ref } from 'react';
 import { NumericFormat, NumericFormatProps } from 'react-number-format';
 
-import { StandardTextFieldProps, TextField } from '@mui/material';
+import TextField, { StandardTextFieldProps } from '@mui/material/TextField';
 
 import useSettings from '../crud-mui-provider/hooks/useSettings';
 import { ControlledFormProps } from '../utils';

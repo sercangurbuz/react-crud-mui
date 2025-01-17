@@ -1,4 +1,4 @@
-import { SvgIcon, SvgIconProps } from '@mui/material'
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 
 const Menu = (props: SvgIconProps) => (
   <SvgIcon viewBox="0 0 24 24" {...props}>

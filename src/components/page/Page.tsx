@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
-import { Box, BoxProps, useTheme } from '@mui/material';
+import Box, { BoxProps } from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 
 import { FlexBox } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import { DoneAll } from '@mui/icons-material';
-import { Badge, Button } from '@mui/material';
+import DoneAll from '@mui/icons-material/DoneAll';
+import Badge from '@mui/material/Badge';
+import Button from '@mui/material/Button';
 import { RowSelectionState } from '@tanstack/react-table';
 
 import useTranslation from '../../i18n/hooks/useTranslation';

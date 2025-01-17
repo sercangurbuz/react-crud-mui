@@ -1,12 +1,9 @@
 import { FieldValues } from 'react-hook-form';
 
-import {
-  FormControlLabel,
-  RadioGroupProps as MuiRadioGroupProps,
-  Radio,
-  RadioGroup,
-  styled,
-} from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup, { RadioGroupProps } from '@mui/material/RadioGroup';
+import { styled } from '@mui/material/styles';
 
 import { FormControlProps } from '../components/FormControl';
 import Field, { ControlCommonProps } from '../Field';
@@ -21,7 +18,7 @@ export type RadioGroupData = {
 };
 
 export interface FormRadioGroupProps<TFieldValues extends FieldValues = FieldValues>
-  extends Omit<MuiRadioGroupProps, 'name'>,
+  extends Omit<RadioGroupProps, 'name'>,
     ControlCommonProps<TFieldValues>,
     FormControlProps {
   data?: RadioGroupData[];

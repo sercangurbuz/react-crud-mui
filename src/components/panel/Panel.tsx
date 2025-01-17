@@ -1,6 +1,8 @@
 import { ReactNode, useState } from 'react';
 
-import { Card, Stack, styled } from '@mui/material';
+import Card from '@mui/material/Card';
+import Stack from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 
 import { FlexBetween } from '../flexbox';
 import Header, { HeaderProps } from '../header/Header';

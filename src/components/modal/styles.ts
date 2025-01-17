@@ -17,5 +17,5 @@ export const Wrapper = styled(Box)(({ theme }) => ({
 }));
 
 export const StyledScrollbar = styled(Scrollbar)({
-  maxHeight: '70dvh',
+  maxHeight: '85dvh',
 });

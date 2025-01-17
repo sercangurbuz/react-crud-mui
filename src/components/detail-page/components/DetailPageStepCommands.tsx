@@ -1,8 +1,11 @@
 import React, { ReactNode } from 'react';
 
-import { ArrowLeft, ArrowRight, Save } from '@mui/icons-material';
+import ArrowLeft from '@mui/icons-material/ArrowLeft';
+import ArrowRight from '@mui/icons-material/ArrowRight';
+import Save from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Box, Button } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import { FlexBetween } from '../../flexbox';

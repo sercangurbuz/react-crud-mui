@@ -1,20 +1,20 @@
 import React, { forwardRef, Key, Ref, useCallback, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import {
-  Autocomplete,
-  AutocompleteFreeSoloValueMapping,
+import Autocomplete, {
   AutocompleteOwnerState,
   AutocompleteProps,
   AutocompleteRenderInputParams,
   AutocompleteRenderOptionState,
-  Box,
+} from '@mui/material/Autocomplete';
+import Box from '@mui/material/Box';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField, { StandardTextFieldProps } from '@mui/material/TextField';
+import {
+  AutocompleteFreeSoloValueMapping,
   createFilterOptions,
   FilterOptionsState,
-  InputAdornment,
-  StandardTextFieldProps,
-  TextField,
-} from '@mui/material';
+} from '@mui/material/useAutocomplete';
 
 import useTranslation from '../i18n/hooks/useTranslation';
 import { toNull } from '../misc';

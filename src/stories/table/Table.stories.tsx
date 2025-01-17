@@ -2,8 +2,12 @@
 import { useState } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { InfoOutlined, LocationCityOutlined, Map, Phone } from '@mui/icons-material';
-import { alpha, Card } from '@mui/material';
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
+import LocationCityOutlined from '@mui/icons-material/LocationCityOutlined';
+import Map from '@mui/icons-material/Map';
+import Phone from '@mui/icons-material/Phone';
+import Card from '@mui/material/Card';
+import { alpha } from '@mui/material/styles';
 import { Meta, StoryObj } from '@storybook/react';
 import { getSortedRowModel, RowSelectionState, SortingState } from '@tanstack/react-table';
 
@@ -18,11 +22,7 @@ export const columns: TableColumn<UserSchema>[] = [
     accessorKey: 'name',
     header: 'Name',
     footer: () => 'this is footer content',
-  },
-  {
-    accessorKey: 'dummy',
-    header: 'Dummy',
-  },
+  }, 
   {
     accessorKey: 'username',
     header: 'User name',

@@ -1,7 +1,8 @@
 import { PropsWithChildren, ReactNode } from 'react';
 import { ControllerFieldState } from 'react-hook-form';
 
-import { Box, BoxProps, FormHelperText } from '@mui/material';
+import Box, { BoxProps } from '@mui/material/Box';
+import FormHelperText from '@mui/material/FormHelperText';
 
 import { FlexBox } from '../../flexbox';
 import { FlexBoxProps } from '../../flexbox/FlexBox';

@@ -2,8 +2,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from 'react';
 
-import { Assignment, Done, Pending, SettingsApplications } from '@mui/icons-material';
-import { Box, Button, Chip, LinearProgress, Switch } from '@mui/material';
+import Assignment from '@mui/icons-material/Assignment';
+import Done from '@mui/icons-material/Done';
+import Pending from '@mui/icons-material/Pending';
+import SettingsApplications from '@mui/icons-material/SettingsApplications';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
+import LinearProgress from '@mui/material/LinearProgress';
+import Switch from '@mui/material/Switch';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { FlexBetween, FlexBox } from '../../components/flexbox';
@@ -166,7 +173,7 @@ export const TabsExtraContent: PageStory = {
 
 export const WithPanels: PageStory = {
   args: {
-    children: null,    
+    children: null,
     panels: [
       {
         key: 'panel1',

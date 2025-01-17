@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
-import { LocalPhone } from '@mui/icons-material';
-import { Box, BoxProps } from '@mui/material';
+import LocalPhone from '@mui/icons-material/LocalPhone';
+import Box, { BoxProps } from '@mui/material/Box';
 import { parsePhoneNumberWithError } from 'libphonenumber-js';
 
 import { FlexBox } from '../flexbox';

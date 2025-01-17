@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useWatch } from 'react-hook-form';
 
-import { Box, Stack } from '@mui/material';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 
@@ -32,9 +34,7 @@ const meta: Meta<typeof Field.MoneyInput> = {
             <Box sx={{ flex: 1 / 2 }}>
               <Story />
             </Box>
-            <Field.Button
-              onClick={(form) => form.setValue('value', 0, { shouldValidate: true })}
-            >
+            <Field.Button onClick={(form) => form.setValue('value', 0, { shouldValidate: true })}>
               Reset
             </Field.Button>
           </Stack>

@@ -1,4 +1,5 @@
-import { ButtonBase, styled } from '@mui/material';
+import ButtonBase from '@mui/material/ButtonBase';
+import { styled } from '@mui/material/styles';
 
 export const NewRowButton = styled(ButtonBase)(({ theme }) => ({
   padding: 5,

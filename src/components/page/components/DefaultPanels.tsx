@@ -1,14 +1,10 @@
 import { ReactNode } from 'react';
 
-import { ExpandMore } from '@mui/icons-material';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionDetailsProps,
-  AccordionProps,
-  AccordionSummary,
-  BoxProps,
-} from '@mui/material';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Accordion, { AccordionProps } from '@mui/material/Accordion';
+import AccordionDetails, { AccordionDetailsProps } from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import { BoxProps } from '@mui/material/Box';
 
 import Page from '../Page';
 

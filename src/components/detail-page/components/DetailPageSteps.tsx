@@ -1,6 +1,8 @@
 import { ReactNode } from 'react';
 
-import { Step, StepLabel, StepLabelProps, Stepper, StepperProps, StepProps } from '@mui/material';
+import Step, { StepProps } from '@mui/material/Step';
+import StepLabel, { StepLabelProps } from '@mui/material/StepLabel';
+import Stepper, { StepperProps } from '@mui/material/Stepper';
 
 import Field from '../../form/Field';
 import Page from '../../page/Page';

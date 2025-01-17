@@ -1,4 +1,4 @@
-import { Divider, DividerProps } from '@mui/material';
+import Divider, { DividerProps } from '@mui/material/Divider';
 
 export type PageDividerProps = DividerProps;
 

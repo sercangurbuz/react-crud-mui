@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 
-import { SvgIconComponent } from '@mui/icons-material';
+import type { SvgIconComponent } from '@mui/icons-material';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import MenuItem, { MenuItemProps } from '@mui/material/MenuItem';

@@ -1,5 +1,6 @@
-import { CancelOutlined, Check } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import CancelOutlined from '@mui/icons-material/CancelOutlined';
+import Check from '@mui/icons-material/Check';
+import Button from '@mui/material/Button';
 
 interface DisableStateButtonsProps {
   isDisabled?: boolean;

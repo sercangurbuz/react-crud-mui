@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ReactNode } from 'react';
 
-import { styled, SxProps, Tab, TabProps, Tabs, TabsProps } from '@mui/material';
+import { styled, SxProps } from '@mui/material/styles';
+import Tab, { TabProps } from '@mui/material/Tab';
+import Tabs, { TabsProps } from '@mui/material/Tabs';
 
 import { FlexBox } from '../../flexbox';
 

@@ -9,8 +9,11 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
-import { Assignment, Done, Pending } from '@mui/icons-material';
-import { Button, Grid2 } from '@mui/material';
+import Assignment from '@mui/icons-material/Assignment';
+import Done from '@mui/icons-material/Done';
+import Pending from '@mui/icons-material/Pending';
+import Button from '@mui/material/Button';
+import Grid2 from '@mui/material/Grid2';
 import { Meta, StoryObj } from '@storybook/react';
 
 import DetailPage from '../../components/detail-page';
@@ -130,8 +133,8 @@ export const WithAsyncData: DetailPageStory = {
 export const ViewMode: DetailPageStory = {
   ...WithAsyncData,
   args: {
-    reason: 'view',
     ...WithAsyncData.args,
+    defaultReason: 'view',
   },
 };
 
@@ -382,6 +385,7 @@ export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
 };
 
 export const WithPopover: DetailPagePopoverStory = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: { schema: userSchema.pick({ name: true }) as any },
   render: (args) => {
     const [elem, setElem] = useState<HTMLElement | null>(null);

@@ -1,7 +1,11 @@
-import { Delete } from '@mui/icons-material';
+import Delete from '@mui/icons-material/Delete';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
-import { Button, FormControlLabel, Grid, Switch, Tab } from '@mui/material';
+import Button from '@mui/material/Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
+import Switch from '@mui/material/Switch';
+import Tab from '@mui/material/Tab';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { FlexBetween } from '../../components/flexbox';

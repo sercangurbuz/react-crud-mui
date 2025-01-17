@@ -1,17 +1,14 @@
 import { FieldValues } from 'react-hook-form';
 
-import { StandardTextFieldProps } from '@mui/material';
-import {
-  DatePicker as MuiDatePicker,
-  DatePickerProps as MuiDatePickerProps,
-} from '@mui/x-date-pickers';
+import type { StandardTextFieldProps } from '@mui/material/TextField';
+import { DatePicker, DatePickerProps } from '@mui/x-date-pickers/DatePicker';
 import { Dayjs } from 'dayjs';
 
 import { parseDate } from '../../misc';
 import Field, { ControlCommonProps } from '../Field';
 
 export type FormDatePickerProps<TFieldValues extends FieldValues = FieldValues> = Partial<
-  MuiDatePickerProps<Dayjs>
+  DatePickerProps<Dayjs>
 > &
   Pick<StandardTextFieldProps, 'size'> &
   ControlCommonProps<TFieldValues>;
@@ -29,7 +26,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
     <Field
       name={name}
       render={(field, { invalid, error }) => (
-        <MuiDatePicker
+        <DatePicker
           {...dateProps}
           {...field}
           value={parseDate(field.value)}

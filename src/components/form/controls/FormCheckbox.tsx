@@ -1,6 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
-import { Checkbox, CheckboxProps } from '@mui/material';
+import Checkbox, { CheckboxProps } from '@mui/material/Checkbox';
 
 import { FormControlProps } from '../components/FormControl';
 import Field, { ControlCommonProps } from '../Field';

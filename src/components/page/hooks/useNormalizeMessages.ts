@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { AlertProps } from '@mui/material';
+import type { AlertProps } from '@mui/material/Alert';
 import groupBy from 'lodash.groupby';
 
 export type TypeMessage = {

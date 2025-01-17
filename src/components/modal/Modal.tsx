@@ -1,6 +1,6 @@
-import { Close } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
-import { BoxProps } from '@mui/material/Box';
+import Close from '@mui/icons-material/Close';
+import type { BoxProps } from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import MuiModal, { ModalProps as MuiModalProps } from '@mui/material/Modal';
 
 import useTranslation from '../i18n/hooks/useTranslation';

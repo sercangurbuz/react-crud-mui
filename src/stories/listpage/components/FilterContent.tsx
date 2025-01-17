@@ -1,4 +1,5 @@
-import { Button, Grid2 } from '@mui/material';
+import Button from '@mui/material/Button';
+import Grid2 from '@mui/material/Grid2';
 
 import Field from '../../../components/form/Field';
 import useListPage from '../../../components/list-page/hooks/useListPage';

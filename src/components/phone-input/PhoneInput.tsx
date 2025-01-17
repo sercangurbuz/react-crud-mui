@@ -10,14 +10,11 @@ import {
   UsePhoneInputConfig,
 } from 'react-international-phone';
 
-import {
-  BaseTextFieldProps,
-  InputAdornment,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import TextField, { BaseTextFieldProps } from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import useTranslation from '../i18n/hooks/useTranslation';
 import useFloatingLabelProps from '../input/hooks/useFloatingLabelProps';

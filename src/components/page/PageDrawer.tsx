@@ -1,4 +1,5 @@
-import { Box, Drawer, DrawerProps } from '@mui/material';
+import Box from '@mui/material/Box';
+import Drawer, { DrawerProps } from '@mui/material/Drawer';
 
 import Scrollbar from '../scrollbar';
 import DefaultLayout from './components/DefaultLayout';

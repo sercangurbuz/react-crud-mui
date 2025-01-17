@@ -1,14 +1,16 @@
 import { ReactNode } from 'react';
 
-import { Print, Search } from '@mui/icons-material';
+import Print from '@mui/icons-material/Print';
+import Search from '@mui/icons-material/Search';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
-import { Button, ButtonProps, IconButton } from '@mui/material';
+import Button, { ButtonProps } from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 
+import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
 import Clear from '../../icons/Clear';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
-import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useListPageCommandStates from '../hooks/useListPageCommandStates';
 
 /* -------------------------------------------------------------------------- */

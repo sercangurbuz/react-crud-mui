@@ -1,6 +1,7 @@
 import { CSSProperties, ReactNode } from 'react';
 
-import { Card, SxProps, Theme } from '@mui/material';
+import Card from '@mui/material/Card';
+import type { SxProps, Theme } from '@mui/material/styles';
 
 import { PaddingSize } from './PageProvider';
 

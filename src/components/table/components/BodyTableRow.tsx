@@ -1,5 +1,4 @@
-import { alpha } from '@mui/material';
-import styled from '@mui/material/styles/styled';
+import { alpha, styled } from '@mui/material/styles';
 import TableRow from '@mui/material/TableRow';
 
 export const BodyTableRow = styled(TableRow, {

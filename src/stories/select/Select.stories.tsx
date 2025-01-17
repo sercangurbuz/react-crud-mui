@@ -1,4 +1,5 @@
-import { MenuItem, Stack } from '@mui/material';
+import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 

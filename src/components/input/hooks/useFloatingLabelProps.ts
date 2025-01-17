@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { BaseTextFieldProps } from '@mui/material';
+import { BaseTextFieldProps } from '@mui/material/TextField';
 
 function useFloatingLabelProps({
   onBlur,

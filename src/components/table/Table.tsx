@@ -7,30 +7,24 @@ import {
 } from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
 
-import { Add, KeyboardArrowDown, KeyboardArrowRight } from '@mui/icons-material';
-import {
-  alpha,
-  Backdrop,
-  Checkbox,
-  CircularProgress,
-  Table as MuiTable,
-  TableProps as MuiTableProps,
-  Radio,
-  Skeleton,
-  Stack,
-  SxProps,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TablePagination,
-  TablePaginationProps,
-  TableRow,
-  TableRowProps,
-  TableSortLabel,
-  Theme,
-  useTheme,
-} from '@mui/material';
+import Add from '@mui/icons-material/Add';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import Backdrop from '@mui/material/Backdrop';
+import Checkbox from '@mui/material/Checkbox';
+import CircularProgress from '@mui/material/CircularProgress';
+import Radio from '@mui/material/Radio';
+import Skeleton from '@mui/material/Skeleton';
+import Stack from '@mui/material/Stack';
+import { alpha, SxProps, Theme, useTheme } from '@mui/material/styles';
+import MuiTable, { TableProps as MuiTableProps } from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableFooter from '@mui/material/TableFooter';
+import TableHead from '@mui/material/TableHead';
+import TablePagination, { TablePaginationProps } from '@mui/material/TablePagination';
+import TableRow, { TableRowProps } from '@mui/material/TableRow';
+import TableSortLabel from '@mui/material/TableSortLabel';
 import {
   flexRender,
   getCoreRowModel,
@@ -376,11 +370,6 @@ function Table<TData extends FieldValues>({
   };
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>, row: Row<TData>) => {
-    // prevent event of inner element of td
-    if ((e.target as HTMLElement).tagName !== 'TD') {
-      return;
-    }
-
     if (enableRowClickSelect) {
       selectRow(row);
     }

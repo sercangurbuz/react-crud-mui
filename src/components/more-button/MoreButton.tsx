@@ -1,10 +1,10 @@
 import { Key, ReactNode, useState } from 'react';
 
-import { SvgIconComponent } from '@mui/icons-material';
+import type { SvgIconComponent } from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
-import { ListItemIcon } from '@mui/material';
 import Fade from '@mui/material/Fade';
-import { IconButtonProps } from '@mui/material/IconButton';
+import type { IconButtonProps } from '@mui/material/IconButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 

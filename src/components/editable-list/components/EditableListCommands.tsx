@@ -1,7 +1,7 @@
 import { MouseEvent, PropsWithChildren, useState } from 'react';
 import { FieldArrayPath, FieldValues, UseFieldArrayReturn } from 'react-hook-form';
 
-import { Delete } from '@mui/icons-material';
+import Delete from '@mui/icons-material/Delete';
 
 import { UNIQUE_IDENTIFIER_FIELD_NAME } from '../../form/hooks/useArrayFieldHelpers';
 import useTranslation from '../../i18n/hooks/useTranslation';

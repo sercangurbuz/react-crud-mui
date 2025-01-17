@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 
-import { Box, BoxProps, Stack } from '@mui/material';
+import Box, { BoxProps } from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 
 import { FlexBetween, FlexBox } from '../flexbox';
 import IconWrapper from '../icon-wrapper';

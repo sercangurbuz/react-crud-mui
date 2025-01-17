@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 
-import { LinearProgress, LinearProgressProps, styled } from '@mui/material';
+import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
+import { styled } from '@mui/material/styles';
 
 import { SpinDelayOptions, useSpinDelay } from '../hooks/useSpinDelay';
 import useTranslation from '../i18n/hooks/useTranslation';

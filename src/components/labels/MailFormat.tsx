@@ -1,5 +1,5 @@
-import { Email } from '@mui/icons-material';
-import { Box, BoxProps } from '@mui/material';
+import Email from '@mui/icons-material/Email';
+import Box, { BoxProps } from '@mui/material/Box';
 
 import { FlexBox } from '../flexbox';
 

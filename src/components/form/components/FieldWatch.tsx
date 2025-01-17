@@ -1,7 +1,9 @@
 import { ReactNode } from 'react';
 import { FieldPath, FieldValues, Path, useWatch } from 'react-hook-form';
 
-import { BoxProps, Stack, SxProps } from '@mui/material';
+import type { BoxProps } from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import type { SxProps } from '@mui/material/styles';
 
 import isNil from '../../misc/isNil';
 import { Small } from '../../typography';

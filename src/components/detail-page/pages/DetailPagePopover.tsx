@@ -1,6 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
-import { Popover, PopoverProps } from '@mui/material';
+import Popover, { PopoverProps } from '@mui/material/Popover';
 
 import DetailPage, { DetailPageProps } from './DetailPage';
 

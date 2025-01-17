@@ -2,7 +2,10 @@ import React, { PropsWithChildren, useState } from 'react';
 
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, ButtonBase, Stack, StackProps, styled } from '@mui/material';
+import Box from '@mui/material/Box';
+import ButtonBase from '@mui/material/ButtonBase';
+import Stack, { StackProps } from '@mui/material/Stack';
+import { styled } from '@mui/material/styles';
 
 import { FlexBetween } from '../flexbox';
 import useTranslation from '../i18n/hooks/useTranslation';

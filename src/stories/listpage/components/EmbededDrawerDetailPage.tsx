@@ -1,5 +1,5 @@
-import { Save } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import Save from '@mui/icons-material/Save';
+import Button from '@mui/material/Button';
 
 import DetailPage from '../../../components/detail-page';
 import { DetailPageDrawerProps } from '../../../components/detail-page/pages/DetailPageDrawer';

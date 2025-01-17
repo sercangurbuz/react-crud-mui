@@ -1,4 +1,4 @@
-import { Save } from '@mui/icons-material';
+import Save from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
 
 import { DetailPageCommmandsSettings } from '../../../components/detail-page/components/DetailPageCommands';

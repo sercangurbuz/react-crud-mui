@@ -1,4 +1,4 @@
-import { Box, BoxProps } from '@mui/material';
+import Box, { BoxProps } from '@mui/material/Box';
 
 import usePage from '../hooks/usePage';
 import { PagePadding } from '../Page';

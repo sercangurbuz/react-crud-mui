@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { CheckOutlined } from '@mui/icons-material';
+import CheckOutlined from '@mui/icons-material/CheckOutlined';
 import { z } from 'zod';
 
 import DetailPage from '../../../components/detail-page';

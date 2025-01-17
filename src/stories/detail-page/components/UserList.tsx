@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { alpha, useTheme } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 
 import Panel from '../../../components/panel/Panel';
 import Table, { TableColumn } from '../../../components/table/Table';

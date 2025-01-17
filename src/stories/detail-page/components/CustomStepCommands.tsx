@@ -1,7 +1,8 @@
 import { useFormContext } from 'react-hook-form';
 
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Box, Button } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 import { StepCommandsComponentProps } from '../../../components/detail-page/components/DetailPageStepCommands';
 import useDetailPage from '../../../components/detail-page/hooks/useDetailPage';

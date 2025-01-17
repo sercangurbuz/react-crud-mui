@@ -1,6 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
-import { Switch, SwitchProps } from '@mui/material';
+import Switch, { SwitchProps } from '@mui/material/Switch';
 
 import { FormControlProps } from '../components/FormControl';
 import Field, { ControlCommonProps } from '../Field';

@@ -1,6 +1,6 @@
 import React, { forwardRef, Ref } from 'react';
 
-import { TextField, TextFieldProps } from '@mui/material';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
 import capitalize from 'lodash.capitalize';
 
 import useFloatingLabelProps from './hooks/useFloatingLabelProps';

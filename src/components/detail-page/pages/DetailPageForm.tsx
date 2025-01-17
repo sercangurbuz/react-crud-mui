@@ -10,7 +10,7 @@ import TriggerValidation from '../components/TriggerValidation';
 import DetailPageData, { DetailPageDataProps } from './DetailPageData';
 
 export interface DetailPageFormProps<TModel extends FieldValues>
-  extends Omit<DetailPageDataProps<TModel>, 'form' | 'schema'> {
+  extends Omit<DetailPageDataProps<TModel>, 'form'> {
   form?: UseFormReturn<TModel>;
   schema?: z.ZodType<TModel>;
   validationOptions?: ValidationOptions<TModel>;

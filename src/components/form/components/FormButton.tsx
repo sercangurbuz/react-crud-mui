@@ -1,6 +1,6 @@
 import { FieldValues, useFormContext, UseFormReturn } from 'react-hook-form';
 
-import { Button, ButtonProps } from '@mui/material';
+import Button, { ButtonProps } from '@mui/material/Button';
 
 export type FormButtonProps<TFieldValues extends FieldValues = FieldValues> = {
   onClick: (

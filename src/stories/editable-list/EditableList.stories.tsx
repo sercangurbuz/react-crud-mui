@@ -1,6 +1,4 @@
- 
-
-import { Card } from '@mui/material';
+import Card from '@mui/material/Card';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 
@@ -29,7 +27,6 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
       defaultValues: UserDefaultValues,
       children: <FormContent />,
       header: 'User Detail',
-      commandsPosition: 'bottom',
     },
     headerProps: {
       header: 'Top performing users',

@@ -1,8 +1,10 @@
 import { ReactNode } from 'react';
 
-import { Close, Save, Undo } from '@mui/icons-material';
+import Close from '@mui/icons-material/Close';
+import Save from '@mui/icons-material/Save';
+import Undo from '@mui/icons-material/Undo';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useTranslation from '../../i18n/hooks/useTranslation';

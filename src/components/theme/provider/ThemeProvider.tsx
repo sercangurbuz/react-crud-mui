@@ -1,7 +1,8 @@
 import { PropsWithChildren } from 'react';
 import { Toaster } from 'react-hot-toast';
 
-import { CssBaseline, ThemeProvider as MuiThemeProvider } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiThemeProvider from '@mui/material/styles/ThemeProvider';
 
 import { createCustomTheme, ThemeSettings } from '..';
 

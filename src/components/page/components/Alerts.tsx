@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styled from '@emotion/styled';
-import { Alert, AlertProps } from '@mui/material';
+import Alert, { AlertProps } from '@mui/material/Alert';
 
 import useNormalizeMessages, { Message } from '../hooks/useNormalizeMessages';
 

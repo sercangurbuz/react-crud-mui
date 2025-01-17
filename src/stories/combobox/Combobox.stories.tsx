@@ -1,4 +1,5 @@
-import { Chip, Stack } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 

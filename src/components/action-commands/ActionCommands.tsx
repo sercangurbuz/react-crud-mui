@@ -1,7 +1,9 @@
 import { MouseEvent, ReactNode, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import { DeleteOutline, Edit, RemoveRedEye } from '@mui/icons-material';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
+import Edit from '@mui/icons-material/Edit';
+import RemoveRedEye from '@mui/icons-material/RemoveRedEye';
 
 import { NeedDataReason } from '../detail-page/pages/DetailPageContent';
 import useTranslation from '../i18n/hooks/useTranslation';

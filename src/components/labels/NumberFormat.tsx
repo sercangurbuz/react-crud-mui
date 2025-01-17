@@ -1,7 +1,6 @@
 import { forwardRef, Ref, useMemo } from 'react';
 
-import { Box } from '@mui/material';
-import { BoxProps } from '@mui/system/Box';
+import Box, { BoxProps } from '@mui/material/Box';
 import numeral from 'numeral';
 
 import useSettings from '../crud-mui-provider/hooks/useSettings';

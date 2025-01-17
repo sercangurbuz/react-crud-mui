@@ -1,6 +1,7 @@
 import { FieldValues } from 'react-hook-form';
 
-import { Box, Drawer, DrawerProps } from '@mui/material';
+import Box from '@mui/material/Box';
+import Drawer, { DrawerProps } from '@mui/material/Drawer';
 
 import FormDirtyTracker from '../../form/components/FormDirtyTracker';
 import Scrollbar from '../../scrollbar';

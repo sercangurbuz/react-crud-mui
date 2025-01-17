@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 
-import { Grid2 } from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 
 import Field from '../../../components/form/Field';
 import Page from '../../../components/page/Page';
