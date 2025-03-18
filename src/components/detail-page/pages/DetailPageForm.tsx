@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { DefaultValues, FieldValues } from 'react-hook-form';
 
 import { z } from 'zod';
@@ -5,15 +6,25 @@ import { z } from 'zod';
 import FormProvider from '../../form/components/FormProvider';
 import { useForm } from '../../form/hooks';
 import { UseFormReturn, ValidationOptions } from '../../form/hooks/useForm';
+import { usePrevious } from '../../hooks';
 import { isPromise } from '../../misc/isPromise';
+import { DeepNullable } from '../../utils';
 import TriggerValidation from '../components/TriggerValidation';
+import { NeedDataReason } from './DetailPageContent';
 import DetailPageData, { DetailPageDataProps } from './DetailPageData';
+
+export type DefaultDataFn<TModel extends FieldValues> = (
+  reason: NeedDataReason,
+  data?: TModel,
+) => DeepNullable<TModel> | Promise<DeepNullable<TModel>>;
+export type DefaultData<TModel extends FieldValues> = DeepNullable<TModel> | DefaultDataFn<TModel>;
 
 export interface DetailPageFormProps<TModel extends FieldValues>
   extends Omit<DetailPageDataProps<TModel>, 'form'> {
   form?: UseFormReturn<TModel>;
   schema?: z.ZodType<TModel>;
   validationOptions?: ValidationOptions<TModel>;
+  defaultValues?: DefaultData<TModel>;
 }
 
 function DetailPageForm<TModel extends FieldValues>({
@@ -30,8 +41,6 @@ function DetailPageForm<TModel extends FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   const form = useForm<TModel>({
-    reValidateMode: 'onChange',
-    mode: 'onChange',
     schema,
     defaultValues:
       typeof defaultValues === 'function'
@@ -50,6 +59,17 @@ function DetailPageForm<TModel extends FieldValues>({
 
   const formMethods = dpProps.form ?? form;
 
+  const prevReason = usePrevious(reason);
+  const { reset } = formMethods;
+
+  useEffect(() => {
+    if (reason === 'create' && prevReason !== 'create') {
+      const values =
+        typeof defaultValues === 'function' ? defaultValues?.(reason, data) : defaultValues;
+      reset(values as TModel);
+    }
+  }, [data, defaultValues, prevReason, reason, reset]);
+
   return (
     <FormProvider<TModel> form={formMethods} validationOptions={validationOptions}>
       <DetailPageData<TModel>
@@ -58,7 +78,6 @@ function DetailPageForm<TModel extends FieldValues>({
         form={formMethods}
         data={data}
         reason={reason}
-        defaultValues={defaultValues}
       />
       <TriggerValidation />
     </FormProvider>

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 
 import { FlexBox } from '../../flexbox';
 import { FlexBoxProps } from '../../flexbox/FlexBox';
@@ -17,7 +17,7 @@ function EmptyText({
   children,
   emptyImageUrl = DEFAULT_EMPTY_IMAGE,
   ...boxProps
-}: PropsWithChildren<EmptyTextProps>) {
+}: EmptyTextProps) {
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */

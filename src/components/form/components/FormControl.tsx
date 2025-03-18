@@ -55,7 +55,7 @@ function FormControl({
   const renderControl = () => {
     const nodes = Array.isArray(label)
       ? [renderLabel(label[0]), children, renderLabel(label[1])]
-      : placement === 'left' || placement === 'top'
+      : placement === 'left' || placement === 'bottom'
         ? [children, renderLabel(label)]
         : [renderLabel(label), children];
 

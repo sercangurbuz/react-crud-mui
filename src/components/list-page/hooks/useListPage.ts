@@ -2,6 +2,7 @@
 import React, { useContext } from 'react';
 import { FieldValues } from 'react-hook-form';
 
+import { NeedDataReason } from '../../detail-page/pages/DetailPageContent';
 import { ListPageProps } from '../pages/ListPage';
 
 /* ---------------------------- ListPage Context ---------------------------- */
@@ -18,7 +19,7 @@ export type ListPageContextType<TModel extends FieldValues> = {
   /**
    * Used for built in detailpage opener
    */
-  onShowDetailPage: (model?: any) => void;
+  triggerAction: (reason: NeedDataReason, data?: TModel) => void;
 } & Pick<
   ListPageProps<TModel>,
   'loading' | 'enableClear' | 'enableCreateItem' | 'enableExport' | 'enableSearch'

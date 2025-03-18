@@ -8,7 +8,7 @@ import useSegmentParams, {
 } from '../../detail-page/hooks/useSegmentParams';
 import { NeedDataReason } from '../../detail-page/pages/DetailPageContent';
 import { updateQueryString } from '../../misc';
-import useURLSearchFilter from '../hooks/useURLSearchFilter';
+import useURLSearchFilter, { MatchFields } from '../hooks/useURLSearchFilter';
 import ListPage, { ListPageProps } from './ListPage';
 import { ListPageMeta } from './ListPageFilter';
 
@@ -17,7 +17,7 @@ export interface ListPageRouteProps<
   TFilter extends FieldValues = FieldValues,
 > extends ListPageProps<TModel, TFilter>,
     Omit<UseSegmentParamsOptions, 'paths'> {
-  enableQueryStringFilter?: boolean;
+  enableQueryStringFilter?: boolean | MatchFields<TFilter>;
 }
 
 /**
@@ -54,7 +54,10 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
     paths: tabs,
   });
 
-  const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>({ defaultValues });
+  const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>({
+    defaultValues,
+    matcher: typeof enableQueryStringFilter === 'object' ? enableQueryStringFilter : undefined,
+  });
   const [defaultFilterProps] = useState(() => {
     if (enableQueryStringFilter) {
       const { filter, meta } = getFiltersInQS();

@@ -3,11 +3,7 @@ import { DefaultValues, FieldValues } from 'react-hook-form';
 import { z } from 'zod';
 
 import FormProvider from '../../form/components/FormProvider';
-import useForm, {
-  UseFormOptions,
-  UseFormReturn,
-  ValidationOptions,
-} from '../../form/hooks/useForm';
+import useForm, { UseFormReturn, ValidationOptions } from '../../form/hooks/useForm';
 import { DeepNullable } from '../../utils';
 import ListPageFilter, { ListPageFilterProps } from './ListPageFilter';
 
@@ -18,8 +14,7 @@ import ListPageFilter, { ListPageFilterProps } from './ListPageFilter';
 export interface ListPageFormProps<
   TModel extends FieldValues,
   TFilter extends FieldValues = FieldValues,
-> extends Omit<ListPageFilterProps<TModel, TFilter>, 'form'>,
-    Partial<Pick<UseFormOptions<TFilter>, 'schema'>> {
+> extends Omit<ListPageFilterProps<TModel, TFilter>, 'form'> {
   form?: UseFormReturn<TFilter>;
   schema?: z.ZodType<TFilter>;
   /**
@@ -50,9 +45,7 @@ function ListPageForm<TModel extends FieldValues, TFilter extends FieldValues = 
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */
 
-  const form = useForm<TFilter>({
-    reValidateMode: 'onChange',
-    mode: 'onChange',
+  const form = useForm<TFilter>({    
     schema,
     defaultValues: defaultValues as DefaultValues<TFilter>,
     resetOptions: {

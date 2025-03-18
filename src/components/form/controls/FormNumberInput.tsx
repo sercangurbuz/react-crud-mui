@@ -10,6 +10,7 @@ export interface FormNumberInputProps<TFieldValues extends FieldValues = FieldVa
 function FormNumberInput<TFieldValues extends FieldValues = FieldValues>({
   name,
   fieldProps,
+  formControlProps,
   disabled,
   ...inputProps
 }: FormNumberInputProps<TFieldValues>) {
@@ -36,6 +37,7 @@ function FormNumberInput<TFieldValues extends FieldValues = FieldValues>({
         />
       )}
       disabled={disabled}
+      formControlProps={formControlProps}
       {...fieldProps}
     />
   );

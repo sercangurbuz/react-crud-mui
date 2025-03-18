@@ -53,6 +53,8 @@ function useForm<TFieldValues extends FieldValues = FieldValues>({
 
   // RHF useForm hook
   const formMethods = useRHF<TFieldValues>({
+    reValidateMode: 'onChange',
+    mode: 'onChange',
     resolver: schema && zodResolver(schema),
     ...options,
   });

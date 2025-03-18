@@ -1,8 +1,8 @@
 import { FieldValues } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { CloseReason } from '../../page/Page';
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
+import { CloseReason } from '../../page/Page';
 import DetailPageDefaultLayout from '../components/DetailPageDefaultLayout';
 import Prompt from '../components/Prompt';
 import useDetailPageRouteParams from '../hooks/useDetailPageRouteParams';
@@ -57,11 +57,7 @@ function DetailPageRoute<TModel extends FieldValues>({
   /*                                   Events                                   */
   /* -------------------------------------------------------------------------- */
 
-  const handleReasonChange = (reason: NeedDataReason) => {
-    if (reason === 'fetch') {
-      return;
-    }
-
+  const handleCreate = (reason: NeedDataReason) => {
     let pathname = `../${newItemParamValue}`;
     const search = new URLSearchParams();
 
@@ -123,7 +119,7 @@ function DetailPageRoute<TModel extends FieldValues>({
   return (
     <DetailPageForm
       reason={reason}
-      onReasonChange={handleReasonChange}
+      onReasonChange={handleCreate}
       onAfterSave={handleAfterSave}
       onAfterDelete={handleAfterDelete}
       onClose={handleClose}

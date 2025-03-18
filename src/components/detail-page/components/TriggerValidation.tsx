@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { FieldValues, useFormContext, useFormState } from 'react-hook-form';
 
 import { useValidationOptionsContext } from '../../form/hooks';
+import { isEmpty } from '../../misc';
 
 function TriggerValidation<TModel extends FieldValues>() {
   const { runValidationsOnDataChange } = useValidationOptionsContext<TModel>();
@@ -13,7 +14,7 @@ function TriggerValidation<TModel extends FieldValues>() {
       return;
     }
 
-    if (defaultValues && Object.keys(defaultValues).length) {
+    if (defaultValues && !isEmpty(defaultValues)) {
       void trigger();
     }
   }, [defaultValues, trigger, runValidationsOnDataChange]);

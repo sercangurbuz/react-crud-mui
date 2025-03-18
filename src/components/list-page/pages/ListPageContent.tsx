@@ -1,8 +1,7 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useCallback, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
-import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useDetailPageModal from '../../detail-page/hooks/useDetailPageModal';
 import { NeedDataReason } from '../../detail-page/pages/DetailPageContent';
 import { DetailPageDrawerProps } from '../../detail-page/pages/DetailPageDrawer';
@@ -15,9 +14,11 @@ import normalizeServerError from '../../misc/normalizeError';
 import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
+import { DEFAULT_ROW_KEY_FIELD } from '../../table/constants';
 import Table, { TableColumn, TableProps } from '../../table/Table';
 import { ServerError } from '../../utils';
 import AutoSearch from '../components/AutoSearch';
+import CardList, { CardListProps } from '../components/CardList';
 import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageCommands';
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
 import ListPageShortCuts from '../components/ListPageShortCuts';
@@ -26,6 +27,8 @@ import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
+
+export type ListType = 'table' | 'card';
 
 export type ListPageWrapperLayoutProps = {
   content: ReactNode;
@@ -85,7 +88,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
   /**
    * ListPage columns
    */
-  columns: TableColumn<TModel>[];
+  columns?: TableColumn<TModel>[];
   /**
    * Enable searching thru commands and shortcuts
    */
@@ -129,7 +132,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
   /**
    * Custom list region component
    */
-  list?: React.ComponentType<TableProps<TModel>>;
+  onCustomTable?: (props: TableProps<TModel>) => ReactNode;
   /**
    * Custom header function
    */
@@ -159,12 +162,25 @@ export interface ListPageContentProps<TModel extends FieldValues>
    * Open detailPage in view mode as default or in which reason provided
    */
   enableRowClickToDetails?: boolean | NeedDataReason;
+  /**
+   * Call search after save & delete actions of detailpage,default true
+   */
+  enableRefetch?: boolean;
+  /**
+   * Card Col props
+   */
+  cardProps?: CardListProps<TModel>;
+  /**
+   * List type @default table
+   */
+  listType?: ListType;
 }
 
 function ListPageContent<TModel extends FieldValues>({
   activeSegmentIndex,
   alerts,
   autoSearch = true,
+  cardProps,
   children,
   columns,
   createCommandLabel,
@@ -176,18 +192,20 @@ function ListPageContent<TModel extends FieldValues>({
   enableRowClickToDetails,
   enableClear,
   enableCreateItem = true,
+  enableRefetch,
   enableExport,
   enableSearch,
   error,
   filterContent,
   hotkeyScopes,
-  list: ListComponent,
+  listType = 'table',
   loading,
   onActionClick,
   onActionCommands,
   onClear,
   onClose,
   onCommands,
+  onCustomTable,
   onDetailPage,
   onExcelExport,
   onExtraCommands,
@@ -207,25 +225,27 @@ function ListPageContent<TModel extends FieldValues>({
 
   /* ---------------------------- Action DetailPage --------------------------- */
 
-  const { uniqueIdParamName } = useSettings();
   const [openDetailPage, detailPageProps] = useDetailPageModal<TModel>({
     models: data,
-    uniqueIdParamName,
+    uniqueIdParamName: tableProps?.rowIdField ?? DEFAULT_ROW_KEY_FIELD,
   });
 
-  const triggerAction = (reason: NeedDataReason, data?: TModel) => {
-    const useDetailPage = typeof onDetailPage === 'function' ? true : !!onDetailPage?.[reason];
+  const triggerAction = useCallback(
+    (reason: NeedDataReason, data?: TModel) => {
+      const useDetailPage = typeof onDetailPage === 'function' ? true : !!onDetailPage?.[reason];
 
-    if (useDetailPage) {
-      return openDetailPage({
-        data,
-        reason,
-        disabled,
-      });
-    }
-    //call fallback action handler
-    onActionClick?.(reason, data);
-  };
+      if (useDetailPage) {
+        return openDetailPage({
+          data,
+          reason,
+          disabled,
+        });
+      }
+      //call fallback action handler
+      onActionClick?.(reason, data);
+    },
+    [disabled, onActionClick, onDetailPage, openDetailPage],
+  );
 
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
@@ -332,7 +352,7 @@ function ListPageContent<TModel extends FieldValues>({
     const commandProps: ListPageCommandsProps = {
       onExcelExport,
       onSearch,
-      onCreateItem: () => triggerAction('create', {} as TModel),
+      onCreateItem: () => triggerAction('create'),
       onClear,
       onCommands,
       onExtraCommands,
@@ -364,7 +384,7 @@ function ListPageContent<TModel extends FieldValues>({
    * Render all components
    */
   const renderContentLayout = () => {
-    const tableContent = renderTable();
+    const tableContent = listType === 'card' ? renderCard() : renderTable();
     const autoSearchContent = renderAutoSearch();
 
     return (
@@ -378,9 +398,38 @@ function ListPageContent<TModel extends FieldValues>({
   };
 
   /**
+   * Render card component
+   */
+  const renderCard = () => {
+    if (!cardProps) {
+      return null;
+    }
+
+    return (
+      <CardList<TModel>
+        {...cardProps}
+        onActionCommandProps={(data, index) => ({
+          onDelete: () => onActionClick?.('delete', data),
+          onView: () => triggerAction('view', data),
+          onEdit: () => triggerAction('fetch', data),
+          onCopy: () => triggerAction('copy', data),
+          model: data,
+          index,
+        })}
+        data={data}
+        enableActionCommands={enableActionCommands}
+      />
+    );
+  };
+
+  /**
    * Render table either using List component or fallback to default Table component
    */
   const renderTable = () => {
+    if (!columns?.length) {
+      return null;
+    }
+
     const props: Partial<TableProps<TModel>> = {
       ...tableProps,
       columns: enableActionCommands
@@ -427,8 +476,8 @@ function ListPageContent<TModel extends FieldValues>({
       };
     }
 
-    const tableNode = ListComponent ? (
-      <ListComponent {...(props as TableProps<TModel>)} />
+    const tableNode = onCustomTable ? (
+      onCustomTable(props as TableProps<TModel>)
     ) : (
       <Table {...(props as TableProps<TModel>)} />
     );
@@ -470,6 +519,26 @@ function ListPageContent<TModel extends FieldValues>({
       header: isDisabled ? t('browse') : title[reason],
       helperText: reason === 'copy' ? t('tags.copy') : null,
       createCommandLabel,
+      onAfterSave: (result, { reason, mode }) => {
+        switch (mode) {
+          case 'save':
+            if (reason === 'create' && result) {
+              triggerAction('fetch', result as TModel);
+            }
+            break;
+          case 'save-close':
+          case 'save-create':
+            if (enableRefetch) {
+              onSearch();
+            }
+            break;
+        }
+      },
+      onAfterDelete: () => {
+        if (enableRefetch) {
+          onSearch();
+        }
+      },
       ...detailPageProps,
     };
 
@@ -486,7 +555,7 @@ function ListPageContent<TModel extends FieldValues>({
 
   const contextValue = useMemo<ListPageContextType<TModel>>(
     () => ({
-      onShowDetailPage: openDetailPage,
+      triggerAction,
       loading,
       data,
       search: onSearch,
@@ -504,7 +573,7 @@ function ListPageContent<TModel extends FieldValues>({
       enableSearch,
       loading,
       onClear,
-      openDetailPage,
+      triggerAction,
       onSearch,
     ],
   );

@@ -6,6 +6,7 @@ import { UseFormReturn } from '../../form/hooks/useForm';
 import useFormInitEffect from '../../form/hooks/useFormInitEffect';
 import { TabChangedPayload } from '../../page/components/DefaultTabs';
 import { TableProps } from '../../table/Table';
+import { CardListProps } from '../components/CardList';
 import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import ListPageContent, { ListPageContentProps } from './ListPageContent';
 
@@ -35,7 +36,7 @@ export interface ListPageFilterProps<
   TFilter extends FieldValues = FieldValues,
 > extends Omit<
     ListPageContentProps<TModel>,
-    'onSearch' | 'onExcelExport' | 'tableProps' | 'onTabChanged'
+    'onSearch' | 'onExcelExport' | 'tableProps' | 'onTabChanged' | 'cardProps'
   > {
   /**
    * Table states as partial for providing extra props to table
@@ -66,6 +67,10 @@ export interface ListPageFilterProps<
    */
   searchOnLoad?: boolean;
   /**
+   * Table sorting and
+   */
+  tableMode?: TableMode;
+  /**
    * Enable table pagination default true
    */
   enablePagination?: boolean;
@@ -73,16 +78,20 @@ export interface ListPageFilterProps<
    * Enable table sorting default true
    */
   enableSorting?: boolean;
-  /**
-   * Table sorting and
-   */
-  tableMode?: TableMode;
+
+  cardProps?: Pick<
+    CardListProps<TModel>,
+    'cardColProps' | 'cardRowProps' | 'onCardMeta' | 'emptyTextProps'
+  >;
 }
 
 /**
  * ListPage with filtering features
  */
 function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
+  cardProps,
+  data,
+  dataCount,
   defaultMeta,
   defaultSegmentIndex,
   enablePagination = true,
@@ -194,6 +203,8 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
   return (
     <ListPageContent<TModel>
       {...lpProps}
+      data={data}
+      dataCount={dataCount}
       onSearch={() =>
         void handleSearch({
           reason: 'search',
@@ -208,6 +219,23 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
         void handleSearch({ reason: 'tabChanged', ...payload });
       }}
       onClear={clearForm}
+      cardProps={
+        {
+          enablePagination,
+          paginationProps: {
+            count: Math.ceil((dataCount ?? data?.length ?? 0) / meta?.pagination?.pageSize),
+            onChange(_event, page) {
+              void handleSearch({
+                pagination: {
+                  pageIndex: page - 1,
+                },
+                reason: 'pagination',
+              });
+            },
+          },
+          ...cardProps,
+        } as CardListProps<TModel>
+      }
     />
   );
 }

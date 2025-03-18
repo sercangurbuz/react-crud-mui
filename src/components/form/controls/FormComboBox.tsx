@@ -14,7 +14,13 @@ function FormComboBox<
   T extends CreatableModel = CreatableModel,
   Creatable extends boolean = false,
   TFieldValues extends FieldValues = FieldValues,
->({ name, fieldProps, disabled, ...comboBoxProps }: FormComboBoxProps<T, Creatable, TFieldValues>) {
+>({
+  name,
+  fieldProps,
+  disabled,
+  formControlProps,
+  ...comboBoxProps
+}: FormComboBoxProps<T, Creatable, TFieldValues>) {
   return (
     <Field
       name={name}
@@ -35,6 +41,7 @@ function FormComboBox<
         />
       )}
       disabled={disabled}
+      formControlProps={formControlProps}
       {...fieldProps}
     />
   );

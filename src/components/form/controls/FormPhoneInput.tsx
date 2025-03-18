@@ -11,6 +11,7 @@ function FormPhoneInput<TFieldValues extends FieldValues = FieldValues>({
   name,
   fieldProps,
   disabled,
+  formControlProps,
   ...inputProps
 }: FormPhoneInputProps<TFieldValues>) {
   return (
@@ -32,6 +33,7 @@ function FormPhoneInput<TFieldValues extends FieldValues = FieldValues>({
         />
       )}
       disabled={disabled}
+      formControlProps={formControlProps}
       {...fieldProps}
     />
   );

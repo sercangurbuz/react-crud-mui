@@ -8,7 +8,7 @@ import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
 import normalizeServerError from '../../misc/normalizeError';
 import { Message } from '../../page/hooks/useNormalizeMessages';
-import { DeepNullable, ServerError } from '../../utils';
+import { ServerError } from '../../utils';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -20,12 +20,6 @@ export type DataResult<TModel> = TModel | Promise<TModel | void | undefined> | u
 export interface DataEvent<TModel extends FieldValues, TVariables> {
   (variables: TVariables, form: UseFormReturn<TModel>): DataResult<TModel>;
 }
-
-export type DefaultDataFn<TModel extends FieldValues> = (
-  reason: NeedDataReason,
-  data?: TModel,
-) => DeepNullable<TModel> | Promise<DeepNullable<TModel>>;
-export type DefaultData<TModel extends FieldValues> = DeepNullable<TModel> | DefaultDataFn<TModel>;
 
 export type SaveMode = 'save' | 'save-close' | 'save-create';
 
@@ -52,10 +46,6 @@ export interface DetailPageDataProps<TModel extends FieldValues>
     'onSave' | 'onDelete' | 'onDiscardChanges' | 'onCopy' | 'onSaveCreate' | 'onSaveClose'
   > {
   form: UseFormReturn<TModel>;
-  /**
-   * Get default form values for each particular reason
-   */
-  defaultValues?: DefaultData<TModel>;
   /**
    * Save event
    * @returns if returns data,either in promise or object will bind to form data
@@ -99,7 +89,6 @@ function DetailPageData<TModel extends FieldValues>({
   alerts,
   autoSave,
   data,
-  defaultValues,
   error,
   form,
   loading,
@@ -182,10 +171,6 @@ function DetailPageData<TModel extends FieldValues>({
       result = await runAsync(result);
     }
 
-    if (result) {
-      reset(result);
-    }
-
     if (showSuccessMessages && !autoSave) {
       toast.success(t('savedsuccesfully'));
     }
@@ -195,13 +180,6 @@ function DetailPageData<TModel extends FieldValues>({
 
   const handleSave = async () => {
     await save();
-
-    /**
-     * Change reason to fetch after item creation
-     */
-    if (reason !== 'fetch') {
-      onReasonChange?.('fetch');
-    }
   };
 
   const handleSaveAndCreate = async () => {
@@ -247,10 +225,6 @@ function DetailPageData<TModel extends FieldValues>({
   const handleCreate = (reason: NeedDataReason = 'create') => {
     onReasonChange?.(reason);
     resetState();
-
-    const values =
-      typeof defaultValues === 'function' ? defaultValues?.(reason, data) : defaultValues;
-    reset(values as TModel);
   };
 
   /* -------------------------------------------------------------------------- */

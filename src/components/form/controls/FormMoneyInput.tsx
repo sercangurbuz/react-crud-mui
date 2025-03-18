@@ -11,6 +11,7 @@ function FormMoneyInput<TFieldValues extends FieldValues = FieldValues>({
   name,
   fieldProps,
   disabled,
+  formControlProps,
   ...inputProps
 }: FormMoneyInputProps<TFieldValues>) {
   return (
@@ -36,6 +37,7 @@ function FormMoneyInput<TFieldValues extends FieldValues = FieldValues>({
         />
       )}
       disabled={disabled}
+      formControlProps={formControlProps}
       {...fieldProps}
     />
   );

@@ -20,6 +20,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
   autoFocus,
   size,
   disabled,
+  formControlProps,
   ...dateProps
 }: FormDatePickerProps<TFieldValues>) {
   return (
@@ -47,6 +48,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
         />
       )}
       disabled={disabled}
+      formControlProps={formControlProps}
       {...fieldProps}
     />
   );

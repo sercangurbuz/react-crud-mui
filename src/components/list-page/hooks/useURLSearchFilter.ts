@@ -1,5 +1,6 @@
+import { useMemo } from 'react';
 import { FieldValues, get } from 'react-hook-form';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import qs from 'qs';
 
@@ -11,19 +12,38 @@ import { ListPageMeta } from '../pages/ListPageFilter';
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-type UseURLSearchFilterOptions = {
+export type MatchFields<TFilter extends FieldValues> = {
+  [k in keyof TFilter]?: true;
+};
+
+type UseURLSearchFilterOptions<TFilter extends FieldValues> = {
   defaultValues?: Record<string, unknown>;
+  matcher?: MatchFields<TFilter>;
 };
 function useURLSearchFilter<TFilter extends FieldValues>({
   defaultValues,
-}: UseURLSearchFilterOptions) {
+  matcher,
+}: UseURLSearchFilterOptions<TFilter>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
   const { segmentParamName } = useSettings();
-  const [, setSearchParams] = useSearchParams();
-  const { search } = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const search = useMemo(() => {
+    if (matcher) {
+      const params = new URLSearchParams();
+      searchParams.forEach((value, key) => {
+        if (key in matcher) {
+          params.append(key, value);
+        }
+      });
+      return params.toString();
+    }
+
+    return searchParams.toString();
+  }, [searchParams, matcher]);
 
   const getFiltersInQS = () => {
     const {
@@ -85,6 +105,10 @@ function useURLSearchFilter<TFilter extends FieldValues>({
       strictNullHandling: true,
       charset: 'utf-8',
       filter(prefix, value) {
+        if (matcher && prefix && !(prefix in matcher)) {
+          return;
+        }
+
         if (prefix === 'page' && value === DEFAULT_PAGEINDEX) {
           return;
         }

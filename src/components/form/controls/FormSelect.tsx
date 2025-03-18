@@ -13,6 +13,7 @@ function FormSelect<T extends FieldValues, TFieldValues extends FieldValues = Fi
   name,
   fieldProps,
   disabled,
+  formControlProps,
   ...selectProps
 }: FormSelectProps<T, TFieldValues>) {
   return (
@@ -32,6 +33,7 @@ function FormSelect<T extends FieldValues, TFieldValues extends FieldValues = Fi
         />
       )}
       disabled={disabled}
+      formControlProps={formControlProps}
       {...fieldProps}
     />
   );

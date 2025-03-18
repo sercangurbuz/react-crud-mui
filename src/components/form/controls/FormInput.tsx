@@ -11,6 +11,7 @@ export interface FormInputProps<TFieldValues extends FieldValues = FieldValues>
 function FormInput<TFieldValues extends FieldValues = FieldValues>({
   name,
   fieldProps,
+  formControlProps,
   disabled,
   ...inputProps
 }: FormInputProps<TFieldValues>) {
@@ -37,6 +38,7 @@ function FormInput<TFieldValues extends FieldValues = FieldValues>({
         />
       )}
       disabled={disabled}
+      formControlProps={formControlProps}
       {...fieldProps}
     />
   );

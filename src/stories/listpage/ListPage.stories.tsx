@@ -8,6 +8,7 @@ import Done from '@mui/icons-material/Done';
 import Pending from '@mui/icons-material/Pending';
 import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
 import Search from '@mui/icons-material/Search';
+import { Avatar, Box, Checkbox } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Button from '@mui/material/Button';
@@ -18,10 +19,11 @@ import { RowSelectionState } from '@tanstack/react-table';
 import { z } from 'zod';
 
 import ActionCommands from '../../components/action-commands/ActionCommands';
-import { FlexBox } from '../../components/flexbox';
+import { FlexBetween, FlexBox } from '../../components/flexbox';
+import Email from '../../components/icons/Email';
 import ListPage from '../../components/list-page/pages/ListPage';
 import Table from '../../components/table/Table';
-import { H1 } from '../../components/typography';
+import { H1, Paragraph, Small } from '../../components/typography';
 import { ServerError } from '../../components/utils';
 import mockUsers from '../../test-setup/mockUsers.json';
 import { UserDefaultValues } from '../utils/api';
@@ -144,6 +146,49 @@ export const WithDefaultTableFilters: ListPageStory = {
 export const WithNoFilter: ListPageStory = {
   args: {
     filterContent: undefined,
+  },
+};
+
+export const WithCardList: ListPageStory = {
+  args: {
+    listType: 'card',
+    onDetailPage(props) {
+      return <EmbededDetailPage {...props} />;
+    },
+    enableActionCommands: true,
+    cardProps: {
+      onCardMeta(model, actions) {
+        return (
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider',
+            }}
+          >
+            <FlexBetween mx={-1} mt={-1}>
+              <Checkbox size="small" />
+              {actions}
+            </FlexBetween>
+
+            <Stack direction="row" alignItems="center" py={2} spacing={2}>
+              <Avatar src="/man.svg" sx={{ borderRadius: '20%' }} />
+
+              <div>
+                <Paragraph fontWeight={500}>{model.name}</Paragraph>
+                <Small color="grey.500">{model.username}</Small>
+              </div>
+            </Stack>
+
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Email sx={{ color: 'grey.500', fontSize: 18 }} />
+              <Small color="grey.500">{model.email}</Small>
+            </Stack>
+          </Box>
+        );
+      },
+    },
   },
 };
 
@@ -489,7 +534,7 @@ export const AutoSearch: ListPageStory = {
 
 export const FilterFromQuerystring: ListPageRouteStory = {
   args: {
-    enableQueryStringFilter: true,
+    enableQueryStringFilter: { username: true },
     enableClear: true,
     defaultMeta: {
       sorting: [{ id: 'name', desc: true }],
