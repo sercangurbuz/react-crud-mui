@@ -18,7 +18,7 @@ export default meta;
 type Story = StoryObj<typeof MaskedInput>;
 
 export const Simple: Story = {
-  render(args) {
+  render() {
     return (
       <DetailPage
         defaultValues={{

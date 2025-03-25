@@ -10,7 +10,6 @@ export interface FormMaskedInputProps<TFieldValues extends FieldValues = FieldVa
 
 function FormMaskedInput<TFieldValues extends FieldValues = FieldValues>({
   name,
-  label,
   disabled,
   formControlProps,
   fieldProps,
