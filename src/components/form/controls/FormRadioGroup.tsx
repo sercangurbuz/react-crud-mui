@@ -37,9 +37,10 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
   name,
   label,
   helperText,
-  placement = 'bottom',
+  placement = 'top',
   fieldProps,
   disabled,
+  formControlProps,
   data,
   ...radioGroupProps
 }: FormRadioGroupProps<TFieldValues>) {
@@ -50,6 +51,7 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
         label,
         helperText,
         placement,
+        ...formControlProps,
       }}
       render={(field) => (
         <RadioGroup

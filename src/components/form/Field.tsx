@@ -18,6 +18,7 @@ import FormCheckbox from './controls/FormCheckbox';
 import FormComboBox from './controls/FormComboBox';
 import FormDatePicker from './controls/FormDatePicker';
 import FormInput from './controls/FormInput';
+import FormMaskedInput from './controls/FormMaskedInput';
 import FormMoneyInput from './controls/FormMoneyInput';
 import FormNumberInput from './controls/FormNumberInput';
 import FormPhoneInput from './controls/FormPhoneInput';
@@ -144,6 +145,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
 export default Field;
 
 Field.Input = FormInput;
+Field.MaskedInput = FormMaskedInput;
 Field.Search = FormSearchInput;
 Field.NumberInput = FormNumberInput;
 Field.MoneyInput = FormMoneyInput;

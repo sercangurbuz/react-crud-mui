@@ -1,30 +1,33 @@
 import { FieldValues } from 'react-hook-form';
 
-import NumberInput, { NumberInputProps } from '../../number-input/NumberInput';
+import MaskedInput, { MaskedInputProps } from '../../masked-input/MaskedInput';
+import isNil from '../../misc/isNil';
 import Field, { ControlCommonProps } from '../Field';
 
-export interface FormNumberInputProps<TFieldValues extends FieldValues = FieldValues>
-  extends Omit<NumberInputProps, 'name'>,
+export interface FormMaskedInputProps<TFieldValues extends FieldValues = FieldValues>
+  extends Omit<MaskedInputProps, 'name'>,
     ControlCommonProps<TFieldValues> {}
 
-function FormNumberInput<TFieldValues extends FieldValues = FieldValues>({
+function FormMaskedInput<TFieldValues extends FieldValues = FieldValues>({
   name,
-  fieldProps,
-  formControlProps,
+  label,
   disabled,
+  formControlProps,
+  fieldProps,
   helperText,
   ...inputProps
-}: FormNumberInputProps<TFieldValues>) {
+}: FormMaskedInputProps<TFieldValues>) {
   return (
     <Field
       name={name}
       render={(field, { invalid, error }) => (
-        <NumberInput
-          sx={{
-            width: '100%',
-          }}
+        <MaskedInput
           {...inputProps}
           {...field}
+          /**
+           * ReactInputMask component is not friendly with nullish values
+           */
+          value={isNil(field.value) ? '' : field.value}
           error={invalid}
           helperText={error?.message || helperText}
           onChange={(e) => {
@@ -44,4 +47,4 @@ function FormNumberInput<TFieldValues extends FieldValues = FieldValues>({
   );
 }
 
-export default FormNumberInput;
+export default FormMaskedInput;
