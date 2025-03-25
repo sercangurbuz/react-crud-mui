@@ -151,6 +151,10 @@ export interface ListPageContentProps<TModel extends FieldValues>
    */
   enableActionCommands?: boolean;
   /**
+   * Actionm commands extra props
+   */
+  actionCommandsProps?: Partial<ActionCommandsProps<TModel>>;
+  /**
    * Custom render function for action commands
    */
   onActionCommands?: (props: ActionCommandsProps<TModel>) => ReactNode;
@@ -178,6 +182,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
 
 function ListPageContent<TModel extends FieldValues>({
   activeSegmentIndex,
+  actionCommandsProps,
   alerts,
   autoSearch = true,
   cardProps,
@@ -450,6 +455,8 @@ function ListPageContent<TModel extends FieldValues>({
                   onCopy: () => triggerAction('copy', data),
                   model: data,
                   index: cell.row.index,
+                  disabled,
+                  ...actionCommandsProps,
                 };
 
                 if (onActionCommands) {

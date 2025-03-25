@@ -184,7 +184,6 @@ function Page({
     }
 
     const props: HeaderProps = {
-      ...headerProps,
       p: PagePadding[size],
       rightContent: (
         <>
@@ -198,6 +197,7 @@ function Page({
           {centerContent}
         </>
       ),
+      ...headerProps,
     };
 
     return onHeader ? onHeader(props) : <Header {...props} />;

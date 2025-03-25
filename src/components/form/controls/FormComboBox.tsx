@@ -4,7 +4,7 @@ import ComboBox, { ComboBoxProps, CreatableModel } from '../../combobox/ComboBox
 import Field, { ControlCommonProps } from '../Field';
 
 export interface FormComboBoxProps<
-  T extends CreatableModel,
+  T extends CreatableModel = CreatableModel,
   Creatable extends boolean = false,
   TFieldValues extends FieldValues = FieldValues,
 > extends Omit<ComboBoxProps<T, Creatable>, 'name'>,

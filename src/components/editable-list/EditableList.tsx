@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useMemo, useState } from 'react';
 import {
   FieldArray,
   FieldArrayPath,
@@ -69,7 +69,11 @@ export interface EditableListProps<
   TArrayModel extends FieldArray<TModel, TFieldArrayName> & FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
 > extends Omit<TableProps<TArrayModel>, 'data'>,
-    Pick<ActionCommandsProps<TArrayModel>, 'canCopy' | 'canDelete' | 'canEdit'>,
+    Pick<
+      ActionCommandsProps<TArrayModel>,
+      'canCopy' | 'canDelete' | 'canEdit' | 'showCopy' | 'showDelete' | 'showEdit'
+    > {
+  /**,
     PropsWithChildren {
   /**
    * Array model name of form
@@ -140,6 +144,10 @@ export interface EditableListProps<
    * Column props of commands
    */
   commandColProps?: TableColumn<TArrayModel>;
+  /**
+   * DetailPage content
+   */
+  children?: ReactNode;
 }
 
 function EditableList<
@@ -150,6 +158,9 @@ function EditableList<
   canCopy = true,
   canDelete = true,
   canEdit = true,
+  showCopy = true,
+  showDelete = true,
+  showEdit = true,
   children,
   columns,
   commandColProps,
@@ -250,6 +261,10 @@ function EditableList<
             canCopy,
             canDelete,
             canEdit,
+            showCopy,
+            showDelete,
+            showEdit,
+            showView: !!disabledProp.disabled,
             index: cell.row.index,
             ...disabledProp,
           };
@@ -274,6 +289,9 @@ function EditableList<
     onOpen,
     remove,
     rowCommands,
+    showCopy,
+    showDelete,
+    showEdit,
   ]);
 
   /* -------------------------------------------------------------------------- */
@@ -397,7 +415,7 @@ function EditableList<
       hotkeyScopes: `${name}-${DETAILPAGE_HOTKEYS_SCOPE}`,
       children,
       showSuccessMessages: false,
-      title: disabled ? t('browse') : dpProps?.reason === 'fetch' ? t('edit') : t('newitem'),
+      header: disabled ? t('browse') : dpProps?.reason === 'fetch' ? t('edit') : t('newitem'),
       ...dpProps,
       ...detailPageProps,
     };

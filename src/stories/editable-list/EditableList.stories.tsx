@@ -26,7 +26,6 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
       title: 'Person Details',
       defaultValues: UserDefaultValues,
       children: <FormContent />,
-      header: 'User Detail',
     },
     headerProps: {
       header: 'Top performing users',
