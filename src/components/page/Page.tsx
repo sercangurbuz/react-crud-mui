@@ -54,6 +54,7 @@ export interface PageProps extends HeaderProps {
   tabs?: TabPane[];
   tabsPosition?: TabsPosition;
   tabExtraContent?: ReactNode;
+  hiddenOnSingleTab?: boolean;
   selectedTabIndex?: number;
   onTabChanged?: (selected: TabChangedPayload) => void;
   onTabs?: (props: DefaultTabsProps) => ReactNode;
@@ -99,6 +100,7 @@ function Page({
   tabs,
   tabExtraContent,
   tabsPosition = 'in-center',
+  hiddenOnSingleTab,
   ...headerProps
 }: PageProps) {
   const theme = useTheme();
@@ -130,6 +132,7 @@ function Page({
         onTabChanged?.({ selectedTabIndex: selIndex, selectedTabValue: value });
       },
       extra: tabExtraContent,
+      hiddenOnSingleTab,
       ...tabProps,
     };
 

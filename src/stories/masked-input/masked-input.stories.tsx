@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import { Stack } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
@@ -32,7 +30,7 @@ export const Simple: Story = {
             .string()
             .regex(
               new RegExp(
-                /^0[.\(\/]5[0-9][0-9][.\)\/][.\ \/][1-9]([0-9]){2}[.\-\/]([0-9]){2}[.\-\/]([0-9]){2}$/,
+                /^0[.(/]5[0-9][0-9][.)/][. /][1-9]([0-9]){2}[.\-/]([0-9]){2}[.\-/]([0-9]){2}$/,
               ),
             ),
         })}
@@ -48,6 +46,7 @@ export const Simple: Story = {
             maskRepeat={10}
             helperText="Repeated 10 times with number character"
             maskPlaceholder={null}
+            value={"1"}
           />
         </Stack>
       </DetailPage>

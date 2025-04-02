@@ -311,7 +311,14 @@ export const OpenInModal: DetailPageModalStory = {
           open={visible}
           defaultSaveMode="save"
           onClose={() => setVisible(false)}
-        />
+        >
+          <FormContent />
+          <FormContent />
+          <FormContent />
+          <FormContent />
+          <FormContent />
+          <FormContent />
+        </DetailPage.Modal>
       </>
     );
   },
@@ -347,7 +354,14 @@ export const OpenInDrawer: DetailPageModalStory = {
           onClose={() => {
             setVisible(false);
           }}
-        />
+        >
+          <FormContent />
+          <FormContent />
+          <FormContent />
+          <FormContent />
+          <FormContent />
+          <FormContent />
+        </DetailPage.Drawer>
       </>
     );
   },

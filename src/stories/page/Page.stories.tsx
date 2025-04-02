@@ -171,6 +171,14 @@ export const TabsExtraContent: PageStory = {
   },
 };
 
+export const HiddenTabsOnSingleTab: PageStory = {
+  args: {
+    ...TabsInSubRow.args,
+    tabs: TabsInSubRow.args?.tabs?.slice(0, 1),
+    hiddenOnSingleTab: true,
+  },
+};
+
 export const WithPanels: PageStory = {
   args: {
     children: null,
