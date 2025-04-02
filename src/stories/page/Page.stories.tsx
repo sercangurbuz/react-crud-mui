@@ -63,6 +63,7 @@ const meta: Meta<typeof Page> = {
 
 export default meta;
 type PageStory = StoryObj<typeof Page>;
+type PageModalStory = StoryObj<typeof Page.Modal>;
 
 export const Simple: PageStory = {};
 
@@ -174,8 +175,16 @@ export const TabsExtraContent: PageStory = {
 export const HiddenTabsOnSingleTab: PageStory = {
   args: {
     ...TabsInSubRow.args,
-    tabs: TabsInSubRow.args?.tabs?.slice(0, 1),
-    hiddenOnSingleTab: true,
+    onTabs: (props) => (
+      <Page.Tabs
+        {...props}
+        tabs={props.tabs.map((tab, index) => ({
+          ...tab,
+          hidden: index !== 0,
+        }))}
+        hiddenOnSingleTab
+      />
+    ),
   },
 };
 
@@ -237,6 +246,36 @@ export const OpenInModal: PageStory = {
         />
       </>
     );
+  },
+};
+
+export const SmallSizeModal: PageModalStory = {
+  ...OpenInModal,
+  args: {
+    ...OpenInModal.args,
+    modalProps: {
+      size: 'small',
+    },
+  },
+};
+
+export const LargeSizeModal: PageModalStory = {
+  ...OpenInModal,
+  args: {
+    ...OpenInModal.args,
+    modalProps: {
+      size: 'large',
+    },
+  },
+};
+
+export const CustomSizeModal: PageModalStory = {
+  ...OpenInModal,
+  args: {
+    ...OpenInModal.args,
+    modalProps: {
+      sx: { width: '90dvw' },
+    },
   },
 };
 

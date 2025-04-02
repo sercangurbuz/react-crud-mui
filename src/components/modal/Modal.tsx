@@ -5,9 +5,8 @@ import MuiModal, { ModalProps as MuiModalProps } from '@mui/material/Modal';
 
 import useTranslation from '../i18n/hooks/useTranslation';
 // STYLED COMPONENT
-import { StyledScrollbar, Wrapper } from './styles';
+import { ModalSize, StyledScrollbar, Wrapper } from './styles';
 
-// ===========================================================================
 export interface ModalProps
   extends BoxProps,
     Pick<
@@ -22,6 +21,7 @@ export interface ModalProps
   open: boolean;
   onClose?: () => void;
   closable?: boolean;
+  size?: ModalSize;
 }
 // ===========================================================================
 

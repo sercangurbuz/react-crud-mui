@@ -3,11 +3,18 @@ import styled from '@mui/material/styles/styled';
 
 import Scrollbar from '../scrollbar';
 
-export const Wrapper = styled(Box)(({ theme }) => ({
+export type ModalSize = 'normal' | 'small' | 'large';
+
+export const modalSizes: Record<ModalSize, number | string> = {
+  normal: 680,
+  small: 400,
+  large: 800,
+};
+
+export const Wrapper = styled(Box)<{ size?: ModalSize }>(({ theme, size = 'normal' }) => ({
   top: '50%',
   left: '50%',
-  maxWidth: 680,
-  width: '100%',
+  width: modalSizes[size],
   borderRadius: 16,
   overflow: 'hidden',
   position: 'absolute',
