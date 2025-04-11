@@ -167,6 +167,7 @@
     "tags.validationerror": "Type in missing fields !",
     "input.label": "Type in {{label}}",
     "update": "Update",
+    "more": "More",
     "updateclose": "Update & close",
     "pinnedName.defaultPlaceholder": "Type in the pin name..",
     "table.filter.search": "Search",
