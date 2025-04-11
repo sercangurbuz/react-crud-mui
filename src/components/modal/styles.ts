@@ -24,5 +24,5 @@ export const Wrapper = styled(Box)<{ size?: ModalSize }>(({ theme, size = 'norma
 }));
 
 export const StyledScrollbar = styled(Scrollbar)({
-  maxHeight: '65dvh',
+  maxHeight: '70dvh',
 });

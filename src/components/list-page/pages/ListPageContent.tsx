@@ -155,6 +155,10 @@ export interface ListPageContentProps<TModel extends FieldValues>
    */
   actionCommandsProps?: Partial<ActionCommandsProps<TModel>>;
   /**
+   * Action column extra props
+   */
+  actionColumnProps?: Partial<TableColumn<TModel>>;
+  /**
    * Custom render function for action commands
    */
   onActionCommands?: (props: ActionCommandsProps<TModel>) => ReactNode;
@@ -183,6 +187,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
 function ListPageContent<TModel extends FieldValues>({
   activeSegmentIndex,
   actionCommandsProps,
+  actionColumnProps,
   alerts,
   autoSearch = true,
   cardProps,
@@ -444,6 +449,8 @@ function ListPageContent<TModel extends FieldValues>({
               accessorKey: 'commands',
               align: 'center',
               header: () => null,
+              size: 70,
+              ...actionColumnProps,
               enableSorting: false,
               cell(cell) {
                 const data = cell.row.original;
@@ -524,7 +531,6 @@ function ListPageContent<TModel extends FieldValues>({
       enableCopy: true,
       enableDiscardChanges: false,
       header: isDisabled ? t('browse') : title[reason],
-      helperText: reason === 'copy' ? t('tags.copy') : null,
       createCommandLabel,
       onAfterSave: (result, { reason, mode }) => {
         switch (mode) {
