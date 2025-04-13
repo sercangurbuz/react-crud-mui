@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { MemoryRouter } from 'react-router-dom';
+import { Link, MemoryRouter } from 'react-router-dom';
 
 import {
   DeleteOutlined,
   Fingerprint,
   Instagram,
   Key,
-  Link,
+  Link as LinkIcon,
   LockOutlined,
   SettingsOutlined,
 } from '@mui/icons-material';
@@ -31,7 +31,7 @@ const meta: Meta<typeof SidePanel> = {
       { key: '4', name: 'Recent Devices', icon: <DevicesApple /> },
       { key: '5', name: 'Notifications', icon: <NotificationOutlined /> },
       { key: '6', name: 'Two-step verification', icon: <Fingerprint /> },
-      { key: '7', name: 'Connected accounts', icon: <Link /> },
+      { key: '7', name: 'Connected accounts', icon: <LinkIcon /> },
       { key: '8', name: 'Social Account', icon: <Instagram /> },
       { key: '9', name: 'Billing', icon: <DollarOutlined /> },
       { key: '10', name: 'Statements', icon: <FileOutlined /> },
@@ -64,19 +64,51 @@ export const WithLinks: SidePanelStory = {
   ),
   args: {
     items: [
-      { key: '1', name: 'Basic Information', icon: <UserOutlined />, link: '/basic-info' },
-      { key: '2', name: 'Password', icon: <LockOutlined />, link: '/password' },
-      { key: '3', name: 'Preferences', icon: <SettingsOutlined />, link: '/preferences' },
-      { key: '4', name: 'Recent Devices', icon: <DevicesApple />, link: '/recent-devices' },
-      { key: '5', name: 'Notifications', icon: <NotificationOutlined />, link: '/notifications' },
-      { key: '6', name: 'Two-step verification', icon: <Fingerprint />, link: '/two-step' },
-      { key: '7', name: 'Connected accounts', icon: <Link />, link: '/connected-accounts' },
-      { key: '8', name: 'Social Account', icon: <Instagram />, link: '/social-account' },
-      { key: '9', name: 'Billing', icon: <DollarOutlined />, link: '/billing' },
-      { key: '10', name: 'Statements', icon: <FileOutlined />, link: '/statements' },
-      { key: '11', name: 'Referrals', icon: <PremiumOutlined />, link: '/referrals' },
-      { key: '12', name: 'API Keys', icon: <Key />, link: '/api-keys' },
-      { key: '13', name: 'Delete account', icon: <DeleteOutlined />, link: '/delete-account' },
+      {
+        key: '1',
+        name: (
+          <Link style={{ color: 'inherit' }} to="/basic-information">
+            Basic Information
+          </Link>
+        ),
+        icon: <UserOutlined />,
+      },
+      { key: '2', name: <Link to="/password">Password</Link>, icon: <LockOutlined /> },
+      {
+        key: '3',
+        name: <Link to="/preferences">Preferences</Link>,
+        icon: <SettingsOutlined />,
+      },
+      {
+        key: '4',
+        name: <Link to="/recent-devices">Recent Devices</Link>,
+        icon: <DevicesApple />,
+      },
+      {
+        key: '5',
+        name: <Link to="/notification">Notifications</Link>,
+        icon: <NotificationOutlined />,
+      },
+      {
+        key: '6',
+        name: <Link to="/two-step-verification">Two-step verification</Link>,
+        icon: <Fingerprint />,
+      },
+      { key: '7', name: <Link to="/connected-accounts">Connected accounts</Link>, icon: <LinkIcon /> },
+      { key: '8', name: <Link to="/social-account">Social Account</Link>, icon: <Instagram /> },
+      { key: '9', name: <Link to="/billing">Billing</Link>, icon: <DollarOutlined /> },
+      { key: '10', name: <Link to="/statements">Statements</Link>, icon: <FileOutlined /> },
+      {
+        key: '11',
+        name: <Link to="/referrals">Referrals</Link>,
+        icon: <PremiumOutlined />,
+      },
+      { key: '12', name: <Link to="/api-keys">API Keys</Link>, icon: <Key /> },
+      {
+        key: '13',
+        name: <Link to="/delete-account">Delete account</Link>,
+        icon: <DeleteOutlined />,
+      },
     ],
   },
 };

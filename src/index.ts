@@ -104,7 +104,11 @@ export { default as EmptyText } from './components/table/components/EmptyText';
 export type { CellAlignment, TableProps, TableColumn } from './components/table/Table';
 export { ExpandMore } from './components/table/components/ExpandButton';
 export { default as Tag, type TagProps } from './components/tag/Tag';
-export { default as SidePanel, type SidePanelProps } from './components/side-panel/SidePanel';
+export {
+  default as SidePanel,
+  type SidePanelProps,
+  type SidePanelItem,
+} from './components/side-panel/SidePanel';
 export * from './components/typography';
 export * from './components/utils';
 export * from './components/theme/colors';

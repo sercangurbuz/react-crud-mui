@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 import { Apps } from '@mui/icons-material';
 import { Box, BoxProps, Card, CardProps, Drawer, Theme, Typography } from '@mui/material';
@@ -11,9 +10,8 @@ import { StyledButton } from './styles';
 
 export type SidePanelItem = {
   key: string;
-  name: string;
+  name: React.ReactNode;
   icon?: React.ReactNode;
-  link?: string;
 };
 
 export interface SidePanelProps extends BoxProps {
@@ -44,13 +42,7 @@ function SidePanel({ items, activeKey, onItemClick, drawerToggler, ...boxProps }
             active={activeKey === item.key}
             onClick={handleListItemBtn(item)}
           >
-            {item.link ? (
-              <Link to={item.link} style={{ color: 'inherit' }}>
-                {item.name}
-              </Link>
-            ) : (
-              item.name
-            )}
+            {item.name}
           </StyledButton>
         ))}
       </FlexBox>
