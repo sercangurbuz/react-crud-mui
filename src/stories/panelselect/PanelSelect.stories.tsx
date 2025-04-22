@@ -78,3 +78,15 @@ export const Disabled: PanelSelectStory = {
     disabled: true,
   },
 };
+
+export const Small: PanelSelectStory = {
+  args: {
+    size: 'small',
+  },
+};
+
+export const Large: PanelSelectStory = {
+  args: {
+    size: 'large',
+  },
+};

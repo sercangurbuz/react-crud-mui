@@ -13,12 +13,15 @@ export type PanelSelectData = {
   'deleteable' | 'helperText' | 'icon' | 'rightContent' | 'selectedIcon' | 'label' | 'sx'
 >;
 
+export type PanelSelectSize = 'small' | 'normal' | 'large';
+
 export interface PanelSelectProps extends Omit<StackProps, 'onChange'> {
   data: PanelSelectData[];
-  value: string | number;
+  value?: string | number;
   disabled?: boolean;
-  onChange: (value: string | number) => void;
-  onDelete: (value: string | number) => void;
+  onChange?: (value: string | number) => void;
+  onDelete?: (value: string | number) => void;
+  size?: PanelSelectSize;
 }
 
 function PanelSelect({
@@ -27,6 +30,7 @@ function PanelSelect({
   onChange,
   value,
   disabled,
+  size = 'normal',
   ...stackProps
 }: PanelSelectProps) {
   const items = data.map(
@@ -46,7 +50,6 @@ function PanelSelect({
           if (disabled) {
             return;
           }
-
           onDelete?.(itemValue);
         }}
         onChange={() => {
@@ -60,7 +63,11 @@ function PanelSelect({
   );
 
   return (
-    <Stack gap={2} {...stackProps}>
+    <Stack
+      gap={size === 'small' ? 1 : 2}
+      sx={{ fontSize: size === 'small' ? 14 : size === 'large' ? 18 : 16 }}
+      {...stackProps}
+    >
       {items}
     </Stack>
   );

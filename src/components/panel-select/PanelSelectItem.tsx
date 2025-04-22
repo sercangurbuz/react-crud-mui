@@ -45,12 +45,12 @@ function PanelSelectItem({
       <div>
         <div className="place">
           {icon}
-          <Paragraph fontWeight={500} fontSize={16}>
+          <Paragraph className="panel-label" fontWeight={500}>
             {label}
           </Paragraph>
         </div>
 
-        <Paragraph color="text.secondary" lineHeight={1.8} fontWeight={400}>
+        <Paragraph color="text.secondary" className="panel-helper-label" fontWeight={400}>
           {helperText}
         </Paragraph>
       </div>

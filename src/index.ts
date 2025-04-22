@@ -18,6 +18,14 @@ export {
   type DetailPageModalProps,
 } from './components/detail-page/pages/DetailPageModal';
 export {
+  default as DetailPagePopover,
+  type DetailPagePopoverProps,
+} from './components/detail-page/pages/DetailPagePopover';
+export {
+  default as DetailPageDrawer,
+  type DetailPageDrawerProps,
+} from './components/detail-page/pages/DetailPageDrawer';
+export {
   default as DetailPageRoute,
   type DetailPageRouteProps,
 } from './components/detail-page/pages/DetailPageRoute';
@@ -37,7 +45,9 @@ export {
 } from './components/editable-list/EditableList';
 export { default as useEditableListContext } from './components/editable-list/hooks/useEditableListContext';
 export * from './components/flexbox';
+export { type FlexBoxProps } from './components/flexbox/FlexBox';
 export { default as Field, type FieldProps } from './components/form/Field';
+export { type FormPanelSelectProps } from './components/form/controls/FormPanelSelect';
 export { type FormCheckboxProps } from './components/form/controls/FormCheckbox';
 export { type FormComboBoxProps } from './components/form/controls/FormComboBox';
 export { type FormDatePickerProps } from './components/form/controls/FormDatePicker';
@@ -54,6 +64,7 @@ export * from './components/hooks';
 export { default as IconWrapper } from './components/icon-wrapper/IconWrapper';
 export { default as Labels } from './components/labels';
 export { default as FormControl } from './components/form/components/FormControl';
+export { type FormControlProps } from './components/form/components/FormControl';
 export { type CurrencyFormatProps } from './components/labels/CurrencyFormat';
 export { type DateFormatProps } from './components/labels/DateFormat';
 export { type NumberFormatProps } from './components/labels/NumberFormat';
