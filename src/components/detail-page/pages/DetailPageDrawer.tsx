@@ -4,13 +4,14 @@ import Box from '@mui/material/Box';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 
 import FormDirtyTracker from '../../form/components/FormDirtyTracker';
+import Page from '../../page/Page';
 import Scrollbar from '../../scrollbar';
 import DetailPageDrawerCommands from '../components/DetailPageDrawerCommands';
 import useFormConfirmDirtyChange from '../hooks/useFormConfirmDirtyChange';
 import DetailPage from './DetailPage';
 import { DetailPageModalProps } from './DetailPageModal';
 
-export interface DetailPageDrawerProps<TModel extends FieldValues>
+export interface DetailPageDrawerProps<TModel extends FieldValues = FieldValues>
   extends Omit<DetailPageModalProps<TModel>, 'modalProps'> {
   /**
    * Drawer options
@@ -45,16 +46,23 @@ function DetailPageDrawer<TModel extends FieldValues>({
         style={{ width: 450, flex: 1, display: 'flex', flexDirection: 'column' }}
         defaultSaveMode="save-close"
         onCommands={(props) => <DetailPageDrawerCommands {...props} />}
-        onContentLayout={(props) => (
-          <Box sx={{ flex: 1, position: 'relative' }}>
-            <Scrollbar
-              style={{ top: 0, bottom: 0, left: 0, right: 0, position: 'absolute' }}
-              autoHide={false}
-            >
-              <FormDirtyTracker onDirtyStateChange={setFormDirtyChange} />
-              <DetailPage.Layout {...props} />
-            </Scrollbar>
-          </Box>
+        onLayout={(props) => (
+          <Page.Layout
+            {...props}
+            tabsContent={null}
+            content={
+              <Box sx={{ flex: 1, position: 'relative' }}>
+                <Scrollbar
+                  style={{ top: 0, bottom: 0, left: 0, right: 0, position: 'absolute' }}
+                  autoHide={false}
+                >
+                  <FormDirtyTracker onDirtyStateChange={setFormDirtyChange} />
+                  {props.content}
+                  {props.tabsContent}
+                </Scrollbar>
+              </Box>
+            }
+          />
         )}
         enableCreate={false}
         enableClose={false}

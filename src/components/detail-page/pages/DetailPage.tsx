@@ -12,7 +12,8 @@ import DetailPagePopover from './DetailPagePopover';
 import DetailPageRoute from './DetailPageRoute';
 import DetailPageRouteModal from './DetailPageRouteModal';
 
-export interface DetailPageProps<TModel extends FieldValues> extends DetailPageFormProps<TModel> {
+export interface DetailPageProps<TModel extends FieldValues = FieldValues>
+  extends DetailPageFormProps<TModel> {
   defaultReason?: NeedDataReason;
   defaultSegmentIndex?: number;
 }

@@ -11,7 +11,8 @@ import DetailPage, { DetailPageProps } from './DetailPage';
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface DetailPageModalProps<TModel extends FieldValues> extends DetailPageProps<TModel> {
+export interface DetailPageModalProps<TModel extends FieldValues = FieldValues>
+  extends DetailPageProps<TModel> {
   /**
    * Antd modal options
    */

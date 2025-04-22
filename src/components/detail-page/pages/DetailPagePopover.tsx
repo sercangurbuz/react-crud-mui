@@ -6,7 +6,7 @@ import DetailPage, { DetailPageProps } from './DetailPage';
 
 /* ---------------------------------- Types --------------------------------- */
 
-export interface DetailPagePopoverProps<TModel extends FieldValues>
+export interface DetailPagePopoverProps<TModel extends FieldValues = FieldValues>
   extends DetailPageProps<TModel> {
   popoverOptions?: Partial<PopoverProps>;
   onClose: () => void;

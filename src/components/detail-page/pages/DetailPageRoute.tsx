@@ -12,7 +12,7 @@ import { NeedDataReason } from './DetailPageContent';
 import { DataResult } from './DetailPageData';
 import DetailPageForm, { DetailPageFormProps } from './DetailPageForm';
 
-export interface DetailPageRouteProps<TModel extends FieldValues>
+export interface DetailPageRouteProps<TModel extends FieldValues = FieldValues>
   extends Omit<DetailPageFormProps<TModel>, 'reason'>,
     Omit<UseSegmentParamsOptions, 'paths'> {
   enableRedirectToCreated?: boolean;
