@@ -1,3 +1,4 @@
+import React from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -14,7 +15,7 @@ import Field, { ControlCommonProps } from '../Field';
 
 export type RadioGroupData = {
   value: string | number;
-  label: string;
+  label: React.ReactNode;
 };
 
 export interface FormRadioGroupProps<TFieldValues extends FieldValues = FieldValues>

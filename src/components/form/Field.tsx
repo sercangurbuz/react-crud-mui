@@ -21,6 +21,7 @@ import FormInput from './controls/FormInput';
 import FormMaskedInput from './controls/FormMaskedInput';
 import FormMoneyInput from './controls/FormMoneyInput';
 import FormNumberInput from './controls/FormNumberInput';
+import FormPanelSelect from './controls/FormPanelSelect';
 import FormPhoneInput from './controls/FormPhoneInput';
 import FormRadioGroup from './controls/FormRadioGroup';
 import FormSearchInput from './controls/FormSearchInput';
@@ -156,6 +157,7 @@ Field.Combobox = FormComboBox;
 Field.Select = FormSelect;
 Field.RadioGroup = FormRadioGroup;
 Field.DatePicker = FormDatePicker;
+Field.PanelSelect = FormPanelSelect;
 
 Field.Button = FormButton;
 Field.Watch = FieldWatch;
