@@ -1,13 +1,15 @@
 import React from 'react';
 
 import { Delete } from '@mui/icons-material';
+import { SxProps } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 
 import CheckmarkCircle from '../icons/CheckmarkCircle';
-import { H6, Paragraph } from '../typography';
+import { Paragraph } from '../typography';
 import { StyledCard } from './styles';
 
 export interface PanelSelectItemProps {
+  disabled?: boolean;
   icon?: React.ReactNode;
   selectedIcon?: React.ReactNode;
   label: React.ReactNode;
@@ -17,10 +19,12 @@ export interface PanelSelectItemProps {
   rightContent?: React.ReactNode;
   onChange?: () => void;
   onDelete?: () => void;
+  sx?: SxProps;
 }
 
 function PanelSelectItem({
   deleteable,
+  disabled,
   helperText,
   icon,
   label,
@@ -29,6 +33,7 @@ function PanelSelectItem({
   rightContent,
   selected,
   selectedIcon,
+  sx,
 }: PanelSelectItemProps) {
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     e.stopPropagation();
@@ -36,20 +41,22 @@ function PanelSelectItem({
   };
 
   return (
-    <StyledCard onClick={onChange} selected={selected}>
+    <StyledCard onClick={onChange} selected={selected} sx={sx} disabled={disabled}>
       <div>
         <div className="place">
           {icon}
-          <H6 fontSize={16}>{label}</H6>
+          <Paragraph fontWeight={500} fontSize={16}>
+            {label}
+          </Paragraph>
         </div>
 
-        <Paragraph color="text.secondary" lineHeight={1.8}>
+        <Paragraph color="text.secondary" lineHeight={1.8} fontWeight={400}>
           {helperText}
         </Paragraph>
       </div>
 
       {selected ? (
-        <div className="check-mark">{selectedIcon ?? <CheckmarkCircle />}</div>
+        (selectedIcon ?? <div className="check-mark">{<CheckmarkCircle />}</div>)
       ) : deleteable ? (
         <IconButton onClick={(e) => handleDelete(e)}>
           <Delete color="action" />

@@ -1,5 +1,5 @@
-import { Box } from '@mui/material';
-import Stack from '@mui/material/Stack';
+import { Settings } from '@mui/icons-material';
+import { Box, IconButton } from '@mui/material';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 
@@ -23,12 +23,18 @@ const meta: Meta<typeof Field.PanelSelect> = {
         label: 'Jane Smith',
         helperText: '456 Baker Street, SW1A 1AA London',
         value: '2',
+        selectedIcon: (
+          <IconButton>
+            <Settings sx={{ color: 'primary.main' }} />
+          </IconButton>
+        ),
       },
       {
         icon: <City />,
         label: 'Akira Tanaka',
         helperText: '789 Sakura Avenue, 100-0001 Tokyo',
         value: '3',
+        deleteable: true,
       },
     ],
     name: 'addressId',
@@ -41,18 +47,18 @@ const meta: Meta<typeof Field.PanelSelect> = {
           addressId: z.string().nullable(),
         })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ addressId: null }}
+        defaultValues={{ addressId: '1' }}
         showHeader={false}
       >
         <Page.Content>
-          <Box sx={{ width: 300 ,mb:5}}>
+          <Box sx={{ width: 500, mb: 5 }}>
             <Story />
-            <Field.Button
-              onClick={(form) => form.setValue('addressId', null, { shouldValidate: true })}
-            >
-              Reset
-            </Field.Button>
           </Box>
+          <Field.Button
+            onClick={(form) => form.setValue('addressId', null, { shouldValidate: true })}
+          >
+            Reset
+          </Field.Button>
         </Page.Content>
         <Page.Divider />
         <Page.Content>
@@ -64,12 +70,11 @@ const meta: Meta<typeof Field.PanelSelect> = {
 };
 
 export default meta;
-type RadioGroupStory = StoryObj<typeof Field.RadioGroup>;
+type PanelSelectStory = StoryObj<typeof Field.PanelSelect>;
 
-export const Simple: RadioGroupStory = {};
-
-export const WithLabel: RadioGroupStory = {
+export const Simple: PanelSelectStory = {};
+export const Disabled: PanelSelectStory = {
   args: {
-    label: 'Gender',
+    disabled: true,
   },
 };
