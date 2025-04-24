@@ -23,12 +23,12 @@ export const StyledCard = styled(Card, {
       : theme.palette.text.secondary,
 
     '& .panel-label': {
-      fontSize: '.96em',
+      fontSize: '.98em',
     },
   },
 
   '& .panel-helper-label': {
-    fontSize: '.8em',
+    fontSize: '.85em',
   },
 
   '& .check-mark': {

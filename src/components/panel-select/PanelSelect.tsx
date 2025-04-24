@@ -53,9 +53,10 @@ function PanelSelect({
           onDelete?.(itemValue);
         }}
         onChange={() => {
-          if (disabled) {
+          if (disabled || itemValue === value) {
             return;
           }
+
           onChange?.(itemValue);
         }}
       />
@@ -65,7 +66,7 @@ function PanelSelect({
   return (
     <Stack
       gap={size === 'small' ? 1 : 2}
-      sx={{ fontSize: size === 'small' ? 14 : size === 'large' ? 18 : 16 }}
+      sx={{ width: '100%', fontSize: size === 'small' ? 14 : size === 'large' ? 18 : 16 }}
       {...stackProps}
     >
       {items}

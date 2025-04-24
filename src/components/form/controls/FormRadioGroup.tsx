@@ -52,6 +52,7 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
         label,
         helperText,
         placement,
+        disabled,
         ...formControlProps,
       }}
       render={(field) => (

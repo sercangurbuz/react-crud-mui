@@ -42,7 +42,7 @@ function FormControl({
         <Paragraph
           fontWeight={500}
           lineHeight={1}
-          color={disabled ? 'text.disabled' : invalid ? 'error.main' : 'text.primary'}
+          color={disabled ? 'text.secondary' : invalid ? 'error.main' : 'text.primary'}
           {...labelProps}
         >
           {labelNode}

@@ -25,6 +25,7 @@ function FormCheckbox<TFieldValues extends FieldValues = FieldValues>({
         label,
         helperText,
         placement,
+        disabled: checkBoxProps.disabled,
       }}
       render={(field) => (
         <Checkbox

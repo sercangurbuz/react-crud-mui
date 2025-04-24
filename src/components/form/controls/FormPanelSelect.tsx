@@ -29,6 +29,7 @@ function FormPanelSelect<TFieldValues extends FieldValues = FieldValues>({
         label,
         helperText,
         placement,
+        disabled: panelSelectProps.disabled,
         ...formControlProps,
       }}
       render={(field) => (
