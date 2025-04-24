@@ -171,6 +171,8 @@ function DetailPageData<TModel extends FieldValues>({
       result = await runAsync(result);
     }
 
+    reset(result ?? model);
+
     if (showSuccessMessages && !autoSave) {
       toast.success(t('savedsuccesfully'));
     }
