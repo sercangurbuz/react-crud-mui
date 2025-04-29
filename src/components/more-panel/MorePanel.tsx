@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, ReactNode, useState } from 'react';
 
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -14,6 +14,8 @@ import { Tiny } from '../typography';
 export interface MorePanelProps extends StackProps {
   initialVisibility?: boolean;
   extraContent?: React.ReactNode;
+  moreText?: ReactNode;
+  lessText?: ReactNode;
 }
 
 const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
@@ -29,6 +31,8 @@ function MorePanel({
   children,
   initialVisibility = false,
   extraContent,
+  moreText,
+  lessText,
   ...boxProps
 }: PropsWithChildren<MorePanelProps>) {
   const { t } = useTranslation();
@@ -50,14 +54,14 @@ function MorePanel({
               <>
                 <ExpandLessIcon sx={{ color: 'text.secondary' }} />
                 <Tiny color="text.secondary" fontWeight={600}>
-                  {t('show_less')}
+                  {lessText ?? t('show_less')}
                 </Tiny>
               </>
             ) : (
               <>
                 <ExpandMoreIcon sx={{ color: 'text.secondary' }} />
                 <Tiny color="text.secondary" fontWeight={600}>
-                  {t('show_more')}
+                  {moreText ?? t('show_more')}
                 </Tiny>
               </>
             )}

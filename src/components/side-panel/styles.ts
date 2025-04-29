@@ -41,8 +41,4 @@ export const StyledButton = styled(Button, {
       backgroundColor: theme.palette.primary.main,
     },
   },
-
-  '& > a': {
-    color: 'inherit',
-  },
 }));

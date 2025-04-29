@@ -12,6 +12,7 @@ export type SidePanelItem = {
   key: string;
   name: React.ReactNode;
   icon?: React.ReactNode;
+  endIcon?: React.ReactNode;
 };
 
 export interface SidePanelProps extends BoxProps {
@@ -39,10 +40,11 @@ function SidePanel({ items, activeKey, onItemClick, drawerToggler, ...boxProps }
             key={item.key}
             variant="text"
             startIcon={item.icon}
+            endIcon={item.endIcon}
             active={activeKey === item.key}
             onClick={handleListItemBtn(item)}
           >
-            {item.name}
+            <span style={{ flexGrow: '1', textAlign: 'left' }}>{item.name}</span>
           </StyledButton>
         ))}
       </FlexBox>
