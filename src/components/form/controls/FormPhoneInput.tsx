@@ -27,7 +27,7 @@ function FormPhoneInput<TFieldValues extends FieldValues = FieldValues>({
           error={invalid}
           helperText={error?.message}
           onChange={(e) => {
-            field.onChange(e);
+            field.onChange(e.inputValue ? e.phone : e.inputValue);
             inputProps?.onChange?.(e);
           }}
         />

@@ -6,10 +6,6 @@ import i18nInstance from '../../i18n';
 const phoneSchema = z
   .string()
   .refine((args) => {
-    if (!args) {
-      return true;
-    }
-
     return isValidPhoneNumber(args);
   }, i18nInstance.t('coreui:phone_number_val_message'))
   .transform((value) => {

@@ -97,6 +97,7 @@ export { type PageDrawerProps } from './components/page/PageDrawer';
 export {
   default as DefaultTabs,
   type DefaultTabsProps,
+  type TabPane,
 } from './components/page/components/DefaultTabs';
 export { default as usePage } from './components/page/hooks/usePage';
 export { default as PhoneInput, type PhoneInputProps } from './components/phone-input/PhoneInput';

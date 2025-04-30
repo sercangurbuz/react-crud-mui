@@ -21,7 +21,7 @@ import useFloatingLabelProps from '../input/hooks/useFloatingLabelProps';
 
 export interface PhoneInputProps extends BaseTextFieldProps {
   value?: string;
-  onChange?: (phone: string) => void;
+  onChange?: UsePhoneInputConfig['onChange'];
   phoneInputconfig?: UsePhoneInputConfig;
   getRef?: React.MutableRefObject<typeof PhoneInput>;
 }
@@ -48,9 +48,7 @@ function PhoneInput({
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } = usePhoneInput({
     value,
     countries: defaultCountries,
-    onChange: (data) => {
-      onChange?.(data.phone);
-    },
+    onChange,
     disableDialCodeAndPrefix: true,
     defaultCountry: DEFAULT_COUNTRY,
     ...phoneInputconfig,
