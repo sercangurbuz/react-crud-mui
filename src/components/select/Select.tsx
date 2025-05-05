@@ -93,7 +93,7 @@ function Select<T extends FieldValues = FieldValues>({
   }, [multiple, optionAsValue, value, valueField]);
 
   useFormInitEffect(() => {
-    if (data?.length && !selectedValue && selectInitialOption) {
+    if (data?.length && selectInitialOption) {
       const model =
         typeof selectInitialOption === 'function' ? data.find(selectInitialOption) : data[0];
       const initialValue = get(model, valueField);

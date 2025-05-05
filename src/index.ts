@@ -9,6 +9,7 @@ export {
   default as DetailPage,
   type DetailPageProps,
 } from './components/detail-page/pages/DetailPage';
+export { type NeedDataReason } from './components/detail-page/pages/DetailPageContent';
 export {
   default as DetailPageSteps,
   type DetailPageStepsProps,
