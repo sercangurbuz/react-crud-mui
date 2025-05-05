@@ -11,7 +11,7 @@ export interface ListPageModalProps<
   /**
    * Antd modal options
    */
-  modalProps?: Omit<ModalProps, 'children'>;
+  modalProps?: Omit<ModalProps, 'children' | 'open'>;
   /**
    * Shortcut to open prop of Modal
    */

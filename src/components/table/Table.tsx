@@ -41,6 +41,7 @@ import {
 } from '@tanstack/react-table';
 
 import { FlexBox, FlexRowAlign } from '../flexbox';
+import { SpinDelayOptions, useSpinDelay } from '../hooks/useSpinDelay';
 import useTranslation from '../i18n/hooks/useTranslation';
 import isNil from '../misc/isNil';
 import Scrollbar from '../scrollbar';
@@ -129,6 +130,7 @@ export interface TableProps<TData extends FieldValues>
     hasMore: boolean;
     onFetchMore: () => void;
   };
+  delayOptions?: SpinDelayOptions;
 }
 
 const DEFAULT_SKELETON_ROW_NUMBER = 10;
@@ -142,6 +144,7 @@ function Table<TData extends FieldValues>({
   bordered,
   columns,
   data,
+  delayOptions,
   descriptionField,
   emptyText,
   enablePagination,
@@ -185,6 +188,10 @@ function Table<TData extends FieldValues>({
   const defaultData = useMemo(() => [], []);
   const extractRowId = useCallback((row: TData) => get(row, rowIdField), [rowIdField]);
   const theme = useTheme();
+  const { isLoading: isDebouncedLoading, state: loadingState } = useSpinDelay(
+    !!loading,
+    delayOptions,
+  );
 
   /* -------------------------------------------------------------------------- */
   /*                                Table helpers                               */
@@ -723,8 +730,11 @@ function Table<TData extends FieldValues>({
 
   const renderProgress = () => {
     return (
-      <Backdrop open={!!loading && !firstLoadRef.current} sx={{ position: 'absolute', zIndex: 2 }}>
-        <CircularProgress />
+      <Backdrop
+        open={!!isDebouncedLoading && !firstLoadRef.current}
+        sx={{ position: 'absolute', zIndex: 2 }}
+      >
+        <CircularProgress sx={{ color: loadingState === 'TOO_LONG' ? 'error.main' : undefined }} />
       </Backdrop>
     );
   };
