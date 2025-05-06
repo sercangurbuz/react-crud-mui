@@ -11,7 +11,9 @@ export type FormDatePickerProps<TFieldValues extends FieldValues = FieldValues> 
   DatePickerProps<Dayjs>
 > &
   Pick<StandardTextFieldProps, 'size'> &
-  ControlCommonProps<TFieldValues>;
+  ControlCommonProps<TFieldValues> & {
+    allowClear?: boolean;
+  };
 
 function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
   name,
@@ -20,6 +22,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
   autoFocus,
   size,
   disabled,
+  allowClear = true,
   formControlProps,
   ...dateProps
 }: FormDatePickerProps<TFieldValues>) {
@@ -44,6 +47,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
               error: invalid,
               helperText: error?.message,
             },
+            field: { clearable: allowClear },
           }}
         />
       )}
