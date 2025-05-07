@@ -411,6 +411,7 @@ function DetailPageContent<TModel extends FieldValues>({
         onClose={onClose}
         loading={loading}
         alertsContent={alertsContent}
+        tabsPosition="in-subrow"
         onTabChanged={({ selectedTabIndex }) => onSegmentChanged?.(selectedTabIndex)}
         selectedTabIndex={activeSegmentIndex}
       >

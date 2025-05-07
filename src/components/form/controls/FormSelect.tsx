@@ -30,6 +30,9 @@ function FormSelect<T extends FieldValues, TFieldValues extends FieldValues = Fi
             field.onChange(e.target.value);
             selectProps?.onChange?.(e, child);
           }}
+          onBlur={(e) => {
+            selectProps?.onBlur?.(e);
+          }}
         />
       )}
       disabled={disabled}

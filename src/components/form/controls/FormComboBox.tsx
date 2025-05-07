@@ -38,6 +38,9 @@ function FormComboBox<
             comboBoxProps?.onChange?.(e, value, reason, details);
             field.onChange(value);
           }}
+          onBlur={(e) => {
+            comboBoxProps?.onBlur?.(e);
+          }}
         />
       )}
       disabled={disabled}
