@@ -12,7 +12,7 @@ function FilterContent({ useHook }: { useHook?: boolean }) {
       <Page.Content>
         <Grid2 container spacing={2}>
           <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.Input name="name" label="Name" autoFocus />
+            <Field.Search name="name"  autoFocus />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.Input name="username" label="User name" />

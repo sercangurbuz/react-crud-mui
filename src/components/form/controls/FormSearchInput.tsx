@@ -15,8 +15,8 @@ function FormSearchInput<TFieldValues extends FieldValues = FieldValues>({
   return (
     <Field
       name={name}
-      render={(field, { invalid }) => (
-        <SearchInput {...inputProps} {...field} error={invalid} onSearch={field.onChange} />
+      render={({ onChange, ...field }, { invalid }) => (
+        <SearchInput {...inputProps} {...field} error={invalid} onSearch={onChange} />
       )}
       {...fieldProps}
     />

@@ -1,11 +1,14 @@
 import { useCallback, useState } from 'react';
 
+import hash from 'object-hash';
 import { RefinementCtx, util, z, ZodIssueBase, ZodObject, ZodRawShape, ZodTypeAny } from 'zod';
 
+import { isPromise } from '../misc/isPromise';
 import nullable from '../misc/nullableSchema';
 
 export interface UseZodRefineOptions<T extends ZodRawShape> {
   schema: ZodObject<T>;
+  enableMemoizedRefine?: boolean;
 }
 
 export type ZodRefineOptions<T extends ZodRawShape> = {
@@ -19,8 +22,7 @@ export interface ZodRefine<
     [k in keyof T]?: true;
   },
 > {
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-  (arg: z.output<ZodObject<Pick<T, Extract<keyof T, keyof Mask>>>>): unknown | Promise<unknown>;
+  (arg: z.output<ZodObject<Pick<T, Extract<keyof T, keyof Mask>>>>): boolean | Promise<boolean>;
 }
 
 export interface ZodSuperRefine<
@@ -32,7 +34,10 @@ export interface ZodSuperRefine<
   (arg: z.output<ZodObject<Pick<T, Extract<keyof T, keyof Mask>>>>, ctx: RefinementCtx): void;
 }
 
-function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>) {
+function useZodRefine<T extends ZodRawShape>({
+  schema,
+  enableMemoizedRefine = true,
+}: UseZodRefineOptions<T>) {
   const [defaultSchema, setSchema] = useState<ZodTypeAny>(schema);
 
   const addRefine = useCallback(
@@ -49,8 +54,30 @@ function useZodRefine<T extends ZodRawShape>({ schema }: UseZodRefineOptions<T>)
       options?: ZodRefineOptions<T>,
     ) => {
       const nullableSchema = nullable(schema.pick(mask));
+
+      let payloadHash: string | undefined;
+      let prevResult: boolean | undefined;
+
       const currentSchema = nullableSchema.refine(
-        refine as Parameters<(typeof nullableSchema)['refine']>[0],
+        async (payload) => {
+          if (enableMemoizedRefine) {
+            const hashKey = hash(payload);
+
+            if (payloadHash === hashKey) {
+              return prevResult;
+            }
+            payloadHash = hashKey;
+          }
+
+          const result = refine(payload);
+
+          if (enableMemoizedRefine) {
+            prevResult = isPromise(result) ? await result : result;
+          }
+
+          return result;
+        },
+
         (output) => ({
           message:
             typeof options?.message === 'function'
