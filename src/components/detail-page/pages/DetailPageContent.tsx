@@ -39,7 +39,10 @@ export type DetailPageWrapperLayoutProps = {
 /* ------------------------- DetailPageContentProps ------------------------- */
 
 export interface DetailPageContentProps<TModel extends FieldValues>
-  extends Omit<PageProps, 'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader'>,
+  extends Omit<
+      PageProps,
+      'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'tabExtraContent'
+    >,
     Pick<DetailPageCommandsProps, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
   data?: TModel;
   /**
@@ -145,6 +148,7 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    * Optional steps props
    */
   stepsProps?: Partial<DetailPageStepsProps>;
+  tabExtraContent?: ReactNode | ((data?: TModel) => ReactNode);
 }
 
 function DetailPageContent<TModel extends FieldValues>({
@@ -186,6 +190,7 @@ function DetailPageContent<TModel extends FieldValues>({
   showHeader = true,
   steps,
   stepsProps,
+  tabExtraContent,
   ...pageProps
 }: DetailPageContentProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -400,10 +405,14 @@ function DetailPageContent<TModel extends FieldValues>({
    */
   const renderPage = (content: ReactNode, commands: ReactNode, alertsContent: ReactNode) => {
     const isStepper = !!steps?.length;
+    const tabContent =
+      typeof tabExtraContent === 'function' ? tabExtraContent(data) : tabExtraContent;
     return (
       <Page
         title={reason === 'fetch' ? t('edit') : reason === 'view' ? t('browse') : t('newitem')}
+        tabsPosition="in-subrow"
         {...pageProps}
+        tabExtraContent={tabContent}
         disabled={disabled || loading || reason === 'view'}
         commandsContent={commands}
         commandsPosition={isStepper ? 'bottom' : commandsPosition}
@@ -411,7 +420,6 @@ function DetailPageContent<TModel extends FieldValues>({
         onClose={onClose}
         loading={loading}
         alertsContent={alertsContent}
-        tabsPosition="in-subrow"
         onTabChanged={({ selectedTabIndex }) => onSegmentChanged?.(selectedTabIndex)}
         selectedTabIndex={activeSegmentIndex}
       >

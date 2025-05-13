@@ -238,8 +238,7 @@ function DetailPageData<TModel extends FieldValues>({
       {...dpProps}
       alerts={messages}
       error={error}
-      //data is passed only for context
-      data={data ?? initialValues}
+      data={(data ?? initialValues) as TModel}
       autoSave={autoSave}
       loading={loading || loadingState || isDefaultValuesLoading}
       reason={reason}

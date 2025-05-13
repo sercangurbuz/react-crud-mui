@@ -26,6 +26,7 @@ import Edit from '../../components/icons/Edit';
 import GroupSenior from '../../components/icons/GroupSenior';
 import User from '../../components/icons/User';
 import Page from '../../components/page/Page';
+import Tag from '../../components/tag';
 import { H2 } from '../../components/typography';
 import { ServerError } from '../../components/utils';
 import mockData from '../../test-setup/mockUsers.json';
@@ -430,7 +431,17 @@ export const WithPopover: DetailPagePopoverStory = {
 
 export const WithTabs: DetailPageStory = {
   args: {
+    defaultValues() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(mockData[1]);
+        }, 2000);
+      });
+    },
     children: undefined,
+    tabExtraContent(data) {
+      return data?.name ? <Tag>{data?.name}</Tag> : null;
+    },
     tabs: [
       {
         key: 'tab1',

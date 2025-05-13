@@ -72,6 +72,7 @@ declare module '@tanstack/react-table' {
     title?: string;
     icon?: ReactNode;
     export?: boolean;
+    ellipsis?: boolean;
   }
 }
 
@@ -93,6 +94,7 @@ export type TableColumn<D extends object = object> = {
   link?: (row: Row<D>) => string;
   icon?: ReactNode;
   export?: boolean;
+  ellipsis?: boolean;
 } & ColumnDef<D>;
 
 export interface TableProps<TData extends FieldValues>
@@ -504,6 +506,7 @@ function Table<TData extends FieldValues>({
     const isIndentedCol = cell.row.depth > 0 && cell.column.getIndex() === 1;
     const isSortingActive = cell.column.getCanSort() && !!cell.column.getIsSorted();
     const pinningStyles = table.options.enableColumnPinning ? getPinningStyles(cell.column) : null;
+    const isEllipsis = (cell.column.columnDef as CoreColumn<TData>).ellipsis;
 
     if ((cell.column.columnDef as CoreColumn<TData>).link) {
       const uri = (cell.column.columnDef as CoreColumn<TData>).link!(cell.row);
@@ -524,9 +527,10 @@ function Table<TData extends FieldValues>({
     return (
       <BodyTableCell
         key={cell.id}
-        title={cell.column.title}
+        title={cell.column.title || (isEllipsis ? cell.getValue<string>() : undefined)}
         size={isStandartCol ? 'small' : size}
         style={{ ...pinningStyles }}
+        ellipsis={isEllipsis}
         sx={{
           backgroundColor: isSortingActive
             ? isDark(theme)
@@ -538,6 +542,7 @@ function Table<TData extends FieldValues>({
             : {
                 width: cell.column.getSize(),
                 minWidth: cell.column.getSize(),
+                maxWidth: cell.column.columnDef.maxSize,
               }),
           ...(isIndentedCol ? { paddingLeft: '3rem' } : undefined),
         }}

@@ -22,7 +22,7 @@ export const columns: TableColumn<UserSchema>[] = [
     accessorKey: 'name',
     header: 'Name',
     footer: () => 'this is footer content',
-  }, 
+  },
   {
     accessorKey: 'username',
     header: 'User name',
@@ -90,6 +90,16 @@ export const HiddenColumns: TableStory = {
       },
       ...columns.slice(1),
     ],
+  },
+};
+
+export const Ellipsis: TableStory = {
+  args: {
+    columns: columns.map((item) => ({
+      ...item,
+      ellipsis: true,
+      maxSize: 150,
+    })),
   },
 };
 

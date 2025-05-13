@@ -45,7 +45,6 @@ function DetailPageDrawer<TModel extends FieldValues>({
       <DetailPage<TModel>
         style={{ width: 450, flex: 1, display: 'flex', flexDirection: 'column' }}
         defaultSaveMode="save-close"
-        tabsPosition='in-subrow'
         onCommands={(props) => <DetailPageDrawerCommands {...props} />}
         onLayout={(props) => (
           <Page.Layout
