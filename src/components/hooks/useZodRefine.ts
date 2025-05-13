@@ -89,7 +89,7 @@ function useZodRefine<T extends ZodRawShape>({
 
       setSchema((s) => z.intersection(s, currentSchema));
     },
-    [schema],
+    [enableMemoizedRefine, schema],
   );
 
   const addSuperRefine = useCallback(
