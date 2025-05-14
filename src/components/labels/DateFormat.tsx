@@ -13,6 +13,7 @@ import Calendar from '../icons/sidebar/Calendar';
 
 export interface DateFormatProps extends BoxProps {
   date?: Dayjs | Date | string;
+  format?: string;
   /**
    * Enable time
    */
@@ -42,6 +43,7 @@ function DateFormat(
     isMonthView = false,
     showIcon = false,
     convertToLocal,
+    format: customFormat,
     ...rest
   }: DateFormatProps,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,10 +77,10 @@ function DateFormat(
     displayDate = dayjs(date);
   }
 
-  const formattedDate = displayDate.format(format);
+  const formattedDate = displayDate.format(customFormat ?? format);
   const tooltip = isMonthView
     ? formattedDate
-    : displayDate.format(enableTime ? dateTimeLongFormat : dateLongFormat);
+    : displayDate.format(customFormat ?? (enableTime ? dateTimeLongFormat : dateLongFormat));
 
   return (
     <FlexBox alignItems="center" title={tooltip} {...rest} ref={ref} gap={1}>

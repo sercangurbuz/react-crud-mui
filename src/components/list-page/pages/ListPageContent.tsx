@@ -169,7 +169,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
   /**
    * Open detailPage in view mode as default or in which reason provided
    */
-  enableRowClickToDetails?: boolean | NeedDataReason;
+  enableRowClickToDetails?: boolean | NeedDataReason | ((model: TModel) => boolean);
   /**
    * Call search after save & delete actions of detailpage,default true
    */
@@ -436,15 +436,11 @@ function ListPageContent<TModel extends FieldValues>({
    * Render table either using List component or fallback to default Table component
    */
   const renderTable = () => {
-    if (!columns?.length) {
-      return null;
-    }
-
     const props: Partial<TableProps<TModel>> = {
       ...tableProps,
       columns: enableActionCommands
         ? [
-            ...columns,
+            ...(columns ?? []),
             {
               accessorKey: 'commands',
               align: 'center',
@@ -483,6 +479,13 @@ function ListPageContent<TModel extends FieldValues>({
 
     if (enableRowClickToDetails) {
       props.onRowClick = (_e, row) => {
+        if (typeof enableRowClickToDetails === 'function') {
+          const isEnabled = enableRowClickToDetails(row.original);
+          if (!isEnabled) {
+            return;
+          }
+        }
+
         triggerAction(
           typeof enableRowClickToDetails === 'string' ? enableRowClickToDetails : 'view',
           row.original,

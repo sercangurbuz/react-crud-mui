@@ -15,7 +15,7 @@ export interface ListPageModalProps<
   /**
    * Shortcut to open prop of Modal
    */
-  open: boolean;
+  open?: boolean;
 }
 
 function ListPageModal<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
@@ -25,7 +25,7 @@ function ListPageModal<TModel extends FieldValues, TFilter extends FieldValues =
   ...lpProps
 }: ListPageModalProps<TModel, TFilter>) {
   return (
-    <Modal open={open} onClose={onClose} sx={{ maxWidth: 900 }} {...modalProps}>
+    <Modal open={!!open} onClose={onClose} sx={{ maxWidth: 900 }} {...modalProps}>
       <ListPage
         enableCreateItem={false}
         enableClear
