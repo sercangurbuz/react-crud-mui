@@ -72,7 +72,8 @@ function Panel({ tabs, children, ...headerProps }: PanelProps) {
       ) : (
         <Header {...headerProps} />
       )}
-      {tabs ? renderTabContent() : children}
+      {tabs ? renderTabContent() : null}
+      {children}
     </Card>
   );
 }

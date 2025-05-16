@@ -1,10 +1,5 @@
 import React, { Fragment, ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { FieldValues, get, Path } from 'react-hook-form';
-import {
-  IntersectionObserverProps,
-  IntersectionOptions,
-  InView,
-} from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
 
 import Add from '@mui/icons-material/Add';
@@ -40,7 +35,7 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 
-import { FlexBox, FlexRowAlign } from '../flexbox';
+import { FlexBetween, FlexBox, FlexRowAlign } from '../flexbox';
 import { SpinDelayOptions, useSpinDelay } from '../hooks/useSpinDelay';
 import useTranslation from '../i18n/hooks/useTranslation';
 import isNil from '../misc/isNil';
@@ -57,7 +52,12 @@ import { HeadTableCell } from './components/HeadTableCell';
 import { NewRowButton } from './components/NewRowButton';
 import TableMoreMenu from './components/TableMoreMenu';
 import TableMoreMenuItem from './components/TableMoreMenuItem';
-import { DEFAULT_ROW_KEY_FIELD, EXPANDER_COL_NAME, SELECTION_COL_NAME } from './constants';
+import {
+  DEFAULT_PAGER_SIZES,
+  DEFAULT_ROW_KEY_FIELD,
+  EXPANDER_COL_NAME,
+  SELECTION_COL_NAME,
+} from './constants';
 import { getPinningStyles } from './utils/getPinningStyle';
 
 /* -------------------------------------------------------------------------- */
@@ -123,15 +123,11 @@ export interface TableProps<TData extends FieldValues>
   showNewRowButton?: boolean;
   showHeader?: boolean;
   showFooter?: boolean;
-  paginationProps?: Partial<TablePaginationProps>;
+  paginationProps?: Partial<TablePaginationProps> & { extraContent?: ReactNode };
   headerSx?: TableRowProps['sx'];
   rowSx?: TableRowProps['sx'];
   newRowButtonContent?: ReactNode;
   alternateColor?: boolean;
-  infiniteScrollOptions?: IntersectionOptions & {
-    hasMore: boolean;
-    onFetchMore: () => void;
-  };
   delayOptions?: SpinDelayOptions;
 }
 
@@ -154,7 +150,6 @@ function Table<TData extends FieldValues>({
   enableNestedComponent,
   enableSkeleton = true,
   headerSx,
-  infiniteScrollOptions,
   loading,
   newRowButtonText,
   newRowButtonContent,
@@ -186,7 +181,6 @@ function Table<TData extends FieldValues>({
   const { t } = useTranslation();
   const bodyRef = useRef(null);
   const firstLoadRef = useRef<boolean>(true);
-  const scrollBarRef = useRef(null);
   const defaultData = useMemo(() => [], []);
   const extractRowId = useCallback((row: TData) => get(row, rowIdField), [rowIdField]);
   const theme = useTheme();
@@ -617,29 +611,6 @@ function Table<TData extends FieldValues>({
     );
   };
 
-  const renderInifiniteScrollElem = () => {
-    if (!infiniteScrollOptions || !data?.length) {
-      return null;
-    }
-
-    const { hasMore, onFetchMore, ...options } = infiniteScrollOptions;
-
-    return (
-      <InView
-        rootMargin="50px"
-        skip={loading || !hasMore}
-        {...(options as IntersectionObserverProps)}
-        root={scrollBarRef.current}
-        as="tr"
-        onChange={(inView) => {
-          if (inView) {
-            onFetchMore?.();
-          }
-        }}
-      />
-    );
-  };
-
   const renderBodyRows = () => {
     const rows = table.getRowModel().rows;
     const rowNodes = rows.map((row) => {
@@ -704,7 +675,6 @@ function Table<TData extends FieldValues>({
     return (
       <TableBody ref={bodyRef}>
         {renderBodyRows()}
-        {renderInifiniteScrollElem()}
         {renderSkeleton(skeletonRows)}
         {renderEmptyImage()}
         {renderNewRow()}
@@ -719,10 +689,10 @@ function Table<TData extends FieldValues>({
 
     const { pageSize, pageIndex } = table.getState().pagination;
 
-    return (
+    const pager = (
       <TablePagination
         component="div"
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={DEFAULT_PAGER_SIZES}
         page={pageIndex}
         rowsPerPage={pageSize}
         count={table.getRowCount()}
@@ -731,6 +701,17 @@ function Table<TData extends FieldValues>({
         {...paginationProps}
       />
     );
+
+    if (paginationProps?.extraContent) {
+      return (
+        <FlexBetween sx={{ pl: 1 }}>
+          {paginationProps.extraContent}
+          {pager}
+        </FlexBetween>
+      );
+    }
+
+    return pager;
   };
 
   const renderProgress = () => {
@@ -809,12 +790,7 @@ function Table<TData extends FieldValues>({
 
   return (
     <>
-      <Scrollbar
-        scrollableNodeProps={{ ref: scrollBarRef }}
-        autoHide={false}
-        forceVisible
-        {...scrollProps}
-      >
+      <Scrollbar autoHide={false} forceVisible {...scrollProps}>
         <MuiTable
           stickyHeader={stickyHeader}
           size={size}

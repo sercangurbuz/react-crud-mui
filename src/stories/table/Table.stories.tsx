@@ -6,6 +6,7 @@ import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import LocationCityOutlined from '@mui/icons-material/LocationCityOutlined';
 import Map from '@mui/icons-material/Map';
 import Phone from '@mui/icons-material/Phone';
+import { Button } from '@mui/material';
 import Card from '@mui/material/Card';
 import { alpha } from '@mui/material/styles';
 import { Meta, StoryObj } from '@storybook/react';
@@ -146,6 +147,25 @@ export const Selection: TableStory = {
   render(args) {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     return <Table {...args} state={{ rowSelection }} onRowSelectionChange={setRowSelection} />;
+  },
+};
+
+export const Pagination: TableStory = {
+  args: {
+    enablePagination: true,
+    paginationProps: {
+      extraContent: (
+        <Button variant="outlined" color="secondary">
+          Extra content
+        </Button>
+      ),
+    },
+    state: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 5,
+      },
+    },
   },
 };
 

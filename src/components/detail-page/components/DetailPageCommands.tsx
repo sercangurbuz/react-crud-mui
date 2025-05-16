@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { FieldValues } from 'react-hook-form';
 
 import Close from '@mui/icons-material/Close';
 import Save from '@mui/icons-material/Save';
@@ -71,16 +72,19 @@ export type DetailPageCommandsLayoutContents = {
   extra?: ReactNode;
 };
 
-export type DetailPageCommmandsSettings = {
+export type DetailPageCommmandsSettings<TModel extends FieldValues = FieldValues> = {
   content: ReactNode;
   layout: DetailPageCommandsLayoutContents;
   props: DetailPageCommandsState & DetailPageCommandsOptions;
+  data?: TModel;
 };
 
-export interface DetailPageCommandsProps extends DetailPageCommandsState {
-  onCommands?: (props: DetailPageCommmandsSettings) => ReactNode;
+export interface DetailPageCommandsProps<TModel extends FieldValues = FieldValues>
+  extends DetailPageCommandsState {
+  onCommands?: (props: DetailPageCommmandsSettings<TModel>) => ReactNode;
   onExtraCommands?: () => ReactNode;
   commandsExtraProps?: DetailPageCommandsExtraProps;
+  data?: TModel;
 }
 
 export enum DetailPageCommandNames {
@@ -95,7 +99,9 @@ export enum DetailPageCommandNames {
 
 /* ----------------------- DetailPageButtons Component ---------------------- */
 
-function DetailPageCommands(props: DetailPageCommandsProps) {
+function DetailPageCommands<TModel extends FieldValues = FieldValues>(
+  props: DetailPageCommandsProps<TModel>,
+) {
   const {
     onCreate,
     onSave,
@@ -111,6 +117,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     createCommandLabel,
     commandsExtraProps = {},
     commandsPosition = 'top-right',
+    data,
   } = props;
   /* -------------------------------------------------------------------------- */
   /*                                   Hooks                                    */
@@ -321,6 +328,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         content: layoutContent,
         layout: layoutParams,
         props,
+        data,
       });
     }
 

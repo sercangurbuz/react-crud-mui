@@ -43,7 +43,7 @@ export interface DetailPageContentProps<TModel extends FieldValues>
       PageProps,
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'tabExtraContent'
     >,
-    Pick<DetailPageCommandsProps, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
+    Pick<DetailPageCommandsProps<TModel>, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
   data?: TModel;
   /**
    * External error indicator
@@ -286,7 +286,7 @@ function DetailPageContent<TModel extends FieldValues>({
    * Render standart commands
    */
   const renderStandartCommands = () => {
-    const commandProps: DetailPageCommandsProps = {
+    const commandProps: DetailPageCommandsProps<TModel> = {
       onCreate,
       onCopy,
       onSave,
@@ -300,6 +300,7 @@ function DetailPageContent<TModel extends FieldValues>({
       createCommandLabel,
       onClose,
       commandsPosition,
+      data,
     };
 
     return <DetailPageCommands {...commandProps} />;

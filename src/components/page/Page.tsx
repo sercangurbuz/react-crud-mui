@@ -50,6 +50,7 @@ export interface PageProps extends HeaderProps {
   disabled?: boolean;
   loading?: boolean;
   progressProps?: ProgressProps;
+  enableProgress?: boolean;
   disableShortCuts?: boolean;
   tabs?: TabPane[];
   tabsPosition?: TabsPosition;
@@ -79,10 +80,11 @@ function Page({
   commandsContent,
   commandsPosition = 'top-right',
   disabled,
+  enableProgress = true,
   footerContent,
   loading,
-  progressProps,
   moreContent,
+  progressProps,
   morePanelProps,
   onHeader,
   onLayout,
@@ -215,6 +217,9 @@ function Page({
   };
 
   const renderProgress = () => {
+    if (!enableProgress) {
+      return null;
+    }
     return <Progress loading={loading} visible={bordered} {...progressProps} />;
   };
 
