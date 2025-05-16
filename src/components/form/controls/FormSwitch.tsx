@@ -18,6 +18,7 @@ function FormSwitch<TFieldValues extends FieldValues = FieldValues>({
   labelProps,
   wrapperProps,
   fieldProps,
+  disabled,
   ...switchProps
 }: FormSwitchProps<TFieldValues>) {
   return (
@@ -29,8 +30,8 @@ function FormSwitch<TFieldValues extends FieldValues = FieldValues>({
         placement,
         labelProps,
         wrapperProps,
-        disabled: switchProps.disabled,
       }}
+      disabled={disabled}
       render={(field) => (
         <Switch
           {...switchProps}

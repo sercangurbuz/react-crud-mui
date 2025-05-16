@@ -52,9 +52,9 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
         label,
         helperText,
         placement,
-        disabled,
         ...formControlProps,
       }}
+      disabled={disabled}
       render={(field) => (
         <RadioGroup
           row
@@ -71,7 +71,7 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
               key={value}
               control={<Radio />}
               label={label}
-              disabled={disabled}
+              disabled={field?.disabled}
             />
           ))}
         </RadioGroup>
