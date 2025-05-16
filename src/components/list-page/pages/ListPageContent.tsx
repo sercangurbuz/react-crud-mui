@@ -31,7 +31,9 @@ import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
 export type ListType = 'table' | 'card';
 
 export type ListPageWrapperLayoutProps = {
-  content: ReactNode;
+  tableContent: ReactNode;
+  autoSearchContent: ReactNode;
+  shortCutContent: ReactNode;
   pageContent: ReactNode;
   alertsContent: ReactNode;
   commandsContent: ReactNode;
@@ -265,18 +267,33 @@ function ListPageContent<TModel extends FieldValues>({
    * Renders customization component of whole detailpage
    */
   const renderWrapperLayout = () => {
-    const content = renderContentLayout();
+    const tableContent = listType === 'card' ? renderCard() : renderTable();
     const alertsContent = renderAlerts();
     const commandsContent = renderCommands();
-    const pageContent = renderPage(content, commandsContent, alertsContent);
+    const autoSearchContent = renderAutoSearch();
+    const shortCutContent = renderShortCuts();
+
+    const pageContent = renderPage(
+      commandsContent,
+      alertsContent,
+      <>
+        {children}
+        {filterContent}
+        {tableContent}
+        {autoSearchContent}
+        {shortCutContent}
+      </>,
+    );
     const detailPageContent = renderDetailPage();
 
     const props: ListPageWrapperLayoutProps = {
-      content,
+      tableContent,
       pageContent,
       commandsContent,
       alertsContent,
       detailPageContent,
+      autoSearchContent,
+      shortCutContent,
     };
 
     if (onWrapperLayout) {
@@ -296,7 +313,7 @@ function ListPageContent<TModel extends FieldValues>({
    * @param content Component,children,tabs or steps nodes
    * @param commands Commands nodes
    */
-  const renderPage = (content: ReactNode, commands: ReactNode, alertsContent: ReactNode) => {
+  const renderPage = (commands: ReactNode, alertsContent: ReactNode, children: ReactNode) => {
     return (
       <Page
         icon={<SearchIcon />}
@@ -310,9 +327,7 @@ function ListPageContent<TModel extends FieldValues>({
         onTabChanged={onTabChanged}
         selectedTabIndex={activeSegmentIndex}
       >
-        {content}
-        {/* Shortcuts */}
-        {renderShortCuts()}
+        {children}
       </Page>
     );
   };
@@ -386,23 +401,6 @@ function ListPageContent<TModel extends FieldValues>({
       <>
         <Alerts messages={messages} />
         <ValidationAlerts />
-      </>
-    );
-  };
-
-  /**
-   * Render all components
-   */
-  const renderContentLayout = () => {
-    const tableContent = listType === 'card' ? renderCard() : renderTable();
-    const autoSearchContent = renderAutoSearch();
-
-    return (
-      <>
-        {children}
-        {filterContent}
-        {tableContent}
-        {autoSearchContent}
       </>
     );
   };

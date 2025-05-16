@@ -220,7 +220,7 @@ export const WithErrorAsyncData: DetailPageStory = {
   },
 };
 
-export const DisabledMode: DetailPageStory = {
+export const Disabled: DetailPageStory = {
   render(args) {
     const [isDisabled, setDisabled] = useState<boolean>(true);
     return (

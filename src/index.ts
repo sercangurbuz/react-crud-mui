@@ -60,6 +60,7 @@ export { type FormRadioGroupProps } from './components/form/controls/FormRadioGr
 export { type FormSelectProps } from './components/form/controls/FormSelect';
 export { type FormSwitchProps } from './components/form/controls/FormSwitch';
 export * from './components/form/hooks';
+export { default as FormProvider } from './components/form/components/FormProvider';
 export { default as Header, type HeaderProps } from './components/header/Header';
 export * from './components/hooks';
 export { default as IconWrapper } from './components/icon-wrapper/IconWrapper';

@@ -3,7 +3,7 @@ import React, { PropsWithChildren } from 'react';
 export type PaddingSize = 'small' | 'normal' | 'large';
 
 export interface PageProviderProps {
-  size: PaddingSize;
+  size?: PaddingSize;
   disabled?: boolean;
   loading?: boolean;
 }

@@ -273,3 +273,4 @@ Page.Layout = DefaultLayout;
 Page.Tabs = DefaultTabs;
 Page.Modal = PageModal;
 Page.Drawer = PageDrawer;
+Page.Provider = PageProvider;

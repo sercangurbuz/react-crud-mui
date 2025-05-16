@@ -4,7 +4,7 @@ import usePage from '../hooks/usePage';
 import { PagePadding } from '../Page';
 
 function PageContent({ children, ...boxProps }: BoxProps) {
-  const { size } = usePage();
+  const { size = 'normal' } = usePage();
   return (
     <Box p={PagePadding[size]} {...boxProps}>
       {children}
