@@ -43,7 +43,7 @@ import Scrollbar from '../scrollbar';
 import { ScrollbarProps } from '../scrollbar/Scrollbar';
 import { primary } from '../theme/colors';
 import { isDark } from '../theme/theme.constants';
-import { Small, Tiny } from '../typography';
+import { Small } from '../typography';
 import { BodyTableCell } from './components/BodyTableCell';
 import { BodyTableRow } from './components/BodyTableRow';
 import EmptyText, { EmptyTextProps } from './components/EmptyText';
@@ -110,7 +110,7 @@ export interface TableProps<TData extends FieldValues>
   enableSkeleton?: boolean;
   enableRowClickSelect?: boolean;
   loading?: boolean;
-  newRowButtonText?: string;
+  newRowButtonText?: ReactNode;
   onNewRow?: () => void;
   onRenderNestedComponent?: (props: RenderSubComponentProps<TData>) => React.ReactNode;
   onRowClick?: (e: React.MouseEvent<HTMLTableRowElement>, row: Row<TData>) => void;
@@ -120,7 +120,8 @@ export interface TableProps<TData extends FieldValues>
   rowIdField?: Path<TData>;
   scrollProps?: Partial<ScrollbarProps>;
   skeletonRows?: number;
-  showNewRowButton?: boolean;
+  showNewRowButton?: 'always' | 'empty';
+  showEmptyText?: boolean;
   showHeader?: boolean;
   showFooter?: boolean;
   paginationProps?: Partial<TablePaginationProps> & { extraContent?: ReactNode };
@@ -163,6 +164,7 @@ function Table<TData extends FieldValues>({
   rowIdField = DEFAULT_ROW_KEY_FIELD as Path<TData>,
   rowSx,
   size = 'medium',
+  showEmptyText = true,
   showHeader = true,
   showFooter,
   stickyHeader = true,
@@ -170,8 +172,8 @@ function Table<TData extends FieldValues>({
   showEmptyImage,
   showNewRowButton,
   skeletonRows = DEFAULT_SKELETON_ROW_NUMBER,
-  sx,
   state,
+  sx,
   ...tableProps
 }: TableProps<TData>) {
   /* -------------------------------------------------------------------------- */
@@ -547,7 +549,7 @@ function Table<TData extends FieldValues>({
   };
 
   const renderEmptyImage = () => {
-    if (data?.length || loading) {
+    if (data?.length || loading || !showEmptyText) {
       return null;
     }
 
@@ -580,17 +582,19 @@ function Table<TData extends FieldValues>({
   };
 
   const renderNewRow = () => {
-    if (!showNewRowButton || data?.length || loading) {
+    if (!showNewRowButton || loading) {
+      return null;
+    }
+
+    if (typeof showNewRowButton === 'string' && showNewRowButton === 'empty' && data?.length) {
       return null;
     }
 
     const newRowContent = newRowButtonContent ?? (
       <NewRowButton disableRipple onClick={onNewRow}>
         <Stack flexDirection="row" alignItems="center" gap={0.5} p={0.4}>
-          <Add sx={{ color: 'text.secondary', fontSize: '18px' }} />
-          <Tiny color="text.secondary" fontWeight={600}>
-            {newRowButtonText ?? t('new_row')}
-          </Tiny>
+          <Add sx={{ fontSize: '14px' }} />
+          {newRowButtonText ?? t('new_row')}
         </Stack>
       </NewRowButton>
     );

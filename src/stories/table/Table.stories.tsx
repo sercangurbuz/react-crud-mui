@@ -128,7 +128,16 @@ export const Creatable: TableStory = {
   args: {
     data: [],
     showEmptyImage: false,
-    showNewRowButton: true,
+    showNewRowButton: 'empty',
+    newRowButtonText: 'Create new user',
+  },
+};
+
+export const CreatableAlways: TableStory = {
+  args: {
+    data: mockData.slice(0, 2),
+    showEmptyText: false,
+    showNewRowButton: 'always',
     newRowButtonText: 'Create new user',
   },
 };
