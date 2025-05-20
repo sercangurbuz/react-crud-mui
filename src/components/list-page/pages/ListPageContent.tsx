@@ -436,6 +436,7 @@ function ListPageContent<TModel extends FieldValues>({
   const renderTable = () => {
     const props: Partial<TableProps<TModel>> = {
       newRowButtonText: createCommandLabel,
+      onNewRow: () => triggerAction('create'),
       ...tableProps,
       columns: enableActionCommands
         ? [
