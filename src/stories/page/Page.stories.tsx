@@ -196,11 +196,6 @@ export const WithPanels: PageStory = {
         key: 'panel1',
         label: 'Assigned',
         defaultExpanded: true,
-        footer: (
-          <Paragraph fontWeight={500} color="text.secondary">
-            2 of 3 tasks are completed
-          </Paragraph>
-        ),
         children: (
           <Page.Content paddingTop={0}>
             By Uko to save tons and more to time money projects are listed and outstanding.
