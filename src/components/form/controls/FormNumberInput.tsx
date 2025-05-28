@@ -27,9 +27,9 @@ function FormNumberInput<TFieldValues extends FieldValues = FieldValues>({
           {...field}
           error={invalid}
           helperText={error?.message || helperText}
-          onChange={(e) => {
-            field.onChange(e);
-            inputProps?.onChange?.(e);
+          onChange={(value) => {
+            field.onChange({ target: { value } });
+            inputProps?.onChange?.(value);
           }}
           onBlur={(e) => {
             field.onBlur();
