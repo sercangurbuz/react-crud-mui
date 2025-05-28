@@ -1,11 +1,14 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import {
   ControllerFieldState,
   ControllerRenderProps,
   FieldValues,
+  Mode,
   Path,
+  PathValue,
   useController,
   UseControllerProps,
+  useFormContext,
 } from 'react-hook-form';
 
 import isNil from '../misc/isNil';
@@ -55,6 +58,7 @@ export type FieldProps<TFieldValues extends FieldValues = FieldValues> = Omit<
   children?: FieldRender<TFieldValues>;
   disabled?: boolean;
   formControlProps?: FormControlProps;
+  validationMode?: Mode;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -72,6 +76,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
   name,
   render,
   rules,
+  validationMode = 'onChange',
   shouldUnregister,
   formControlProps,
 }: FieldProps<TFieldValues>) {
@@ -80,6 +85,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   const { fields, callOutVisibility } = useValidationOptionsContext();
+  const { setValue, trigger } = useFormContext<TFieldValues>();
 
   /* ------------------------- RHF controller register ------------------------ */
 
@@ -128,7 +134,18 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
     isEnabledFieldCallout && !disabledProp?.disabled
       ? fieldState
       : { ...fieldState, error: undefined };
-  const controlNode = renderControl?.({ ...field, ...disabledProp }, fieldStates);
+  const fieldProps =
+    validationMode === 'onBlur'
+      ? {
+          ...field,
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+            setValue(name, e.target.value as PathValue<TFieldValues, Path<TFieldValues>>),
+          onBlur: () => {
+            void trigger();
+          },
+        }
+      : field;
+  const controlNode = renderControl?.({ ...fieldProps, ...disabledProp }, fieldStates);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
