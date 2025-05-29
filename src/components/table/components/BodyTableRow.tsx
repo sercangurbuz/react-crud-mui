@@ -10,21 +10,7 @@ export const BodyTableRow = styled(TableRow, {
   bordered?: boolean;
 }>(({ bgColor, indicatorColor, theme, bordered = true }) => ({
   ...(indicatorColor && {
-    '&:hover': {
-      '&::after': { width: '7px' },
-    },
-    position: 'relative',
-    '&::after': {
-      top: 0,
-      left: 0,
-      width: '3px',
-      content: '""',
-      height: '100%',
-      position: 'absolute',
-      backgroundColor: indicatorColor,
-      transition: 'all 0.2s',
-    },
-    '&+tr.description-row': {
+    '& .MuiTableCell-root:first-of-type': {
       position: 'relative',
       '&::after': {
         top: 0,
@@ -34,6 +20,26 @@ export const BodyTableRow = styled(TableRow, {
         height: '100%',
         position: 'absolute',
         backgroundColor: indicatorColor,
+        transition: 'all 0.2s',
+      },
+    },
+    '&:hover': {
+      '& .MuiTableCell-root:first-of-type': {
+        '&::after': { width: '7px' },
+      },
+    },
+    '&+tr.description-row': {
+      '& .MuiTableCell-root:first-of-type': {
+        position: 'relative',
+        '&::after': {
+          top: 0,
+          left: 0,
+          width: '3px',
+          content: '""',
+          height: '100%',
+          position: 'absolute',
+          backgroundColor: indicatorColor,
+        },
       },
     },
   }),

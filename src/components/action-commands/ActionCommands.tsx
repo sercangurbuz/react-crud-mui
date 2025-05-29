@@ -119,4 +119,5 @@ function ActionCommands<TModel extends FieldValues>({
   );
 }
 
+ActionCommands.Item = TableMoreMenuItem;
 export default ActionCommands;
