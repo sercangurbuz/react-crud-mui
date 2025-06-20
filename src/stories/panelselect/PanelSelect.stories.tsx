@@ -73,6 +73,14 @@ export default meta;
 type PanelSelectStory = StoryObj<typeof Field.PanelSelect>;
 
 export const Simple: PanelSelectStory = {};
+
+export const Horizontal: PanelSelectStory = {
+  args: {
+    direction: 'horizontal',
+    size: 'small',
+  },
+};
+
 export const Disabled: PanelSelectStory = {
   args: {
     disabled: true,

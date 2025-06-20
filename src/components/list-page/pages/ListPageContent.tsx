@@ -1,5 +1,7 @@
-import React, { ReactNode, useCallback, useMemo } from 'react';
+import React, { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
 import { FieldValues } from 'react-hook-form';
+
+import { Box } from '@mui/material';
 
 import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
 import useDetailPageModal from '../../detail-page/hooks/useDetailPageModal';
@@ -234,6 +236,17 @@ function ListPageContent<TModel extends FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   const { t } = useTranslation();
+  const alertsContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (error) {
+      alertsContainerRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest',
+      });
+    }
+  }, [error]);
 
   /* ---------------------------- Action DetailPage --------------------------- */
 
@@ -398,10 +411,10 @@ function ListPageContent<TModel extends FieldValues>({
     }
 
     return (
-      <>
+      <Box ref={alertsContainerRef}>
         <Alerts messages={messages} />
         <ValidationAlerts />
-      </>
+      </Box>
     );
   };
 

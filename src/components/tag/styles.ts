@@ -25,6 +25,10 @@ export const StyledTag = styled(Span, {
     color: theme.palette.error.main,
     backgroundColor: theme.palette.error[50],
   }),
+  ...(type === 'warning' && {
+    color: theme.palette.warning.main,
+    backgroundColor: theme.palette.warning[50],
+  }),
 
   ...(isDark(theme) && {
     backgroundColor: `${theme.palette.grey[700]} !important`,
@@ -52,6 +56,10 @@ export const StyledStatus = styled(Paragraph, {
   ...(type === 'error' && {
     color: theme.palette.error[500],
     backgroundColor: theme.palette.error[50],
+  }),
+  ...(type === 'warning' && {
+    color: theme.palette.warning[500],
+    backgroundColor: theme.palette.warning[50],
   }),
 
   ...theme.applyStyles('dark', {
@@ -81,5 +89,10 @@ export const StyledPercentage = styled(Span, {
     color: theme.palette.error.main,
     backgroundColor: theme.palette.error[50],
     ...theme.applyStyles('dark', { backgroundColor: alpha(theme.palette.error.main, 0.2) }),
+  }),
+  ...(type === 'warning' && {
+    color: theme.palette.warning.main,
+    backgroundColor: theme.palette.warning[50],
+    ...theme.applyStyles('dark', { backgroundColor: alpha(theme.palette.warning.main, 0.2) }),
   }),
 }));

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import {
   ControllerFieldState,
   ControllerRenderProps,
@@ -15,6 +15,7 @@ import isNil from '../misc/isNil';
 import usePage from '../page/hooks/usePage';
 import FieldGroupProvider from './components/FieldGroupProvider';
 import FieldWatch from './components/FieldWatch';
+import FieldWithProvider from './components/FieldWithProvider';
 import FormButton from './components/FormButton';
 import FormControl, { FormControlProps } from './components/FormControl';
 import FormCheckbox from './controls/FormCheckbox';
@@ -30,6 +31,7 @@ import FormRadioGroup from './controls/FormRadioGroup';
 import FormSearchInput from './controls/FormSearchInput';
 import FormSelect from './controls/FormSelect';
 import FormSwitch from './controls/FormSwitch';
+import useFieldWithContext from './hooks/useFieldWithContext';
 import useRegisterField from './hooks/useRegisterField';
 import useValidationOptionsContext from './hooks/useValidationOptionsContext';
 
@@ -86,6 +88,13 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
 
   const { fields, callOutVisibility } = useValidationOptionsContext();
   const { setValue, trigger } = useFormContext<TFieldValues>();
+  const withContext = useFieldWithContext();
+
+  const fieldName = useMemo(() => {
+    let result = withContext?.prefix ? `${withContext.prefix}.${name}` : name;
+    result = withContext?.suffix ? `${result}.${withContext.prefix}` : result;
+    return result as Path<TFieldValues>;
+  }, [name, withContext.prefix, withContext?.suffix]);
 
   /* ------------------------- RHF controller register ------------------------ */
 
@@ -94,7 +103,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
     field: { disabled, ...field },
     fieldState,
   } = useController({
-    name,
+    name: fieldName,
     control,
     defaultValue,
     shouldUnregister,
@@ -102,7 +111,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
   });
 
   // register extra field data like group and label
-  useRegisterField({ name });
+  useRegisterField({ name: fieldName });
 
   /* -------------------------------------------------------------------------- */
   /*                                   States                                   */
@@ -118,7 +127,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
 
   const isEnabledFieldCallout =
     callOutVisibility === 'all' ||
-    (callOutVisibility === 'selected-fields' && fields?.includes(name));
+    (callOutVisibility === 'selected-fields' && fields?.includes(fieldName));
 
   /* -------------------------------------------------------------------------- */
   /*                               Control Render                               */
@@ -127,7 +136,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
   const renderControl = children ?? render;
 
   if (!renderControl) {
-    throw new Error(`missing render function in field ${name}`);
+    throw new Error(`missing render function in field ${fieldName}`);
   }
 
   const fieldStates =
@@ -139,7 +148,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
       ? {
           ...field,
           onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-            setValue(name, e.target.value as PathValue<TFieldValues, Path<TFieldValues>>),
+            setValue(fieldName, e.target.value as PathValue<TFieldValues, Path<TFieldValues>>),
           onBlur: () => {
             field.onBlur();
             void trigger();
@@ -179,5 +188,5 @@ Field.PanelSelect = FormPanelSelect;
 
 Field.Button = FormButton;
 Field.Watch = FieldWatch;
-
 Field.Group = FieldGroupProvider;
+Field.With = FieldWithProvider;

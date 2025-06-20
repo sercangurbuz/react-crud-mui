@@ -280,6 +280,7 @@ export const CustomSizeModal: PageModalStory = {
 };
 
 export const OpenInModalWithLargeContent: PageStory = {
+  name: 'Open in Modal (Large Content)',
   args: {},
   render: (args) => {
     const [visible, setVisible] = useState<boolean>(true);
@@ -324,7 +325,8 @@ export const OpenInDrawer: PageStory = {
   },
 };
 
-export const OpenInDrawerWithLArgeContent: PageStory = {
+export const OpenInDrawerWithLargeContent: PageStory = {
+  name: 'Open in Drawer (Large Content)',
   args: {},
   render: (args) => {
     const [visible, setVisible] = useState<boolean>(true);

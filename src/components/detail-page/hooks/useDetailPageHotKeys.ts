@@ -1,7 +1,8 @@
 import { HotkeyCallback, Options, useHotkeys } from 'react-hotkeys-hook';
 
-import useTranslation from '../../i18n/hooks/useTranslation';
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
+import useTranslation from '../../i18n/hooks/useTranslation';
+import { SaveMode } from '../pages/DetailPageData';
 import useDetailPageCommandStates from './useDetailPageStates';
 
 export interface UseDetailPageHotKeysProps extends Partial<Options> {
@@ -10,6 +11,7 @@ export interface UseDetailPageHotKeysProps extends Partial<Options> {
   onDelete: HotkeyCallback;
   onSaveClose: HotkeyCallback;
   onSaveCreate: HotkeyCallback;
+  defaultSaveMode?: SaveMode;
 }
 
 // Hotkey scope name for preventing conflict
@@ -29,6 +31,7 @@ function useDetailPageHotKeys({
   onSaveClose,
   onNewItem,
   scopes = DETAILPAGE_HOTKEYS_SCOPE,
+  defaultSaveMode,
   ...hotKeyOptions
 }: UseDetailPageHotKeysProps) {
   /* -------------------------------------------------------------------------- */
@@ -52,10 +55,17 @@ function useDetailPageHotKeys({
   /*                                   Hotkeys                                  */
   /* -------------------------------------------------------------------------- */
 
+  const onDefaultSaveEvent =
+    defaultSaveMode === 'save-close'
+      ? onSaveClose
+      : defaultSaveMode === 'save-create'
+        ? onSaveCreate
+        : onSave;
+
   /**
    * Search
    */
-  useHotkeys(SHORTCUT_SAVE, onSave, {
+  useHotkeys(SHORTCUT_SAVE, onDefaultSaveEvent, {
     enabled: !disabled.save && visible.save && !loading,
     description: t('savetitle'),
     scopes,

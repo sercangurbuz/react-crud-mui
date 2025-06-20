@@ -1,4 +1,4 @@
-import { Stack, StackProps } from '@mui/material';
+import { cardClasses, Stack, StackProps } from '@mui/material';
 
 import PanelSelectItem, { PanelSelectItemProps } from './PanelSelectItem';
 
@@ -14,14 +14,16 @@ export type PanelSelectData = {
 >;
 
 export type PanelSelectSize = 'small' | 'normal' | 'large';
+export type PanelSelectDirection = 'vertical' | 'horizontal';
 
-export interface PanelSelectProps extends Omit<StackProps, 'onChange'> {
+export interface PanelSelectProps extends Omit<StackProps, 'onChange' | 'direction'> {
   data: PanelSelectData[];
   value?: string | number;
   disabled?: boolean;
   onChange?: (value: string | number) => void;
   onDelete?: (value: string | number) => void;
   size?: PanelSelectSize;
+  direction?: PanelSelectDirection;
 }
 
 function PanelSelect({
@@ -31,6 +33,7 @@ function PanelSelect({
   value,
   disabled,
   size = 'normal',
+  direction = 'vertical',
   ...stackProps
 }: PanelSelectProps) {
   const items = data.map(
@@ -43,8 +46,8 @@ function PanelSelect({
         helperText={helperText}
         icon={icon}
         rightContent={rightContent}
-        selectedIcon={selectedIcon}
-        deleteable={deleteable}
+        selectedIcon={direction === 'horizontal' ? '' : selectedIcon}
+        deleteable={direction === 'horizontal' ? false : deleteable}
         sx={sx}
         onDelete={() => {
           if (disabled) {
@@ -66,7 +69,14 @@ function PanelSelect({
   return (
     <Stack
       gap={size === 'small' ? 1 : 2}
-      sx={{ width: '100%', fontSize: size === 'small' ? 14 : size === 'large' ? 18 : 16 }}
+      sx={{
+        width: '100%',
+        fontSize: size === 'small' ? 14 : size === 'large' ? 18 : 16,
+        [`& .${cardClasses.root}`]: {
+          padding: size === 'small' ? '.7em' : size === 'large' ? '1.3em' : '1em',
+        },
+      }}
+      direction={direction === 'vertical' ? 'column' : 'row'}
       {...stackProps}
     >
       {items}

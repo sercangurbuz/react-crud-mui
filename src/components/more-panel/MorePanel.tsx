@@ -52,14 +52,14 @@ function MorePanel({
           >
             {showMore ? (
               <>
-                <ExpandLessIcon sx={{ color: 'text.secondary' }} />
+                <ExpandLessIcon sx={{ color: 'text.secondary', fontSize: '1.3em' }} />
                 <Tiny color="text.secondary" fontWeight={600}>
                   {lessText ?? t('show_less')}
                 </Tiny>
               </>
             ) : (
               <>
-                <ExpandMoreIcon sx={{ color: 'text.secondary' }} />
+                <ExpandMoreIcon sx={{ color: 'text.secondary', fontSize: '1.3em' }} />
                 <Tiny color="text.secondary" fontWeight={600}>
                   {moreText ?? t('show_more')}
                 </Tiny>

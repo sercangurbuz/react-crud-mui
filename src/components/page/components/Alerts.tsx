@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled from '@emotion/styled';
 import Alert, { AlertProps } from '@mui/material/Alert';
@@ -26,6 +26,11 @@ const Messages = styled.ul`
 
 function Alerts({ messages, defaultType = 'error' }: AlertsProps) {
   const alerts = useNormalizeMessages({ messages, defaultType });
+  const [showAlerts, setShowAlerts] = useState<boolean>();
+
+  useEffect(() => {
+    setShowAlerts(!!Object.keys(alerts).length);
+  }, [alerts]);
 
   const nodes: React.ReactNode[] = [];
 
@@ -35,7 +40,8 @@ function Alerts({ messages, defaultType = 'error' }: AlertsProps) {
         variant="outlined"
         key={type}
         severity={type as AlertProps['severity']}
-        sx={{ borderRadius: 0, border: 'none' }}
+        sx={{ borderRadius: 0, border: 'none', display: showAlerts ? 'flex' : 'none' }}
+        onClose={() => setShowAlerts(false)}
       >
         <Messages>
           {alerts[type].map((msg, index) => (

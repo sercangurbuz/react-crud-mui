@@ -287,6 +287,7 @@ export const WithZodRefine: DetailPageStory = {
 };
 
 export const OpenInModal: DetailPageModalStory = {
+  name: 'Open In Modal (Long content)',
   args: {
     defaultReason: 'fetch',
     enableDelete: true,
@@ -307,12 +308,7 @@ export const OpenInModal: DetailPageModalStory = {
     return (
       <>
         <Button onClick={() => setVisible(true)}>Toggle DetailPage Modal</Button>
-        <DetailPage.Modal
-          {...args}
-          open={visible}
-          defaultSaveMode="save"
-          onClose={() => setVisible(false)}
-        >
+        <DetailPage.Modal {...args} open={visible} onClose={() => setVisible(false)}>
           <FormContent />
           <FormContent />
           <FormContent />

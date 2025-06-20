@@ -1,5 +1,7 @@
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
 import { FieldValues } from 'react-hook-form';
+
+import { Box } from '@mui/material';
 
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
@@ -198,6 +200,17 @@ function DetailPageContent<TModel extends FieldValues>({
   /* -------------------------------------------------------------------------- */
 
   const { t } = useTranslation();
+  const alertsContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (error) {
+      alertsContainerRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest',
+      });
+    }
+  }, [error]);
 
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
@@ -267,10 +280,10 @@ function DetailPageContent<TModel extends FieldValues>({
    */
   const renderAlerts = () => {
     return (
-      <>
+      <Box ref={alertsContainerRef}>
         <Alerts messages={alerts} />
         <ValidationAlerts />
-      </>
+      </Box>
     );
   };
 
@@ -342,6 +355,7 @@ function DetailPageContent<TModel extends FieldValues>({
         onNewItem={onCreate}
         onDelete={onDelete}
         scopes={hotkeyScopes}
+        defaultSaveMode={defaultSaveMode}
       />
     );
   };
