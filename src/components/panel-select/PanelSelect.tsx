@@ -10,7 +10,14 @@ export type PanelSelectData = {
   value: string | number;
 } & Pick<
   PanelSelectItemProps,
-  'deleteable' | 'helperText' | 'icon' | 'rightContent' | 'selectedIcon' | 'label' | 'sx'
+  | 'deleteable'
+  | 'helperText'
+  | 'icon'
+  | 'rightContent'
+  | 'selectedIcon'
+  | 'label'
+  | 'sx'
+  | 'children'
 >;
 
 export type PanelSelectSize = 'small' | 'normal' | 'large';
@@ -37,7 +44,17 @@ function PanelSelect({
   ...stackProps
 }: PanelSelectProps) {
   const items = data.map(
-    ({ label, value: itemValue, deleteable, helperText, icon, rightContent, selectedIcon, sx }) => (
+    ({
+      label,
+      value: itemValue,
+      deleteable,
+      helperText,
+      icon,
+      rightContent,
+      selectedIcon,
+      sx,
+      children,
+    }) => (
       <PanelSelectItem
         key={itemValue}
         selected={itemValue === value}
@@ -49,6 +66,8 @@ function PanelSelect({
         selectedIcon={direction === 'horizontal' ? '' : selectedIcon}
         deleteable={direction === 'horizontal' ? false : deleteable}
         sx={sx}
+        // eslint-disable-next-line react/no-children-prop
+        children={children}
         onDelete={() => {
           if (disabled) {
             return;
@@ -73,7 +92,7 @@ function PanelSelect({
         width: '100%',
         fontSize: size === 'small' ? 14 : size === 'large' ? 18 : 16,
         [`& .${cardClasses.root}`]: {
-          padding: size === 'small' ? '.7em' : size === 'large' ? '1.3em' : '1em',
+          padding: size === 'small' ? '.87em' : size === 'large' ? '1.3em' : '1em',
         },
       }}
       direction={direction === 'vertical' ? 'column' : 'row'}

@@ -5,10 +5,7 @@ export const StyledCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'selected' && prop !== 'disabled',
 })<{ selected?: boolean; disabled?: boolean }>(({ theme, selected, disabled }) => ({
   padding: '1em',
-  display: 'flex',
   cursor: 'pointer',
-  alignItems: 'center',
-  justifyContent: 'space-between',
   border: `1px solid ${selected ? (disabled ? theme.palette.action.disabled : theme.palette.primary.main) : theme.palette.divider}`,
 
   '& .place': {

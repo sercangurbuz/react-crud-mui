@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { Delete } from '@mui/icons-material';
-import { SxProps } from '@mui/material';
+import { Box, Collapse, SxProps } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 
+import { FlexBetween } from '../flexbox';
 import CheckmarkCircle from '../icons/CheckmarkCircle';
 import { Paragraph } from '../typography';
 import { StyledCard } from './styles';
@@ -20,6 +21,7 @@ export interface PanelSelectItemProps {
   onChange?: () => void;
   onDelete?: () => void;
   sx?: SxProps;
+  children?: React.ReactNode;
 }
 
 function PanelSelectItem({
@@ -34,6 +36,7 @@ function PanelSelectItem({
   selected,
   selectedIcon,
   sx,
+  children,
 }: PanelSelectItemProps) {
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => {
     e.stopPropagation();
@@ -42,28 +45,31 @@ function PanelSelectItem({
 
   return (
     <StyledCard onClick={onChange} selected={selected} sx={sx} disabled={disabled}>
-      <div>
-        <div className="place">
-          {icon}
-          <Paragraph className="panel-label" fontWeight={500}>
-            {label}
+      <FlexBetween>
+        <div>
+          <div className="place">
+            {icon}
+            <Paragraph className="panel-label" fontWeight={500}>
+              {label}
+            </Paragraph>
+          </div>
+
+          <Paragraph color="text.secondary" className="panel-helper-label" fontWeight={400}>
+            {helperText}
           </Paragraph>
         </div>
 
-        <Paragraph color="text.secondary" className="panel-helper-label" fontWeight={400}>
-          {helperText}
-        </Paragraph>
-      </div>
-
-      {selected ? (
-        (selectedIcon ?? <div className="check-mark">{<CheckmarkCircle />}</div>)
-      ) : deleteable ? (
-        <IconButton onClick={(e) => handleDelete(e)}>
-          <Delete color="action" />
-        </IconButton>
-      ) : (
-        rightContent
-      )}
+        {selected ? (
+          (selectedIcon ?? <div className="check-mark">{<CheckmarkCircle />}</div>)
+        ) : deleteable ? (
+          <IconButton onClick={(e) => handleDelete(e)}>
+            <Delete color="action" />
+          </IconButton>
+        ) : (
+          rightContent
+        )}
+      </FlexBetween>
+      <Collapse in={selected}>{children ? <Box sx={{ mt: 2 }}>{children}</Box> : null}</Collapse>
     </StyledCard>
   );
 }
