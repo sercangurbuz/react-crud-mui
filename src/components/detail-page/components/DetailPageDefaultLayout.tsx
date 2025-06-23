@@ -23,8 +23,8 @@ function DetailPageDefaultLayout({
 }: DetailPageDefaultLayoutProps) {
   return (
     <>
-      {stepsContent}
       {content}
+      {stepsContent}
       {autoSaveContent}
     </>
   );

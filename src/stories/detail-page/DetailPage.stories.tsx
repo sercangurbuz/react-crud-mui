@@ -483,6 +483,8 @@ export const WithCustomTabs: DetailPageStory = {
   },
 };
 
+
+
 export const WithSteps: DetailPageStory = {
   args: {
     children: undefined,
@@ -517,6 +519,13 @@ export const StepsWithCustomCommands: DetailPageStory = {
       showFinishButton: false,
       onCommands: (props) => <CustomStepCommands {...props} />,
     },
+  },
+};
+
+export const StepsWithContent: DetailPageStory = {
+  args: {
+   ...WithSteps.args,
+    children: <FormContent />,
   },
 };
 
