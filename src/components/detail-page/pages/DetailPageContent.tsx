@@ -1,8 +1,9 @@
 import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { FieldErrors, FieldValues } from 'react-hook-form';
 
 import { Box } from '@mui/material';
 
+import FormErrorsTracker from '../../form/components/FormErrorsTracker';
 import FormValuesTracker from '../../form/components/FormValuesTracker';
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
@@ -110,6 +111,11 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    */
   onValuesChange?: (values: Partial<TModel>) => void;
   /**
+   * Error tracker,called when form errors has changed
+   * MUST BE MEMOIZED
+   */
+  onFormErrors?: (errors: FieldErrors<TModel>, isValid?: boolean) => void;
+  /**
    * Page opening reason Default create.
    */
   reason?: NeedDataReason;
@@ -187,6 +193,7 @@ function DetailPageContent<TModel extends FieldValues>({
   onCreate,
   onDelete,
   onDiscardChanges,
+  onFormErrors,
   onSegmentChanged,
   onExtraCommands,
   onHeader,
@@ -253,6 +260,7 @@ function DetailPageContent<TModel extends FieldValues>({
     const content = children;
     const autoSaveContent = renderAutoSave();
     const valuesChangeContent = renderValuesChange();
+    const errorsContent = renderFormErrorChange();
     const stepsContent = renderSteps();
 
     const props: DetailPageLayoutProps = {
@@ -260,6 +268,7 @@ function DetailPageContent<TModel extends FieldValues>({
       autoSaveContent,
       valuesChangeContent,
       stepsContent,
+      errorsContent,
       options: {
         loading,
         reason,
@@ -294,6 +303,17 @@ function DetailPageContent<TModel extends FieldValues>({
     }
 
     return <FormValuesTracker onValuesChange={onValuesChange} />;
+  };
+
+  /**
+   * Errors tracker
+   */
+  const renderFormErrorChange = () => {
+    if (!onFormErrors) {
+      return null;
+    }
+
+    return <FormErrorsTracker onErrorsChange={onFormErrors} />;
   };
 
   /**

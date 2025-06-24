@@ -12,6 +12,7 @@ export type DetailPageLayoutProps = {
   stepsContent?: ReactNode;
   autoSaveContent?: ReactNode;
   valuesChangeContent?: ReactNode;
+  errorsContent?: ReactNode;
   options: DetailPageLayoutOptions;
 };
 
@@ -22,10 +23,12 @@ function DetailPageDefaultLayout({
   stepsContent,
   autoSaveContent,
   valuesChangeContent,
+  errorsContent,
 }: DetailPageDefaultLayoutProps) {
   return (
     <>
       {content}
+      {errorsContent}
       {stepsContent}
       {autoSaveContent}
       {valuesChangeContent}
