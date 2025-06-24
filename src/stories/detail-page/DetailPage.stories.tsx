@@ -261,15 +261,6 @@ export const AutoSave: DetailPageStory = {
   },
 };
 
-export const ValuesChange: DetailPageStory = {
-  args: {
-    showHeader: false,
-    onValuesChange: useCallback((values: unknown) => {
-      console.log('Values changed:', values);
-    }, []),
-  },
-};
-
 export const WithZodRefine: DetailPageStory = {
   args: {
     defaultReason: 'fetch',

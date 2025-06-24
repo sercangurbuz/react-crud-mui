@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 
-import { FieldWithContext } from '../components/FieldWithProvider';
+import { FieldWithContext, FieldWithProviderProps } from '../components/FieldWithProvider';
 
 function useFieldWithContext() {
-  const settings = useContext(FieldWithContext);
+  const settings = useContext(FieldWithContext) as Required<FieldWithProviderProps>;
   return settings;
 }
 

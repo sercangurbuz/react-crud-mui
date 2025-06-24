@@ -88,13 +88,11 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
 
   const { fields, callOutVisibility } = useValidationOptionsContext();
   const { setValue, trigger } = useFormContext<TFieldValues>();
-  const withContext = useFieldWithContext();
+  const { getName } = useFieldWithContext();
 
   const fieldName = useMemo(() => {
-    let result = withContext?.prefix ? `${withContext.prefix}.${name}` : name;
-    result = withContext?.suffix ? `${result}.${withContext.prefix}` : result;
-    return result as Path<TFieldValues>;
-  }, [name, withContext.prefix, withContext?.suffix]);
+    return getName(name) as Path<TFieldValues>;
+  }, [getName, name]);
 
   /* ------------------------- RHF controller register ------------------------ */
 
