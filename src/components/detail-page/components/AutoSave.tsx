@@ -3,22 +3,25 @@ import { useFormState, useWatch } from 'react-hook-form';
 
 import { useDebounce } from '../../hooks';
 
-interface AutoSaveProps {
-  onValuesChange: () => void;
+interface AutoSaveProps extends AutoSaveOptions {
+  onAutoSave: () => void;
+}
+
+export interface AutoSaveOptions {
   delay?: number;
 }
 
-function AutoSave({ onValuesChange, delay = 500 }: AutoSaveProps) {
+function AutoSave({ onAutoSave, delay }: AutoSaveProps) {
   const values = useWatch();
-  const { isDirty } = useFormState();
+  const { isDirty, isValid } = useFormState();
   const debouncedValue = useDebounce(values, delay);
 
   useEffect(() => {
-    if (isDirty) {
-      onValuesChange();
+    if (isDirty && isValid) {
+      onAutoSave();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedValue]);
+  }, [delay ? debouncedValue : values, isDirty, isValid]);
   return null;
 }
 

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { DefaultValues, FieldValues } from 'react-hook-form';
+import { DefaultValues, FieldValues, UseFormProps } from 'react-hook-form';
 
 import { z } from 'zod';
 
@@ -25,6 +25,7 @@ export interface DetailPageFormProps<TModel extends FieldValues>
   schema?: z.ZodType<TModel>;
   validationOptions?: ValidationOptions<TModel>;
   defaultValues?: DefaultData<TModel>;
+  formProps?: Partial<UseFormProps<TModel>>;
 }
 
 function DetailPageForm<TModel extends FieldValues>({
@@ -34,6 +35,7 @@ function DetailPageForm<TModel extends FieldValues>({
   validationOptions,
   data,
   reason,
+  formProps,
   ...dpProps
 }: DetailPageFormProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -55,6 +57,7 @@ function DetailPageForm<TModel extends FieldValues>({
           }
         : (defaultValues as DefaultValues<TModel>),
     values: data,
+    ...formProps,
   });
 
   const formMethods = dpProps.form ?? form;

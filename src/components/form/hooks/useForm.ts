@@ -10,6 +10,8 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
+import { isDev } from '../../misc/isDev';
+
 export type ValidationCallOutType = 'tooltip' | 'label' | 'none';
 export type ValidationVisibilityOptions =
   | 'selected-fields'
@@ -63,7 +65,13 @@ function useForm<TFieldValues extends FieldValues = FieldValues>({
 
   const getFormModel = useCallback((): Promise<TFieldValues> => {
     return new Promise<TFieldValues>((resolve, reject) => {
-      void handleSubmit(resolve, reject)();
+      void handleSubmit(resolve, (err) => {
+        reject(new Error('Form validation error'));
+
+        if (isDev()) {
+          console.error('Form validation error: ', err);
+        }
+      })();
     });
   }, [handleSubmit]);
 

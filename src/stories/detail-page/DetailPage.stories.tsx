@@ -254,11 +254,19 @@ export const CopyingMode: DetailPageStory = {
 
 export const AutoSave: DetailPageStory = {
   args: {
-    autoSave: true,
     showHeader: false,
     onSave() {
       alert('Auto saved');
     },
+  },
+};
+
+export const ValuesChange: DetailPageStory = {
+  args: {
+    showHeader: false,
+    onValuesChange: useCallback((values: unknown) => {
+      console.log('Values changed:', values);
+    }, []),
   },
 };
 
@@ -483,8 +491,6 @@ export const WithCustomTabs: DetailPageStory = {
   },
 };
 
-
-
 export const WithSteps: DetailPageStory = {
   args: {
     children: undefined,
@@ -524,7 +530,7 @@ export const StepsWithCustomCommands: DetailPageStory = {
 
 export const StepsWithContent: DetailPageStory = {
   args: {
-   ...WithSteps.args,
+    ...WithSteps.args,
     children: <FormContent />,
   },
 };

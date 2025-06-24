@@ -14,6 +14,7 @@ export {
   default as DetailPageSteps,
   type DetailPageStepsProps,
 } from './components/detail-page/components/DetailPageSteps';
+export { type DetailPageStepCommandsProps } from './components/detail-page/components/DetailPageStepCommands';
 export {
   default as DetailPageModal,
   type DetailPageModalProps,

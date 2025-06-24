@@ -3,6 +3,7 @@ import { FieldValues } from 'react-hook-form';
 
 import { Box } from '@mui/material';
 
+import FormValuesTracker from '../../form/components/FormValuesTracker';
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
 import useTranslation from '../../i18n/hooks/useTranslation';
@@ -10,7 +11,7 @@ import Alerts from '../../page/components/Alerts';
 import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
 import { ServerError } from '../../utils';
-import AutoSave from '../components/AutoSave';
+import AutoSave, { AutoSaveOptions } from '../components/AutoSave';
 import DetailPageCommands, { DetailPageCommandsProps } from '../components/DetailPageCommands';
 import DetailPageDefaultLayout, {
   DetailPageLayoutProps,
@@ -104,6 +105,11 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    */
   onHeader?: (props: DetailPageHeaderProps) => ReactNode;
   /**
+   * Values change tracker
+   * MUST BE MEMOIZED
+   */
+  onValuesChange?: (values: Partial<TModel>) => void;
+  /**
    * Page opening reason Default create.
    */
   reason?: NeedDataReason;
@@ -134,7 +140,7 @@ export interface DetailPageContentProps<TModel extends FieldValues>
   /**
    * Having called "onSave" once changing form values
    */
-  autoSave?: boolean;
+  autoSave?: boolean | AutoSaveOptions;
   onContentLayout?: (props: DetailPageLayoutProps) => React.ReactNode;
   onWrapperLayout?: (props: DetailPageWrapperLayoutProps) => React.ReactNode;
   defaultSaveMode?: SaveMode;
@@ -187,6 +193,7 @@ function DetailPageContent<TModel extends FieldValues>({
   onSave,
   onSaveClose,
   onSaveCreate,
+  onValuesChange,
   onWrapperLayout,
   reason = 'create',
   showHeader = true,
@@ -245,11 +252,13 @@ function DetailPageContent<TModel extends FieldValues>({
   const renderContentLayout = () => {
     const content = children;
     const autoSaveContent = renderAutoSave();
+    const valuesChangeContent = renderValuesChange();
     const stepsContent = renderSteps();
 
     const props: DetailPageLayoutProps = {
       content,
       autoSaveContent,
+      valuesChangeContent,
       stepsContent,
       options: {
         loading,
@@ -272,7 +281,19 @@ function DetailPageContent<TModel extends FieldValues>({
       return null;
     }
 
-    return <AutoSave onValuesChange={onSave} />;
+    const options: AutoSaveOptions = typeof autoSave === 'object' ? autoSave : { delay: 500 };
+    return <AutoSave onAutoSave={onSave} {...options} />;
+  };
+
+  /**
+   * Values chnage tracker
+   */
+  const renderValuesChange = () => {
+    if (!onValuesChange) {
+      return null;
+    }
+
+    return <FormValuesTracker onValuesChange={onValuesChange} />;
   };
 
   /**

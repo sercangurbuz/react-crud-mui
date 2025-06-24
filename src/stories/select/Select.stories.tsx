@@ -131,7 +131,7 @@ export const Grouping: SelectStory = {
   args: {
     data: mockData.sort((a, b) => a.position.id - b.position.id),
     groupBy(option) {
-      return option.position.title;
+      return option.position!.title;
     },
   },
 };
