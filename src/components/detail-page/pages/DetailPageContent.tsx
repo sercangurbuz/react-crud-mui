@@ -1,10 +1,8 @@
 import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
-import { FieldErrors, FieldValues } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
 
 import { Box } from '@mui/material';
 
-import FormErrorsTracker from '../../form/components/FormErrorsTracker';
-import FormValuesTracker from '../../form/components/FormValuesTracker';
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import { HeaderProps } from '../../header/Header';
 import useTranslation from '../../i18n/hooks/useTranslation';
@@ -106,16 +104,6 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    */
   onHeader?: (props: DetailPageHeaderProps) => ReactNode;
   /**
-   * Values change tracker
-   * MUST BE MEMOIZED
-   */
-  onValuesChange?: (values: Partial<TModel>) => void;
-  /**
-   * Error tracker,called when form errors has changed
-   * MUST BE MEMOIZED
-   */
-  onFormErrors?: (errors: FieldErrors<TModel>, isValid?: boolean) => void;
-  /**
    * Page opening reason Default create.
    */
   reason?: NeedDataReason;
@@ -193,14 +181,12 @@ function DetailPageContent<TModel extends FieldValues>({
   onCreate,
   onDelete,
   onDiscardChanges,
-  onFormErrors,
   onSegmentChanged,
   onExtraCommands,
   onHeader,
   onSave,
   onSaveClose,
   onSaveCreate,
-  onValuesChange,
   onWrapperLayout,
   reason = 'create',
   showHeader = true,
@@ -259,16 +245,12 @@ function DetailPageContent<TModel extends FieldValues>({
   const renderContentLayout = () => {
     const content = children;
     const autoSaveContent = renderAutoSave();
-    const valuesChangeContent = renderValuesChange();
-    const errorsContent = renderFormErrorChange();
     const stepsContent = renderSteps();
 
     const props: DetailPageLayoutProps = {
       content,
       autoSaveContent,
-      valuesChangeContent,
       stepsContent,
-      errorsContent,
       options: {
         loading,
         reason,
@@ -292,28 +274,6 @@ function DetailPageContent<TModel extends FieldValues>({
 
     const options: AutoSaveOptions = typeof autoSave === 'object' ? autoSave : { delay: 500 };
     return <AutoSave onAutoSave={onSave} {...options} />;
-  };
-
-  /**
-   * Values chnage tracker
-   */
-  const renderValuesChange = () => {
-    if (!onValuesChange) {
-      return null;
-    }
-
-    return <FormValuesTracker onValuesChange={onValuesChange} />;
-  };
-
-  /**
-   * Errors tracker
-   */
-  const renderFormErrorChange = () => {
-    if (!onFormErrors) {
-      return null;
-    }
-
-    return <FormErrorsTracker onErrorsChange={onFormErrors} />;
   };
 
   /**

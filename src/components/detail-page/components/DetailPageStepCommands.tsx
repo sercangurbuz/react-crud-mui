@@ -121,8 +121,7 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
       <LoadingButton
         key="next"
         onClick={onNextClick}
-        variant="outlined"
-        color="secondary"
+        color="primary"
         loading={loading}
         disabled={isNextButtonDisabled}
         endIcon={<ArrowRight />}
