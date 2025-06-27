@@ -17,7 +17,7 @@ interface DetailPageStepContentProps<TModel extends FieldValues> {
 /**
  * This component is used to create a form for each step in the detail page.
  */
-function DetailPageStepContentWrapper<TModel extends FieldValues>({
+function DetailPageStepForm<TModel extends FieldValues>({
   schema,
   name,
   children,
@@ -54,4 +54,4 @@ function DetailPageStepContentWrapper<TModel extends FieldValues>({
   return <FormProvider form={form}>{children}</FormProvider>;
 }
 
-export default DetailPageStepContentWrapper;
+export default DetailPageStepForm;

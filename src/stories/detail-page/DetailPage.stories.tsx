@@ -533,8 +533,8 @@ export const WithSteps: StoryObj<typeof DetailPage<StepSchema>> = {
           },
           {
             key: 'overview',
-            label: 'Contact Details',
-            optional: 'Please define contact info',
+            label: 'Overview',
+            optional: 'Please check your data and save',
             children: <Step3 />,
           },
         ]}

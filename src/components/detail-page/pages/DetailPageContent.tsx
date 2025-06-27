@@ -23,7 +23,7 @@ import DetailPageShortCuts from '../components/DetailPageShortCuts';
 import DetailPageStepCommands, {
   DetailPageStepCommandsProps,
 } from '../components/DetailPageStepCommands';
-import DetailPageStepContentWrapper from '../components/DetailPageStepContentWrapper';
+import DetailPageStepForm from '../components/DetailPageStepForm';
 import DetailPageStepsHeader, {
   DetailPageStepsHeaderProps,
   StepPane,
@@ -381,24 +381,14 @@ function DetailPageContent<TModel extends FieldValues>({
 
     const StepHeaders = CustomSteps ?? DetailPageStepsHeader;
     const stepHeaders = (
-      <StepHeaders
-        items={steps}
-        status={loading ? 'wait' : error ? 'error' : 'process'}
-        activeStep={activeSegmentIndex}
-        {...stepsProps}
-      />
+      <StepHeaders items={steps} activeStep={activeSegmentIndex} {...stepsProps} />
     );
 
     const stepContents = steps.map(({ children, name, schema, defaultValues, key }) =>
       name ? (
-        <DetailPageStepContentWrapper
-          key={key}
-          name={name}
-          schema={schema}
-          defaultValues={defaultValues}
-        >
+        <DetailPageStepForm key={key} name={name} schema={schema} defaultValues={defaultValues}>
           {children}
-        </DetailPageStepContentWrapper>
+        </DetailPageStepForm>
       ) : (
         children
       ),
@@ -416,7 +406,7 @@ function DetailPageContent<TModel extends FieldValues>({
    * Render steps commands
    */
   const renderStepsCommands = () => {
-    if (!steps?.length || !forms) {
+    if (!steps?.length) {
       return null;
     }
 
