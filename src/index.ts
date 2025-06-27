@@ -11,9 +11,9 @@ export {
 } from './components/detail-page/pages/DetailPage';
 export { type NeedDataReason } from './components/detail-page/pages/DetailPageContent';
 export {
-  default as DetailPageSteps,
-  type DetailPageStepsProps,
-} from './components/detail-page/components/DetailPageSteps';
+  default as DetailPageStepsHeader,
+  type DetailPageStepsHeaderProps as DetailPageStepsProps,
+} from './components/detail-page/components/DetailPageStepsHeader';
 export { type DetailPageStepCommandsProps } from './components/detail-page/components/DetailPageStepCommands';
 export {
   default as DetailPageModal,

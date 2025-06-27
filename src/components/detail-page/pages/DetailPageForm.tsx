@@ -17,7 +17,10 @@ export type DefaultDataFn<TModel extends FieldValues> = (
   reason: NeedDataReason,
   data?: TModel,
 ) => DeepNullable<TModel> | Promise<DeepNullable<TModel>>;
-export type DefaultData<TModel extends FieldValues> = DeepNullable<TModel> | DefaultDataFn<TModel>;
+
+export type DefaultData<TModel extends FieldValues = FieldValues> =
+  | DeepNullable<TModel>
+  | DefaultDataFn<TModel>;
 
 export interface DetailPageFormProps<TModel extends FieldValues>
   extends Omit<DetailPageDataProps<TModel>, 'form'> {
@@ -30,12 +33,12 @@ export interface DetailPageFormProps<TModel extends FieldValues>
 
 function DetailPageForm<TModel extends FieldValues>({
   activeSegmentIndex = 0,
-  schema,
-  defaultValues,
-  validationOptions,
   data,
-  reason,
+  defaultValues,
   formProps,
+  reason,
+  schema,
+  validationOptions,
   ...dpProps
 }: DetailPageFormProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -61,6 +64,10 @@ function DetailPageForm<TModel extends FieldValues>({
   });
 
   const formMethods = dpProps.form ?? form;
+
+  /* -------------------------------------------------------------------------- */
+  /*                            create reason change                            */
+  /* -------------------------------------------------------------------------- */
 
   const prevReason = usePrevious(reason);
   const { reset } = formMethods;

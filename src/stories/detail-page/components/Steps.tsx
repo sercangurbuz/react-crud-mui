@@ -7,7 +7,7 @@ import ListItemText from '@mui/material/ListItemText';
 
 import Field from '../../../components/form/Field';
 import Page from '../../../components/page/Page';
-import { UserSchema } from '../../utils/schema';
+import { StepSchema } from '../../utils/schema';
 
 function Step1() {
   return (
@@ -43,24 +43,24 @@ function Step2() {
 }
 
 function Step3() {
-  const { name, username, email, phone, website } = useWatch<UserSchema>();
+  const { contact, main } = useWatch<StepSchema>();
 
   return (
     <List dense>
       <ListItem>
-        <ListItemText primary={name} secondary="Name" />
+        <ListItemText primary={main?.name} secondary="Name" />
       </ListItem>
       <ListItem>
-        <ListItemText primary={username} secondary="User name" />
+        <ListItemText primary={main?.username} secondary="User name" />
       </ListItem>
       <ListItem>
-        <ListItemText primary={email} secondary="Email" />
+        <ListItemText primary={contact?.email} secondary="Email" />
       </ListItem>
       <ListItem>
-        <ListItemText primary={phone} secondary="Phone" />
+        <ListItemText primary={contact?.phone} secondary="Phone" />
       </ListItem>
       <ListItem>
-        <ListItemText primary={website} secondary="Website" />
+        <ListItemText primary={contact?.website} secondary="Website" />
       </ListItem>
     </List>
   );

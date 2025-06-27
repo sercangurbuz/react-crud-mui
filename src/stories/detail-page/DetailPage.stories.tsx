@@ -15,10 +15,12 @@ import Pending from '@mui/icons-material/Pending';
 import Button from '@mui/material/Button';
 import Grid2 from '@mui/material/Grid2';
 import { Meta, StoryObj } from '@storybook/react';
+import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
 import useDetailPageRouteParams from '../../components/detail-page/hooks/useDetailPageRouteParams';
 import { FlexBetween, FlexBox } from '../../components/flexbox';
+import FormControl from '../../components/form/components/FormControl';
 import Field from '../../components/form/Field';
 import { useZodRefine } from '../../components/hooks';
 import Add from '../../components/icons/Add';
@@ -36,7 +38,7 @@ import {
   useFetchUserById,
   UserDefaultValues,
 } from '../utils/api';
-import { userSchema, type UserSchema } from '../utils/schema';
+import { stepSchema, StepSchema, userSchema, type UserSchema } from '../utils/schema';
 import CustomCommands from './components/CustomCommands';
 import CustomStepCommands from './components/CustomStepCommands';
 import CustomTabs from './components/CustomTabs';
@@ -482,30 +484,71 @@ export const WithCustomTabs: DetailPageStory = {
   },
 };
 
-export const WithSteps: DetailPageStory = {
-  args: {
-    children: undefined,
-    reason: 'create',
-    steps: [
-      {
-        label: 'Person Info',
-        optional: 'Please define person name',
-        key: 'info',
-        children: <Step1 />,
-      },
-      {
-        label: 'Contact Details',
-        optional: 'Please define contact info',
-        key: 'additional',
-        children: <Step2 />,
-      },
-      {
-        label: 'Overview',
-        optional: 'Please check your form to confirm',
-        key: 'last',
-        children: <Step3 />,
-      },
-    ],
+export const WithSteps: StoryObj<typeof DetailPage<StepSchema>> = {
+  render(args) {
+    return (
+      <DetailPage
+        {...args}
+        schema={stepSchema}
+        defaultValues={{
+          main: {
+            name: '',
+            username: '',
+          },
+          contact: {
+            email: '',
+            phone: '',
+            website: '',
+          },
+          address: {
+            city: '',
+            street: '',
+            suite: '',
+            zipcode: '',
+          },
+        }}
+        steps={[
+          {
+            label: 'Person Info',
+            optional: 'Please define person name',
+            key: 'main',
+            name: 'main',
+            schema: z.object({
+              name: z.string().min(1),
+              username: z.string().min(1),
+            }),
+            children: <Step1 />,
+          },
+          {
+            label: 'Contact Details',
+            optional: 'Please define contact info',
+            key: 'contact',
+            name: 'contact',
+            schema: z.object({
+              email: z.string().email().min(1, { message: 'Email is missing' }),
+              website: z.string().min(1, { message: 'Website is missing' }),
+              phone: z.string(),
+            }),
+            children: <Step2 />,
+          },
+          {
+            key: 'overview',
+            label: 'Contact Details',
+            optional: 'Please define contact info',
+            children: <Step3 />,
+          },
+        ]}
+      >
+        <Page.Content>
+          <FormControl label="Main data">
+            <Field.Watch showAsJson name="main" />
+          </FormControl>
+          <FormControl label="Contact data">
+            <Field.Watch showAsJson name="contact" />
+          </FormControl>
+        </Page.Content>
+      </DetailPage>
+    );
   },
 };
 

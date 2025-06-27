@@ -29,5 +29,13 @@ export const userSchema = z.object({
     .nullish(),
 });
 
+export const stepSchema = z
+  .object({
+    main: userSchema.pick({ name: true, username: true }),
+    contact: userSchema.pick({ email: true, phone: true, website: true }),
+  })
+  .merge(userSchema.pick({ address: true }));
+
 export type UserSchema = z.infer<typeof userSchema>;
 export type IdNameSchema = z.infer<typeof IdNameSchema>;
+export type StepSchema = z.infer<typeof stepSchema>;

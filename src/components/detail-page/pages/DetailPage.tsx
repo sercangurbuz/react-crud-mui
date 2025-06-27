@@ -3,7 +3,7 @@ import { FieldValues } from 'react-hook-form';
 
 import DetailPageDefaultLayout from '../components/DetailPageDefaultLayout';
 import DetailPageHeader from '../components/DetailPageHeader';
-import DetailPageSteps from '../components/DetailPageSteps';
+import DetailPageStepsHeader from '../components/DetailPageStepsHeader';
 import { NeedDataReason } from './DetailPageContent';
 import DetailPageDrawer from './DetailPageDrawer';
 import DetailPageForm, { DetailPageFormProps } from './DetailPageForm';
@@ -57,4 +57,4 @@ DetailPage.RouteModal = DetailPageRouteModal;
 DetailPage.Drawer = DetailPageDrawer;
 DetailPage.Route = DetailPageRoute;
 DetailPage.Layout = DetailPageDefaultLayout;
-DetailPage.Steps = DetailPageSteps;
+DetailPage.Steps = DetailPageStepsHeader;

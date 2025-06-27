@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { useFormState } from 'react-hook-form';
 
 import ArrowLeft from '@mui/icons-material/ArrowLeft';
 import ArrowRight from '@mui/icons-material/ArrowRight';
@@ -9,24 +10,23 @@ import Button from '@mui/material/Button';
 
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import { FlexBetween } from '../../flexbox';
-import useFormGroupIsInValid from '../../form/hooks/useFormGroupIsInValid';
+import { UseFormReturn } from '../../form/hooks/useForm';
 import useTranslation from '../../i18n/hooks/useTranslation';
-import { StepPane } from './DetailPageSteps';
+import { StepPane } from './DetailPageStepsHeader';
 
 /* ---------------------------------- Types --------------------------------- */
 
 export type StepsButtonsOptions = {
   showNextButton?: boolean;
   showPrevButton?: boolean;
-  disableNextButton?: boolean;
-  disablePrevButton?: boolean;
-  disableFinishButton?: boolean;
-  currentKey: string;
+  currentKey: React.Key;
+  name: string;
   activeStepIndex: number;
   steps: StepPane[];
   showFinishButton?: boolean;
   finishButtonText?: string;
   loading?: boolean;
+  currentForm?: UseFormReturn;
 };
 
 export type StepCommandsStates = {
@@ -46,9 +46,7 @@ export type StepCommandsLayout = {
 
 export type StepCommandsComponentProps = StepCommandsStates & StepCommandsLayout;
 
-export interface DetailPageStepCommandsProps extends StepCommandsStates {
-  onCommands?: (props: StepCommandsComponentProps) => ReactNode;
-}
+export type DetailPageStepCommandsProps = StepCommandsStates;
 
 export enum DetailPageStepCommandNames {
   PREV = 'prev',
@@ -57,7 +55,7 @@ export enum DetailPageStepCommandNames {
 
 /* ------------------------- StepsButtons Component ------------------------- */
 
-function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageStepCommandsProps) {
+function DetailPageStepCommands(props: DetailPageStepCommandsProps) {
   const {
     nextButtonTitle,
     prevButtonTitle,
@@ -68,16 +66,13 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
       finishButtonText,
       showNextButton,
       showPrevButton,
-      disableNextButton,
-      disablePrevButton,
-      disableFinishButton,
       loading,
-      currentKey,
       activeStepIndex,
       steps,
       showFinishButton,
+      currentForm,
     },
-  } = stepCommandProps;
+  } = props;
 
   /* ---------------------------------- Hooks --------------------------------- */
 
@@ -85,9 +80,10 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
   const {
     hotkeys: { nextStep: SHORTCUT_NEXT_STEP, prevStep: SHORTCUT_PREV_STEP },
   } = useSettings();
-  const isInValid = useFormGroupIsInValid({ groupName: currentKey });
-  const isNextButtonDisabled = isInValid || disableNextButton;
-  const isFinishButtonDisabled = isInValid || disableFinishButton;
+  const { isValid: isCurrentStepValid } = useFormState({
+    control: currentForm?.control,
+    disabled: !currentForm,
+  });
 
   /* -------------------------------------------------------------------------- */
   /*                               Render helpers                               */
@@ -105,7 +101,6 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
         onClick={onPrevClick}
         startIcon={<ArrowLeft />}
         color="secondary"
-        disabled={disablePrevButton}
         title={`${t('prevstep')}\n(${SHORTCUT_PREV_STEP.toUpperCase()})`}
       >
         {prevButtonTitle}
@@ -123,7 +118,7 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
         onClick={onNextClick}
         color="primary"
         loading={loading}
-        disabled={isNextButtonDisabled}
+        disabled={!isCurrentStepValid}
         endIcon={<ArrowRight />}
         title={`${t('nextstep')}\n(${SHORTCUT_NEXT_STEP.toUpperCase()})`}
       >
@@ -139,7 +134,7 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
         onClick={onFinish}
         color="success"
         loading={loading}
-        disabled={isFinishButtonDisabled}
+        disabled={!isCurrentStepValid}
         startIcon={<Save />}
       >
         {finishButtonText || t('finish')}
@@ -161,20 +156,6 @@ function DetailPageStepCommands({ onCommands, ...stepCommandProps }: DetailPageS
         </Box>
       </FlexBetween>
     );
-
-    if (onCommands) {
-      return onCommands({
-        ...stepCommandProps,
-        options: {
-          ...stepCommandProps.options,
-          disableNextButton: isNextButtonDisabled,
-          disableFinishButton: isFinishButtonDisabled,
-        },
-        finish: finishContent,
-        next: nextContent,
-        prev: prevContent,
-      });
-    }
 
     return layout;
   };

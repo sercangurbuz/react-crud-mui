@@ -1,9 +1,11 @@
-import React, { ReactNode, useEffect, useMemo, useRef } from 'react';
-import { FieldValues } from 'react-hook-form';
+import React, { ReactNode, useEffect, useRef } from 'react';
+import { FieldValues, Path, PathValue } from 'react-hook-form';
 
 import { Box } from '@mui/material';
 
 import ValidationAlerts from '../../form/components/ValidationAlerts';
+import { UseFormReturn } from '../../form/hooks/useForm';
+import useFormCollectionContext from '../../form/hooks/useFormCollectionContext';
 import { HeaderProps } from '../../header/Header';
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Alerts from '../../page/components/Alerts';
@@ -16,12 +18,16 @@ import DetailPageDefaultLayout, {
   DetailPageLayoutProps,
 } from '../components/DetailPageDefaultLayout';
 import DetailPageHeader, { DetailPageHeaderProps } from '../components/DetailPageHeader';
+import DetailPageProvider from '../components/DetailPageProvider';
 import DetailPageShortCuts from '../components/DetailPageShortCuts';
 import DetailPageStepCommands, {
   DetailPageStepCommandsProps,
 } from '../components/DetailPageStepCommands';
-import DetailPageSteps, { DetailPageStepsProps, StepPane } from '../components/DetailPageSteps';
-import { DetailPageContext, DetailPageContextType } from '../hooks/useDetailPage';
+import DetailPageStepContentWrapper from '../components/DetailPageStepContentWrapper';
+import DetailPageStepsHeader, {
+  DetailPageStepsHeaderProps,
+  StepPane,
+} from '../components/DetailPageStepsHeader';
 import { DETAILPAGE_HOTKEYS_SCOPE } from '../hooks/useDetailPageHotKeys';
 import { SaveMode } from './DetailPageData';
 
@@ -46,6 +52,8 @@ export interface DetailPageContentProps<TModel extends FieldValues>
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'tabExtraContent'
     >,
     Pick<DetailPageCommandsProps<TModel>, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
+  form: UseFormReturn<TModel>;
+
   data?: TModel;
   /**
    * External error indicator
@@ -141,15 +149,15 @@ export interface DetailPageContentProps<TModel extends FieldValues>
   /**
    * Steps definitons
    */
-  steps?: StepPane[];
+  steps?: StepPane<TModel>[];
   /**
    * Custom steps component
    */
-  customSteps?: React.ComponentType<DetailPageStepsProps>;
+  customSteps?: React.ComponentType<DetailPageStepsHeaderProps>;
   /**
    * Optional steps props
    */
-  stepsProps?: Partial<DetailPageStepsProps>;
+  stepsProps?: Partial<DetailPageStepsHeaderProps>;
   tabExtraContent?: ReactNode | ((data?: TModel) => ReactNode);
 }
 
@@ -172,6 +180,7 @@ function DetailPageContent<TModel extends FieldValues>({
   enableDiscardChanges,
   enableSave = true,
   error,
+  form,
   hotkeyScopes = DETAILPAGE_HOTKEYS_SCOPE,
   loading,
   onClose,
@@ -201,6 +210,7 @@ function DetailPageContent<TModel extends FieldValues>({
 
   const { t } = useTranslation();
   const alertsContainerRef = useRef<HTMLDivElement | null>(null);
+  const { forms } = useFormCollectionContext();
 
   useEffect(() => {
     if (error) {
@@ -361,19 +371,44 @@ function DetailPageContent<TModel extends FieldValues>({
     );
   };
 
+  /**
+   * Render steps header and content
+   */
   const renderSteps = () => {
-    if (!steps && !CustomSteps) {
+    if (!steps?.length) {
       return null;
     }
 
-    const Steps = CustomSteps ?? DetailPageSteps;
-    return (
-      <Steps
-        items={steps!}
+    const StepHeaders = CustomSteps ?? DetailPageStepsHeader;
+    const stepHeaders = (
+      <StepHeaders
+        items={steps}
         status={loading ? 'wait' : error ? 'error' : 'process'}
         activeStep={activeSegmentIndex}
         {...stepsProps}
       />
+    );
+
+    const stepContents = steps.map(({ children, name, schema, defaultValues, key }) =>
+      name ? (
+        <DetailPageStepContentWrapper
+          key={key}
+          name={name}
+          schema={schema}
+          defaultValues={defaultValues}
+        >
+          {children}
+        </DetailPageStepContentWrapper>
+      ) : (
+        children
+      ),
+    );
+
+    return (
+      <>
+        {stepHeaders}
+        {stepContents[activeSegmentIndex]}
+      </>
     );
   };
 
@@ -381,33 +416,65 @@ function DetailPageContent<TModel extends FieldValues>({
    * Render steps commands
    */
   const renderStepsCommands = () => {
-    if (!steps?.length) {
+    if (!steps?.length || !forms) {
       return null;
     }
+
+    const currentKey = steps[activeSegmentIndex].key;
+    const currentFieldName = steps[activeSegmentIndex].name;
+    const currentForm = currentFieldName && forms.get(currentFieldName);
 
     const nextButtonTitle =
       activeSegmentIndex < steps.length - 1 ? steps[activeSegmentIndex + 1].label : undefined;
     const prevButtonTitle =
       activeSegmentIndex > 0 ? steps[activeSegmentIndex - 1].label : undefined;
 
+    const updateParentForm = () => {
+      if (!currentForm) {
+        return;
+      }
+
+      form.setValue(
+        currentKey as Path<TModel>,
+        currentForm.getValues() as PathValue<TModel, Path<TModel>>,
+        {
+          shouldValidate: true,
+        },
+      );
+    };
+
+    const defaultSaveEvent =
+      defaultSaveMode === 'save-close'
+        ? onSaveClose
+        : defaultSaveMode === 'save-create'
+          ? onSaveCreate
+          : onSave;
+
     const props: DetailPageStepCommandsProps = {
-      onNextClick: () => onSegmentChanged?.(activeSegmentIndex + 1),
-      onPrevClick: () => onSegmentChanged?.(activeSegmentIndex - 1),
-      onFinish: onSave,
+      onNextClick: () => {
+        updateParentForm();
+        onSegmentChanged?.(activeSegmentIndex + 1);
+      },
+      onPrevClick: () => {
+        updateParentForm();
+        onSegmentChanged?.(activeSegmentIndex - 1);
+      },
+      onFinish: () => {
+        updateParentForm();
+        defaultSaveEvent();
+      },
       nextButtonTitle,
       prevButtonTitle,
-      onCommands: stepsProps?.onCommands,
       options: {
         finishButtonText: stepsProps?.finishButtonText,
         showNextButton: !!nextButtonTitle,
         showPrevButton: !!prevButtonTitle,
-        disableNextButton: disabled,
-        disablePrevButton: disabled,
-        disableFinishButton: disabled,
         showFinishButton: stepsProps?.showFinishButton ?? true,
         activeStepIndex: activeSegmentIndex,
-        currentKey: steps[activeSegmentIndex].key,
         steps,
+        currentKey,
+        currentForm,
+        name: currentFieldName as string,
       },
     };
 
@@ -447,50 +514,27 @@ function DetailPageContent<TModel extends FieldValues>({
   };
 
   /* -------------------------------------------------------------------------- */
-  /*                             DetailPage Context                             */
-  /* -------------------------------------------------------------------------- */
-
-  const contextValue = useMemo<DetailPageContextType>(
-    () => ({
-      data,
-      reason,
-      loading,
-      enableCopy: enableCopy && enableCreate,
-      enableClose,
-      enableCreate,
-      enableDelete,
-      enableDiscardChanges,
-      enableSave,
-      disabled,
-      activeSegmentIndex,
-      onSave,
-      setActiveSegmentIndex: onSegmentChanged!,
-    }),
-    [
-      data,
-      reason,
-      loading,
-      enableCopy,
-      enableCreate,
-      enableClose,
-      enableDelete,
-      enableDiscardChanges,
-      enableSave,
-      disabled,
-      activeSegmentIndex,
-      onSave,
-      onSegmentChanged,
-    ],
-  );
-
-  /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
 
   return (
-    <DetailPageContext.Provider value={contextValue}>
+    <DetailPageProvider
+      data={data}
+      reason={reason}
+      loading={loading}
+      enableCopy={enableCopy && enableCreate}
+      enableClose={enableClose}
+      enableCreate={enableCreate}
+      enableDelete={enableDelete}
+      enableDiscardChanges={enableDiscardChanges}
+      enableSave={enableSave}
+      disabled={disabled}
+      activeSegmentIndex={activeSegmentIndex}
+      onSave={onSave}
+      setActiveSegmentIndex={onSegmentChanged!}
+    >
       {renderWrapperLayout()}
-    </DetailPageContext.Provider>
+    </DetailPageProvider>
   );
 }
 

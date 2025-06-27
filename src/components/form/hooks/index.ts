@@ -11,4 +11,5 @@ export { default as useArrayFieldHelpers } from './useArrayFieldHelpers';
 export { default as useUniqueFieldsInArray } from './useUniqueFieldsInArray';
 export { default as useFormInitEffect } from './useFormInitEffect';
 export { default as useFieldWithContext } from './useFieldWithContext';
+export { default as useFormCollectionContext } from './useFormCollectionContext';
 export { UNIQUE_IDENTIFIER_FIELD_NAME } from './useArrayFieldHelpers';

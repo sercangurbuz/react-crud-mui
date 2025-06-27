@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   FieldPath,
   FieldValues,
@@ -33,7 +33,7 @@ export interface UseFormOptions<TFieldValues extends FieldValues>
   schema?: z.ZodType<Partial<TFieldValues>>;
 }
 
-export interface UseFormReturn<TFieldValues extends FieldValues>
+export interface UseFormReturn<TFieldValues extends FieldValues = FieldValues>
   extends ReactHookFormUseFormReturn<TFieldValues> {
   /**
    * Shortcut method for handleSubmit()()
@@ -75,10 +75,12 @@ function useForm<TFieldValues extends FieldValues = FieldValues>({
     });
   }, [handleSubmit]);
 
-  return {
-    ...formMethods,
-    getFormModel,
-  } as UseFormReturn<TFieldValues>;
+  const returnValue = useMemo(
+    () => Object.assign(formMethods, { getFormModel }),
+    [formMethods, getFormModel],
+  );
+
+  return returnValue as UseFormReturn<TFieldValues>;
 }
 
 export default useForm;

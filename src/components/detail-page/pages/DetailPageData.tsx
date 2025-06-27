@@ -45,7 +45,6 @@ export interface DetailPageDataProps<TModel extends FieldValues>
     DetailPageContentProps<TModel>,
     'onSave' | 'onDelete' | 'onDiscardChanges' | 'onCopy' | 'onSaveCreate' | 'onSaveClose'
   > {
-  form: UseFormReturn<TModel>;
   /**
    * Save event
    * @returns if returns data,either in promise or object will bind to form data
@@ -236,6 +235,7 @@ function DetailPageData<TModel extends FieldValues>({
   return (
     <DetailPageContent
       {...dpProps}
+      form={form}
       alerts={messages}
       error={error}
       data={(data ?? initialValues) as TModel}

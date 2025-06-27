@@ -2,6 +2,7 @@ import { PropsWithChildren } from 'react';
 import { FieldValues, FormProvider as RHFProvider } from 'react-hook-form';
 
 import { UseFormReturn, ValidationOptions } from '../hooks/useForm';
+import FormCollectionProvider from './FormCollectionProvider';
 import FormHelperProvider from './FormHelperProvider';
 import ValidationOptionsProvider from './ValidationOptionsProvider';
 
@@ -31,7 +32,9 @@ function FormProvider<TFieldValues extends FieldValues>({
   return (
     <RHFProvider {...form}>
       <ValidationOptionsProvider {...validationOptions}>
-        <FormHelperProvider>{children}</FormHelperProvider>
+        <FormCollectionProvider>
+          <FormHelperProvider>{children}</FormHelperProvider>
+        </FormCollectionProvider>
       </ValidationOptionsProvider>
     </RHFProvider>
   );

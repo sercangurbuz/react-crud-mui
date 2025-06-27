@@ -37,7 +37,7 @@ function FieldWatch<TFieldValues extends FieldValues = FieldValues>({
   }
 
   if (showAsJson && !isNil(fieldValue)) {
-    return <>{JSON.stringify(fieldValue)}</>;
+    return <code>{JSON.stringify(fieldValue)}</code>;
   }
 
   if (label) {
