@@ -1,53 +1,41 @@
-import { ReactNode } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { PropsWithChildren, ReactNode } from 'react';
+import { useFormState } from 'react-hook-form';
 
-import Close from '@mui/icons-material/Close';
-import Save from '@mui/icons-material/Save';
-import Undo from '@mui/icons-material/Undo';
+import { Add, ArrowLeft, ArrowRight, Close, Delete, Save, Undo } from '@mui/icons-material';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
-import Button from '@mui/material/Button';
+import { Box, Button } from '@mui/material';
 
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
+import { FlexBox } from '../../flexbox';
+import { UseFormReturn } from '../../form/hooks/useForm';
 import useTranslation from '../../i18n/hooks/useTranslation';
-import Add from '../../icons/Add';
-import Delete from '../../icons/Delete';
-import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
-import { CloseReason, CommandsPosition } from '../../page/Page';
-import useDetailPageStates from '../hooks/useDetailPageStates';
+import { CloseReason } from '../../page/Page';
+import { useDetailPageStates } from '../hooks';
 import { SaveMode } from '../pages/DetailPageData';
+import { StepPane } from './DetailPageStepsHeader';
 
-/* ---------------------------------- Types --------------------------------- */
+export type DetailPageStandartCommandsOptions = {
+  saveCommandMode?: SaveMode;
+  createCommandLabel?: ReactNode;
+  saveCommandLabel?: ReactNode;
+};
 
-export interface DetailPageCommandsFlag {
-  copy?: boolean;
-  save?: boolean;
-  savecreate?: boolean;
-  saveclose?: boolean;
-  discardchanges?: boolean;
-  delete?: boolean;
-  close?: boolean;
-  navigate?: boolean;
-  create?: boolean;
-}
+export type DetailPageStepCommandsOptions = {
+  nextButtonTitle?: React.ReactNode;
+  prevButtonTitle?: React.ReactNode;
+  showNextButton?: boolean;
+  showPrevButton?: boolean;
+  currentKey: React.Key;
+  name: string;
+  activeStepIndex: number;
+  steps: StepPane[];
+  currentForm?: UseFormReturn;
+};
 
-export interface DetailPageCommandsExtraProps {
-  save?: LoadingButtonProps;
-  discardchanges?: LoadingButtonProps;
-  delete?: LoadingButtonProps;
-  close?: LoadingButtonProps;
-  navigate?: LoadingButtonProps;
-  create?: LoadingButtonProps;
-}
+export type DetailPageCommandsOptions = DetailPageStandartCommandsOptions &
+  DetailPageStepCommandsOptions;
 
-export interface DetailPageCommandsOptions {
-  visible: DetailPageCommandsFlag;
-  disabled: DetailPageCommandsFlag;
-  loading?: boolean;
-  isNew: boolean;
-  isDisabled?: boolean;
-}
-
-export type DetailPageCommandsState = {
+export type DetailPageStandartCommandsEvents = {
   onSave?: () => void;
   onSaveCreate?: () => void;
   onCreate?: () => void;
@@ -56,72 +44,51 @@ export type DetailPageCommandsState = {
   onDelete?: () => void;
   onClose?: (reason?: CloseReason) => void;
   onSaveClose?: () => void;
-  saveCommandMode?: SaveMode;
-  createCommandLabel?: ReactNode;
-  commandsPosition?: CommandsPosition;
 };
 
-export type DetailPageCommandsLayoutContents = {
-  save: ReactNode;
-  create: ReactNode;
-  discardChanges: ReactNode;
-  delete: ReactNode;
-  close: ReactNode;
-  content: ReactNode;
-  renderMoreCommand: (items: MoreButtonItem[]) => ReactNode;
-  extra?: ReactNode;
+export type DetailPageStepCommandsEvents = {
+  onNextClick?: () => void;
+  onPrevClick?: () => void;
 };
 
-export type DetailPageCommmandsSettings<TModel extends FieldValues = FieldValues> = {
-  content: ReactNode;
-  layout: DetailPageCommandsLayoutContents;
-  props: DetailPageCommandsState & DetailPageCommandsOptions;
-  data?: TModel;
-};
+export type DetailPageCommandsProps = DetailPageStandartCommandsEvents &
+  DetailPageStepCommandsEvents & {
+    options: DetailPageCommandsOptions;
+    mode: 'standard' | 'steps';
+  } & PropsWithChildren;
 
-export interface DetailPageCommandsProps<TModel extends FieldValues = FieldValues>
-  extends DetailPageCommandsState {
-  onCommands?: (props: DetailPageCommmandsSettings<TModel>) => ReactNode;
-  onExtraCommands?: () => ReactNode;
-  commandsExtraProps?: DetailPageCommandsExtraProps;
-  data?: TModel;
-}
-
-export enum DetailPageCommandNames {
-  SAVE = 'save',
-  CREATE = 'create',
-  COPY = 'copy',
-  DISCARD = 'discard',
-  DELETE = 'delete',
-  CLOSE = 'close',
-  NAVIGATE = 'navigate',
-}
-
-/* ----------------------- DetailPageButtons Component ---------------------- */
-
-function DetailPageCommands<TModel extends FieldValues = FieldValues>(
-  props: DetailPageCommandsProps<TModel>,
-) {
+function DetailPageCommands(props: DetailPageCommandsProps) {
   const {
-    onCreate,
+    mode,
     onSave,
     onSaveClose,
-    onSaveCreate,
-    onCopy,
-    onDiscardChanges,
     onDelete,
+    onSaveCreate,
     onClose,
-    saveCommandMode = 'save',
-    onCommands,
-    onExtraCommands,
-    createCommandLabel,
-    commandsExtraProps = {},
-    commandsPosition = 'top-right',
-    data,
+    onDiscardChanges,
+    onCreate,
+    onPrevClick,
+    onNextClick,
+    options,
+    children: extraCommandsContent,
   } = props;
+
+  const {
+    currentForm,
+    createCommandLabel,
+    saveCommandLabel,
+    showPrevButton,
+    showNextButton,
+    prevButtonTitle,
+    nextButtonTitle,
+    steps,
+    activeStepIndex,
+    saveCommandMode = 'save',
+  } = options;
   /* -------------------------------------------------------------------------- */
-  /*                                   Hooks                                    */
+  /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
+
   const { t } = useTranslation();
 
   const {
@@ -131,36 +98,37 @@ function DetailPageCommands<TModel extends FieldValues = FieldValues>(
       saveClose: SHORTCUT_SAVECLOSE,
       delete: SHORTCUT_DELETE,
       newItem: SHORTCUT_NEWITEM,
+      nextStep: SHORTCUT_NEXT_STEP,
+      prevStep: SHORTCUT_PREV_STEP,
     },
   } = useSettings();
 
   const { visible, disabled, loading, isNew } = useDetailPageStates();
 
+  const { isValid: isCurrentStepValid } = useFormState({
+    control: currentForm?.control,
+    disabled: mode === 'steps' && !currentForm,
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*                               Render helpers                               */
+  /* -------------------------------------------------------------------------- */
+
   const saveCommandMenus: Record<SaveMode, LoadingButtonProps> = {
     save: {
       key: 'save',
-      color: 'primary',
-      variant: 'contained',
-      startIcon: <Save />,
-      disabled: disabled.save,
       onClick: onSave,
       title: `${t('savetitle')}\n(${SHORTCUT_SAVE.toUpperCase()})`,
       children: isNew ? t('save') : t('update'),
     },
     'save-close': {
       key: 'save-close',
-      color: 'primary',
-      startIcon: <Save />,
       title: `${t('saveclosetitle')}\n(${SHORTCUT_SAVECLOSE.toUpperCase()})`,
       children: isNew ? t('saveclose') : t('updateclose'),
-      disabled: disabled.save,
       onClick: onSaveClose,
     },
     'save-create': {
       key: 'save-create',
-      color: 'primary',
-      startIcon: <Save />,
-      disabled: disabled.save,
       onClick: onSaveCreate,
       title: `${
         isNew ? t('savecreate') : t('updatecreate')
@@ -168,22 +136,25 @@ function DetailPageCommands<TModel extends FieldValues = FieldValues>(
       children: isNew ? t('savecreate') : t('updatecreate'),
     },
   };
-  /* -------------------------------------------------------------------------- */
-  /*                               Render helpers                               */
-  /* -------------------------------------------------------------------------- */
 
-  const renderSave = (mode: SaveMode) => {
+  /* ---------------------------- Standart Commands --------------------------- */
+
+  const renderSave = (saveMode: SaveMode) => {
     if (!visible.save) {
       return null;
     }
 
     return (
       <LoadingButton
-        {...(saveCommandMenus[mode] as unknown as LoadingButtonProps)}
-        key={saveCommandMenus[mode].key}
+        {...(saveCommandMenus[saveMode] as unknown as LoadingButtonProps)}
+        key={saveCommandMenus[saveMode].key}
+        color="success"
+        startIcon={<Save />}
+        disabled={mode === 'steps' ? !isCurrentStepValid : disabled.save}
         loading={loading}
-        {...commandsExtraProps['save']}
-      />
+      >
+        {saveCommandLabel ?? saveCommandMenus[saveMode].children}
+      </LoadingButton>
     );
   };
 
@@ -195,16 +166,15 @@ function DetailPageCommands<TModel extends FieldValues = FieldValues>(
     return (
       <LoadingButton
         key="create"
-        color="success"
+        color="primary"
         startIcon={<Add />}
         // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
         title={`${createCommandLabel ?? t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
         disabled={disabled.create}
         onClick={onCreate}
-        // eslint-disable-next-line react/no-children-prop
-        children={createCommandLabel ?? t('newitem')}
-        {...commandsExtraProps['create']}
-      />
+      >
+        {createCommandLabel ?? t('newitem')}
+      </LoadingButton>
     );
   };
 
@@ -218,10 +188,9 @@ function DetailPageCommands<TModel extends FieldValues = FieldValues>(
         disabled={disabled.discardchanges}
         onClick={onDiscardChanges}
         startIcon={<Undo />}
-        // eslint-disable-next-line react/no-children-prop
-        children={t('discardchanges')}
-        {...commandsExtraProps['discardchanges']}
-      />
+      >
+        {t('discardchanges')}
+      </Button>
     );
   };
 
@@ -237,11 +206,10 @@ function DetailPageCommands<TModel extends FieldValues = FieldValues>(
         color="error"
         startIcon={<Delete />}
         title={`${t('deletetitle')}\n(${SHORTCUT_DELETE.toUpperCase()})`}
-        // eslint-disable-next-line react/no-children-prop
-        children={t('delete')}
         onClick={onDelete}
-        {...commandsExtraProps['delete']}
-      />
+      >
+        {t('delete')}
+      </Button>
     );
   };
 
@@ -258,28 +226,84 @@ function DetailPageCommands<TModel extends FieldValues = FieldValues>(
         disabled={disabled.close}
         startIcon={<Close />}
         onClick={() => onClose?.('close-button')}
-        // eslint-disable-next-line react/no-children-prop
-        children={t('cancel')}
-        {...commandsExtraProps['close']}
-      />
+      >
+        {t('cancel')}
+      </Button>
     );
   };
 
-  const renderMoreCommand = (options: MoreButtonItem[]) => {
-    if (!options.length) {
+  /* ----------------------------- Steps commands ----------------------------- */
+
+  const renderPrev = () => {
+    if (!showPrevButton) {
       return null;
     }
 
-    return <MoreButton options={options} key="more-options" />;
+    return (
+      <Button
+        key="prev"
+        variant="outlined"
+        onClick={onPrevClick}
+        startIcon={<ArrowLeft />}
+        color="secondary"
+        title={`${t('prevstep')}\n(${SHORTCUT_PREV_STEP.toUpperCase()})`}
+      >
+        {prevButtonTitle}
+      </Button>
+    );
   };
 
+  const renderNext = () => {
+    if (!showNextButton) {
+      return null;
+    }
+    return (
+      <LoadingButton
+        key="next"
+        onClick={onNextClick}
+        color="primary"
+        loading={loading}
+        disabled={!isCurrentStepValid}
+        endIcon={<ArrowRight />}
+        title={`${t('nextstep')}\n(${SHORTCUT_NEXT_STEP.toUpperCase()})`}
+      >
+        {nextButtonTitle}
+      </LoadingButton>
+    );
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Render                                   */
+  /* -------------------------------------------------------------------------- */
+
   const renderCommands = () => {
+    if (mode === 'steps') {
+      const prevContent = renderPrev();
+      const nextContent = renderNext();
+      const closeContent = renderClose();
+      const finishContent = renderSave(saveCommandMode);
+
+      return (
+        <>
+          <Box>
+            {prevContent}
+            {extraCommandsContent}
+          </Box>
+          <FlexBox gap={1}>
+            {closeContent}
+            {visible.save && steps.length === activeStepIndex + 1 ? finishContent : null}
+            {nextContent}
+          </FlexBox>
+        </>
+      );
+    }
+
     const saveContent = renderSave(saveCommandMode);
     const createContent = renderCreate();
     const discardChangesContent = renderDiscardChanges();
     const deleteContent = renderDelete();
     const closeContent = renderClose();
-    const extra = onExtraCommands?.();
+
     const content = [
       saveContent,
       createContent,
@@ -290,47 +314,10 @@ function DetailPageCommands<TModel extends FieldValues = FieldValues>(
 
     const layoutContent = (
       <>
-        {extra}
+        {extraCommandsContent}
         {content}
       </>
     );
-
-    const layoutParams: DetailPageCommandsLayoutContents = {
-      save: saveContent,
-      close: closeContent,
-      content,
-      create: createContent,
-      delete: deleteContent,
-      discardChanges: discardChangesContent,
-      renderMoreCommand,
-      extra,
-    };
-
-    const props: DetailPageCommandsState & DetailPageCommandsOptions = {
-      onCreate,
-      onSave,
-      onSaveClose,
-      onSaveCreate,
-      onCopy,
-      onDiscardChanges,
-      onDelete,
-      onClose,
-      saveCommandMode,
-      visible,
-      disabled,
-      loading,
-      isNew,
-      commandsPosition,
-    };
-
-    if (onCommands) {
-      return onCommands({
-        content: layoutContent,
-        layout: layoutParams,
-        props,
-        data,
-      });
-    }
 
     return layoutContent;
   };

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 
+import DetailPageCommands from '../components/DetailPageCommands';
 import DetailPageDefaultLayout from '../components/DetailPageDefaultLayout';
 import DetailPageHeader from '../components/DetailPageHeader';
 import DetailPageStepsHeader from '../components/DetailPageStepsHeader';
@@ -58,3 +59,4 @@ DetailPage.Drawer = DetailPageDrawer;
 DetailPage.Route = DetailPageRoute;
 DetailPage.Layout = DetailPageDefaultLayout;
 DetailPage.Steps = DetailPageStepsHeader;
+DetailPage.Commands = DetailPageCommands;

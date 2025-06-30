@@ -19,7 +19,7 @@ import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
 import useDetailPageRouteParams from '../../components/detail-page/hooks/useDetailPageRouteParams';
-import { FlexBetween, FlexBox } from '../../components/flexbox';
+import { FlexBox } from '../../components/flexbox';
 import FormControl from '../../components/form/components/FormControl';
 import Field from '../../components/form/Field';
 import { useZodRefine } from '../../components/hooks';
@@ -133,6 +133,15 @@ export const WithAsyncData: DetailPageStory = {
   },
 };
 
+export const CustomCommandsLabel: DetailPageStory = {
+  ...WithAsyncData,
+  args: {
+    ...WithAsyncData.args,
+    createCommandLabel: 'Create New User',
+    saveCommandLabel: 'Save User',
+  },
+};
+
 export const ViewMode: DetailPageStory = {
   ...WithAsyncData,
   args: {
@@ -165,7 +174,9 @@ export const WithExtraCommands: DetailPageStory = {
 };
 
 export const WithCustomCommands: DetailPageStory = {
+  ...WithAsyncData,
   args: {
+    ...WithAsyncData.args,
     onCommands: (props) => <CustomCommands {...props} />,
   },
 };
@@ -325,13 +336,15 @@ export const OpenInModal: DetailPageModalStory = {
 export const ClassicModal: DetailPageModalStory = {
   args: {
     ...OpenInModal.args,
-    commandsPosition: 'bottom-right',
-    onCommands({ content }) {
+    commandsPosition: 'bottom-between',
+    onCommands(props) {
       return (
-        <FlexBetween width="100%">
+        <>
           <Field.Switch name="isActive" label="Is Active ?" />
-          <FlexBox gap={1}>{content}</FlexBox>
-        </FlexBetween>
+          <FlexBox gap={1}>
+            <DetailPage.Commands {...props} />
+          </FlexBox>
+        </>
       );
     },
   },
@@ -376,13 +389,8 @@ export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
           {...args}
           enableDelete={false}
           commandsPosition="bottom"
-          onCommands={({ props }) => (
-            <Button
-              onClick={props.onSaveClose}
-              disabled={props.disabled.save}
-              startIcon={<Add />}
-              fullWidth
-            >
+          onCommands={({ onSaveClose }) => (
+            <Button onClick={onSaveClose} startIcon={<Add />} fullWidth>
               Save User
             </Button>
           )}
@@ -411,8 +419,8 @@ export const WithPopover: DetailPagePopoverStory = {
             setElem(null);
           }}
           commandsPosition="bottom"
-          onCommands={({ props }) => (
-            <Button onClick={props.onSave} disabled={props.disabled.save} fullWidth>
+          onCommands={({ onSave }) => (
+            <Button onClick={onSave} fullWidth>
               Save
             </Button>
           )}
@@ -552,18 +560,34 @@ export const WithSteps: StoryObj<typeof DetailPage<StepSchema>> = {
   },
 };
 
-export const StepsWithCustomCommands: DetailPageStory = {
+export const StepsWithCustomCommands: StoryObj<typeof DetailPage<StepSchema>> = {
+  ...WithSteps,
   args: {
-    ...WithSteps.args,
-    stepsProps: {
-      showFinishButton: false,
-      onCommands: (props) => <CustomStepCommands {...props} />,
-    },
+    onCommands: (props) => <CustomStepCommands {...props} />,
   },
 };
 
-export const StepsWithContent: DetailPageStory = {
+export const StepsWithFetchMode: StoryObj<typeof DetailPage<StepSchema>> = {
+  ...WithSteps,
   args: {
+    reason: 'fetch',
+    data: {
+      main: {
+        name: mockData[0].name,
+        username: mockData[0].username,
+      },
+      contact: {
+        email: mockData[0].email,
+        phone: mockData[0].phone,
+        website: mockData[0].website,
+      },
+      address: {
+        street: mockData[0].address?.street,
+        suite: mockData[0].address?.suite,
+        city: mockData[0].address?.city,
+        zipcode: mockData[0].address?.zipcode,
+      },
+    },
     ...WithSteps.args,
     children: <FormContent />,
   },

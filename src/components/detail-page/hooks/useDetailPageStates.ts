@@ -1,8 +1,27 @@
 import { useMemo } from 'react';
 import { useFormState } from 'react-hook-form';
 
-import { DetailPageCommandsOptions } from '../components/DetailPageCommands';
 import useDetailPage from './useDetailPage';
+
+export interface DetailPageCommandsFlag {
+  copy?: boolean;
+  save?: boolean;
+  savecreate?: boolean;
+  saveclose?: boolean;
+  discardchanges?: boolean;
+  delete?: boolean;
+  close?: boolean;
+  navigate?: boolean;
+  create?: boolean;
+}
+
+export interface DetailPageCommandsOptions {
+  visible: DetailPageCommandsFlag;
+  disabled: DetailPageCommandsFlag;
+  loading?: boolean;
+  isNew: boolean;
+  isDisabled?: boolean;
+}
 
 /**
  * Returns buttons props depending on validation,loading etc
@@ -71,7 +90,7 @@ function useDetailPageStates() {
     ],
   );
 
-  return { ...props, formStates };
+  return props;
 }
 
 export default useDetailPageStates;

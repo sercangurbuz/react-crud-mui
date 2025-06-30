@@ -1,13 +1,13 @@
 import Save from '@mui/icons-material/Save';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-import { DetailPageCommmandsSettings } from '../../../components/detail-page/components/DetailPageCommands';
+import { useDetailPageStates } from '../../..';
+import { DetailPageCommandsProps } from '../../../components/detail-page/components/DetailPageCommands';
 import { FlexBox } from '../../../components/flexbox';
 import Add from '../../../components/icons/Add';
 
-function CustomCommands({
-  props: { onSave, onCreate, disabled, visible },
-}: DetailPageCommmandsSettings) {
+function CustomCommands({ onSave, onCreate }: DetailPageCommandsProps) {
+  const { visible, disabled } = useDetailPageStates();
   return (
     <FlexBox justifyContent="flex-end" gap={1}>
       {visible.save ? (
@@ -19,7 +19,7 @@ function CustomCommands({
         <LoadingButton
           color="success"
           startIcon={<Add />}
-          disabled={disabled.save}
+          disabled={disabled.create}
           onClick={onCreate}
         >
           Create New Person

@@ -13,16 +13,17 @@ import { Message } from '../../page/hooks/useNormalizeMessages';
 import Page, { PageProps } from '../../page/Page';
 import { ServerError } from '../../utils';
 import AutoSave, { AutoSaveOptions } from '../components/AutoSave';
-import DetailPageCommands, { DetailPageCommandsProps } from '../components/DetailPageCommands';
+import DetailPageCommands, {
+  DetailPageCommandsOptions,
+  DetailPageCommandsProps,
+  DetailPageStandartCommandsOptions,
+} from '../components/DetailPageCommands';
 import DetailPageDefaultLayout, {
   DetailPageLayoutProps,
 } from '../components/DetailPageDefaultLayout';
 import DetailPageHeader, { DetailPageHeaderProps } from '../components/DetailPageHeader';
 import DetailPageProvider from '../components/DetailPageProvider';
 import DetailPageShortCuts from '../components/DetailPageShortCuts';
-import DetailPageStepCommands, {
-  DetailPageStepCommandsProps,
-} from '../components/DetailPageStepCommands';
 import DetailPageStepForm from '../components/DetailPageStepForm';
 import DetailPageStepsHeader, {
   DetailPageStepsHeaderProps,
@@ -51,9 +52,22 @@ export interface DetailPageContentProps<TModel extends FieldValues>
       PageProps,
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'tabExtraContent'
     >,
-    Pick<DetailPageCommandsProps<TModel>, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
+    Pick<DetailPageStandartCommandsOptions, 'createCommandLabel' | 'saveCommandLabel'> {
+  /**
+   * Custom commands node
+   */
+  onCommands?: (props: DetailPageCommandsProps) => ReactNode;
+  /**
+   * Extra commands positioned left side in commands section
+   */
+  onExtraCommands?: () => ReactNode;
+  /**
+   * Main rhf instance of page
+   */
   form: UseFormReturn<TModel>;
-
+  /*
+   * Page model
+   */
   data?: TModel;
   /**
    * External error indicator
@@ -143,8 +157,14 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    * Having called "onSave" once changing form values
    */
   autoSave?: boolean | AutoSaveOptions;
+  /**
+   *  Custom content layout
+   */
   onContentLayout?: (props: DetailPageLayoutProps) => React.ReactNode;
   onWrapperLayout?: (props: DetailPageWrapperLayoutProps) => React.ReactNode;
+  /**
+   *Default save mode (save,saveclose,savecreate) default is 'save'
+   */
   defaultSaveMode?: SaveMode;
   /**
    * Steps definitons
@@ -198,6 +218,7 @@ function DetailPageContent<TModel extends FieldValues>({
   onSaveCreate,
   onWrapperLayout,
   reason = 'create',
+  saveCommandLabel,
   showHeader = true,
   steps,
   stepsProps,
@@ -310,7 +331,8 @@ function DetailPageContent<TModel extends FieldValues>({
    * Render standart commands
    */
   const renderStandartCommands = () => {
-    const commandProps: DetailPageCommandsProps<TModel> = {
+    const props: DetailPageCommandsProps = {
+      mode: 'standard',
       onCreate,
       onCopy,
       onSave,
@@ -318,16 +340,96 @@ function DetailPageContent<TModel extends FieldValues>({
       onSaveClose,
       onDelete,
       onDiscardChanges,
-      onCommands,
-      saveCommandMode: defaultSaveMode,
-      onExtraCommands,
-      createCommandLabel,
       onClose,
-      commandsPosition,
-      data,
+      options: {
+        saveCommandMode: defaultSaveMode,
+        saveCommandLabel,
+        createCommandLabel,
+      } as DetailPageCommandsOptions,
     };
 
-    return <DetailPageCommands {...commandProps} />;
+    if (onCommands) {
+      return onCommands(props);
+    }
+
+    const extraCommandContent = onExtraCommands?.();
+
+    return <DetailPageCommands {...props}>{extraCommandContent}</DetailPageCommands>;
+  };
+
+  /**
+   * Render steps commands
+   */
+  const renderStepsCommands = () => {
+    if (!steps?.length) {
+      return null;
+    }
+
+    const currentKey = steps[activeSegmentIndex].key;
+    const currentFieldName = steps[activeSegmentIndex].name;
+    const currentForm = currentFieldName && forms.get(currentFieldName);
+
+    const nextButtonTitle =
+      activeSegmentIndex < steps.length - 1 ? steps[activeSegmentIndex + 1].label : undefined;
+    const prevButtonTitle =
+      activeSegmentIndex > 0 ? steps[activeSegmentIndex - 1].label : undefined;
+
+    const updateParentForm = () => {
+      if (!currentForm) {
+        return;
+      }
+
+      form.setValue(
+        currentKey as Path<TModel>,
+        currentForm.getValues() as PathValue<TModel, Path<TModel>>,
+        {
+          shouldValidate: true,
+        },
+      );
+    };
+
+    const props: DetailPageCommandsProps = {
+      mode: 'steps',
+      onNextClick: () => {
+        updateParentForm();
+        onSegmentChanged?.(activeSegmentIndex + 1);
+      },
+      onPrevClick: () => {
+        updateParentForm();
+        onSegmentChanged?.(activeSegmentIndex - 1);
+      },
+      onSave() {
+        updateParentForm();
+        onSave();
+      },
+      onSaveCreate() {
+        updateParentForm();
+        onSaveCreate();
+      },
+      onSaveClose() {
+        updateParentForm();
+        onSaveClose();
+      },
+      options: {
+        nextButtonTitle,
+        prevButtonTitle,
+        showNextButton: !!nextButtonTitle,
+        showPrevButton: !!prevButtonTitle,
+        activeStepIndex: activeSegmentIndex,
+        steps,
+        currentKey,
+        currentForm,
+        name: currentFieldName as string,
+      },
+    };
+
+    if (onCommands) {
+      return onCommands(props);
+    }
+
+    const extraCommandContent = onExtraCommands?.();
+
+    return <DetailPageCommands {...props}>{extraCommandContent}</DetailPageCommands>;
   };
 
   /**
@@ -403,75 +505,6 @@ function DetailPageContent<TModel extends FieldValues>({
   };
 
   /**
-   * Render steps commands
-   */
-  const renderStepsCommands = () => {
-    if (!steps?.length) {
-      return null;
-    }
-
-    const currentKey = steps[activeSegmentIndex].key;
-    const currentFieldName = steps[activeSegmentIndex].name;
-    const currentForm = currentFieldName && forms.get(currentFieldName);
-
-    const nextButtonTitle =
-      activeSegmentIndex < steps.length - 1 ? steps[activeSegmentIndex + 1].label : undefined;
-    const prevButtonTitle =
-      activeSegmentIndex > 0 ? steps[activeSegmentIndex - 1].label : undefined;
-
-    const updateParentForm = () => {
-      if (!currentForm) {
-        return;
-      }
-
-      form.setValue(
-        currentKey as Path<TModel>,
-        currentForm.getValues() as PathValue<TModel, Path<TModel>>,
-        {
-          shouldValidate: true,
-        },
-      );
-    };
-
-    const defaultSaveEvent =
-      defaultSaveMode === 'save-close'
-        ? onSaveClose
-        : defaultSaveMode === 'save-create'
-          ? onSaveCreate
-          : onSave;
-
-    const props: DetailPageStepCommandsProps = {
-      onNextClick: () => {
-        updateParentForm();
-        onSegmentChanged?.(activeSegmentIndex + 1);
-      },
-      onPrevClick: () => {
-        updateParentForm();
-        onSegmentChanged?.(activeSegmentIndex - 1);
-      },
-      onFinish: () => {
-        updateParentForm();
-        defaultSaveEvent();
-      },
-      nextButtonTitle,
-      prevButtonTitle,
-      options: {
-        finishButtonText: stepsProps?.finishButtonText,
-        showNextButton: !!nextButtonTitle,
-        showPrevButton: !!prevButtonTitle,
-        showFinishButton: stepsProps?.showFinishButton ?? true,
-        activeStepIndex: activeSegmentIndex,
-        steps,
-        currentKey,
-        currentForm,
-        name: currentFieldName as string,
-      },
-    };
-
-    return <DetailPageStepCommands {...props} />;
-  };
-
-  /**
    * Renders BasePage and its content without Form component
    * @param content Component,children,tabs or steps nodes
    * @param commands Commands nodes
@@ -488,7 +521,7 @@ function DetailPageContent<TModel extends FieldValues>({
         tabExtraContent={tabContent}
         disabled={disabled || loading || reason === 'view'}
         commandsContent={commands}
-        commandsPosition={isStepper ? 'bottom' : commandsPosition}
+        commandsPosition={isStepper ? 'bottom-between' : commandsPosition}
         onHeader={renderPageHeader}
         onClose={onClose}
         loading={loading}

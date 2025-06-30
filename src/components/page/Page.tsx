@@ -30,6 +30,8 @@ export type CommandsPosition =
   | 'top-left'
   | 'bottom-left'
   | 'bottom-right'
+  | 'bottom-between'
+  | 'top-between'
   | 'bottom'
   | 'top';
 export type TabsPosition = 'in-center' | 'in-subrow';
@@ -110,6 +112,7 @@ function Page({
 
   const commandsVertPos =
     commandsPosition === 'bottom' ||
+    commandsPosition === 'bottom-between' ||
     commandsPosition === 'bottom-left' ||
     commandsPosition === 'bottom-right'
       ? 'bottom'
@@ -162,6 +165,10 @@ function Page({
       case 'bottom':
       case 'top':
         justifyContent = 'center';
+        break;
+      case 'bottom-between':
+      case 'top-between':
+        justifyContent = 'space-between';
         break;
       case 'bottom-left':
       case 'top-left':

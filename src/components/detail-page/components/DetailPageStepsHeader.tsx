@@ -7,7 +7,6 @@ import Stepper, { StepperProps } from '@mui/material/Stepper';
 import { z } from 'zod';
 
 import Page from '../../page/Page';
-import { DetailPageStepCommandsProps } from './DetailPageStepCommands';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -17,8 +16,6 @@ export interface DetailPageStepsHeaderProps<TModel extends FieldValues = FieldVa
   extends Omit<StepperProps, 'onChange'> {
   items: StepPane<TModel>[];
   status?: StepStatus;
-  showFinishButton?: DetailPageStepCommandsProps['options']['showFinishButton'];
-  finishButtonText?: DetailPageStepCommandsProps['options']['finishButtonText'];
 }
 
 export type StepPane<
