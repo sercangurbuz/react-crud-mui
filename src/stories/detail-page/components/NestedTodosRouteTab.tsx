@@ -6,7 +6,7 @@ import { z } from 'zod';
 import DetailPage from '../../../components/detail-page';
 import useDetailPageRouteParams from '../../../components/detail-page/hooks/useDetailPageRouteParams';
 import { DetailPageModalProps } from '../../../components/detail-page/pages/DetailPageModal';
-import { FlexBetween, FlexBox } from '../../../components/flexbox';
+import { FlexBox } from '../../../components/flexbox';
 import Field from '../../../components/form/Field';
 import UserOutlined from '../../../components/icons/UserOutlined';
 import ListPage from '../../../components/list-page/pages/ListPage';
@@ -95,10 +95,12 @@ function EmbeddedPage(props: DetailPageModalProps<ToDo>) {
       createCommandLabel="New Todo"
       schema={todoSchema}
       onCommands={(props) => (
-        <FlexBetween sx={{ width: '100%' }}>
+        <>
           <Field.Checkbox name="completed" label="Completed ?" />
-          <FlexBox gap={1}>{props.content}</FlexBox>
-        </FlexBetween>
+          <FlexBox gap={1}>
+            <DetailPage.Commands {...props} />
+          </FlexBox>
+        </>
       )}
       {...props}
     >

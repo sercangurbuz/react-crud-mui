@@ -15,14 +15,9 @@ function EmbededDrawerDetailPage(props: DetailPageDrawerProps<UserSchema>) {
       defaultValues={UserDefaultValues}
       schema={userSchema}
       commandsPosition="bottom"
-      onCommands={({ props }) => (
-        <Button
-          fullWidth
-          startIcon={<Save />}
-          disabled={props.disabled.save}
-          onClick={props.onSaveClose}
-        >
-          {props.isNew ? 'Create User' : 'Update User'}
+      onCommands={({ onSaveClose }) => (
+        <Button fullWidth startIcon={<Save />} onClick={onSaveClose}>
+          {props.reason === 'create' ? 'Create User' : 'Update User'}
         </Button>
       )}
       {...props}

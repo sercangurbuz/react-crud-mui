@@ -13,6 +13,8 @@ export interface DetailPageCommandsFlag {
   close?: boolean;
   navigate?: boolean;
   create?: boolean;
+  prev?: boolean;
+  next?: boolean;
 }
 
 export interface DetailPageCommandsOptions {

@@ -360,8 +360,8 @@ export const OpenInDrawer: DetailPageModalStory = {
         <Button onClick={() => setVisible(true)}>Toggle DetailPage Drawer</Button>
         <DetailPage.Drawer
           {...args}
-          enableDelete={false}
           open={visible}
+          enableCreate={true}
           onClose={() => {
             setVisible(false);
           }}

@@ -9,8 +9,11 @@ import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import { FlexBox } from '../../flexbox';
 import { UseFormReturn } from '../../form/hooks/useForm';
 import useTranslation from '../../i18n/hooks/useTranslation';
+import MoreButton from '../../more-button';
+import { MoreButtonItem } from '../../more-button/MoreButton';
 import { CloseReason } from '../../page/Page';
 import { useDetailPageStates } from '../hooks';
+import { DetailPageCommandsFlag } from '../hooks/useDetailPageStates';
 import { SaveMode } from '../pages/DetailPageData';
 import { StepPane } from './DetailPageStepsHeader';
 
@@ -55,6 +58,7 @@ export type DetailPageCommandsProps = DetailPageStandartCommandsEvents &
   DetailPageStepCommandsEvents & {
     options: DetailPageCommandsOptions;
     mode: 'standard' | 'steps';
+    moreCommands?: Partial<Record<keyof DetailPageCommandsFlag, true>>;
   } & PropsWithChildren;
 
 function DetailPageCommands(props: DetailPageCommandsProps) {
@@ -71,6 +75,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     onNextClick,
     options,
     children: extraCommandsContent,
+    moreCommands,
   } = props;
 
   const {
@@ -140,7 +145,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   /* ---------------------------- Standart Commands --------------------------- */
 
   const renderSave = (saveMode: SaveMode) => {
-    if (!visible.save) {
+    if (!visible.save || moreCommands?.save) {
       return null;
     }
 
@@ -159,7 +164,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   };
 
   const renderCreate = () => {
-    if (!visible.create) {
+    if (!visible.create || moreCommands?.create) {
       return null;
     }
 
@@ -179,7 +184,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   };
 
   const renderDiscardChanges = () => {
-    if (!visible.discardchanges) {
+    if (!visible.discardchanges || moreCommands?.discardchanges) {
       return null;
     }
     return (
@@ -195,7 +200,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   };
 
   const renderDelete = () => {
-    if (!visible.delete) {
+    if (!visible.delete || moreCommands?.delete) {
       return null;
     }
 
@@ -214,7 +219,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   };
 
   const renderClose = () => {
-    if (!visible.close) {
+    if (!visible.close || moreCommands?.close) {
       return null;
     }
 
@@ -235,7 +240,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   /* ----------------------------- Steps commands ----------------------------- */
 
   const renderPrev = () => {
-    if (!showPrevButton) {
+    if (!showPrevButton || moreCommands?.prev) {
       return null;
     }
 
@@ -254,7 +259,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   };
 
   const renderNext = () => {
-    if (!showNextButton) {
+    if (!showNextButton || moreCommands?.next) {
       return null;
     }
     return (
@@ -263,7 +268,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         onClick={onNextClick}
         color="primary"
         loading={loading}
-        disabled={!isCurrentStepValid}
+        disabled={!isCurrentStepValid || loading}
         endIcon={<ArrowRight />}
         title={`${t('nextstep')}\n(${SHORTCUT_NEXT_STEP.toUpperCase()})`}
       >
@@ -276,7 +281,89 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
 
+  const renderMoreCommands = () => {
+    const items = Object.keys(moreCommands ?? {})
+      .map((key) => {
+        if (
+          moreCommands?.[key as keyof DetailPageCommandsFlag] &&
+          visible[key as keyof DetailPageCommandsFlag]
+        ) {
+          switch (key as keyof DetailPageCommandsFlag) {
+            case 'save':
+            case 'saveclose':
+            case 'savecreate':
+              return {
+                ...(saveCommandMenus[saveCommandMode] as unknown as LoadingButtonProps),
+                children: saveCommandLabel ?? saveCommandMenus[saveCommandMode].children,
+                key: saveCommandMenus[saveCommandMode].key,
+                icon: <Save />,
+                disabled: mode === 'steps' ? !isCurrentStepValid : disabled.save,
+              };
+            case 'create':
+              return {
+                key: 'create',
+                icon: <Add />,
+                disabled: disabled.create,
+                onClick: onCreate,
+                children: t('newitem'),
+              };
+            case 'copy':
+              break;
+            case 'delete':
+              return {
+                key: 'delete',
+                icon: <Delete />,
+                disabled: disabled.delete,
+                onClick: onDelete,
+                danger: true,
+                children: t('delete'),
+              };
+            case 'discardchanges':
+              return {
+                key: 'discardchanges',
+                icon: <Undo />,
+                disabled: disabled.discardchanges,
+                onClick: onDiscardChanges,
+                children: t('discardchanges'),
+              };
+            case 'close':
+              return {
+                key: 'close',
+                icon: <Close />,
+                disabled: disabled.close,
+                onClick: onClose,
+                children: t('cancel'),
+              };
+            case 'prev':
+              return {
+                key: 'prev',
+                icon: <ArrowLeft />,
+                disabled: disabled.close,
+                onClick: onPrevClick,
+                children: prevButtonTitle,
+              };
+            case 'next':
+              return {
+                key: 'next',
+                onClick: onNextClick,
+                disabled: !isCurrentStepValid || loading,
+                icon: <ArrowRight />,
+              };
+          }
+        }
+      })
+      .filter(Boolean) as MoreButtonItem[];
+
+    if (!items.length) {
+      return null;
+    }
+
+    return <MoreButton options={items} key="more-options" />;
+  };
+
   const renderCommands = () => {
+    const moreCommands = renderMoreCommands();
+
     if (mode === 'steps') {
       const prevContent = renderPrev();
       const nextContent = renderNext();
@@ -293,6 +380,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
             {closeContent}
             {visible.save && steps.length === activeStepIndex + 1 ? finishContent : null}
             {nextContent}
+            {moreCommands}
           </FlexBox>
         </>
       );
@@ -316,6 +404,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
       <>
         {extraCommandsContent}
         {content}
+        {moreCommands}
       </>
     );
 

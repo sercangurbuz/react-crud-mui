@@ -7,6 +7,7 @@ import DetailPageDefaultLayout from '../components/DetailPageDefaultLayout';
 import Prompt from '../components/Prompt';
 import useDetailPageRouteParams from '../hooks/useDetailPageRouteParams';
 import { UseFormPromptProps } from '../hooks/useFormPrompt';
+import { SegmentModel } from '../hooks/useMatchedSegment';
 import { UseSegmentParamsOptions } from '../hooks/useSegmentParams';
 import { NeedDataReason } from './DetailPageContent';
 import { DataResult } from './DetailPageData';
@@ -50,7 +51,7 @@ function DetailPageRoute<TModel extends FieldValues>({
     enableSegmentRouting,
     enableNestedSegments,
     fallbackSegmentIndex,
-    paths: tabs ?? steps,
+    paths: (tabs ?? steps) as SegmentModel[],
   });
 
   /* -------------------------------------------------------------------------- */
