@@ -379,13 +379,9 @@ function DetailPageContent<TModel extends FieldValues>({
         return;
       }
 
-      form.setValue(
-        currentKey as Path<TModel>,
-        currentForm.getValues() as PathValue<TModel, Path<TModel>>,
-        {
-          shouldValidate: true,
-        },
-      );
+      form.setValue(currentFieldName, currentForm.getValues() as PathValue<TModel, Path<TModel>>, {
+        shouldValidate: true,
+      });
     };
 
     const props: DetailPageCommandsProps = {
@@ -410,6 +406,11 @@ function DetailPageContent<TModel extends FieldValues>({
         updateParentForm();
         onSaveClose();
       },
+      onClose,
+      onDiscardChanges,
+      onCreate,
+      onCopy,
+      onDelete,
       options: {
         nextButtonTitle,
         prevButtonTitle,
@@ -420,6 +421,7 @@ function DetailPageContent<TModel extends FieldValues>({
         currentKey,
         currentForm,
         name: currentFieldName as string,
+        saveCommandMode: defaultSaveMode,
       },
     };
 
