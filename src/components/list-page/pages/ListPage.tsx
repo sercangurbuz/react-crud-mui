@@ -5,6 +5,7 @@ import merge from 'lodash.merge';
 
 import removeFalsy from '../../misc/removeFalsy';
 import { TabChangedPayload } from '../../page/components/DefaultTabs';
+import ListPageCommands from '../components/ListPageCommands';
 import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
@@ -122,5 +123,6 @@ function ListPage<TModel extends FieldValues, TFilter extends FieldValues = Fiel
 ListPage.Selection = ListPageSelection;
 ListPage.Modal = ListPageModal;
 ListPage.Route = ListPageRoute;
+ListPage.Commands = ListPageCommands;
 
 export default ListPage;

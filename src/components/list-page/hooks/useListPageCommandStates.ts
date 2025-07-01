@@ -1,8 +1,20 @@
 import { useMemo } from 'react';
 import { FieldValues, useFormState } from 'react-hook-form';
 
-import { ListPageCommandsOptions } from '../components/ListPageCommands';
 import useListPage from './useListPage';
+
+export interface ListPageCommandsFlag {
+  search?: boolean;
+  export?: boolean;
+  clear?: boolean;
+  create?: boolean;
+}
+
+export interface ListPageCommandsOptions {
+  visible: ListPageCommandsFlag;
+  disabled: ListPageCommandsFlag;
+  loading?: boolean;
+}
 
 /**
  * Returns buttons props depending on validation,loading etc

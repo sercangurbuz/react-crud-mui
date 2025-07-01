@@ -1,9 +1,9 @@
-import { PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren } from 'react';
 import { useFormState } from 'react-hook-form';
 
 import { Add, ArrowLeft, ArrowRight, Close, Delete, Save, Undo } from '@mui/icons-material';
 import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
-import { Box, Button } from '@mui/material';
+import { Box, Button, ButtonProps } from '@mui/material';
 
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import { FlexBox } from '../../flexbox';
@@ -19,8 +19,6 @@ import { StepPane } from './DetailPageStepsHeader';
 
 export type DetailPageStandartCommandsOptions = {
   saveCommandMode?: SaveMode;
-  createCommandLabel?: ReactNode;
-  saveCommandLabel?: ReactNode;
 };
 
 export type DetailPageStepCommandsOptions = {
@@ -59,6 +57,7 @@ export type DetailPageCommandsProps = DetailPageStandartCommandsEvents &
     options: DetailPageCommandsOptions;
     mode: 'standard' | 'steps';
     moreCommands?: Partial<Record<keyof DetailPageCommandsFlag, true>>;
+    commandsProps?: Partial<Record<keyof DetailPageCommandsFlag, ButtonProps>>;
   } & PropsWithChildren;
 
 function DetailPageCommands(props: DetailPageCommandsProps) {
@@ -76,12 +75,11 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     options,
     children: extraCommandsContent,
     moreCommands,
+    commandsProps,
   } = props;
 
   const {
     currentForm,
-    createCommandLabel,
-    saveCommandLabel,
     showPrevButton,
     showNextButton,
     prevButtonTitle,
@@ -157,9 +155,8 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         startIcon={<Save />}
         disabled={mode === 'steps' ? !isCurrentStepValid : disabled.save}
         loading={loading}
-      >
-        {saveCommandLabel ?? saveCommandMenus[saveMode].children}
-      </LoadingButton>
+        {...commandsProps?.save}
+      />
     );
   };
 
@@ -173,13 +170,13 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         key="create"
         color="primary"
         startIcon={<Add />}
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
-        title={`${createCommandLabel ?? t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
+        title={`${t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
         disabled={disabled.create}
         onClick={onCreate}
-      >
-        {createCommandLabel ?? t('newitem')}
-      </LoadingButton>
+        // eslint-disable-next-line react/no-children-prop
+        children={t('newitem')}
+        {...commandsProps?.create}
+      />
     );
   };
 
@@ -193,9 +190,10 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         disabled={disabled.discardchanges}
         onClick={onDiscardChanges}
         startIcon={<Undo />}
-      >
-        {t('discardchanges')}
-      </Button>
+        // eslint-disable-next-line react/no-children-prop
+        children={t('discardchanges')}
+        {...commandsProps?.discardchanges}
+      />
     );
   };
 
@@ -212,9 +210,10 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         startIcon={<Delete />}
         title={`${t('deletetitle')}\n(${SHORTCUT_DELETE.toUpperCase()})`}
         onClick={onDelete}
-      >
-        {t('delete')}
-      </Button>
+        // eslint-disable-next-line react/no-children-prop
+        children={t('delete')}
+        {...commandsProps?.delete}
+      />
     );
   };
 
@@ -231,9 +230,10 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         disabled={disabled.close}
         startIcon={<Close />}
         onClick={() => onClose?.('close-button')}
-      >
-        {t('cancel')}
-      </Button>
+        // eslint-disable-next-line react/no-children-prop
+        children={t('cancel')}
+        {...commandsProps?.close}
+      />
     );
   };
 
@@ -252,9 +252,10 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         startIcon={<ArrowLeft />}
         color="secondary"
         title={`${t('prevstep')}\n(${SHORTCUT_PREV_STEP.toUpperCase()})`}
-      >
-        {prevButtonTitle}
-      </Button>
+        // eslint-disable-next-line react/no-children-prop
+        children={prevButtonTitle}
+        {...commandsProps?.prev}
+      />
     );
   };
 
@@ -271,9 +272,10 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         disabled={!isCurrentStepValid || loading}
         endIcon={<ArrowRight />}
         title={`${t('nextstep')}\n(${SHORTCUT_NEXT_STEP.toUpperCase()})`}
-      >
-        {nextButtonTitle}
-      </LoadingButton>
+        // eslint-disable-next-line react/no-children-prop
+        children={nextButtonTitle}
+        {...commandsProps?.next}
+      />
     );
   };
 
@@ -294,7 +296,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
             case 'savecreate':
               return {
                 ...(saveCommandMenus[saveCommandMode] as unknown as LoadingButtonProps),
-                children: saveCommandLabel ?? saveCommandMenus[saveCommandMode].children,
+                children: saveCommandMenus[saveCommandMode].children,
                 key: saveCommandMenus[saveCommandMode].key,
                 icon: <Save />,
                 disabled: mode === 'steps' ? !isCurrentStepValid : disabled.save,
@@ -393,11 +395,11 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
     const closeContent = renderClose();
 
     const content = [
-      saveContent,
-      createContent,
-      discardChangesContent,
-      deleteContent,
       closeContent,
+      discardChangesContent,
+      createContent,
+      deleteContent,
+      saveContent,
     ];
 
     const layoutContent = (

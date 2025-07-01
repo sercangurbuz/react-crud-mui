@@ -19,7 +19,7 @@ import { RowSelectionState } from '@tanstack/react-table';
 import { z } from 'zod';
 
 import ActionCommands from '../../components/action-commands/ActionCommands';
-import { FlexBetween, FlexBox } from '../../components/flexbox';
+import { FlexBetween } from '../../components/flexbox';
 import Email from '../../components/icons/Email';
 import ListPage from '../../components/list-page/pages/ListPage';
 import Table from '../../components/table/Table';
@@ -42,7 +42,9 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
     helperText: 'Type in user settings',
     icon: <Search sx={{ color: 'primary.main' }} />,
     filterContent: <FilterContent />,
-    createCommandLabel: 'New User',
+    commandsProps: {
+      create: { children: 'New User' },
+    },
     columns: [
       {
         accessorKey: 'name',
@@ -359,7 +361,9 @@ export const WithDetailPage: ListPageStory = {
     enableCreateItem: true,
     enableActionCommands: true,
     onDetailPage: (props) => <EmbededDetailPage {...props} />,
-    createCommandLabel: 'New User',
+    commandsProps: {
+      create: { children: 'New User' },
+    },
     onActionClick(reason) {
       alert(`Fallback event for reason ${reason}`);
     },
@@ -393,7 +397,9 @@ export const WithDetailPagesByReason: ListPageStory = {
     onActionClick(reason) {
       alert(`Fallback event for reason ${reason}`);
     },
-    createCommandLabel: 'New User',
+    commandsProps: {
+      create: { children: 'New User' },
+    },
   },
 };
 
@@ -411,7 +417,9 @@ export const WithDetailPageDrawer: ListPageStory = {
     enableCreateItem: true,
     enableActionCommands: true,
     onDetailPage: (props) => <EmbededDrawerDetailPage {...props} />,
-    createCommandLabel: 'New User',
+    commandsProps: {
+      create: { children: 'New User' },
+    },
   },
 };
 
@@ -512,13 +520,16 @@ export const WithExtraCommands: ListPageStory = {
 
 export const WithOnCommands: ListPageStory = {
   args: {
-    onCommands({ content }) {
+    enableSearch: true,
+    enableCreateItem: true,
+    enableClear: true,
+    onCommands(props) {
       return (
-        <FlexBox gap={1}>
+        <>
           <Button color="warning">Extra Command 1</Button>
           <Button color="success">Extra Command 2</Button>
-          {content}
-        </FlexBox>
+          <ListPage.Commands {...props} />
+        </>
       );
     },
   },
@@ -576,7 +587,9 @@ export const WithRoutedDetailPage: ListPageStory = {
     onDetailPage: {
       fetch: (props) => <EmbededDetailPage {...props} />,
     },
-    createCommandLabel: 'New User',
+    commandsProps: {
+      create: { children: 'New User' },
+    },
     enableActionCommands: true,
   },
   render: (args) => {

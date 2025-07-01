@@ -67,9 +67,9 @@ function ListPageSelection<TModel extends FieldValues, TFilter extends FieldValu
           </>
         )}
         onClear={() => setRowSelection({})}
-        onCommands={({ content }) => (
+        onCommands={(props) => (
           <>
-            {content}
+            <ListPage.Commands {...props} />
             <Badge badgeContent={selCount} color="primary">
               <Button
                 startIcon={<DoneAll />}

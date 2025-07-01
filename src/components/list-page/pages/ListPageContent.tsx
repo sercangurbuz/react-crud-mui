@@ -56,7 +56,15 @@ export interface ListPageContentProps<TModel extends FieldValues>
       PageProps,
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange' | 'onCopy'
     >,
-    Pick<ListPageCommandsProps, 'onCommands' | 'onExtraCommands' | 'createCommandLabel'> {
+    Pick<ListPageCommandsProps, 'commandsProps'> {
+  /**
+   * Custom commands node
+   */
+  onCommands?: (props: ListPageCommandsProps) => ReactNode;
+  /**
+   * Extra commands positioned left side in commands section
+   */
+  onExtraCommands?: () => ReactNode;
   /**
    * Alerts
    */
@@ -197,7 +205,7 @@ function ListPageContent<TModel extends FieldValues>({
   cardProps,
   children,
   columns,
-  createCommandLabel,
+  commandsProps,
   data,
   dataCount,
   disabled,
@@ -387,17 +395,21 @@ function ListPageContent<TModel extends FieldValues>({
    * Render list buttons commands
    */
   const renderCommands = () => {
-    const commandProps: ListPageCommandsProps = {
+    const props: ListPageCommandsProps = {
       onExcelExport,
       onSearch,
       onCreateItem: () => triggerAction('create'),
       onClear,
-      onCommands,
-      onExtraCommands,
-      createCommandLabel,
+      commandsProps,
     };
 
-    return <ListPageCommands {...commandProps} />;
+    if (onCommands) {
+      return onCommands(props);
+    }
+
+    const extraCommandContent = onExtraCommands?.();
+
+    return <ListPageCommands {...props}>{extraCommandContent}</ListPageCommands>;
   };
 
   /**
@@ -448,7 +460,7 @@ function ListPageContent<TModel extends FieldValues>({
    */
   const renderTable = () => {
     const props: Partial<TableProps<TModel>> = {
-      newRowButtonText: createCommandLabel,
+      newRowButtonText: commandsProps?.create?.children ?? t('newitem'),
       onNewRow: () => triggerAction('create'),
       ...tableProps,
       columns: enableActionCommands
@@ -539,7 +551,7 @@ function ListPageContent<TModel extends FieldValues>({
     const title = {
       fetch: t('edit'),
       copy: t('tags.copy'),
-      create: createCommandLabel ?? t('newitem'),
+      create: commandsProps?.create?.children ?? t('newitem'),
       view: t('browse'),
     };
     const props: DetailPageModalProps<TModel> | DetailPageDrawerProps<TModel> = {
@@ -547,7 +559,11 @@ function ListPageContent<TModel extends FieldValues>({
       enableCopy: true,
       enableDiscardChanges: false,
       header: isDisabled ? t('browse') : title[reason],
-      createCommandLabel,
+      commandsProps: {
+        create: {
+          children: commandsProps?.create?.children ?? t('newitem'),
+        },
+      },
       onAfterSave: (result, { reason, mode }) => {
         switch (mode) {
           case 'save':

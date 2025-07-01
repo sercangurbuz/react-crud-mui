@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { PropsWithChildren } from 'react';
 
 import Print from '@mui/icons-material/Print';
 import Search from '@mui/icons-material/Search';
-import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Button, { ButtonProps } from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 
@@ -11,68 +11,23 @@ import useTranslation from '../../i18n/hooks/useTranslation';
 import Add from '../../icons/Add';
 import Clear from '../../icons/Clear';
 import MoreButton, { MoreButtonItem } from '../../more-button/MoreButton';
-import useListPageCommandStates from '../hooks/useListPageCommandStates';
+import useListPageCommandStates, { ListPageCommandsFlag } from '../hooks/useListPageCommandStates';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface ListPageCommandsFlag {
-  search?: boolean;
-  export?: boolean;
-  clear?: boolean;
-  create?: boolean;
-}
-
-export interface ListPageCommandsExtraProps {
-  search?: LoadingButtonProps;
-  clear?: ButtonProps;
-  create?: ButtonProps;
-}
-
-export interface ListPageCommandsOptions {
-  visible: ListPageCommandsFlag;
-  disabled: ListPageCommandsFlag;
-  loading?: boolean;
-}
-
-export type ListPageCommandsStates = {
+export type ListPageCommandsEvents = {
   onSearch: () => void;
   onCreateItem?: () => void;
   onClear?: () => void;
   onExcelExport?: () => void;
-  createCommandLabel?: ReactNode;
 };
 
-export type ListPageCommandsLayoutContents = {
-  search: ReactNode;
-  clear: ReactNode;
-  create: ReactNode;
-  export: ReactNode;
-  content: ReactNode;
-  renderMoreCommand: (items: MoreButtonItem[]) => ReactNode;
-  extra?: ReactNode;
-};
-
-export type ListPageCommmandsSettings = {
-  content: ReactNode;
-  layout: ListPageCommandsLayoutContents;
-  props: ListPageCommandsStates & ListPageCommandsOptions;
-};
-
-export interface ListPageCommandsProps extends ListPageCommandsStates {
-  onCommands?: (props: ListPageCommmandsSettings) => ReactNode;
-  onExtraCommands?: () => ReactNode;
-  commandsExtraProps?: ListPageCommandsExtraProps;
-}
-
-export enum ListPageCommandNames {
-  SEARCH = 'search',
-  CLEAR = 'clear',
-  CREATE = 'create',
-  EXPORT = 'export',
-  SELECT = 'select',
-}
+export type ListPageCommandsProps = ListPageCommandsEvents & {
+  moreCommands?: Partial<Record<keyof ListPageCommandsFlag, true>>;
+  commandsProps?: Partial<Record<keyof ListPageCommandsFlag, ButtonProps>>;
+} & PropsWithChildren;
 
 /* -------------------------------------------------------------------------- */
 /*                          ListPageButton Component                          */
@@ -84,10 +39,9 @@ function ListPageCommands(props: ListPageCommandsProps) {
     onCreateItem,
     onClear,
     onExcelExport,
-    onCommands,
-    onExtraCommands,
-    createCommandLabel,
-    commandsExtraProps = {},
+    children: extraCommandsContent,
+    moreCommands,
+    commandsProps,
   } = props;
 
   /* -------------------------------------------------------------------------- */
@@ -96,6 +50,7 @@ function ListPageCommands(props: ListPageCommandsProps) {
 
   const { t } = useTranslation();
   const { visible, disabled, loading } = useListPageCommandStates();
+
   const {
     hotkeys: {
       search: SHORTCUT_SEARCH,
@@ -110,7 +65,7 @@ function ListPageCommands(props: ListPageCommandsProps) {
   /* -------------------------------------------------------------------------- */
 
   const renderSearch = () => {
-    if (!visible.search) {
+    if (!visible.search || moreCommands?.search) {
       return null;
     }
 
@@ -125,13 +80,13 @@ function ListPageCommands(props: ListPageCommandsProps) {
         loading={loading}
         // eslint-disable-next-line react/no-children-prop
         children={t('listpage.listbuttons.search')}
-        {...commandsExtraProps['search']}
+        {...commandsProps?.search}
       />
     );
   };
 
   const renderClear = () => {
-    if (!visible.clear) {
+    if (!visible.clear || moreCommands?.clear) {
       return null;
     }
     return (
@@ -145,13 +100,13 @@ function ListPageCommands(props: ListPageCommandsProps) {
         disabled={disabled.clear}
         // eslint-disable-next-line react/no-children-prop
         children={t('listpage.listbuttons.clear')}
-        {...commandsExtraProps['clear']}
+        {...commandsProps?.clear}
       />
     );
   };
 
   const renderExport = () => {
-    if (!visible.export) {
+    if (!visible.export || moreCommands?.export) {
       return null;
     }
     return (
@@ -164,80 +119,100 @@ function ListPageCommands(props: ListPageCommandsProps) {
         disabled={disabled.export}
         // eslint-disable-next-line react/no-children-prop
         children={<Print />}
-        {...commandsExtraProps['clear']}
+        {...commandsProps?.export}
       />
     );
   };
 
   const renderCreate = () => {
-    if (!visible.create) {
+    if (!visible.create || moreCommands?.create) {
       return null;
     }
     return (
       <Button
         key="create"
         startIcon={<Add />}
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
-        title={`${createCommandLabel ?? t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
+        title={`${t('newitemtitle')}\n(${SHORTCUT_NEWITEM.toUpperCase()})`}
         onClick={() => onCreateItem?.()}
         disabled={disabled.create}
         // eslint-disable-next-line react/no-children-prop
-        children={createCommandLabel ?? t('listpage.listbuttons.newitem')}
-        {...commandsExtraProps['create']}
+        children={t('listpage.listbuttons.newitem')}
+        {...commandsProps?.create}
       />
     );
   };
 
-  const renderMoreCommand = (options: MoreButtonItem[]) => {
-    if (!options.length) {
+  /* -------------------------------------------------------------------------- */
+  /*                                   Render                                   */
+  /* -------------------------------------------------------------------------- */
+
+  const renderMoreCommands = () => {
+    const items = Object.keys(moreCommands ?? {})
+      .map((key) => {
+        if (
+          moreCommands?.[key as keyof ListPageCommandsFlag] &&
+          visible[key as keyof ListPageCommandsFlag]
+        ) {
+          switch (key as keyof ListPageCommandsFlag) {
+            case 'search':
+              return {
+                key: 'search',
+                icon: <Search />,
+                disabled: disabled.search,
+                onClick: onSearch,
+                children: t('listpage.listbuttons.search'),
+              };
+            case 'create':
+              return {
+                key: 'create',
+                icon: <Add />,
+                disabled: disabled.create,
+                onClick: onCreateItem,
+                children: t('listpage.listbuttons.newitem'),
+              };
+            case 'clear':
+              return {
+                key: 'clear',
+                icon: <Clear />,
+                disabled: disabled.clear,
+                onClick: onClear,
+                children: t('listpage.listbuttons.clear'),
+              };
+            case 'export':
+              return {
+                key: 'export',
+                icon: <Print />,
+                disabled: disabled.export,
+                onClick: onExcelExport,
+                children: t('listpage.settings.exportExcel'),
+              };
+          }
+        }
+      })
+      .filter(Boolean) as MoreButtonItem[];
+
+    if (!items.length) {
       return null;
     }
 
-    return <MoreButton options={options} key="more-options" />;
+    return <MoreButton options={items} key="more-options" />;
   };
 
   const renderCommands = () => {
+    const moreCommands = renderMoreCommands();
     const searchContent = renderSearch();
     const exportContent = renderExport();
     const clearContent = renderClear();
     const createContent = renderCreate();
-    const content = [exportContent, searchContent, clearContent, createContent];
-    const extra = onExtraCommands?.();
+    const content = [exportContent, clearContent, createContent, searchContent];
 
     const layoutContent = (
       <>
-        {extra}
+        {extraCommandsContent}
         {content}
+        {moreCommands}
       </>
     );
-
-    const layoutParams: ListPageCommandsLayoutContents = {
-      search: searchContent,
-      clear: clearContent,
-      create: createContent,
-      export: exportContent,
-      content,
-      renderMoreCommand,
-      extra,
-    };
-
-    const props: ListPageCommandsStates & ListPageCommandsOptions = {
-      onSearch,
-      onCreateItem,
-      onClear,
-      onExcelExport,
-      visible,
-      disabled,
-      loading,
-    };
-
-    if (onCommands) {
-      return onCommands({
-        content: layoutContent,
-        layout: layoutParams,
-        props,
-      });
-    }
 
     return layoutContent;
   };

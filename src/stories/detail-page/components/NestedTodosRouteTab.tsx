@@ -92,7 +92,9 @@ function EmbeddedPage(props: DetailPageModalProps<ToDo>) {
         userId: null,
         completed: false,
       }}
-      createCommandLabel="New Todo"
+      commandsProps={{
+        create: { children: 'New Todo' },
+      }}
       schema={todoSchema}
       onCommands={(props) => (
         <>

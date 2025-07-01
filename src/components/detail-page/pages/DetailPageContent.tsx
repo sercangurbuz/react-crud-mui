@@ -16,7 +16,6 @@ import AutoSave, { AutoSaveOptions } from '../components/AutoSave';
 import DetailPageCommands, {
   DetailPageCommandsOptions,
   DetailPageCommandsProps,
-  DetailPageStandartCommandsOptions,
 } from '../components/DetailPageCommands';
 import DetailPageDefaultLayout, {
   DetailPageLayoutProps,
@@ -52,7 +51,7 @@ export interface DetailPageContentProps<TModel extends FieldValues>
       PageProps,
       'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'tabExtraContent'
     >,
-    Pick<DetailPageStandartCommandsOptions, 'createCommandLabel' | 'saveCommandLabel'> {
+    Pick<DetailPageCommandsProps, 'commandsProps'> {
   /**
    * Custom commands node
    */
@@ -187,8 +186,8 @@ function DetailPageContent<TModel extends FieldValues>({
   autoSave,
   children,
   commandsPosition,
+  commandsProps,
   customSteps: CustomSteps,
-  createCommandLabel,
   data,
   defaultSaveMode = 'save',
   disabled,
@@ -218,7 +217,6 @@ function DetailPageContent<TModel extends FieldValues>({
   onSaveCreate,
   onWrapperLayout,
   reason = 'create',
-  saveCommandLabel,
   showHeader = true,
   steps,
   stepsProps,
@@ -343,9 +341,8 @@ function DetailPageContent<TModel extends FieldValues>({
       onClose,
       options: {
         saveCommandMode: defaultSaveMode,
-        saveCommandLabel,
-        createCommandLabel,
       } as DetailPageCommandsOptions,
+      commandsProps,
     };
 
     if (onCommands) {
@@ -386,6 +383,7 @@ function DetailPageContent<TModel extends FieldValues>({
 
     const props: DetailPageCommandsProps = {
       mode: 'steps',
+      commandsProps,
       onNextClick: () => {
         updateParentForm();
         onSegmentChanged?.(activeSegmentIndex + 1);

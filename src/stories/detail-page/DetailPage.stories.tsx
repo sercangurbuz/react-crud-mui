@@ -62,7 +62,9 @@ const meta: Meta<typeof DetailPage<UserSchema>> = {
     enableDelete: true,
     onSave: handleSaveUser,
     onDelete: handleDeleteUser,
-    createCommandLabel: 'New User',
+    commandsProps: {
+      create: { children: 'New User' },
+    },
     defaultValues: UserDefaultValues,
     schema: userSchema,
   },
@@ -137,8 +139,11 @@ export const CustomCommandsLabel: DetailPageStory = {
   ...WithAsyncData,
   args: {
     ...WithAsyncData.args,
-    createCommandLabel: 'Create New User',
-    saveCommandLabel: 'Save User',
+    commandsProps: {
+      create: { children: 'Create New User' },
+      save: { children: 'Save User' },
+      delete: { children: 'Delete User' },
+    },
   },
 };
 
