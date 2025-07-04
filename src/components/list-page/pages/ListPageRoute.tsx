@@ -55,7 +55,6 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   });
 
   const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>({
-    defaultValues,
     matcher: typeof enableQueryStringFilter === 'object' ? enableQueryStringFilter : undefined,
   });
   const [defaultFilterProps] = useState(() => {

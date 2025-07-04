@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { FieldValues, get } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 
 import qs from 'qs';
@@ -17,11 +17,9 @@ export type MatchFields<TFilter extends FieldValues> = {
 };
 
 type UseURLSearchFilterOptions<TFilter extends FieldValues> = {
-  defaultValues?: Record<string, unknown>;
   matcher?: MatchFields<TFilter>;
 };
 function useURLSearchFilter<TFilter extends FieldValues>({
-  defaultValues,
   matcher,
 }: UseURLSearchFilterOptions<TFilter>) {
   /* -------------------------------------------------------------------------- */
@@ -113,10 +111,6 @@ function useURLSearchFilter<TFilter extends FieldValues>({
           return;
         }
         if (prefix === 'size' && value === DEFAULT_PAGESIZE) {
-          return;
-        }
-
-        if (value === '' || get(defaultValues, prefix) === value) {
           return;
         }
 
