@@ -32,7 +32,6 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   fallbackSegmentIndex,
   onNeedData,
   tabs,
-  defaultValues,
   onActionClick,
   ...listPageProps
 }: ListPageRouteProps<TModel, TFilter>) {
@@ -154,7 +153,6 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
       {...listPageProps}
       tabs={tabs}
       onNeedData={handleNeedData}
-      defaultValues={defaultValues}
       {...defaultFilterProps}
     />
   );
