@@ -1,8 +1,8 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useMemo, useState } from 'react';
 
 import { InputBaseProps } from '@mui/material/InputBase';
+import debounce from 'lodash.debounce';
 
-import { useDebounce, useUpdateEffect } from '../hooks';
 import useTranslation from '../i18n/hooks/useTranslation';
 import SearchIcon from '../icons/SearchIcon';
 import { StyledInputBase } from './styles';
@@ -20,11 +20,8 @@ export default forwardRef<HTMLInputElement, SearchInputProps>(
     const ADORNMENT = <SearchIcon sx={{ mr: 1, fontSize: 18, color: 'text.secondary' }} />;
     const { t } = useTranslation();
 
-    const debouncedKeyword = useDebounce(keyword, 400);
-
-    useUpdateEffect(() => {
-      onSearch(debouncedKeyword);
-    }, [debouncedKeyword, onSearch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const lazyOnChange = useMemo(() => debounce(onSearch, 400), []);
 
     return (
       <StyledInputBase
@@ -37,6 +34,7 @@ export default forwardRef<HTMLInputElement, SearchInputProps>(
         onChange={(e) => {
           setKeyword(e.target.value);
           onChange?.(e);
+          lazyOnChange(e.target.value);
         }}
       />
     );

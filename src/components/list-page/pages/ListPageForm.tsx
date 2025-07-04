@@ -8,8 +8,16 @@ import { DeepNullable } from '../../utils';
 import ListPageFilter, { ListPageFilterProps } from './ListPageFilter';
 
 /* -------------------------------------------------------------------------- */
-/*                                    TYpes                                   */
+/*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
+
+export type DefaultDataFn<TModel extends FieldValues> = (
+  data?: TModel,
+) => Promise<DeepNullable<TModel>>;
+
+export type DefaultData<TModel extends FieldValues = FieldValues> =
+  | DeepNullable<TModel>
+  | DefaultDataFn<TModel>;
 
 export interface ListPageFormProps<
   TModel extends FieldValues,
@@ -24,7 +32,7 @@ export interface ListPageFormProps<
   /**
    * Default form fields values
    */
-  defaultValues?: DeepNullable<TFilter>;
+  defaultValues?: DefaultData<TFilter>;
   /**
    * Optional validation options
    */
@@ -45,7 +53,7 @@ function ListPageForm<TModel extends FieldValues, TFilter extends FieldValues = 
   /*                                 Form hooks                                 */
   /* -------------------------------------------------------------------------- */
 
-  const form = useForm<TFilter>({    
+  const form = useForm<TFilter>({
     schema,
     defaultValues: defaultValues as DefaultValues<TFilter>,
     resetOptions: {

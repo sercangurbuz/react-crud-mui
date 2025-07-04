@@ -107,7 +107,7 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
 }: ListPageFilterProps<TModel, TFilter>) {
   const {
     reset,
-    formState: { defaultValues },
+    formState: { defaultValues, isLoading: isDefaultValuesLoading },
     getFormModel,
   } = form;
 
@@ -193,10 +193,10 @@ function ListPageFilter<TModel extends FieldValues, TFilter extends FieldValues 
    * Wait RHF to init to call search on load
    */
   useFormInitEffect(() => {
-    if (searchOnLoad) {
+    if (searchOnLoad && !isDefaultValuesLoading) {
       void handleSearch({ reason: 'init' });
     }
-  });
+  }, [isDefaultValuesLoading]);
 
   /* --------------------------------- Render --------------------------------- */
 

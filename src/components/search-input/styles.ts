@@ -8,7 +8,6 @@ export const StyledInputBase = styled(InputBase, {
   height: 45,
   fontSize: 14,
   width: '100%',
-  maxWidth: 350,
   borderRadius: 8,
   paddingInline: 16,
   color: theme.palette.text.primary,

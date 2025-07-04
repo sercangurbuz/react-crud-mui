@@ -4,6 +4,7 @@ import { FieldValues, FormProvider as RHFProvider } from 'react-hook-form';
 import { UseFormReturn, ValidationOptions } from '../hooks/useForm';
 import FormCollectionProvider from './FormCollectionProvider';
 import FormHelperProvider from './FormHelperProvider';
+import FormStatesProvider from './FormStatesProvider';
 import ValidationOptionsProvider from './ValidationOptionsProvider';
 
 /* -------------------------------------------------------------------------- */
@@ -33,7 +34,9 @@ function FormProvider<TFieldValues extends FieldValues>({
     <RHFProvider {...form}>
       <ValidationOptionsProvider {...validationOptions}>
         <FormCollectionProvider>
-          <FormHelperProvider>{children}</FormHelperProvider>
+          <FormStatesProvider>
+            <FormHelperProvider>{children}</FormHelperProvider>
+          </FormStatesProvider>
         </FormCollectionProvider>
       </ValidationOptionsProvider>
     </RHFProvider>

@@ -44,8 +44,8 @@ function DefaultLayout({
       {pageHeader}
       {progressContent}
       {alertsContent}
-      {content}
       {tabsHeaderContent}
+      {content}
       {tabsContent}
       {panelsContent}
       {moreContent}

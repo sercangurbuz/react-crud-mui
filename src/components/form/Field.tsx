@@ -31,6 +31,7 @@ import FormRadioGroup from './controls/FormRadioGroup';
 import FormSearchInput from './controls/FormSearchInput';
 import FormSelect from './controls/FormSelect';
 import FormSwitch from './controls/FormSwitch';
+import { useFormStatesContext } from './hooks';
 import useFieldWithContext from './hooks/useFieldWithContext';
 import useRegisterField from './hooks/useRegisterField';
 import useValidationOptionsContext from './hooks/useValidationOptionsContext';
@@ -89,6 +90,7 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
   const { fields, callOutVisibility } = useValidationOptionsContext();
   const { setValue, trigger } = useFormContext<TFieldValues>();
   const { getName } = useFieldWithContext();
+  const { setTouched } = useFormStatesContext();
 
   const fieldName = useMemo(() => {
     return getName(name) as Path<TFieldValues>;
@@ -145,14 +147,22 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
     validationMode === 'onBlur'
       ? {
           ...field,
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-            setValue(fieldName, e.target.value as PathValue<TFieldValues, Path<TFieldValues>>),
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+            setValue(fieldName, e.target.value as PathValue<TFieldValues, Path<TFieldValues>>);
+            setTouched(true);
+          },
           onBlur: () => {
             field.onBlur();
             void trigger();
           },
         }
-      : field;
+      : {
+          ...field,
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+            field.onChange(e);
+            setTouched(true);
+          },
+        };
   const controlNode = renderControl?.({ ...fieldProps, ...disabledProp }, fieldStates);
 
   /* -------------------------------------------------------------------------- */

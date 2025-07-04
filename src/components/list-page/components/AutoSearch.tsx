@@ -3,6 +3,8 @@ import { useFormState, useWatch } from 'react-hook-form';
 
 import debounce from 'lodash.debounce';
 
+import { useFormStatesContext } from '../../form/hooks';
+
 interface AutoSearchProps {
   onValuesChange: () => void;
   delay?: number;
@@ -11,17 +13,16 @@ interface AutoSearchProps {
 function AutoSearch({ onValuesChange, delay = 500 }: AutoSearchProps) {
   const values = useWatch();
   const { isDirty } = useFormState();
-  const isTouchedOrDirtyRef = useRef<boolean>(false);
+  const { isTouched } = useFormStatesContext();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const lazyOnChange = useMemo(() => debounce(onValuesChange, delay), []);
 
   useEffect(() => {
-    if (isDirty || isTouchedOrDirtyRef.current) {
+    if (isDirty && isTouched) {
       lazyOnChange();
-      isTouchedOrDirtyRef.current = true;
     }
-  }, [values, isDirty, lazyOnChange]);
+  }, [values, isDirty, lazyOnChange, isTouched]);
   return null;
 }
 

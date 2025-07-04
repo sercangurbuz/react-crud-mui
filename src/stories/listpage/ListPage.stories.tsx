@@ -100,7 +100,7 @@ type ListPageRouteStory = StoryObj<typeof ListPage.Route<UserSchema>>;
 
 export const Simple: ListPageStory = {};
 
-export const InitialLoad: ListPageStory = {
+export const InitialLoadDisabled: ListPageStory = {
   args: {
     searchOnLoad: false,
   },
@@ -122,6 +122,28 @@ export const WithDefaultValues: StoryObj<
         pageSize: 3,
       },
     },
+  },
+};
+
+export const WithFunctionDefaultValues: StoryObj<
+  typeof ListPage<{ username: string }, { username: string }>
+> = {
+  render(args) {
+    return (
+      <ListPage
+        {...args}
+        defaultValues={() => {
+          return new Promise<{ username: string }>((resolve) => {
+            setTimeout(() => {
+              resolve({ username: 'B' });
+            }, 2000);
+          });
+        }}
+        onNeedData={(filter) => {
+          console.log('onNeedData', filter);
+        }}
+      />
+    );
   },
 };
 
