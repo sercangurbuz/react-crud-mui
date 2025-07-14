@@ -14,6 +14,8 @@ import Page, { PageProps } from '../../page/Page';
 import { ServerError } from '../../utils';
 import AutoSave, { AutoSaveOptions } from '../components/AutoSave';
 import DetailPageCommands, {
+  CommandsProps,
+  CommandsPropsFn,
   DetailPageCommandsOptions,
   DetailPageCommandsProps,
 } from '../components/DetailPageCommands';
@@ -48,10 +50,10 @@ export type DetailPageWrapperLayoutProps = {
 
 export interface DetailPageContentProps<TModel extends FieldValues>
   extends Omit<
-      PageProps,
-      'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'tabExtraContent'
-    >,
-    Pick<DetailPageCommandsProps, 'commandsProps'> {
+    PageProps,
+    'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'tabExtraContent'
+  > {
+  commandsProps?: CommandsProps | CommandsPropsFn;
   /**
    * Custom commands node
    */
@@ -342,7 +344,7 @@ function DetailPageContent<TModel extends FieldValues>({
       options: {
         saveCommandMode: defaultSaveMode,
       } as DetailPageCommandsOptions,
-      commandsProps,
+      commandsProps: typeof commandsProps === 'function' ? commandsProps(reason) : commandsProps,
     };
 
     if (onCommands) {
@@ -383,7 +385,7 @@ function DetailPageContent<TModel extends FieldValues>({
 
     const props: DetailPageCommandsProps = {
       mode: 'steps',
-      commandsProps,
+      commandsProps: typeof commandsProps === 'function' ? commandsProps(reason) : commandsProps,
       onNextClick: () => {
         updateParentForm();
         onSegmentChanged?.(activeSegmentIndex + 1);

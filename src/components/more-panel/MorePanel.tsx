@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles';
 
 import { FlexBetween } from '../flexbox';
 import useTranslation from '../i18n/hooks/useTranslation';
-import { Tiny } from '../typography';
+import { Small } from '../typography';
 
 export interface MorePanelProps extends StackProps {
   initialVisibility?: boolean;
@@ -19,7 +19,7 @@ export interface MorePanelProps extends StackProps {
 }
 
 const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
-  padding: 2,
+  padding: 3,
   paddingRight: 10,
   textAlign: 'left',
   borderRadius: 30,
@@ -52,17 +52,17 @@ function MorePanel({
           >
             {showMore ? (
               <>
-                <ExpandLessIcon sx={{ color: 'text.secondary', fontSize: '1.3em' }} />
-                <Tiny color="text.secondary" fontWeight={600}>
+                <ExpandLessIcon sx={{ color: 'text.secondary', fontSize: '1.5em' }} />
+                <Small color="text.secondary" fontWeight={600}>
                   {lessText ?? t('show_less')}
-                </Tiny>
+                </Small>
               </>
             ) : (
               <>
-                <ExpandMoreIcon sx={{ color: 'text.secondary', fontSize: '1.3em' }} />
-                <Tiny color="text.secondary" fontWeight={600}>
+                <ExpandMoreIcon sx={{ color: 'text.secondary', fontSize: '1.5em' }} />
+                <Small color="text.secondary" fontWeight={600}>
                   {moreText ?? t('show_more')}
-                </Tiny>
+                </Small>
               </>
             )}
           </Stack>

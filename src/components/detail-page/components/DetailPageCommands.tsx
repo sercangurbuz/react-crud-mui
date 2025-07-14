@@ -14,6 +14,7 @@ import { MoreButtonItem } from '../../more-button/MoreButton';
 import { CloseReason } from '../../page/Page';
 import { useDetailPageStates } from '../hooks';
 import { DetailPageCommandsFlag } from '../hooks/useDetailPageStates';
+import { NeedDataReason } from '../pages/DetailPageContent';
 import { SaveMode } from '../pages/DetailPageData';
 import { StepPane } from './DetailPageStepsHeader';
 
@@ -36,6 +37,9 @@ export type DetailPageStepCommandsOptions = {
 export type DetailPageCommandsOptions = DetailPageStandartCommandsOptions &
   DetailPageStepCommandsOptions;
 
+export type CommandsProps = Partial<Record<keyof DetailPageCommandsFlag, ButtonProps>>;
+export type CommandsPropsFn = (reason: NeedDataReason) => CommandsProps;
+
 export type DetailPageStandartCommandsEvents = {
   onSave?: () => void;
   onSaveCreate?: () => void;
@@ -57,7 +61,7 @@ export type DetailPageCommandsProps = DetailPageStandartCommandsEvents &
     options: DetailPageCommandsOptions;
     mode: 'standard' | 'steps';
     moreCommands?: Partial<Record<keyof DetailPageCommandsFlag, true>>;
-    commandsProps?: Partial<Record<keyof DetailPageCommandsFlag, ButtonProps>>;
+    commandsProps?: CommandsProps;
   } & PropsWithChildren;
 
 function DetailPageCommands(props: DetailPageCommandsProps) {
