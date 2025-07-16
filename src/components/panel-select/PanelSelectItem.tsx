@@ -69,7 +69,9 @@ function PanelSelectItem({
           rightContent
         )}
       </FlexBetween>
-      <Collapse in={selected}>{children ? <Box sx={{ mt: 2 }}>{children}</Box> : null}</Collapse>
+      <Collapse in={selected}>
+        {children ? <Box sx={{ mt: 2 }}>{children}</Box> : null}
+      </Collapse>
     </StyledCard>
   );
 }

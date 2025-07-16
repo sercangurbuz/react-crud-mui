@@ -16,6 +16,11 @@ export default meta;
 type Story = StoryObj<typeof Labels.CurrencyFormat>;
 
 export const Simple: Story = {};  
+export const Zero: Story = {
+  args:{
+    value:0
+  }
+};  
 export const Custom: Story = {
   args: {
     component: H5,

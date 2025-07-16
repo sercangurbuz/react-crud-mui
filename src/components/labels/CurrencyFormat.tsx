@@ -21,6 +21,8 @@ function CurrencyFormat(
     currency = DEFAULT_CURRENCY,
     prefix = '',
     suffix = '',
+    value,
+    sx,
     ...rest
   }: CurrencyFormatProps,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,6 +36,11 @@ function CurrencyFormat(
       ref={ref}
       prefix={`${prefix} ${currPrefix}`}
       suffix={`${currSuffix} ${suffix}`}
+      value={value}
+      sx={{
+        color: value ? undefined : 'text.secondary',
+        ...sx,
+      }}
       {...rest}
     />
   );

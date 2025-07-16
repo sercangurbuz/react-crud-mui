@@ -21,8 +21,9 @@ const meta: Meta<typeof Field.PanelSelect> = {
       },
       {
         icon: <City />,
+        disabled: true,
         label: 'Jane Smith',
-        helperText: '456 Baker Street, SW1A 1AA London',
+        helperText: '456 Baker Street, SW1A 1AA London (Disabled)',
         value: '2',
         selectedIcon: (
           <IconButton>
@@ -84,6 +85,7 @@ export const WithContent: PanelSelectStory = {
         label: 'John Doe',
         helperText: '123 Elm Street, 10001 New York',
         value: '1',
+        disabled: true,
         children: (
           <FlexBetween>
             <div>
@@ -98,8 +100,9 @@ export const WithContent: PanelSelectStory = {
       {
         icon: <City />,
         label: 'Jane Smith',
-        helperText: '456 Baker Street, SW1A 1AA London',
+        helperText: '456 Baker Street, SW1A 1AA London (Disabled)',
         value: '2',
+        disabled: true,
         children: (
           <Box>
             <Tiny color="text.secondary" mb={0.5}>

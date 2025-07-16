@@ -17,6 +17,7 @@ export type PanelSelectData = {
   | 'selectedIcon'
   | 'label'
   | 'sx'
+  | 'disabled'
   | 'children'
 >;
 
@@ -54,12 +55,13 @@ function PanelSelect({
       selectedIcon,
       sx,
       children,
+      disabled: itemDisabled,
     }) => (
       <PanelSelectItem
         key={itemValue}
         selected={itemValue === value}
         label={label}
-        disabled={disabled}
+        disabled={itemDisabled || disabled}
         helperText={helperText}
         icon={icon}
         rightContent={rightContent}
@@ -75,7 +77,7 @@ function PanelSelect({
           onDelete?.(itemValue);
         }}
         onChange={() => {
-          if (disabled || itemValue === value) {
+          if (itemDisabled || disabled || itemValue === value) {
             return;
           }
 
