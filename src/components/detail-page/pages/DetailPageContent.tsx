@@ -165,10 +165,14 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    */
   autoSave?: boolean | AutoSaveOptions;
   /**
+   * Readonly mode, when true all commands are disabled except commands unlike disabled
+   */
+  readOnly?: boolean;
+  /**
    *  Custom content layout
    */
-  onContentLayout?: (props: DetailPageLayoutProps) => React.ReactNode;
-  onWrapperLayout?: (props: DetailPageWrapperLayoutProps) => React.ReactNode;
+  onContentLayout?: (props: DetailPageLayoutProps<TModel>) => React.ReactNode;
+  onWrapperLayout?: (props: DetailPageWrapperLayoutProps<TModel>) => React.ReactNode;
   /**
    *Default save mode (save,saveclose,savecreate) default is 'save'
    */
@@ -225,6 +229,7 @@ function DetailPageContent<TModel extends FieldValues>({
   onSaveClose,
   onSaveCreate,
   onWrapperLayout,
+  readOnly,
   reason = 'create',
   showHeader = true,
   steps,
@@ -290,7 +295,7 @@ function DetailPageContent<TModel extends FieldValues>({
     const autoSaveContent = renderAutoSave();
     const stepsContent = renderSteps();
 
-    const props: DetailPageLayoutProps = {
+    const props: DetailPageLayoutProps<TModel> = {
       content,
       autoSaveContent,
       stepsContent,
@@ -537,7 +542,7 @@ function DetailPageContent<TModel extends FieldValues>({
         tabsPosition="in-subrow"
         {...pageProps}
         tabExtraContent={tabContent}
-        disabled={disabled || loading || reason === 'view'}
+        disabled={disabled || readOnly || loading || reason === 'view'}
         commandsContent={commands}
         commandsPosition={isStepper ? 'bottom-between' : commandsPosition}
         onHeader={renderPageHeader}
