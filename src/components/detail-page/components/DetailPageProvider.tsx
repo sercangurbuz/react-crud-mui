@@ -3,7 +3,7 @@ import { FieldValues } from 'react-hook-form';
 
 import { DetailPageContentProps } from '../pages/DetailPageContent';
 
-/* ---------------------------- ListPage Context ---------------------------- */
+/* ---------------------------- DetailPage Context ---------------------------- */
 export type DetailPageContextType<TModel extends FieldValues = FieldValues> = Pick<
   DetailPageContentProps<TModel>,
   | 'loading'
@@ -24,7 +24,7 @@ export type DetailPageContextType<TModel extends FieldValues = FieldValues> = Pi
 
 export const DetailPageContext = React.createContext<DetailPageContextType | null>(null);
 
-function DetailPageProvider({
+function DetailPageProvider<TModel extends FieldValues = FieldValues>({
   children,
   data,
   reason,
@@ -39,8 +39,8 @@ function DetailPageProvider({
   disabled,
   activeSegmentIndex,
   setActiveSegmentIndex,
-}: PropsWithChildren & DetailPageContextType) {
-  const contextValue = useMemo<DetailPageContextType>(
+}: PropsWithChildren & DetailPageContextType<TModel>) {
+  const contextValue = useMemo<DetailPageContextType<TModel>>(
     () => ({
       data,
       reason,

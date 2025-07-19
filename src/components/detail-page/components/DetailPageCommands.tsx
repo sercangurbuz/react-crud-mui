@@ -15,11 +15,12 @@ import { CloseReason } from '../../page/Page';
 import { useDetailPageStates } from '../hooks';
 import { DetailPageCommandsFlag } from '../hooks/useDetailPageStates';
 import { NeedDataReason } from '../pages/DetailPageContent';
-import { SaveMode } from '../pages/DetailPageData';
+import { NavigationDirection, SaveMode } from '../pages/DetailPageData';
 import { StepPane } from './DetailPageStepsHeader';
 
 export type DetailPageStandartCommandsOptions = {
   saveCommandMode?: SaveMode;
+  reason: NeedDataReason;
 };
 
 export type DetailPageStepCommandsOptions = {
@@ -49,6 +50,7 @@ export type DetailPageStandartCommandsEvents = {
   onDelete?: () => void;
   onClose?: (reason?: CloseReason) => void;
   onSaveClose?: () => void;
+  onNavigate?: (direction: NavigationDirection) => void;
 };
 
 export type DetailPageStepCommandsEvents = {

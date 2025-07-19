@@ -20,6 +20,7 @@ import DetailPageCommands, {
   DetailPageCommandsProps,
 } from '../components/DetailPageCommands';
 import DetailPageDefaultLayout, {
+  DetailPageLayoutOptions,
   DetailPageLayoutProps,
 } from '../components/DetailPageDefaultLayout';
 import DetailPageHeader, { DetailPageHeaderProps } from '../components/DetailPageHeader';
@@ -31,7 +32,7 @@ import DetailPageStepsHeader, {
   StepPane,
 } from '../components/DetailPageStepsHeader';
 import { DETAILPAGE_HOTKEYS_SCOPE } from '../hooks/useDetailPageHotKeys';
-import { SaveMode } from './DetailPageData';
+import { NavigationDirection, SaveMode } from './DetailPageData';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -39,11 +40,12 @@ import { SaveMode } from './DetailPageData';
 
 export type NeedDataReason = 'create' | 'fetch' | 'copy' | 'view';
 
-export type DetailPageWrapperLayoutProps = {
+export type DetailPageWrapperLayoutProps<TModel extends FieldValues = FieldValues> = {
   content: ReactNode;
   pageContent: ReactNode;
   commandsContent: ReactNode;
   alertsContent: ReactNode;
+  options: DetailPageLayoutOptions<TModel>;
 };
 
 /* ------------------------- DetailPageContentProps ------------------------- */
@@ -122,6 +124,10 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    * Delete event
    */
   onDelete: () => void;
+  /**
+   * Navigation callback when one of which navigate buttons is pressed
+   */
+  onNavigate: (direction: NavigationDirection) => void;
   /**
    * Custom header function
    */
@@ -214,6 +220,7 @@ function DetailPageContent<TModel extends FieldValues>({
   onSegmentChanged,
   onExtraCommands,
   onHeader,
+  onNavigate,
   onSave,
   onSaveClose,
   onSaveCreate,
@@ -256,11 +263,16 @@ function DetailPageContent<TModel extends FieldValues>({
     const commandsContent = renderCommands();
     const pageContent = renderPage(content, commandsContent, alertsContent);
 
-    const props: DetailPageWrapperLayoutProps = {
+    const props: DetailPageWrapperLayoutProps<TModel> = {
       content,
       pageContent,
       commandsContent,
       alertsContent,
+      options: {
+        loading,
+        reason,
+        data,
+      },
     };
 
     if (onWrapperLayout) {
@@ -285,6 +297,7 @@ function DetailPageContent<TModel extends FieldValues>({
       options: {
         loading,
         reason,
+        data,
       },
     };
 
@@ -341,8 +354,10 @@ function DetailPageContent<TModel extends FieldValues>({
       onDelete,
       onDiscardChanges,
       onClose,
+      onNavigate,
       options: {
         saveCommandMode: defaultSaveMode,
+        reason,
       } as DetailPageCommandsOptions,
       commandsProps: typeof commandsProps === 'function' ? commandsProps(reason) : commandsProps,
     };
@@ -412,6 +427,7 @@ function DetailPageContent<TModel extends FieldValues>({
       onCopy,
       onDelete,
       options: {
+        reason,
         nextButtonTitle,
         prevButtonTitle,
         showNextButton: !!nextButtonTitle,

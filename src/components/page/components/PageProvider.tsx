@@ -1,5 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 
+import usePage from '../hooks/usePage';
+
 export type PaddingSize = 'small' | 'normal' | 'large';
 
 export interface PageProviderProps {
@@ -15,7 +17,17 @@ export const PageContext = React.createContext<PageProviderProps>({
 });
 
 function PageProvider({ children, disabled, size }: PropsWithChildren<PageProviderProps>) {
-  return <PageContext.Provider value={{ disabled, size }}>{children}</PageContext.Provider>;
+  const parentPageContext = usePage();
+  return (
+    <PageContext.Provider
+      value={{
+        disabled: parentPageContext?.disabled === true ? true : disabled,
+        size: size || parentPageContext?.size,
+      }}
+    >
+      {children}
+    </PageContext.Provider>
+  );
 }
 
 export default PageProvider;

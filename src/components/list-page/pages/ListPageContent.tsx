@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { Box } from '@mui/material';
@@ -23,8 +23,8 @@ import AutoSearch from '../components/AutoSearch';
 import CardList, { CardListProps } from '../components/CardList';
 import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageCommands';
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
+import ListPageProvider from '../components/ListPageProvider';
 import ListPageShortCuts from '../components/ListPageShortCuts';
-import { ListPageContext, ListPageContextType } from '../hooks/useListPage';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -594,41 +594,22 @@ function ListPageContent<TModel extends FieldValues>({
     return detailPageContent;
   };
 
-  /* -------------------------------------------------------------------------- */
-  /*                              ListPage Context                              */
-  /* -------------------------------------------------------------------------- */
-
-  const contextValue = useMemo<ListPageContextType<TModel>>(
-    () => ({
-      triggerAction,
-      loading,
-      data,
-      search: onSearch,
-      clear: onClear!,
-      enableClear,
-      enableCreateItem,
-      enableExport,
-      enableSearch,
-    }),
-    [
-      data,
-      enableClear,
-      enableCreateItem,
-      enableExport,
-      enableSearch,
-      loading,
-      onClear,
-      triggerAction,
-      onSearch,
-    ],
-  );
-
   /* --------------------------------- Render --------------------------------- */
 
   return (
-    <ListPageContext.Provider value={contextValue}>
+    <ListPageProvider
+      triggerAction={triggerAction}
+      loading={loading}
+      data={data}
+      search={onSearch}
+      clear={onClear!}
+      enableClear={enableClear}
+      enableCreateItem={enableCreateItem}
+      enableExport={enableExport}
+      enableSearch={enableSearch}
+    >
       {renderWrapperLayout()}
-    </ListPageContext.Provider>
+    </ListPageProvider>
   );
 }
 

@@ -38,18 +38,36 @@ export interface DeletePayload<TModel extends FieldValues = FieldValues> extends
   data?: TModel;
 }
 
+export interface NavigatePayload<TModel extends FieldValues = FieldValues> extends BasePayload {
+  direction: NavigationDirection;
+  model: TModel;
+}
+
+export type NavigationDirection = 'next' | 'prev';
+
 /* --------------------------- DetailPageDataProps -------------------------- */
 
 export interface DetailPageDataProps<TModel extends FieldValues>
   extends Omit<
     DetailPageContentProps<TModel>,
-    'onSave' | 'onDelete' | 'onDiscardChanges' | 'onCopy' | 'onSaveCreate' | 'onSaveClose'
+    | 'onSave'
+    | 'onDelete'
+    | 'onDiscardChanges'
+    | 'onCopy'
+    | 'onSaveCreate'
+    | 'onSaveClose'
+    | 'onNavigate'
   > {
   /**
    * Save event
    * @returns if returns data,either in promise or object will bind to form data
    */
   onSave?: DataEvent<TModel, SavePayload<TModel>>;
+  /**
+   * Navigation buttons event when navigation is active
+   * @returns if returns data,either in promise or object will bind to form data
+   */
+  onNavigate?: DataEvent<TModel, NavigatePayload<TModel>>;
   /**
    * Delete event
    * @returns if returns data,either in promise or object will bind to form data
@@ -97,6 +115,7 @@ function DetailPageData<TModel extends FieldValues>({
   onDelete,
   onDiscardChanges,
   onReasonChange,
+  onNavigate,
   onSave,
   reason = 'create',
   showSuccessMessages = true,
@@ -228,6 +247,13 @@ function DetailPageData<TModel extends FieldValues>({
     resetState();
   };
 
+  const handleNavigate = (direction: NavigationDirection) => {
+    const model = getValues();
+
+    const variables: NavigatePayload<TModel> = { direction, reason, model };
+    void onNavigate?.(variables, form);
+  };
+
   /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
@@ -248,6 +274,7 @@ function DetailPageData<TModel extends FieldValues>({
       onSaveClose={() => void handleSaveClose()}
       onSave={() => void handleSave()}
       onDelete={() => void handleDelete()}
+      onNavigate={(direction) => void handleNavigate(direction)}
       onDiscardChanges={handleDiscard}
       onClose={onClose}
     />

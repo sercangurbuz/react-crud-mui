@@ -1,17 +1,19 @@
 import { ReactNode } from 'react';
+import { FieldValues } from 'react-hook-form';
 
 import { NeedDataReason } from '../pages/DetailPageContent';
 
-export type DetailPageLayoutOptions = {
+export type DetailPageLayoutOptions<TModel extends FieldValues = FieldValues> = {
   loading?: boolean;
   reason: NeedDataReason;
+  data?: TModel;
 };
 
-export type DetailPageLayoutProps = {
+export type DetailPageLayoutProps<TModel extends FieldValues = FieldValues> = {
   content?: ReactNode;
   stepsContent?: ReactNode;
   autoSaveContent?: ReactNode;
-  options: DetailPageLayoutOptions;
+  options: DetailPageLayoutOptions<TModel>;
 };
 
 type DetailPageDefaultLayoutProps = DetailPageLayoutProps;
