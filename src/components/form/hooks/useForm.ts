@@ -3,6 +3,7 @@ import {
   FieldPath,
   FieldValues,
   UseFormReturn as ReactHookFormUseFormReturn,
+  useFormContext,
   UseFormProps,
   useForm as useRHF,
 } from 'react-hook-form';
@@ -33,13 +34,19 @@ export interface UseFormOptions<TFieldValues extends FieldValues>
   schema?: z.ZodType<Partial<TFieldValues>>;
 }
 
-export interface UseFormReturn<TFieldValues extends FieldValues = FieldValues>
-  extends ReactHookFormUseFormReturn<TFieldValues> {
+export interface UseFormReturn<
+  TFieldValues extends FieldValues = FieldValues,
+  TParentFieldValues extends FieldValues = FieldValues,
+> extends ReactHookFormUseFormReturn<TFieldValues> {
   /**
    * Shortcut method for handleSubmit()()
    * @returns Returns form model when validation successed
    */
   getFormModel(): Promise<TFieldValues>;
+  /**
+   * Possible parent form if this form is a child of another form
+   */
+  parentForm?: UseFormReturn<TParentFieldValues>;
 }
 
 /**
@@ -52,6 +59,8 @@ function useForm<TFieldValues extends FieldValues = FieldValues>({
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
+
+  const parentForm = useFormContext() as UseFormReturn<TFieldValues> | undefined;
 
   // RHF useForm hook
   const formMethods = useRHF<TFieldValues>({
@@ -76,8 +85,8 @@ function useForm<TFieldValues extends FieldValues = FieldValues>({
   }, [handleSubmit]);
 
   const returnValue = useMemo(
-    () => Object.assign(formMethods, { getFormModel }),
-    [formMethods, getFormModel],
+    () => Object.assign(formMethods, { getFormModel, parentForm }),
+    [formMethods, getFormModel, parentForm],
   );
 
   return returnValue as UseFormReturn<TFieldValues>;
