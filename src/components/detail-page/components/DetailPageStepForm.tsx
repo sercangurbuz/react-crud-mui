@@ -52,7 +52,9 @@ function DetailPageStepForm<TModel extends FieldValues>({
    * Besure to trigger the form validation when the component is mounted
    */
   useFormInitEffect(() => {
-    void form.trigger();
+    if (validationOptions?.runValidationsOnDataChange !== false) {
+      void form.trigger();
+    }
   });
 
   return (

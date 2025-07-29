@@ -24,6 +24,13 @@ export const WithTime: Story = {
   },
 };
 
+export const FromString: Story = {
+  args: {
+    date: currentDate.format('DD-MM-YYYY'),
+    stringFormat: 'DD-MM-YYYY',
+  },
+};
+
 export const Custom: Story = {
   args: {
     component: H5,

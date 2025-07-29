@@ -403,6 +403,11 @@ function DetailPageContent<TModel extends FieldValues>({
       });
     };
 
+    const resetSteps = () => {
+      onDiscardChanges?.();
+      onSegmentChanged?.(0);
+    };
+
     const props: DetailPageCommandsProps = {
       mode: 'steps',
       commandsProps: typeof commandsProps === 'function' ? commandsProps(reason) : commandsProps,
@@ -426,7 +431,10 @@ function DetailPageContent<TModel extends FieldValues>({
         updateParentForm();
         onSaveClose();
       },
-      onClose,
+      onClose: () => {
+        resetSteps();
+        onClose?.();
+      },
       onDiscardChanges,
       onCreate,
       onCopy,

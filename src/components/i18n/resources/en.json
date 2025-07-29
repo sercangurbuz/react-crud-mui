@@ -187,5 +187,6 @@
     "phone_number": "Phone number",
     "phone_number_val_message": "Please specify a valid phone number (include the international prefix).",
     "show_less": "Show less",
-    "show_more": "Show more"
+    "show_more": "Show more",
+    "error_message": "There are validation errors in the form. Please fix them before proceeding."
 }

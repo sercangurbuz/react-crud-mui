@@ -14,6 +14,7 @@ import Calendar from '../icons/sidebar/Calendar';
 export interface DateFormatProps extends BoxProps {
   date?: Dayjs | Date | string;
   format?: string;
+  stringFormat?: string;
   /**
    * Enable time
    */
@@ -40,6 +41,7 @@ function DateFormat(
   {
     date,
     enableTime = false,
+    stringFormat,
     isMonthView = false,
     showIcon = false,
     convertToLocal,
@@ -49,22 +51,16 @@ function DateFormat(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref: Ref<any>,
 ) {
-  const {
-    dateFormat,
-    dateTimeFormat,
-    dateLongFormat,
-    dateTimeLongFormat,
-    monthFormat,
-    convertToLocaleDateTime,
-  } = useSettings();
+  const { dateFormat, dateTimeFormat, monthFormat, convertToLocaleDateTime } = useSettings();
 
   if (!date) {
     return null;
   }
 
-  const format = isMonthView ? monthFormat : enableTime ? dateTimeFormat : dateFormat;
+  const format =
+    customFormat ?? (isMonthView ? monthFormat : enableTime ? dateTimeFormat : dateFormat);
 
-  let displayDate;
+  let dayJsDate;
   let toLocale = convertToLocaleDateTime;
 
   if (convertToLocal !== undefined && convertToLocal !== null) {
@@ -72,18 +68,15 @@ function DateFormat(
   }
 
   if (toLocale) {
-    displayDate = dayjs.utc(date).local();
+    dayJsDate = dayjs.utc(date, stringFormat).local();
   } else {
-    displayDate = dayjs(date);
+    dayJsDate = dayjs(date, stringFormat);
   }
 
-  const formattedDate = displayDate.format(customFormat ?? format);
-  const tooltip = isMonthView
-    ? formattedDate
-    : displayDate.format(customFormat ?? (enableTime ? dateTimeLongFormat : dateLongFormat));
+  const formattedDate = dayJsDate.format(customFormat ?? format);
 
   return (
-    <FlexBox alignItems="center" title={tooltip} {...rest} ref={ref} gap={1}>
+    <FlexBox alignItems="center" title={formattedDate} {...rest} ref={ref} gap={1}>
       {showIcon && <Calendar sx={{ color: 'currentColor' }} />} {formattedDate}
     </FlexBox>
   );

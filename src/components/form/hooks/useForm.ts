@@ -18,7 +18,8 @@ export type ValidationVisibilityOptions =
   | 'selected-fields'
   | 'only-unbound-fields'
   | 'all'
-  | 'invisible';
+  | 'invisible'
+  | 'static-text';
 
 export type CallOutVisibilityOptions = 'selected-fields' | 'all' | 'invisible';
 
@@ -27,6 +28,7 @@ export type ValidationOptions<TFieldValues extends FieldValues = FieldValues> = 
   callOutVisibility?: CallOutVisibilityOptions;
   fields?: FieldPath<TFieldValues>[];
   runValidationsOnDataChange?: boolean;
+  staticErrorMessage?: string;
 };
 
 export interface UseFormOptions<TFieldValues extends FieldValues>

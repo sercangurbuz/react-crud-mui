@@ -279,6 +279,14 @@ export const AutoSave: DetailPageStory = {
   },
 };
 
+export const StaticTextValidationAlert: DetailPageStory = {
+  args: {
+    validationOptions: {
+      alertVisibility: 'static-text',
+    },
+  },
+};
+
 export const WithZodRefine: DetailPageStory = {
   args: {
     defaultReason: 'fetch',
@@ -503,6 +511,7 @@ export const WithSteps: StoryObj<typeof DetailPage<StepSchema>> = {
       <DetailPage
         {...args}
         schema={stepSchema}
+        enableClose
         defaultValues={{
           main: {
             name: '',
