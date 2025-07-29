@@ -542,6 +542,9 @@ export const WithSteps: StoryObj<typeof DetailPage<StepSchema>> = {
               website: z.string().min(1, { message: 'Website is missing' }),
               phone: z.string(),
             }),
+            validationOptions: {
+              alertVisibility: 'all',
+            },
             children: <Step2 />,
           },
           {

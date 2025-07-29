@@ -4,14 +4,17 @@ import { DefaultValues, FieldValues, Path, useFormState, useWatch } from 'react-
 import { z } from 'zod';
 
 import FormProvider from '../../form/components/FormProvider';
+import ValidationAlerts from '../../form/components/ValidationAlerts';
+import ValidationOptionsProvider from '../../form/components/ValidationOptionsProvider';
 import { useFormInitEffect } from '../../form/hooks';
-import useForm from '../../form/hooks/useForm';
+import useForm, { ValidationOptions } from '../../form/hooks/useForm';
 import useRegisterForm from '../../form/hooks/useRegisterForm';
 
 interface DetailPageStepContentProps<TModel extends FieldValues> {
   schema?: z.ZodType<TModel>;
   defaultValues?: DefaultValues<TModel>;
   name: Path<TModel>;
+  validationOptions?: ValidationOptions;
 }
 
 /**
@@ -22,6 +25,7 @@ function DetailPageStepForm<TModel extends FieldValues>({
   name,
   children,
   defaultValues,
+  validationOptions,
 }: DetailPageStepContentProps<TModel> & PropsWithChildren) {
   /**
    * Get model slice from parent model schema
@@ -51,7 +55,14 @@ function DetailPageStepForm<TModel extends FieldValues>({
     void form.trigger();
   });
 
-  return <FormProvider form={form}>{children}</FormProvider>;
+  return (
+    <FormProvider form={form}>
+      <ValidationOptionsProvider {...validationOptions}>
+        <ValidationAlerts />
+        {children}
+      </ValidationOptionsProvider>
+    </FormProvider>
+  );
 }
 
 export default DetailPageStepForm;

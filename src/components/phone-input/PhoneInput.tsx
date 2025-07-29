@@ -65,6 +65,7 @@ function PhoneInput({
         startAdornment: (
           <InputAdornment position="start" style={{ marginRight: '2px', marginLeft: '-8px' }}>
             <Select
+              readOnly={restProps.disabled}
               MenuProps={{
                 style: {
                   height: '300px',

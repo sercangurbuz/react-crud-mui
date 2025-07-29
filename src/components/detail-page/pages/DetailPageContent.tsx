@@ -509,14 +509,21 @@ function DetailPageContent<TModel extends FieldValues>({
       <StepHeaders items={steps} activeStep={activeSegmentIndex} {...stepsProps} />
     );
 
-    const stepContents = steps.map(({ children, name, schema, defaultValues, key }) =>
-      name ? (
-        <DetailPageStepForm key={key} name={name} schema={schema} defaultValues={defaultValues}>
-          {children}
-        </DetailPageStepForm>
-      ) : (
-        children
-      ),
+    const stepContents = steps.map(
+      ({ children, name, schema, validationOptions, defaultValues, key }) =>
+        name ? (
+          <DetailPageStepForm
+            key={key}
+            name={name}
+            schema={schema}
+            defaultValues={defaultValues}
+            validationOptions={validationOptions}
+          >
+            {children}
+          </DetailPageStepForm>
+        ) : (
+          children
+        ),
     );
 
     return (

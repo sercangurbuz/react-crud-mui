@@ -6,6 +6,7 @@ import StepLabel, { StepLabelProps } from '@mui/material/StepLabel';
 import Stepper, { StepperProps } from '@mui/material/Stepper';
 import { z } from 'zod';
 
+import { ValidationOptions } from '../../form/hooks/useForm';
 import Page from '../../page/Page';
 
 /* -------------------------------------------------------------------------- */
@@ -28,6 +29,7 @@ export type StepPane<
   defaultValues?: DefaultValues<PathValue<TModel, TFieldStepName>>;
   label: ReactNode;
   children: ReactNode;
+  validationOptions?: ValidationOptions;
 };
 export type StepStatus = 'wait' | 'process' | 'finish' | 'error';
 
