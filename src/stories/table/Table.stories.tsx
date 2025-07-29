@@ -222,6 +222,27 @@ export const WithDescriptionRow: TableStory = {
   },
 };
 
+export const CellStyling: TableStory = {
+  args: {
+    onHeadCellProps(header) {
+      return {
+        sx: {
+          backgroundColor: `success.${(header.column.getIndex() + 2) * 100}`,
+        },
+      };
+    },
+    onCellProps(cell) {
+      return {
+        sx: {
+          backgroundColor: `success.${(cell.column.getIndex() + 1) * 100}`,
+          color: `primary.${(5 - cell.column.getIndex()) * 100}`,
+          borderBottomColor: "success.main",
+        },
+      };
+    },
+  },
+};
+
 export const HeaderGroup: TableStory = {
   args: {
     columns: [

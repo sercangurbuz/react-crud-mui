@@ -116,6 +116,12 @@ export interface TableProps<TData extends FieldValues>
   onRowClick?: (e: React.MouseEvent<HTMLTableRowElement>, row: Row<TData>) => void;
   onRowEnterPress?: (row: Row<TData>) => void;
   onRowProps?: (row: Row<TData>) => React.ComponentProps<typeof BodyTableRow> | undefined;
+  onCellProps?: (
+    cell: Cell<TData, unknown>,
+  ) => React.ComponentProps<typeof BodyTableCell> | undefined;
+  onHeadCellProps?: (
+    header: Header<TData, unknown>,
+  ) => React.ComponentProps<typeof HeadTableCell> | undefined;
   onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
   rowIdField?: Path<TData>;
   scrollProps?: Partial<ScrollbarProps>;
@@ -154,6 +160,8 @@ function Table<TData extends FieldValues>({
   loading,
   newRowButtonText,
   newRowButtonContent,
+  onCellProps,
+  onHeadCellProps,
   onNewRow,
   onRenderNestedComponent,
   onRowClick,
@@ -421,6 +429,7 @@ function Table<TData extends FieldValues>({
     const sortDirection = header.column.getIsSorted();
     const sortToggleHandler = header.column.getToggleSortingHandler();
     const isSortingActive = !!sortDirection;
+    const exHeadCellProps = onHeadCellProps?.(header);
 
     return (
       <HeadTableCell
@@ -428,6 +437,7 @@ function Table<TData extends FieldValues>({
         size={size}
         colSpan={header.colSpan}
         style={{ ...pinningStyles }}
+        {...exHeadCellProps}
         sx={{
           textAlign: 'center',
           backgroundColor: isSortingActive
@@ -439,6 +449,7 @@ function Table<TData extends FieldValues>({
                 width: header.getSize(),
                 minWidth: header.getSize(),
               }),
+          ...exHeadCellProps?.sx,
         }}
       >
         {isSortingEnabled ? (
@@ -503,6 +514,7 @@ function Table<TData extends FieldValues>({
     const isSortingActive = cell.column.getCanSort() && !!cell.column.getIsSorted();
     const pinningStyles = table.options.enableColumnPinning ? getPinningStyles(cell.column) : null;
     const isEllipsis = (cell.column.columnDef as CoreColumn<TData>).ellipsis;
+    const exCellProps = onCellProps?.(cell);
 
     if ((cell.column.columnDef as CoreColumn<TData>).link) {
       const uri = (cell.column.columnDef as CoreColumn<TData>).link!(cell.row);
@@ -527,6 +539,7 @@ function Table<TData extends FieldValues>({
         size={isStandartCol ? 'small' : size}
         style={{ ...pinningStyles }}
         ellipsis={isEllipsis}
+        {...exCellProps}
         sx={{
           backgroundColor: isSortingActive
             ? isDark(theme)
@@ -541,6 +554,7 @@ function Table<TData extends FieldValues>({
                 maxWidth: cell.column.columnDef.maxSize,
               }),
           ...(isIndentedCol ? { paddingLeft: '3rem' } : undefined),
+          ...exCellProps?.sx,
         }}
       >
         {cellNode}
@@ -819,5 +833,9 @@ function Table<TData extends FieldValues>({
 
 Table.MoreMenu = TableMoreMenu;
 Table.MoreMenuItem = TableMoreMenuItem;
+Table.Row = BodyTableRow;
+Table.Cell = BodyTableCell;
+Table.HeadCell = HeadTableCell;
+Table.NewRowButton = NewRowButton;
 
 export default Table;

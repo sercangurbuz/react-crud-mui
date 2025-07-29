@@ -1,4 +1,4 @@
-import { useFormContext, useWatch } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
 import Grid2 from '@mui/material/Grid2';
 import List from '@mui/material/List';
@@ -6,7 +6,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 
 import Field from '../../../components/form/Field';
-import { UseFormReturn } from '../../../components/form/hooks/useForm';
 import Page from '../../../components/page/Page';
 import { StepSchema } from '../../utils/schema';
 
