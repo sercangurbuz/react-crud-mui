@@ -158,3 +158,10 @@ export const Large: PanelSelectStory = {
     size: 'large',
   },
 };
+
+export const InitialSelection: PanelSelectStory = {
+  args: {
+    value: null,
+    selectInitialOption: (data) => data.value === '3',
+  },
+};

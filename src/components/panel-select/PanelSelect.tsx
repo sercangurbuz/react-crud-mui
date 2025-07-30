@@ -1,5 +1,6 @@
 import { cardClasses, Stack, StackProps } from '@mui/material';
 
+import useFormInitEffect from '../form/hooks/useFormInitEffect';
 import PanelSelectItem, { PanelSelectItemProps } from './PanelSelectItem';
 
 /* -------------------------------------------------------------------------- */
@@ -26,12 +27,13 @@ export type PanelSelectDirection = 'vertical' | 'horizontal';
 
 export interface PanelSelectProps extends Omit<StackProps, 'onChange' | 'direction'> {
   data: PanelSelectData[];
-  value?: string | number;
+  value?: string | number | null;
   disabled?: boolean;
-  onChange?: (value: string | number) => void;
-  onDelete?: (value: string | number) => void;
+  onChange?: (value: string | number | null) => void;
+  onDelete?: (value: string | number | null) => void;
   size?: PanelSelectSize;
   direction?: PanelSelectDirection;
+  selectInitialOption?: boolean | ((data: PanelSelectData) => boolean);
 }
 
 function PanelSelect({
@@ -42,6 +44,7 @@ function PanelSelect({
   disabled,
   size = 'normal',
   direction = 'vertical',
+  selectInitialOption,
   ...stackProps
 }: PanelSelectProps) {
   const items = data.map(
@@ -86,6 +89,18 @@ function PanelSelect({
       />
     ),
   );
+
+  useFormInitEffect(() => {
+    if (data?.length && selectInitialOption) {
+      const model =
+        typeof selectInitialOption === 'function' ? data.find(selectInitialOption) : data[0];
+      const initialValue = model?.value;
+
+      if (initialValue) {
+        onChange?.(initialValue);
+      }
+    }
+  }, [data]);
 
   return (
     <Stack
