@@ -1,11 +1,11 @@
 import { ReactNode, useState } from 'react';
 
-import Card from '@mui/material/Card';
+import Card, { CardProps } from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 
 import { FlexBetween } from '../flexbox';
-import Header, { HeaderProps } from '../header/Header';
+import Header, { HeaderOwnProps } from '../header/Header';
 import MoreButton from '../more-button';
 
 export type PanelTab = {
@@ -14,8 +14,10 @@ export type PanelTab = {
   children: ReactNode;
   title: ReactNode;
 };
-export interface PanelProps extends HeaderProps {
+export interface PanelProps extends CardProps, HeaderOwnProps {
   tabs?: PanelTab[];
+  activeTabKey?: string;
+  onTabChange?: (key: string) => void;
 }
 
 const TabContentWrapper = styled(FlexBetween)(({ theme }) => ({
@@ -36,18 +38,37 @@ const BoxWrapper = styled('div', {
   ...(active && { backgroundColor: theme.palette.action.selected }),
 }));
 
-function Panel({ tabs, children, ...headerProps }: PanelProps) {
-  const [selectedItem, setSelectedItem] = useState(tabs ? tabs[0].value : '');
+function Panel({
+  tabs,
+  children,
+  rightContent,
+  centerContent,
+  helperText,
+  header,
+  headerProps,
+  icon,
+  moreOptions,
+  useHeaderIconWrapper,
+  activeTabKey,
+  onTabChange,
+  ...cardProps
+}: PanelProps) {
+  const [selectedItem, setSelectedItem] = useState(activeTabKey ?? (tabs ? tabs[0].value : ''));
 
-  const handleChange = (id: string) => () => setSelectedItem(id);
+  const handleChange = (id: string) => () => {
+    setSelectedItem(id);
+    onTabChange?.(id);
+  };
+
+  const selectedTabKey = activeTabKey || selectedItem;
 
   const renderTabContent = () => {
-    const selTab = tabs?.find((tab) => tab.value === selectedItem);
+    const selTab = tabs?.find((tab) => tab.value === selectedTabKey);
     return selTab?.children;
   };
 
   return (
-    <Card>
+    <Card {...cardProps}>
       {tabs ? (
         <TabContentWrapper gap={4}>
           <Stack className="list" gap={1} direction={{ sm: 'row', xs: 'column' }}>
@@ -56,21 +77,28 @@ function Panel({ tabs, children, ...headerProps }: PanelProps) {
                 key={item.key}
                 className="list-item"
                 onClick={handleChange(item.value)}
-                active={selectedItem === item.value ? 1 : 0}
+                active={selectedTabKey === item.value ? 1 : 0}
               >
                 {item.title}
               </BoxWrapper>
             ))}
           </Stack>
           <Stack direction="row" alignItems="center" gap={2}>
-            {headerProps.rightContent}
-            {headerProps.moreOptions?.length ? (
-              <MoreButton options={headerProps.moreOptions} sx={{ mr: 2 }} />
-            ) : null}
+            {rightContent}
+            {moreOptions?.length ? <MoreButton options={moreOptions} sx={{ mr: 2 }} /> : null}
           </Stack>
         </TabContentWrapper>
       ) : (
-        <Header {...headerProps} />
+        <Header
+          rightContent={rightContent}
+          centerContent={centerContent}
+          helperText={helperText}
+          header={header}
+          headerProps={headerProps}
+          icon={icon}
+          moreOptions={moreOptions}
+          useHeaderIconWrapper={useHeaderIconWrapper}
+        />
       )}
       {tabs ? renderTabContent() : null}
       {children}

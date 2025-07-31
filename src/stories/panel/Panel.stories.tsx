@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import Delete from '@mui/icons-material/Delete';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -66,7 +68,6 @@ export const WithExtraContent: PanelStory = {
 export const WithIcon: PanelStory = {
   args: {
     icon: <GroupSenior sx={{ color: 'primary.main' }} />,
-    p: 3,
   },
 };
 
@@ -113,6 +114,28 @@ export const WithTabs: PanelStory = {
         ),
       },
     ],
+  },
+};
+
+export const ControlledTabs: PanelStory = {
+  args: {
+    sx: { border: '1px solid', borderColor: 'divider' },
+    ...WithTabs.args,
+    activeTabKey: 'account-statement',
+  },
+  render: (args) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [activeTab, setActiveTab] = useState(args.activeTabKey);
+
+    return (
+      <Panel
+        {...args}
+        activeTabKey={activeTab}
+        onTabChange={(key) => {
+          setActiveTab(key);
+        }}
+      />
+    );
   },
 };
 

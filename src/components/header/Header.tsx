@@ -8,7 +8,7 @@ import IconWrapper from '../icon-wrapper';
 import MoreButton, { MoreButtonProps } from '../more-button/MoreButton';
 import { H6, Small } from '../typography';
 
-export interface HeaderProps extends React.ComponentProps<typeof FlexBetween> {
+export interface HeaderOwnProps {
   rightContent?: ReactNode;
   centerContent?: ReactNode;
   helperText?: ReactNode;
@@ -18,6 +18,8 @@ export interface HeaderProps extends React.ComponentProps<typeof FlexBetween> {
   moreOptions?: MoreButtonProps['options'];
   useHeaderIconWrapper?: boolean;
 }
+
+export type HeaderProps = HeaderOwnProps & React.ComponentProps<typeof FlexBetween>;
 
 function Header({
   centerContent,
