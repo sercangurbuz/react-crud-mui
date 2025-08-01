@@ -23,6 +23,7 @@ export {
   default as DetailPagePopover,
   type DetailPagePopoverProps,
 } from './components/detail-page/pages/DetailPagePopover';
+export { default as ValidationAlerts } from './components/form/components/ValidationAlerts';
 export {
   default as DetailPageDrawer,
   type DetailPageDrawerProps,
