@@ -23,7 +23,7 @@ export const BodyTableRow = styled(TableRow, {
         transition: 'all 0.2s',
       },
     },
-    '&:hover': {
+    '&:hover:not(:has(+ tr.description-row))': {
       '& .MuiTableCell-root:first-of-type': {
         '&::after': { width: '7px' },
       },

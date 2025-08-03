@@ -204,7 +204,7 @@ function ListPageContent<TModel extends FieldValues>({
   autoSearch = true,
   cardProps,
   children,
-  columns,
+  columns = [],
   commandsProps,
   data,
   dataCount,

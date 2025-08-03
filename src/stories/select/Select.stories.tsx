@@ -19,6 +19,8 @@ const meta: Meta<typeof Field.Select<UserSchema>> = {
     label: 'User',
     optionTemplate: '${username}',
     autoFocus: true,
+    sx: { width: 300 },
+    labelWrapperProps: { fullWidth: false },
   },
   component: Field.Select,
   decorators: (Story) => {

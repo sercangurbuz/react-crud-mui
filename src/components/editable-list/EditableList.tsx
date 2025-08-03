@@ -17,6 +17,7 @@ import useDetailPageModal, {
   UseDetailPageModalReturn,
 } from '../detail-page/hooks/useDetailPageModal';
 import DetailPage from '../detail-page/pages/DetailPage';
+import { NeedDataReason } from '../detail-page/pages/DetailPageContent';
 import { DataResult, DeletePayload, SavePayload } from '../detail-page/pages/DetailPageData';
 import { DetailPageModalProps } from '../detail-page/pages/DetailPageModal';
 import { useFormErrors } from '../form/hooks';
@@ -100,6 +101,10 @@ export interface EditableListProps<
    */
   enableDeleteAllButton?: boolean;
   /**
+   * Open detailPage in view mode as default or in which reason provided
+   */
+  enableRowClickToDetails?: boolean | NeedDataReason | ((model: TArrayModel) => boolean);
+  /**
    * Searching level of binded array model,default 1
    */
   searchLevel?: number;
@@ -137,6 +142,10 @@ export interface EditableListProps<
    */
   onCommands?: (props: EditableListCommandsProps<TModel, TFieldArrayName>) => React.ReactNode;
   /**
+   * Show columns of create and delete-all commands
+   */
+  showCommands?: boolean;
+  /**
    * Custom commands when needed to override the default buttons
    */
   rowCommands?: (props: EditingListCommandsProps<TArrayModel>) => ReactNode;
@@ -170,12 +179,14 @@ function EditableList<
   detailType = 'drawer',
   disabled,
   enableDeleteAllButton,
+  enableRowClickToDetails,
   headerProps,
   name,
   newItemTitle,
   onDelete,
   onSave,
   rowCommands,
+  showCommands = true,
   uniqueFields,
   ...tableProps
 }: EditableListProps<TModel, TArrayModel, TFieldArrayName>) {
@@ -373,7 +384,6 @@ function EditableList<
   const renderTable = () => {
     return (
       <Table<TArrayModel>
-        size="small"
         showEmptyImage={false}
         {...tableProps}
         rowIdField={UNIQUE_IDENTIFIER_FIELD_NAME as Path<TArrayModel>}
@@ -385,21 +395,26 @@ function EditableList<
         onSortingChange={setSorting}
         getSortedRowModel={getSortedRowModel()}
         columns={normalizedCols}
-        rowSx={{
-          '.MuiTableCell-root': {
-            borderBottom: (theme) => `1px dashed ${theme.palette.divider}`,
-          },
-          '&:last-of-type': {
-            '.MuiTableCell-root': {
-              borderBottom: 'none',
-            },
-          },
-        }}
-        headerSx={{
-          '.MuiTableCell-root': {
-            backgroundColor: 'transparent',
-            borderBottom: (theme) => `1px dashed ${theme.palette.divider}`,
-          },
+        onRowClick={(_e, row) => {
+          if (!enableRowClickToDetails || disabled) {
+            return;
+          }
+
+          if (typeof enableRowClickToDetails === 'function') {
+            const isEnabled = enableRowClickToDetails(row.original);
+            if (!isEnabled) {
+              return;
+            }
+          }
+
+          const reason =
+            typeof enableRowClickToDetails === 'string' ? enableRowClickToDetails : 'view';
+
+          onOpen({
+            data: row.original,
+            reason,
+            disabled: reason === 'view',
+          });
         }}
       />
     );
@@ -428,6 +443,10 @@ function EditableList<
   };
 
   const renderCommands = () => {
+    if (!showCommands) {
+      return null;
+    }
+
     const props: EditableListCommandsProps<TModel, TFieldArrayName> = {
       newItemTitle,
       onCreate: () => onOpen(),

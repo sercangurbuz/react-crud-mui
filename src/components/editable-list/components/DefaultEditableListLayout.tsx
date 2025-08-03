@@ -30,8 +30,8 @@ function DefaultEditableListLayout<
 }: DefaultEditableListControlLayoutProps<TModel, TFieldArrayName>) {
   return (
     <>
-      {headerProps ? (
-        <Header {...headerProps} sx={{ pb: 1 }} rightContent={commandsContent} />
+      {headerProps || commandsContent ? (
+        <Header {...headerProps} rightContent={commandsContent} />
       ) : null}
       {tableContent}
       {errors?.map((error, index) => (

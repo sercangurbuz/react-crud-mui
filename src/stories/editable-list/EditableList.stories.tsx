@@ -1,12 +1,9 @@
-import Card from '@mui/material/Card';
 import { Meta, StoryObj } from '@storybook/react';
 import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page/pages/DetailPage';
 import EditableList from '../../components/editable-list/EditableList';
 import User from '../../components/icons/User';
-import Page from '../../components/page/Page';
-import { isDark } from '../../components/theme/theme.constants';
 import mockUsers from '../../test-setup/mockUsers.json';
 import FormContent from '../detail-page/components/FormContent';
 import { UserDefaultValues } from '../utils/api';
@@ -21,12 +18,6 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
   args: {
     name: 'users',
     newItemTitle: 'New Person',
-    detailPageProps: {
-      schema: userSchema,
-      title: 'Person Details',
-      defaultValues: UserDefaultValues,
-      children: <FormContent />,
-    },
     headerProps: {
       header: 'Top performing users',
       helperText: 'Counted in Millions',
@@ -36,18 +27,25 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
         fontWeight: 500,
       },
     },
+    enableRowClickToDetails: "fetch",
+    detailPageProps: {
+      schema: userSchema,
+      title: 'Person Details',
+      defaultValues: UserDefaultValues,
+      children: <FormContent />,
+    },
     columns: [
       {
         accessorKey: 'name',
-        header: 'NAME',
+        header: 'Name',
       },
       {
         accessorKey: 'username',
-        header: 'USER NAME',
+        header: 'User name',
       },
       {
         accessorKey: 'email',
-        header: 'E-MAIL',
+        header: 'Email',
         cell(props) {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           return <a href={`mailto:${props.getValue()}`}>{props.renderValue() as string}</a>;
@@ -55,7 +53,7 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
       },
       {
         id: 'address',
-        header: 'ADDRESS',
+        header: 'Address',
         enableSorting: false,
         accessorFn: (row) =>
           `${row.address?.street} ${row.address?.suite} ${row.address?.city} ${row.address?.zipcode}`,
@@ -70,15 +68,7 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
         showHeader={false}
         schema={z.object({ users: z.array(userSchema).min(1) })}
       >
-        <Page.Content>
-          <Card
-            sx={{
-              backgroundColor: (theme) => (isDark(theme) ? 'grey.900' : 'primary.25'),
-            }}
-          >
-            <Story />
-          </Card>
-        </Page.Content>
+        <Story />
       </DetailPage>
     );
   },

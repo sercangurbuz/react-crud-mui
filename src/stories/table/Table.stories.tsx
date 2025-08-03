@@ -206,22 +206,6 @@ export const FixedWidth: TableStory = {
   },
 };
 
-export const WithDescriptionRow: TableStory = {
-  args: {
-    onRowProps(row) {
-      return {
-        indicatorColor: row.index % 2 === 0 ? '#035058' : '#0C9E80',
-      };
-    },
-    descriptionField: (row) => (
-      <FlexBox gap={1} alignItems="center">
-        <Map sx={{ fontSize: '1rem' }} />
-        {`${row.original.address?.street} ${row.original.address?.suite} ${row.original.address?.city} ${row.original.address?.zipcode}`}
-      </FlexBox>
-    ),
-  },
-};
-
 export const CellStyling: TableStory = {
   args: {
     onHeadCellProps(header) {
@@ -236,10 +220,26 @@ export const CellStyling: TableStory = {
         sx: {
           backgroundColor: `success.${(cell.column.getIndex() + 1) * 100}`,
           color: `primary.${(5 - cell.column.getIndex()) * 100}`,
-          borderBottomColor: "success.main",
+          borderBottomColor: 'success.main',
         },
       };
     },
+  },
+};
+
+export const WithDescriptionRow: TableStory = {
+  args: {
+    onRowProps(row) {
+      return {
+        indicatorColor: row.index % 2 === 0 ? '#035058' : '#0C9E80',
+      };
+    },
+    descriptionField: (row) => (
+      <FlexBox gap={1} alignItems="center">
+        <Map sx={{ fontSize: '1rem' }} />
+        {`${row.original.address?.street} ${row.original.address?.suite} ${row.original.address?.city} ${row.original.address?.zipcode}`}
+      </FlexBox>
+    ),
   },
 };
 

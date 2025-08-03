@@ -38,10 +38,10 @@ import {
 import { FlexBetween, FlexBox, FlexRowAlign } from '../flexbox';
 import { SpinDelayOptions, useSpinDelay } from '../hooks/useSpinDelay';
 import useTranslation from '../i18n/hooks/useTranslation';
+import { reactNodeToString } from '../misc';
 import isNil from '../misc/isNil';
 import Scrollbar from '../scrollbar';
 import { ScrollbarProps } from '../scrollbar/Scrollbar';
-import { primary } from '../theme/colors';
 import { isDark } from '../theme/theme.constants';
 import { Small } from '../typography';
 import { BodyTableCell } from './components/BodyTableCell';
@@ -587,7 +587,10 @@ function Table<TData extends FieldValues>({
       <BodyTableRow className="description-row" key={`description-${row.id}`}>
         <BodyTableCell
           colSpan={visibleCols?.length}
-          sx={{ py: 1, px: 0, backgroundColor: alpha(primary.main, 0.1) }}
+          title={reactNodeToString(text)}
+          size={size}
+          ellipsis
+          sx={{ pt: 0 }}
         >
           <Small color="text.secondary">{text}</Small>
         </BodyTableCell>

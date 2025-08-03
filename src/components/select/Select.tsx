@@ -4,7 +4,7 @@ import { FieldValues, Path } from 'react-hook-form';
 import ClearRounded from '@mui/icons-material/ClearRounded';
 import Avatar, { AvatarProps } from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
+import FormControl, { FormControlProps } from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
@@ -41,6 +41,7 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<
   optionAsValue?: boolean;
   size?: SelectSize;
   selectInitialOption?: boolean | ((model: T) => boolean);
+  labelWrapperProps?: Omit<FormControlProps, 'children'>;
 };
 
 function Select<T extends FieldValues = FieldValues>({
@@ -54,6 +55,7 @@ function Select<T extends FieldValues = FieldValues>({
   error,
   groupBy: groupByFn,
   helperText,
+  labelWrapperProps,
   id,
   label,
   onChange,
@@ -277,7 +279,7 @@ function Select<T extends FieldValues = FieldValues>({
   };
 
   const renderLabelWrapper = (content: ReactNode, errorMessage: ReactNode) => (
-    <FormControl fullWidth error={!!error} size="small">
+    <FormControl fullWidth {...labelWrapperProps} error={!!error} size="small">
       <InputLabel
         shrink={!!value}
         id={`${id}-label`}
