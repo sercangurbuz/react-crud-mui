@@ -231,7 +231,10 @@ export const WithDescriptionRow: TableStory = {
   args: {
     onRowProps(row) {
       return {
-        indicatorColor: row.index % 2 === 0 ? '#035058' : '#0C9E80',
+        indicatorColor: row.index % 2 === 0 ? '#013136ff' : '#0C9E80',
+        sx: {
+          backgroundColor: row.index % 2 === 0 ? '#06373fff' : '#075041ff',
+        },
       };
     },
     descriptionField: (row) => (

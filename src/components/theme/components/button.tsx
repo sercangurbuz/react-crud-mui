@@ -85,45 +85,65 @@ export const ButtonBase = (theme: Theme): Components['MuiButtonBase'] => {
 };
 
 export const ButtonGroup = (theme: Theme): Components['MuiButtonGroup'] => {
-  const { primary, success, error, warning, secondary } = theme.palette;
-
   return {
     styleOverrides: {
       root: { boxShadow: 'none' },
       groupedContainedPrimary: {
-        '&:not(:last-of-type)': { borderColor: primary[600] },
+        '&:not(:last-of-type):not(.Mui-disabled)': {
+          borderColor: theme.palette.primary[600],
+        },
       },
       groupedContained: ({ ownerState: { color } }) => ({
         ...(color === 'success' && {
-          '&:not(:last-of-type)': { borderColor: success[600] },
+          '&:not(:last-of-type):not(.Mui-disabled)': {
+            borderColor: theme.palette.success[600],
+          },
         }),
 
         ...(color === 'error' && {
-          '&:not(:last-of-type)': { borderColor: error[400] },
+          '&:not(:last-of-type):not(.Mui-disabled)': {
+            borderColor: theme.palette.error[400],
+          },
         }),
 
         ...(color === 'warning' && {
-          '&:not(:last-of-type)': { borderColor: warning[400] },
+          '&:not(:last-of-type):not(.Mui-disabled)': {
+            borderColor: theme.palette.warning[400],
+          },
         }),
       }),
 
       groupedContainedSecondary: {
-        backgroundColor: secondary[isDark(theme) ? 700 : 200],
-        '&:not(:last-of-type)': { borderColor: secondary[300] },
+        backgroundColor: theme.palette.secondary[200],
+        '&:not(:last-of-type):not(.Mui-disabled)': {
+          borderColor: theme.palette.secondary[300],
+        },
+        ...theme.applyStyles('dark', {
+          backgroundColor: theme.palette.secondary[700],
+        }),
         ':hover': {
-          backgroundColor: secondary[isDark(theme) ? 800 : 300],
+          backgroundColor: theme.palette.secondary[300],
+          ...theme.applyStyles('dark', {
+            backgroundColor: theme.palette.secondary[800],
+          }),
         },
       },
 
       groupedOutlinedSecondary: {
         ':hover': {
-          borderColor: secondary[isDark(theme) ? 700 : 200],
-          backgroundColor: secondary[isDark(theme) ? 800 : 200],
+          borderColor: theme.palette.secondary[200],
+          backgroundColor: theme.palette.secondary[200],
+          ...theme.applyStyles('dark', {
+            borderColor: theme.palette.secondary[700],
+            backgroundColor: theme.palette.secondary[800],
+          }),
         },
       },
 
       groupedTextSecondary: {
-        '&:not(:last-of-type)': { borderColor: secondary[300] },
+        '&:not(:last-of-type):not(.Mui-disabled)': {
+          borderColor: theme.palette.secondary[300],
+        },
       },
     },
   };

@@ -61,6 +61,11 @@ export { type FormPhoneInputProps } from './components/form/controls/FormPhoneIn
 export { type FormRadioGroupProps } from './components/form/controls/FormRadioGroup';
 export { type FormSelectProps } from './components/form/controls/FormSelect';
 export { type FormSwitchProps } from './components/form/controls/FormSwitch';
+export {
+  default as DropdownButton,
+  type DropdownButtonProps,
+  type DropdownOption,
+} from './components/dropdown-button/DropdownButton';
 export * from './components/form/hooks';
 export { default as FormProvider } from './components/form/components/FormProvider';
 export { default as Header, type HeaderProps } from './components/header/Header';

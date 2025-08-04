@@ -148,7 +148,7 @@ export interface EditableListProps<
   /**
    * Custom commands when needed to override the default buttons
    */
-  rowCommands?: (props: EditingListCommandsProps<TArrayModel>) => ReactNode;
+  onRowCommands?: (props: EditingListCommandsProps<TArrayModel>) => ReactNode;
   /**
    * Column props of commands
    */
@@ -185,7 +185,7 @@ function EditableList<
   newItemTitle,
   onDelete,
   onSave,
-  rowCommands,
+  onRowCommands,
   showCommands = true,
   uniqueFields,
   ...tableProps
@@ -280,8 +280,8 @@ function EditableList<
             ...disabledProp,
           };
 
-          if (rowCommands) {
-            return rowCommands(props);
+          if (onRowCommands) {
+            return onRowCommands(props);
           }
 
           return <ActionCommands {...props} />;
@@ -299,7 +299,7 @@ function EditableList<
     findIndex,
     onOpen,
     remove,
-    rowCommands,
+    onRowCommands,
     showCopy,
     showDelete,
     showEdit,

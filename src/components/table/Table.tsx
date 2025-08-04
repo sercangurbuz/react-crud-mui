@@ -581,10 +581,10 @@ function Table<TData extends FieldValues>({
     );
   };
 
-  const renderDescriptionRow = (text: string, row: Row<TData>) => {
+  const renderDescriptionRow = (text: string, row: Row<TData>, sx: TableRowProps['sx']) => {
     const visibleCols = row.getVisibleCells();
     return (
-      <BodyTableRow className="description-row" key={`description-${row.id}`}>
+      <BodyTableRow className="description-row" key={`description-${row.id}`} sx={sx}>
         <BodyTableCell
           colSpan={visibleCols?.length}
           title={reactNodeToString(text)}
@@ -683,7 +683,12 @@ function Table<TData extends FieldValues>({
             {row.getVisibleCells().map(renderCell)}
           </BodyTableRow>
 
-          {descriptionText ? renderDescriptionRow(descriptionText, row) : null}
+          {descriptionText
+            ? renderDescriptionRow(descriptionText, row, {
+                ...rowSx,
+                ...exRowProps?.sx,
+              } as TableRowProps['sx'])
+            : null}
           {isCanNested && renderNestedRow(row)}
         </Fragment>
       );
