@@ -28,7 +28,7 @@ export type DropdownOption = {
   value: string;
   helperText?: string;
   disabled?: boolean;
-  onClick?: (value: string, event: React.MouseEvent<HTMLLIElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLLIElement>) => void;
 };
 
 function DropdownButton({
@@ -43,7 +43,8 @@ function DropdownButton({
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
 
-  const handleToggle = () => {
+  const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setOpen((prevOpen) => !prevOpen);
   };
 
@@ -99,8 +100,10 @@ function DropdownButton({
                       key={option.value}
                       disabled={option.disabled}
                       onClick={(event) => {
+                        event.stopPropagation();
+
                         setOpen(false);
-                        option.onClick?.(option.value, event);
+                        option.onClick?.(event);
                       }}
                     >
                       {option.icon ? (
