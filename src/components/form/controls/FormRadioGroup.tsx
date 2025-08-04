@@ -6,6 +6,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup, { RadioGroupProps } from '@mui/material/RadioGroup';
 import { styled } from '@mui/material/styles';
 
+import useTranslation from '../../i18n/hooks/useTranslation';
 import { FormControlProps } from '../components/FormControl';
 import Field, { ControlCommonProps } from '../Field';
 
@@ -24,6 +25,8 @@ export interface FormRadioGroupProps<TFieldValues extends FieldValues = FieldVal
     FormControlProps {
   data?: RadioGroupData[];
   disabled?: boolean;
+  showAllOption?: boolean;
+  showAllOptionValue?: string | number | null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -40,11 +43,15 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
   helperText,
   placement = 'top',
   fieldProps,
+  showAllOption,
+  showAllOptionValue = null,
   disabled,
   formControlProps,
   data,
   ...radioGroupProps
 }: FormRadioGroupProps<TFieldValues>) {
+  const { t } = useTranslation();
+
   return (
     <Field
       name={name}
@@ -65,6 +72,13 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
             radioGroupProps?.onChange?.(e, value);
           }}
         >
+          {showAllOption && (
+            <StyledFormControlLabel
+              value={showAllOptionValue}
+              control={<Radio />}
+              label={t('all')}
+            />
+          )}
           {data?.map(({ label, value }) => (
             <StyledFormControlLabel
               value={value}

@@ -65,3 +65,10 @@ export const WithLabel: RadioGroupStory = {
     label: 'Gender',
   },
 };
+
+export const WithAllOption: RadioGroupStory = {
+  args: {
+    showAllOption: true,
+    showAllOptionValue: 'all',
+  },
+};
