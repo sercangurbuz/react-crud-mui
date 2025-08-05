@@ -94,7 +94,13 @@ function DropdownButton({
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <MenuList id="split-button-menu" autoFocusItem>
+                <MenuList
+                  id="split-button-menu"
+                  autoFocusItem
+                  sx={{
+                    textAlign: 'left',
+                  }}
+                >
                   {options.map((option) => (
                     <MenuItem
                       key={option.value}

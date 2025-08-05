@@ -5,4 +5,4 @@ export const EXPANDER_COL_NAME = 'expander';
 export const TREE_EXPANDER_COL_NAME = 'tree-expander';
 export const BUILTIN_BAND_COL_NAME = 'place_holder_band';
 export const DEFAULT_ROW_KEY_FIELD = 'id';
-export const DEFAULT_PAGER_SIZES = [5, 10, 25];
+export const DEFAULT_PAGER_SIZES = [15, 25, 50, 100, 200];

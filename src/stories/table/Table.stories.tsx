@@ -155,7 +155,14 @@ export const Selection: TableStory = {
   },
   render(args) {
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-    return <Table {...args} state={{ rowSelection }} onRowSelectionChange={setRowSelection} />;
+    return (
+      <Table
+        {...args}
+        state={{ rowSelection }}
+        onRowSelectionChange={setRowSelection}
+        descriptionField="name"
+      />
+    );
   },
 };
 

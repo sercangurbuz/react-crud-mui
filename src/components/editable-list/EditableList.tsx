@@ -152,7 +152,7 @@ export interface EditableListProps<
   /**
    * Column props of commands
    */
-  commandColProps?: TableColumn<TArrayModel>;
+  commandColProps?: Partial<TableColumn<TArrayModel>>;
   /**
    * DetailPage content
    */
@@ -252,7 +252,7 @@ function EditableList<
     return [
       ...columns,
       {
-        accessorKey: 'commands',
+        id: 'commands',
         align: 'center',
         header: () => null,
         enableSorting: false,

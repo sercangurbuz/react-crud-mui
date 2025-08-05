@@ -28,7 +28,14 @@ export const BodyTableRow = styled(TableRow, {
         '&::after': { width: '7px' },
       },
     },
-    '&+tr.description-row': {
+  }),
+  backgroundColor: bgColor,
+  '& .MuiTableCell-root': {
+    borderBottom: bordered ? undefined : 'none',
+  },
+  '& +tr.description-row': {
+    backgroundColor: bgColor,
+    ...(indicatorColor && {
       '& .MuiTableCell-root:first-of-type': {
         position: 'relative',
         '&::after': {
@@ -41,11 +48,7 @@ export const BodyTableRow = styled(TableRow, {
           backgroundColor: indicatorColor,
         },
       },
-    },
-  }),
-  backgroundColor: bgColor,
-  '& .MuiTableCell-root': {
-    borderBottom: bordered ? undefined : 'none',
+    }),
   },
   '&:hover:not(.description-row),&:hover+tr.description-row': {
     backgroundColor: alpha(theme.palette.primary.main, 0.1),
