@@ -1,24 +1,22 @@
-import { alpha } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles'
 
+// ==============================================================
 declare module '@mui/material/styles' {
   interface PaletteColor {
-    25: string;
-    50: string;
-    100: string;
-    200: string;
-    300: string;
-    400: string;
-    500: string;
-    600: string;
-    700: string;
-    800: string;
-    900: string;
-  }
-
-  interface TypeBackground {
-    header?: string;
+    25: string
+    50: string
+    100: string
+    200: string
+    300: string
+    400: string
+    500: string
+    600: string
+    700: string
+    800: string
+    900: string
   }
 }
+// ==============================================================
 
 const grey = {
   25: '#F9FAFB',
@@ -32,7 +30,7 @@ const grey = {
   700: '#374151',
   800: '#1f2937',
   900: '#111827',
-};
+}
 
 export const primary = {
   25: '#F7F5FE',
@@ -47,7 +45,7 @@ export const primary = {
   800: '#33129C',
   900: '#240C6E',
   main: '#6950E8',
-};
+}
 
 export const success = {
   25: '#F1FEF5',
@@ -62,11 +60,11 @@ export const success = {
   800: '#056A6A',
   900: '#035058',
   main: '#11b886',
-};
+}
 
 export const warning = {
   25: '#FFFCF5',
-  50: '#FFF8EE',
+  50: '#FFF8E',
   100: '#FFF8E6',
   200: '#FFEBB3',
   300: '#FEDE80',
@@ -77,7 +75,7 @@ export const warning = {
   800: '#93440F',
   900: '#7A3109',
   main: '#FEBF06',
-};
+}
 
 export const error = {
   25: '#FEF6F8',
@@ -92,32 +90,32 @@ export const error = {
   800: '#910D2D',
   900: '#63091F',
   main: '#EF4770',
-};
+}
 
 export const secondary = {
   ...grey,
   main: '#F1F5F9',
-};
+}
 
 export const info = {
   light: '#F4F4FF',
   main: '#8C8DFF',
   dark: '#0C53B7',
-};
+}
 
 // FOR LIGHT THEME ACTION COLORS
 export const textLight = {
   primary: grey[900],
   disabled: grey[200],
   secondary: grey[500],
-};
+}
 
 // FOR DARK THEME TEXT COLORS
 export const textDark = {
   primary: '#ffffff',
   disabled: grey[200],
   secondary: grey[400],
-};
+}
 
 // FOR LIGHT THEME ACTION COLORS
 export const actionLight = {
@@ -132,7 +130,7 @@ export const actionLight = {
   hover: alpha(grey[900], 0.04),
   active: alpha(grey[900], 0.54),
   disabledBackground: alpha(grey[900], 0.12),
-};
+}
 
 // FOR DARK THEME ACTION COLORS
 export const actionDark = {
@@ -147,10 +145,10 @@ export const actionDark = {
   hover: alpha(grey[100], 0.04),
   active: alpha(grey[100], 0.54),
   disabledBackground: alpha(grey[100], 0.12),
-};
+}
 
 // COMMON COLOR PALETTE
-const palette = {
+const basePalette = {
   grey,
   info,
   error,
@@ -158,24 +156,30 @@ const palette = {
   success,
   warning,
   secondary,
-};
+}
 
 // LIGHT THEME COLOR PALETTE
 export const lightPalette = {
-  ...palette,
+  ...basePalette,
   mode: 'light',
   text: textLight,
   divider: grey[200],
   action: actionLight,
-  background: { default: '#fdfdff', paper: '#ffffff', header: grey[100] },
-};
+  background: {
+    paper: '#ffffff',
+    default: 'rgb(244 244 244)',
+  },
+}
 
 // DARK THEME COLOR PALETTE
 export const darkPalette = {
-  ...palette,
+  ...basePalette,
   mode: 'dark',
   text: textDark,
   divider: grey[700],
   action: actionDark,
-  background: { default: grey[900], paper: grey[800], header: grey[700] },
-};
+  background: {
+    paper: grey[800],
+    default: grey[900],
+  },
+}

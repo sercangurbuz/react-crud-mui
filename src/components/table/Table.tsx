@@ -32,6 +32,7 @@ import {
   type Row,
   type RowData,
   type TableOptions,
+  type Table as TableType,
   type VisibilityState,
 } from '@tanstack/react-table';
 
@@ -115,13 +116,22 @@ export interface TableProps<TData extends FieldValues>
   onRenderNestedComponent?: (props: RenderSubComponentProps<TData>) => React.ReactNode;
   onRowClick?: (e: React.MouseEvent<HTMLTableRowElement>, row: Row<TData>) => void;
   onRowEnterPress?: (row: Row<TData>) => void;
-  onRowProps?: (row: Row<TData>) => React.ComponentProps<typeof BodyTableRow> | undefined;
+  onRowProps?: (
+    row: Row<TData>,
+    table: TableType<TData>,
+  ) => React.ComponentProps<typeof BodyTableRow> | undefined;
   onCellProps?: (
     cell: Cell<TData, unknown>,
+    table: TableType<TData>,
   ) => React.ComponentProps<typeof BodyTableCell> | undefined;
   onHeadCellProps?: (
     header: Header<TData, unknown>,
+    table: TableType<TData>,
   ) => React.ComponentProps<typeof HeadTableCell> | undefined;
+  onFooterCellProps?: (
+    header: Header<TData, unknown>,
+    table: TableType<TData>,
+  ) => React.ComponentProps<typeof BodyTableCell> | undefined;
   onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
   rowIdField?: Path<TData>;
   scrollProps?: Partial<ScrollbarProps>;
@@ -161,6 +171,7 @@ function Table<TData extends FieldValues>({
   newRowButtonText,
   newRowButtonContent,
   onCellProps,
+  onFooterCellProps,
   onHeadCellProps,
   onNewRow,
   onRenderNestedComponent,
@@ -429,7 +440,7 @@ function Table<TData extends FieldValues>({
     const sortDirection = header.column.getIsSorted();
     const sortToggleHandler = header.column.getToggleSortingHandler();
     const isSortingActive = !!sortDirection;
-    const exHeadCellProps = onHeadCellProps?.(header);
+    const exHeadCellProps = onHeadCellProps?.(header, table);
 
     return (
       <HeadTableCell
@@ -514,7 +525,7 @@ function Table<TData extends FieldValues>({
     const isSortingActive = cell.column.getCanSort() && !!cell.column.getIsSorted();
     const pinningStyles = table.options.enableColumnPinning ? getPinningStyles(cell.column) : null;
     const isEllipsis = (cell.column.columnDef as CoreColumn<TData>).ellipsis;
-    const exCellProps = onCellProps?.(cell);
+    const exCellProps = onCellProps?.(cell, table);
 
     if ((cell.column.columnDef as CoreColumn<TData>).link) {
       const uri = (cell.column.columnDef as CoreColumn<TData>).link!(cell.row);
@@ -647,7 +658,7 @@ function Table<TData extends FieldValues>({
 
       const isCanNested = onRenderNestedComponent && row.getIsExpanded();
       const isSelected = row.getIsSelected();
-      const exRowProps = onRowProps?.(row);
+      const exRowProps = onRowProps?.(row, table);
 
       return (
         <Fragment key={row.id}>
@@ -783,13 +794,22 @@ function Table<TData extends FieldValues>({
             key={footerGroup.id}
             sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.05) }}
           >
-            {footerGroup.headers.map((header) => (
-              <BodyTableCell size={size} key={header.id} colSpan={header.colSpan}>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(header.column.columnDef.footer, header.getContext())}
-              </BodyTableCell>
-            ))}
+            {footerGroup.headers.map((header) => {
+              const exFooterCellProps = onFooterCellProps?.(header, table);
+
+              return (
+                <BodyTableCell
+                  size={size}
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  {...exFooterCellProps}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(header.column.columnDef.footer, header.getContext())}
+                </BodyTableCell>
+              );
+            })}
           </TableRow>
         ))}
       </TableFooter>
