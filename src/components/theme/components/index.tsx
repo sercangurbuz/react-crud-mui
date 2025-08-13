@@ -38,6 +38,7 @@ import {
 } from './pickers';
 import Radio from './radio';
 import Rating from './rating';
+import { Select } from './select';
 import Switch from './switch';
 import { Tab, TabList, TabPanel, Tabs } from './tabs';
 
@@ -100,6 +101,7 @@ const componentsOverride = (theme: Theme): Components => {
     MuiBackdrop: Backdrop(theme),
     MuiBreadcrumbs: Breadcrumbs(theme),
     MuiAutocomplete: Autocomplete(),
+    MuiSelect: Select(theme),
     // AVATAR
     MuiAvatar: Avatar(theme),
     MuiAvatarGroup: AvatarGroup(theme),

@@ -28,7 +28,7 @@ const meta: Meta<typeof Field.Select<UserSchema>> = {
       <DetailPage
         schema={z.object({ userId: z.number({ message: 'User is missing' }) })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ userId: null }}
+        defaultValues={{ userId: 1 }}
         showHeader={false}
       >
         <Page.Content>

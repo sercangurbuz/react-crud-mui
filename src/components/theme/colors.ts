@@ -182,5 +182,6 @@ export const darkPalette = {
   background: {
     paper: grey[800],
     default: grey[900],
+    header: grey[700],
   },
 };

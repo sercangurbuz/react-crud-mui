@@ -1,9 +1,9 @@
-import { Components } from '@mui/material/styles/components'
+import CalendarMonthOutlined from '@mui/icons-material/CalendarMonthOutlined';
 // MUI ICON COMPONENTS
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
-import CalendarMonthOutlined from '@mui/icons-material/CalendarMonthOutlined'
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { Components } from '@mui/material/styles/components';
 
 // ==============================================================
 // DATE PICKER
@@ -16,23 +16,32 @@ export const DatePicker = (): Components['MuiDatePicker'] => ({
       leftArrowIcon: (props) => <KeyboardArrowLeft {...props} fontSize="small" />,
       rightArrowIcon: (props) => <KeyboardArrowRight {...props} fontSize="small" />,
     },
+    slotProps: {
+      field: {
+        sx: {
+          '& .MuiInputAdornment-root.MuiInputAdornment-positionEnd': { ml: 0 },
+        },
+      },
+    },
   },
-})
+});
 
 export const DesktopDatePicker = (): Components['MuiDesktopDatePicker'] => ({
   defaultProps: {
     slots: DatePicker()?.defaultProps?.slots,
-    slotProps: { desktopPaper: { sx: { borderRadius: 2, boxShadow: 4 } } },
+    slotProps: {
+      desktopPaper: { sx: { borderRadius: 2, boxShadow: 4 } },
+    },
   },
-})
+});
 
 export const MobileDatePicker = (): Components['MuiMobileDatePicker'] => ({
   defaultProps: DatePicker()?.defaultProps,
-})
+});
 
 export const StaticDatePicker = (): Components['MuiStaticDatePicker'] => ({
   defaultProps: DatePicker()?.defaultProps,
-})
+});
 
 // ==============================================================
 // TIME PICKER
@@ -57,11 +66,11 @@ export const TimePicker = (): Components['MuiTimePicker'] => ({
       },
     },
   },
-})
+});
 
 export const DesktopTimePicker = (): Components['MuiDesktopTimePicker'] => ({
   defaultProps: TimePicker()?.defaultProps,
-})
+});
 
 // ==============================================================
 // DATE TIME PICKER
@@ -80,7 +89,7 @@ export const DateTimePicker = (): Components['MuiDateTimePicker'] => ({
       rightArrowIcon: (props) => <KeyboardArrowRight {...props} fontSize="small" />,
     },
   },
-})
+});
 
 export const DesktopDateTimePicker = (): Components['MuiDesktopDateTimePicker'] => ({
   defaultProps: {
@@ -96,4 +105,4 @@ export const DesktopDateTimePicker = (): Components['MuiDesktopDateTimePicker'] 
       rightArrowIcon: (props) => <KeyboardArrowRight {...props} fontSize="small" />,
     },
   },
-})
+});
