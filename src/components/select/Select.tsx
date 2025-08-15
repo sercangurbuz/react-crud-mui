@@ -132,7 +132,9 @@ function Select<T extends FieldValues = FieldValues>({
       const descNode = renderDescription?.(item);
       const imgNode = optionImg ? get(item, optionImg) : null;
 
-      let optionNode = (
+      let optionNode = multiple ? (
+        textNode
+      ) : (
         <Box
           width="100%"
           height="100%"
@@ -195,9 +197,9 @@ function Select<T extends FieldValues = FieldValues>({
   };
 
   const handleChange = (e: SelectChangeEvent<unknown>, child: React.ReactNode) => {
-    if (optionAsValue) {
-      const selValue = e.target.value;
+    const selValue = e.target.value;
 
+    if (optionAsValue) {
       if (selValue) {
         const selectedModel = Array.isArray(selValue)
           ? selValue.map((record) => findModelByKey(record))
@@ -237,7 +239,10 @@ function Select<T extends FieldValues = FieldValues>({
             }}
             size="small"
             onClick={() =>
-              onChange?.({ target: { value: null } } as unknown as SelectChangeEvent, null)
+              onChange?.(
+                { target: { value: multiple ? [] : null } } as unknown as SelectChangeEvent,
+                null,
+              )
             }
           >
             <ClearRounded sx={{ fontSize: size === 'small' ? '0.8em' : '1em' }} />
@@ -281,7 +286,7 @@ function Select<T extends FieldValues = FieldValues>({
   const renderLabelWrapper = (content: ReactNode, errorMessage: ReactNode) => (
     <FormControl fullWidth {...labelWrapperProps} error={!!error} size="small">
       <InputLabel
-        shrink={!!value}
+        shrink={multiple ? !!(value as Array<unknown>)?.length : !!value}
         id={`${id}-label`}
         sx={{
           lineHeight: size === 'smaller' ? 1.4 : undefined,

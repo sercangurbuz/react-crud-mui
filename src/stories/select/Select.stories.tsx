@@ -23,12 +23,15 @@ const meta: Meta<typeof Field.Select<UserSchema>> = {
     labelWrapperProps: { fullWidth: false },
   },
   component: Field.Select,
-  decorators: (Story) => {
+  decorators: (Story, ctx) => {
     return (
       <DetailPage
-        schema={z.object({ userId: z.number({ message: 'User is missing' }) })}
+        schema={z.object({
+          userId:
+            ctx.name === 'Multiple' ? z.number().array() : z.number({ message: 'User is missing' }),
+        })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ userId: 1 }}
+        defaultValues={{ userId: ctx.name === 'Multiple' ? [1, 2] : 1 }}
         showHeader={false}
       >
         <Page.Content>
@@ -67,6 +70,12 @@ export const WithDescription: SelectStory = {
 export const OptionAsValue: SelectStory = {
   args: {
     optionAsValue: true,
+  },
+};
+
+export const Multiple: SelectStory = {
+  args: {
+    multiple: true,
   },
 };
 

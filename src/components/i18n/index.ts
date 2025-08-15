@@ -18,7 +18,7 @@ import translation_en from './resources/en.json';
 import translation_tr from './resources/tr.json';
 
 const i18nInstance: i18n = createInstance({
-  fallbackLng: 'en',
+  fallbackLng: 'tr',
   resources: {
     tr: {
       coreui: translation_tr,
