@@ -8,7 +8,7 @@ import { RowSelectionState } from '@tanstack/react-table';
 
 import useTranslation from '../../i18n/hooks/useTranslation';
 import Modal, { ModalProps } from '../../modal/Modal';
-import Page from '../../page/Page';
+import ListPageModalLayout from '../components/ListPageModalLayout';
 import ListPage, { ListPageProps } from './ListPage';
 
 export interface ListPageSelectionProps<
@@ -46,6 +46,7 @@ function ListPageSelection<TModel extends FieldValues, TFilter extends FieldValu
       <ListPage
         enableCreateItem={false}
         enableClear
+        onLayout={(props) => <ListPageModalLayout {...props} />}
         {...lpProps}
         onClose={onClose}
         tableProps={{
@@ -58,14 +59,6 @@ function ListPageSelection<TModel extends FieldValues, TFilter extends FieldValu
           size: 'small',
           ...tableProps,
         }}
-        onLayout={(props) => (
-          <>
-            <Page.Layout
-              {...props}
-              content={<Modal.Scroll autoHide={false}>{props.content}</Modal.Scroll>}
-            />
-          </>
-        )}
         onClear={() => setRowSelection({})}
         onCommands={(props) => (
           <>

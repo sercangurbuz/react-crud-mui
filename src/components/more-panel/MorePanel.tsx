@@ -4,14 +4,15 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
-import Stack, { StackProps } from '@mui/material/Stack';
+import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 
 import { FlexBetween } from '../flexbox';
+import { FlexBoxProps } from '../flexbox/FlexBox';
 import useTranslation from '../i18n/hooks/useTranslation';
 import { Small } from '../typography';
 
-export interface MorePanelProps extends StackProps {
+export interface MorePanelProps extends FlexBoxProps {
   initialVisibility?: boolean;
   extraContent?: React.ReactNode;
   moreText?: ReactNode;
@@ -41,15 +42,10 @@ function MorePanel({
   return (
     <>
       {showMore ? children : null}
-      <FlexBetween alignItems="center" width="100%" p={1.5}>
+      <FlexBetween alignItems="center" width="100%" p={1.5} {...boxProps}>
         {extraContent ?? <Box />}
         <StyledButtonBase disableRipple>
-          <Stack
-            flexDirection="row"
-            alignItems="center"
-            {...boxProps}
-            onClick={() => setshowMore((p) => !p)}
-          >
+          <Stack flexDirection="row" alignItems="center" onClick={() => setshowMore((p) => !p)}>
             {showMore ? (
               <>
                 <ExpandLessIcon sx={{ color: 'text.secondary', fontSize: '1.5em' }} />

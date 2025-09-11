@@ -6,29 +6,28 @@ import Assignment from '@mui/icons-material/Assignment';
 import Close from '@mui/icons-material/Close';
 import Done from '@mui/icons-material/Done';
 import Pending from '@mui/icons-material/Pending';
-import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
 import Search from '@mui/icons-material/Search';
 import { Avatar, Box, Checkbox } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import { Meta, StoryObj } from '@storybook/react';
 import { RowSelectionState } from '@tanstack/react-table';
 import { z } from 'zod';
 
-import ActionCommands from '../../components/action-commands/ActionCommands';
 import { FlexBetween } from '../../components/flexbox';
+import Field from '../../components/form/Field';
 import Email from '../../components/icons/Email';
 import ListPage from '../../components/list-page/pages/ListPage';
-import Table from '../../components/table/Table';
+import Page from '../../components/page/Page';
 import { H1, Paragraph, Small } from '../../components/typography';
 import { ServerError } from '../../components/utils';
 import mockUsers from '../../test-setup/mockUsers.json';
 import { UserDefaultValues } from '../utils/api';
 import { UserSchema } from '../utils/schema';
 import useSession from '../utils/useSession';
+import CustomActionCommands from './components/CustomActionCommands';
 import EmbededDetailPage from './components/EmbededDetailPage';
 import EmbededDrawerDetailPage from './components/EmbededDrawerDetailPage';
 import FilterContent from './components/FilterContent';
@@ -99,6 +98,19 @@ type ListPageModalStory = StoryObj<typeof ListPage.Modal<UserSchema>>;
 type ListPageRouteStory = StoryObj<typeof ListPage.Route<UserSchema>>;
 
 export const Simple: ListPageStory = {};
+
+export const ExtraFilter: ListPageStory = {
+  args: {
+    moreContent: (
+      <Page.Content>
+        <Field.Input label="Name" name="name" sx={{ width: 300 }} />
+      </Page.Content>
+    ),
+    morePanelProps: {
+      moreText: 'Daha fazla filtre',
+    },
+  },
+};
 
 export const InitialLoadDisabled: ListPageStory = {
   args: {
@@ -390,20 +402,7 @@ export const WithDetailPage: ListPageStory = {
       alert(`Fallback event for reason ${reason}`);
     },
     onActionCommands(props) {
-      return (
-        <ActionCommands {...props} showCopy={false}>
-          {(close) => (
-            <>
-              <Divider />
-              <Table.MoreMenuItem
-                title="Custom Menu"
-                Icon={SaveAltOutlined}
-                onClick={() => close()}
-              />
-            </>
-          )}
-        </ActionCommands>
-      );
+      return <CustomActionCommands {...props} />;
     },
   },
 };

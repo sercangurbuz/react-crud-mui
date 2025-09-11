@@ -148,7 +148,9 @@ function Field<TFieldValues extends FieldValues = FieldValues>({
       ? {
           ...field,
           onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            setValue(fieldName, e.target.value as PathValue<TFieldValues, Path<TFieldValues>>);
+            setValue(fieldName, e.target.value as PathValue<TFieldValues, Path<TFieldValues>>, {
+              shouldDirty: true,
+            });
             setTouched(true);
           },
           onBlur: () => {

@@ -1,7 +1,7 @@
 import { FieldValues } from 'react-hook-form';
 
 import Modal, { ModalProps } from '../../modal/Modal';
-import Page from '../../page/Page';
+import ListPageModalLayout from '../components/ListPageModalLayout';
 import ListPage, { ListPageProps } from './ListPage';
 
 export interface ListPageModalProps<
@@ -29,19 +29,14 @@ function ListPageModal<TModel extends FieldValues, TFilter extends FieldValues =
       <ListPage
         enableCreateItem={false}
         enableClear
+        onLayout={(props) => <ListPageModalLayout {...props} />}
         {...lpProps}
         onClose={onClose}
-        onLayout={(props) => (
-          <>
-            <Page.Layout
-              {...props}
-              content={<Modal.Scroll autoHide={false}>{props.content}</Modal.Scroll>}
-            />
-          </>
-        )}
       />
     </Modal>
   );
 }
 
 export default ListPageModal;
+
+ListPageModal.Layout = ListPageModalLayout;

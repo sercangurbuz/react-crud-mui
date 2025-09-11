@@ -401,22 +401,23 @@ function Table<TData extends FieldValues>({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTableRowElement>, row: Row<TData>) => {
-    event.stopPropagation();
     const currentRow = (bodyRef.current as unknown as HTMLBodyElement)?.children.namedItem(row.id);
     switch (event.code) {
       case 'ArrowUp':
         (currentRow?.previousElementSibling as HTMLTableRowElement)?.focus();
+        event.stopPropagation();
         break;
       case 'ArrowDown':
         (currentRow?.nextElementSibling as HTMLTableRowElement)?.focus();
+        event.stopPropagation();
         break;
       case 'Space':
         selectRow(row);
+        event.stopPropagation();
         break;
       case 'Enter':
         onRowEnterPress?.(row);
-        break;
-      default:
+        event.stopPropagation();
         break;
     }
   };
@@ -688,7 +689,10 @@ function Table<TData extends FieldValues>({
             // for keyboard navigation
             id={row.id}
             tabIndex={0}
-            onKeyDown={(e) => handleKeyDown(e, row)}
+            onKeyDown={(e) => {
+              handleKeyDown(e, row);
+              exRowProps?.onKeyDown?.(e);
+            }}
             key={row.id}
           >
             {row.getVisibleCells().map(renderCell)}

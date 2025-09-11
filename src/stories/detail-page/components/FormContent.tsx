@@ -25,13 +25,19 @@ function FormContent() {
             <Field.Input name="username" label="User name" onChange={() => void trigger()} />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
-            <Field.Input name="email" label="Email" />
+            <Field.Input
+              name="email"
+              label="Email"
+              fieldProps={{
+                validationMode: 'onBlur',
+              }}
+            />
           </Grid2>
           <Grid2 size={{ md: 4, xs: 12 }}>
             <Field.Input name="website" label="Web site" />
           </Grid2>
 
-     {/*      <Field.With prefix="address">
+          {/*      <Field.With prefix="address">
             <Field.Input name="city" label="City" />
             <Field.Input name="street" label="Street" />
             <Field.Input name="suit" label="Suite" />

@@ -11,7 +11,7 @@ import MoreButton from '../more-button';
 export type PanelTab = {
   key: React.Key;
   value: string;
-  children: ReactNode;
+  children?: ReactNode;
   title: ReactNode;
 };
 export interface PanelProps extends CardProps, HeaderOwnProps {
@@ -35,7 +35,10 @@ const BoxWrapper = styled('div', {
   padding: '1.5rem',
   cursor: 'pointer',
   borderRadius: '0 0 12px 12px',
-  ...(active && { backgroundColor: theme.palette.action.selected }),
+  ...(active && {
+    backgroundColor: theme.palette.action.selected,
+    boxShadow: theme.shadows[1],
+  }),
 }));
 
 function Panel({

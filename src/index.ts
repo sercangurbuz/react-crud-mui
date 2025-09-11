@@ -116,6 +116,7 @@ export {
   type SearchInputProps,
 } from './components/search-input/SearchInput';
 export { default as Select, type SelectProps } from './components/select/Select';
+export { default as Progress, type ProgressProps } from './components/progress/Progress';
 export {
   default as CrudMuiProvider,
   type CrudMuiProviderProps as SettingsProviderProps,

@@ -6,6 +6,7 @@ import merge from 'lodash.merge';
 import removeFalsy from '../../misc/removeFalsy';
 import { TabChangedPayload } from '../../page/components/DefaultTabs';
 import ListPageCommands from '../components/ListPageCommands';
+import ListPageDefaultLayout from '../components/ListPageDefaultLayout';
 import { DEFAULT_PAGEINDEX, DEFAULT_PAGESIZE } from '../constants';
 import { ListPageMeta } from './ListPageFilter';
 import ListPageForm, { ListPageFormProps } from './ListPageForm';
@@ -124,5 +125,6 @@ ListPage.Selection = ListPageSelection;
 ListPage.Modal = ListPageModal;
 ListPage.Route = ListPageRoute;
 ListPage.Commands = ListPageCommands;
+ListPage.Layout = ListPageDefaultLayout;
 
 export default ListPage;

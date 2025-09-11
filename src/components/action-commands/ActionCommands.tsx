@@ -11,7 +11,7 @@ import Copy from '../icons/Copy';
 import TableMoreMenu, { TableMoreMenuProps } from '../table/components/TableMoreMenu';
 import TableMoreMenuItem from '../table/components/TableMoreMenuItem';
 
-export interface ActionCommandsProps<TModel extends FieldValues>
+export interface ActionCommandsProps<TModel extends FieldValues = FieldValues>
   extends Omit<TableMoreMenuProps, 'children' | 'open' | 'handleClose' | 'handleOpen'> {
   onEdit?: () => void;
   onView?: () => void;

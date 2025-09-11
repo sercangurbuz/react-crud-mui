@@ -25,6 +25,7 @@ export type PageLayoutProps = {
   panelsContent?: ReactNode;
   progressContent?: ReactNode;
   moreContent?: ReactNode;
+  stickyContent?: ReactNode;
 };
 
 function DefaultLayout({

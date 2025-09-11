@@ -16,10 +16,15 @@ export const DatePicker = (): Components['MuiDatePicker'] => ({
       leftArrowIcon: (props) => <KeyboardArrowLeft {...props} fontSize="small" />,
       rightArrowIcon: (props) => <KeyboardArrowRight {...props} fontSize="small" />,
     },
+
     slotProps: {
       field: {
         sx: {
           '& .MuiInputAdornment-root.MuiInputAdornment-positionEnd': { ml: 0 },
+          '& .MuiInputBase-input.Mui-disabled': {
+            color: (theme) => theme.palette.grey[500],
+            WebkitTextFillColor: (theme) => theme.palette.grey[500],
+          },
         },
       },
     },

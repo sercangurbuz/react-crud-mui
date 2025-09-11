@@ -63,6 +63,7 @@ function Select<T extends FieldValues = FieldValues>({
   optionImgProps,
   optionTemplate = DEFAULT_OPTION_TEMPLATE,
   optionAsValue,
+  readOnly,
   selectInitialOption,
   selectRef,
   sx,
@@ -217,7 +218,8 @@ function Select<T extends FieldValues = FieldValues>({
     return (
       <MuiSelect
         {...rest}
-        notched={!!value}
+        readOnly={readOnly}
+        notched={multiple ? !!(value as Array<unknown>)?.length : !!value}
         error={error}
         multiple={multiple}
         ref={selectRef}
@@ -234,7 +236,7 @@ function Select<T extends FieldValues = FieldValues>({
         endAdornment={
           <IconButton
             sx={{
-              display: allowClear && !disabled && value ? '' : 'none',
+              display: allowClear && !disabled && !readOnly && value ? '' : 'none',
               marginRight: 2.5,
             }}
             size="small"

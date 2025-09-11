@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { FieldValues } from 'react-hook-form';
 
-import { Grid2, Grid2Props, Pagination, PaginationProps, Stack } from '@mui/material';
+import { BoxProps, Grid2, Grid2Props, Pagination, PaginationProps, Stack } from '@mui/material';
 
 import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
 import useTranslation from '../../i18n/hooks/useTranslation';
@@ -18,6 +18,7 @@ export interface CardListProps<TModel extends FieldValues> {
   onActionCommandProps: (model: TModel, index: number) => ActionCommandsProps<TModel>;
   cardColProps?: Grid2Props;
   cardRowProps?: Grid2Props;
+  cardWrapperProps?: BoxProps;
   enablePagination?: boolean;
   paginationProps?: PaginationProps;
   emptyTextProps?: EmptyTextProps;
@@ -26,6 +27,7 @@ export interface CardListProps<TModel extends FieldValues> {
 
 function CardList<TModel extends FieldValues>({
   enableActionCommands,
+  cardWrapperProps,
   cardColProps,
   cardRowProps,
   data,
@@ -62,7 +64,7 @@ function CardList<TModel extends FieldValues>({
   }
 
   return (
-    <Page.Content pt={0}>
+    <Page.Content pt={0} {...cardWrapperProps}>
       <Grid2 container spacing={2} {...cardRowProps}>
         {cards}
         {enablePagination ? (

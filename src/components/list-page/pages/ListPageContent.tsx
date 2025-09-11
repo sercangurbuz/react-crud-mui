@@ -22,6 +22,7 @@ import { ServerError } from '../../utils';
 import AutoSearch from '../components/AutoSearch';
 import CardList, { CardListProps } from '../components/CardList';
 import ListPageCommands, { ListPageCommandsProps } from '../components/ListPageCommands';
+import ListPageDefaultLayout, { ListPageLayoutProps } from '../components/ListPageDefaultLayout';
 import ListPageHeader, { ListPageHeaderProps } from '../components/ListPageHeader';
 import ListPageProvider from '../components/ListPageProvider';
 import ListPageShortCuts from '../components/ListPageShortCuts';
@@ -54,7 +55,13 @@ export type OnDetailPage<TDetailPageModel extends FieldValues> =
 export interface ListPageContentProps<TModel extends FieldValues>
   extends Omit<
       PageProps,
-      'commandsContent' | 'alertsContent' | 'autoSave' | 'onHeader' | 'onChange' | 'onCopy'
+      | 'commandsContent'
+      | 'alertsContent'
+      | 'autoSave'
+      | 'onHeader'
+      | 'onChange'
+      | 'onCopy'
+      | 'onLayout'
     >,
     Pick<ListPageCommandsProps, 'commandsProps'> {
   /**
@@ -154,6 +161,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
    */
   activeSegmentIndex?: number;
   onWrapperLayout?: (props: ListPageWrapperLayoutProps) => React.ReactNode;
+  onLayout?: (props: ListPageLayoutProps) => React.ReactNode;
   /**
    * Embedded detail page component render function
    */
@@ -232,6 +240,7 @@ function ListPageContent<TModel extends FieldValues>({
   onExcelExport,
   onExtraCommands,
   onHeader,
+  onLayout,
   onSearch,
   onTabChanged,
   tableProps,
@@ -294,17 +303,8 @@ function ListPageContent<TModel extends FieldValues>({
     const autoSearchContent = renderAutoSearch();
     const shortCutContent = renderShortCuts();
 
-    const pageContent = renderPage(
-      commandsContent,
-      alertsContent,
-      <>
-        {children}
-        {filterContent}
-        {tableContent}
-        {autoSearchContent}
-        {shortCutContent}
-      </>,
-    );
+    const pageContent = renderPage(commandsContent, alertsContent, filterContent, tableContent);
+
     const detailPageContent = renderDetailPage();
 
     const props: ListPageWrapperLayoutProps = {
@@ -325,6 +325,8 @@ function ListPageContent<TModel extends FieldValues>({
       <>
         {pageContent}
         {detailPageContent}
+        {autoSearchContent}
+        {shortCutContent}
       </>
     );
   };
@@ -334,11 +336,22 @@ function ListPageContent<TModel extends FieldValues>({
    * @param content Component,children,tabs or steps nodes
    * @param commands Commands nodes
    */
-  const renderPage = (commands: ReactNode, alertsContent: ReactNode, children: ReactNode) => {
+  const renderPage = (
+    commands: ReactNode,
+    alertsContent: ReactNode,
+    filterContent: ReactNode,
+    tableContent: ReactNode,
+  ) => {
     return (
       <Page
         icon={<SearchIcon />}
         {...pageProps}
+        morePanelProps={{
+          moreText: t('listpage.showmorefilter'),
+          lessText: t('listpage.showlessfilter'),
+          sx: { pt: 0 },
+          ...pageProps?.morePanelProps,
+        }}
         disabled={disabled}
         commandsContent={commands}
         onHeader={renderPageHeader}
@@ -347,6 +360,17 @@ function ListPageContent<TModel extends FieldValues>({
         alertsContent={alertsContent}
         onTabChanged={onTabChanged}
         selectedTabIndex={activeSegmentIndex}
+        onLayout={(props) =>
+          onLayout ? (
+            onLayout({ ...props, filterContent, tableContent })
+          ) : (
+            <ListPageDefaultLayout
+              {...props}
+              filterContent={filterContent}
+              tableContent={tableContent}
+            />
+          )
+        }
       >
         {children}
       </Page>
@@ -467,7 +491,7 @@ function ListPageContent<TModel extends FieldValues>({
         ? [
             ...(columns ?? []),
             {
-              accessorKey: 'commands',
+              id: 'commands',
               align: 'center',
               header: () => null,
               size: 70,

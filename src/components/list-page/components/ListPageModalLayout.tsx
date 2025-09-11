@@ -1,21 +1,23 @@
 import Card from '@mui/material/Card';
 
 import Modal from '../../modal';
-import { PageLayoutProps } from '../../page/components/DefaultLayout';
+import { ListPageLayoutProps } from './ListPageDefaultLayout';
 
-function DetailPageModalLayout({
-  options,
-  content,
+function ListPageModalLayout({
+  filterContent,
+  tableContent,
   alertsContent,
-  footerContent,
-  moreContent,
-  pageHeader,
+  content,
   panelsContent,
+  footerContent,
   progressContent,
+  options,
+  pageHeader,
+  moreContent,
   stickyContent,
   tabsContent,
   tabsHeaderContent,
-}: PageLayoutProps) {
+}: ListPageLayoutProps) {
   return (
     <Card style={options?.style} sx={options?.sx}>
       {pageHeader}
@@ -27,11 +29,13 @@ function DetailPageModalLayout({
         {content}
         {tabsContent}
         {panelsContent}
+        {filterContent}
         {moreContent}
+        {tableContent}
       </Modal.Scroll>
       {footerContent}
     </Card>
   );
 }
 
-export default DetailPageModalLayout;
+export default ListPageModalLayout;
