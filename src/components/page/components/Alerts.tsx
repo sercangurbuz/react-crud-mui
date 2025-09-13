@@ -4,10 +4,11 @@ import styled from '@emotion/styled';
 import Alert, { AlertProps } from '@mui/material/Alert';
 
 import useNormalizeMessages, { Message } from '../hooks/useNormalizeMessages';
+import ErrorAlert from './ErrorAlert';
 
 /* ---------------------------------- Types --------------------------------- */
 
-interface AlertsProps {
+export interface AlertsProps {
   messages?: Message[];
   defaultType?: AlertProps['severity'];
 }
@@ -56,3 +57,5 @@ function Alerts({ messages, defaultType = 'error' }: AlertsProps) {
 }
 
 export default Alerts;
+
+Alerts.Error = ErrorAlert;

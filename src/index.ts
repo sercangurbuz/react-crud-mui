@@ -24,6 +24,7 @@ export {
   type DetailPagePopoverProps,
 } from './components/detail-page/pages/DetailPagePopover';
 export { default as ValidationAlerts } from './components/form/components/ValidationAlerts';
+export { default as Alerts, type AlertsProps } from './components/page/components/Alerts';
 export {
   default as DetailPageDrawer,
   type DetailPageDrawerProps,

@@ -81,7 +81,7 @@ export interface ListPageFilterProps<
 
   cardProps?: Pick<
     CardListProps<TModel>,
-    'cardColProps' | 'cardRowProps' | 'onCardMeta' | 'emptyTextProps'
+    'cardColProps' | 'cardRowProps' | 'onCardMeta' | 'emptyTextProps' | 'cardWrapperProps'
   >;
 }
 

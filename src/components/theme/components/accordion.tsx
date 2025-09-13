@@ -14,7 +14,7 @@ export const Accordion = (theme: Theme): Components['MuiAccordion'] => {
       root: {
         overflow: 'hidden',
         marginBottom: '1rem',
-        border: `1px solid ${grey[isDark(theme) ? 700 : 200]}`,
+        border: `1px solid ${grey[isDark(theme) ? 700 : 300]}`,
         transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         ':before': { display: 'none' },
         ':last-of-type': { marginBottom: 0 },
