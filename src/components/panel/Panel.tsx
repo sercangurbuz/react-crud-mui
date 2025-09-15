@@ -48,12 +48,12 @@ function Panel({
   centerContent,
   helperText,
   header,
-  headerProps,
   icon,
   moreOptions,
   useHeaderIconWrapper,
   activeTabKey,
   onTabChange,
+  styles,
   ...cardProps
 }: PanelProps) {
   const [selectedItem, setSelectedItem] = useState(activeTabKey ?? (tabs ? tabs[0].value : ''));
@@ -97,10 +97,10 @@ function Panel({
           centerContent={centerContent}
           helperText={helperText}
           header={header}
-          headerProps={headerProps}
           icon={icon}
           moreOptions={moreOptions}
           useHeaderIconWrapper={useHeaderIconWrapper}
+          styles={styles}
         />
       )}
       {tabs ? renderTabContent() : null}

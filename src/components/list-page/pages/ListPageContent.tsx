@@ -344,7 +344,7 @@ function ListPageContent<TModel extends FieldValues>({
   ) => {
     return (
       <Page
-        icon={<SearchIcon />}
+        icon={<SearchIcon sx={{ color: 'primary.main' }} />}
         {...pageProps}
         morePanelProps={{
           moreText: t('listpage.showmorefilter'),

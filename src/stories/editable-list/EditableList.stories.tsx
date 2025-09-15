@@ -22,12 +22,8 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
       header: 'Top performing users',
       helperText: 'Counted in Millions',
       icon: <User />,
-      headerProps: {
-        fontSize: 18,
-        fontWeight: 500,
-      },
     },
-    enableRowClickToDetails: "fetch",
+    enableRowClickToDetails: 'fetch',
     detailPageProps: {
       schema: userSchema,
       title: 'Person Details',

@@ -41,7 +41,11 @@ export default function MoreButton({
         size={size}
         aria-label="more"
         aria-haspopup="true"
-        onClick={(e) => setAnchorEl(e.currentTarget)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setAnchorEl(e.currentTarget);
+        }}
         {...props}
       >
         <Icon fontSize="small" />

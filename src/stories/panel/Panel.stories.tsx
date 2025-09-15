@@ -142,9 +142,8 @@ export const ControlledTabs: PanelStory = {
 export const WithCustomHeader: PanelStory = {
   args: {
     icon: <GroupSenior sx={{ color: 'primary.main' }} />,
-    headerProps: {
-      fontSize: 16,
-      fontWeight: 400,
+    styles: {
+      title: { fontSize: 16, fontWeight: 400 },
     },
   },
 };
