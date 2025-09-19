@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 
@@ -43,7 +43,7 @@ function useURLSearchFilter<TFilter extends FieldValues>({
     return searchParams.toString();
   }, [searchParams, matcher]);
 
-  const getFiltersInQS = () => {
+  const getFiltersInQS = useCallback(() => {
     const {
       page,
       size,
@@ -83,43 +83,42 @@ function useURLSearchFilter<TFilter extends FieldValues>({
         selectedTabIndex,
       },
     };
-  };
+  }, [search, segmentParamName]);
 
-  const setFiltersInQS = (
-    filter: TFilter,
-    meta: ListPageMeta,
-    extraFilter?: Record<string, unknown>,
-  ) => {
-    const qsParams = {
-      ...filter,
-      ...extraFilter,
-      page: meta.pagination.pageIndex,
-      size: meta.pagination.pageSize,
-      sorting: meta.sorting,
-    };
+  const setFiltersInQS = useCallback(
+    (filter: TFilter, meta: ListPageMeta, extraFilter?: Record<string, unknown>) => {
+      const qsParams = {
+        ...filter,
+        ...extraFilter,
+        page: meta.pagination.pageIndex,
+        size: meta.pagination.pageSize,
+        sorting: meta.sorting,
+      };
 
-    const filterQs = qs.stringify(qsParams, {
-      skipNulls: true,
-      strictNullHandling: true,
-      charset: 'utf-8',
-      filter(prefix, value) {
-        if (matcher && prefix && !(prefix in matcher)) {
-          return;
-        }
+      const filterQs = qs.stringify(qsParams, {
+        skipNulls: true,
+        strictNullHandling: true,
+        charset: 'utf-8',
+        filter(prefix, value) {
+          if (matcher && prefix && !(prefix in matcher)) {
+            return;
+          }
 
-        if (prefix === 'page' && value === DEFAULT_PAGEINDEX) {
-          return;
-        }
-        if (prefix === 'size' && value === DEFAULT_PAGESIZE) {
-          return;
-        }
+          if (prefix === 'page' && value === DEFAULT_PAGEINDEX) {
+            return;
+          }
+          if (prefix === 'size' && value === DEFAULT_PAGESIZE) {
+            return;
+          }
 
-        return value;
-      },
-    });
+          return value;
+        },
+      });
 
-    setSearchParams(filterQs);
-  };
+      setSearchParams(filterQs);
+    },
+    [setSearchParams, matcher],
+  );
 
   return { getFiltersInQS, setFiltersInQS };
 }

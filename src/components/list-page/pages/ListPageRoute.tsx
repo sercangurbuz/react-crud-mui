@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 import { Outlet, useNavigate } from 'react-router-dom';
 
@@ -56,13 +56,13 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   const { getFiltersInQS, setFiltersInQS } = useURLSearchFilter<TFilter>({
     matcher: typeof enableQueryStringFilter === 'object' ? enableQueryStringFilter : undefined,
   });
-  const [defaultFilterProps] = useState(() => {
+  const defaultFilterProps = useMemo(() => {
     if (enableQueryStringFilter) {
       const { filter, meta } = getFiltersInQS();
       return {
         defaultFilter: {
-          ...filter,
           ...defaultFilter,
+          ...filter,
         },
         defaultMeta: {
           ...meta,
@@ -72,7 +72,9 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
     }
 
     return { defaultFilter, defaultMeta };
-  });
+    // We don't want to re-calculate defaultFilterProps when defaultFilter or defaultMeta changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [enableQueryStringFilter, getFiltersInQS]);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
@@ -146,6 +148,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
         <>
           {props.pageContent}
           {props.detailPageContent}
+          {props.autoSearchContent}
           {/* Placeholder here for possible DetailPageRouteModal */}
           {enableNestedSegments ? <Outlet /> : null}
         </>
