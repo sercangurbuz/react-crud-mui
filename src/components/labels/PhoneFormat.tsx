@@ -9,9 +9,23 @@ import { FlexBox } from '../flexbox';
 interface PhoneLabelProps extends BoxProps {
   value?: string;
   showIcon?: boolean;
+  /**
+   * Whether to show undefined message or not
+   */
+  showUndefinedMessage?: boolean;
+  /**
+   * Message to show when date is undefined
+   */
+  unDefinedMessage?: string;
 }
 
-function PhoneFormat({ value: phoneNumber, showIcon = true, ...rest }: PhoneLabelProps) {
+function PhoneFormat({
+  value: phoneNumber,
+  showIcon = true,
+  showUndefinedMessage = false,
+  unDefinedMessage = '-',
+  ...rest
+}: PhoneLabelProps) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -25,7 +39,7 @@ function PhoneFormat({ value: phoneNumber, showIcon = true, ...rest }: PhoneLabe
   }, [phoneNumber]);
 
   if (!formattedPhoneNumber) {
-    return null;
+    return showUndefinedMessage ? unDefinedMessage : null;
   }
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {

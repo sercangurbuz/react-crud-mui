@@ -6,11 +6,25 @@ import { FlexBox } from '../flexbox';
 interface MailLabelProps extends BoxProps {
   value?: string;
   showIcon?: boolean;
+  /**
+   * Whether to show undefined message or not
+   */
+  showUndefinedMessage?: boolean;
+  /**
+   * Message to show when date is undefined
+   */
+  unDefinedMessage?: string;
 }
 
-function MailFormat({ value: email, showIcon = true, ...rest }: MailLabelProps) {
+function MailFormat({
+  value: email,
+  showIcon = true,
+  showUndefinedMessage = false,
+  unDefinedMessage = '-',
+  ...rest
+}: MailLabelProps) {
   if (!email) {
-    return '';
+    return showUndefinedMessage ? unDefinedMessage : null;
   }
 
   return (

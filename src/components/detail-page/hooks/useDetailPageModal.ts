@@ -30,10 +30,10 @@ export interface UseDetailPageModalProps {
   uniqueIdParamName?: string;
 }
 
-function useDetailPageModal<TModel extends FieldValues>({
-  models,
-  uniqueIdParamName,
-}: UseDetailPageModalProps = {}) {
+function useDetailPageModal<
+  TModel extends FieldValues,
+  TProps extends SelectedModelOptions<TModel> = SelectedModelOptions<TModel>,
+>({ models, uniqueIdParamName }: UseDetailPageModalProps = {}) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -74,9 +74,10 @@ function useDetailPageModal<TModel extends FieldValues>({
   }, []);
 
   const onOpen = useCallback(
-    ({ data, disabled, reason, onAfterDelete, onAfterSave }: SelectedModelOptions<TModel> = {}) => {
+    ({ data, disabled, reason, onAfterDelete, onAfterSave, ...rest }: TProps = {} as TProps) => {
       const pageReason = reason ?? (data ? 'fetch' : 'create');
       setProps({
+        ...rest,
         data,
         reason: pageReason,
         open: true,
@@ -111,7 +112,7 @@ function useDetailPageModal<TModel extends FieldValues>({
       onOpen({
         data: data as TModel,
         reason: dpProps.reason,
-      });
+      } as TProps);
     }
   };
 

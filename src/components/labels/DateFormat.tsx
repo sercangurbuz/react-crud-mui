@@ -31,6 +31,14 @@ export interface DateFormatProps extends BoxProps {
    * Convert utc time to local time
    */
   convertToLocal?: boolean;
+  /**
+   * Whether to show undefined message or not
+   */
+  showUndefinedMessage?: boolean;
+  /**
+   * Message to show when date is undefined
+   */
+  unDefinedMessage?: string;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -46,6 +54,8 @@ function DateFormat(
     showIcon = false,
     convertToLocal,
     format: customFormat,
+    showUndefinedMessage = false,
+    unDefinedMessage = '-',
     ...rest
   }: DateFormatProps,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,7 +64,7 @@ function DateFormat(
   const { dateFormat, dateTimeFormat, monthFormat, convertToLocaleDateTime } = useSettings();
 
   if (!date) {
-    return null;
+    return showUndefinedMessage ? unDefinedMessage : null;
   }
 
   const format =
