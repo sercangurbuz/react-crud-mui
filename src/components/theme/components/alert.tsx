@@ -1,24 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import CheckCircle from '@mui/icons-material/CheckCircle';
 import Error from '@mui/icons-material/Error';
 // MUI ICON COMPONENTS
 import Info from '@mui/icons-material/Info';
 import Warning from '@mui/icons-material/Warning';
-import { Components, PaletteColor, Theme } from '@mui/material/styles';
-
-import { isDark } from '../theme.constants';
-
-// CUSTOM UTILS METHOD
+import { alpha, Components, PaletteColor, Theme } from '@mui/material/styles';
 
 const standardStyle = (color: PaletteColor) => ({
   color: color.main,
   backgroundColor: color[50],
 });
 
-const outlinedStyle = (color: PaletteColor, theme: Theme) => ({
-  color: isDark(theme) ? color[50] : color,
+const outlinedStyle = (color: PaletteColor) => ({
+  color: color.main,
   borderColor: color.main,
-  backgroundColor: isDark(theme) ? color[900] : color[50],
+  backgroundColor: color[50],
 });
 
 const actionBtnStyle = (primary: string, secondary: string) => ({
@@ -27,12 +22,15 @@ const actionBtnStyle = (primary: string, secondary: string) => ({
       border: `1px solid ${secondary}`,
       marginRight: '1rem',
     },
-    ':last-of-type': { backgroundColor: secondary, color: primary },
+    ':last-of-type': {
+      color: primary,
+      backgroundColor: secondary,
+    },
   },
 });
 
-const Alert = (theme: Theme): Components['MuiAlert'] => {
-  const { primary, success, error, warning, common, grey } = theme.palette;
+export const Alert = (theme: Theme): Components['MuiAlert'] => {
+  const { primary, success, error, warning, common } = theme.palette;
 
   return {
     defaultProps: {
@@ -45,42 +43,81 @@ const Alert = (theme: Theme): Components['MuiAlert'] => {
     },
     styleOverrides: {
       root: {
-        borderRadius: 16,
+        borderRadius: 12,
         fontSize: 12,
         fontWeight: 600,
         alignItems: 'center',
       },
-      standardError: standardStyle(error),
-      standardSuccess: standardStyle(success),
-      standardWarning: standardStyle(warning),
+      standardError: {
+        ...standardStyle(error),
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.error.main, 0.1),
+        }),
+      },
+      standardSuccess: {
+        ...standardStyle(success),
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.success.main, 0.1),
+        }),
+      },
+      standardWarning: {
+        ...standardStyle(warning),
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.warning.main, 0.1),
+        }),
+      },
       standardInfo: {
         ...standardStyle(primary),
         '& .MuiAlert-icon': { color: primary.main },
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.primary.main, 0.1),
+        }),
       },
 
-      outlinedError: outlinedStyle(error, theme) as any,
-      outlinedSuccess: outlinedStyle(success, theme) as any,
-      outlinedWarning: outlinedStyle(warning, theme) as any,
+      outlinedError: {
+        ...outlinedStyle(error),
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.error.main, 0.1),
+        }),
+      },
+      outlinedSuccess: {
+        ...outlinedStyle(success),
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.success.main, 0.1),
+        }),
+      },
+      outlinedWarning: {
+        ...outlinedStyle(warning),
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.warning.main, 0.1),
+        }),
+      },
       outlinedInfo: {
-        ...outlinedStyle(primary, theme),
+        ...outlinedStyle(primary),
         '& .MuiAlert-icon': { color: primary.main },
-        ...(isDark(theme) && { backgroundColor: grey[700] }),
-      } as any,
+        ...theme.applyStyles('dark', {
+          backgroundColor: alpha(theme.palette.primary.main, 0.1),
+        }),
+      },
 
-      filledWarning: { color: common.white },
+      filledWarning: {
+        color: common.white,
+      },
       filledSuccess: {
         color: common.white,
         backgroundColor: success[600],
       },
-      filledInfo: { color: common.white, backgroundColor: primary.main },
-
+      filledInfo: {
+        color: common.white,
+        backgroundColor: primary.main,
+      },
       action: ({ ownerState: { severity, variant } }) => ({
         ':has( > .btn-group)': {
           padding: 0,
           '& button': {
+            fontWeight: 600,
             borderRadius: 10,
             padding: '.5rem 1rem',
-            fontWeight: 600,
           },
         },
 

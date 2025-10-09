@@ -12,6 +12,7 @@ function DetailPageDrawerLayout({
   options,
   pageHeader,
   moreContent,
+  stickyContent,
   tabsContent,
   tabsHeaderContent,
 }: PageLayoutProps) {
@@ -21,6 +22,7 @@ function DetailPageDrawerLayout({
       {progressContent}
       {alertsContent}
       {tabsHeaderContent}
+      {stickyContent}
       <Box sx={{ flex: 1, position: 'relative' }}>
         <Scrollbar
           style={{ top: 0, bottom: 0, left: 0, right: 0, position: 'absolute' }}
