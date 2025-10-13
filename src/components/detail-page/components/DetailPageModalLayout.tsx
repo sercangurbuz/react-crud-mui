@@ -21,8 +21,8 @@ function DetailPageModalLayout({
       {pageHeader}
       {progressContent}
       {alertsContent}
-      {tabsHeaderContent}
       {stickyContent}
+      {tabsHeaderContent}
       <Modal.Scroll autoHide={false}>
         {content}
         {tabsContent}

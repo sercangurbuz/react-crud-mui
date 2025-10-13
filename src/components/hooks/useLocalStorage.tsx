@@ -14,7 +14,7 @@ function useLocalStorage<T>(key: string, defaultValue?: T) {
     [key],
   );
 
-  return [data, storeData] as const;
+  return [data, storeData, setData] as const;
 }
 
 export default useLocalStorage;
