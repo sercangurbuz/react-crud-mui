@@ -44,12 +44,12 @@ function DetailPageStepForm<TModel extends FieldValues>({
   });
 
   /**
-   * Register the form as a child in the form collection so tha main form can access it
+   * Register the form as a child in the form collection so that main form can access it
    */
   useRegisterForm({ name, form });
 
   /**
-   * Besure to trigger the form validation when the component is mounted
+   * Ensure to trigger the form validation when the component is mounted
    */
   useFormInitEffect(() => {
     if (validationOptions?.runValidationsOnDataChange !== false) {
