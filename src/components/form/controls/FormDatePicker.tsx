@@ -24,6 +24,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
   disabled,
   allowClear = true,
   formControlProps,
+  sx,
   ...dateProps
 }: FormDatePickerProps<TFieldValues>) {
   return (
@@ -46,6 +47,7 @@ function FormDatePicker<TFieldValues extends FieldValues = FieldValues>({
               autoFocus,
               error: invalid,
               helperText: error?.message,
+              sx,
             },
             field: { clearable: allowClear },
           }}
