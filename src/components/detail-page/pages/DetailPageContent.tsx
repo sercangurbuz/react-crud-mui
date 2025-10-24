@@ -400,6 +400,7 @@ function DetailPageContent<TModel extends FieldValues>({
 
       form.setValue(currentFieldName, currentForm.getValues() as PathValue<TModel, Path<TModel>>, {
         shouldValidate: true,
+        shouldDirty: true,
       });
     };
 

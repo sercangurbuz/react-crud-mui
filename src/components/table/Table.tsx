@@ -290,7 +290,7 @@ function Table<TData extends FieldValues>({
                     }}
                   />
                 ) : (
-                  <KeyboardArrowRight color="disabled" />
+                  <KeyboardArrowRight sx={{ color: 'grey.400' }} />
                 )}
               </ExpandMore>
             ) : null;
@@ -776,7 +776,7 @@ function Table<TData extends FieldValues>({
           sx={{
             py: '1rem',
             paddingLeft: 7,
-            backgroundColor: 'background.default',
+            backgroundColor: alpha(theme.palette.primary.main, 0.05),
           }}
           colSpan={cells?.length}
         >
@@ -846,7 +846,10 @@ function Table<TData extends FieldValues>({
           size={size}
           sx={{
             border: bordered ? '1px solid' : 'none',
-            borderColor: (theme) => theme.palette.grey[700],
+            borderColor: (theme) => theme.palette.grey[200],
+            ...theme.applyStyles('dark', {
+              borderColor: theme.palette.grey[700],
+            }),
             borderCollapse: 'separate',
             borderSpacing: 0,
             ...sx,
