@@ -149,6 +149,10 @@ export interface ListPageContentProps<TModel extends FieldValues>
    */
   dataCount?: number;
   /**
+   * Show data count on header next to title
+   */
+  showDataCountOnHeader?: boolean;
+  /**
    * Custom list region component
    */
   onCustomTable?: (props: TableProps<TModel>) => ReactNode;
@@ -246,6 +250,7 @@ function ListPageContent<TModel extends FieldValues>({
   tableProps,
   onWrapperLayout,
   showHeader = true,
+  showDataCountOnHeader = true,
   ...pageProps
 }: ListPageContentProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -406,6 +411,8 @@ function ListPageContent<TModel extends FieldValues>({
 
     const phProps: ListPageHeaderProps = {
       ...props,
+      dataCount: dataCount ?? data?.length ?? 0,
+      showDataCount: showDataCountOnHeader,
     };
 
     if (onHeader) {

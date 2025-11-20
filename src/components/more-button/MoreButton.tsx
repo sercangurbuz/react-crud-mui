@@ -2,6 +2,7 @@ import { Key, ReactNode, useState } from 'react';
 
 import type { SvgIconComponent } from '@mui/icons-material';
 import MoreVert from '@mui/icons-material/MoreVert';
+import Divider from '@mui/material/Divider';
 import Fade from '@mui/material/Fade';
 import type { IconButtonProps } from '@mui/material/IconButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -12,9 +13,10 @@ import { StyledIconButton } from './styles';
 
 export type MoreButtonItem = {
   icon?: ReactNode;
-  children: ReactNode;
+  children?: ReactNode;
   key: Key;
   danger?: boolean;
+  divider?: boolean;
   onClick?: (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
 };
 
@@ -59,24 +61,28 @@ export default function MoreButton({
       >
         {renderOptions
           ? renderOptions(handleClose)
-          : options?.map(({ children, key, danger, icon, onClick }) => (
-              <MenuItem
-                key={key}
-                onClick={(e) => {
-                  onClick?.(e);
-                  handleClose();
-                }}
-                sx={{
-                  color: danger ? 'error.main' : null,
-                  '& .MuiSvgIcon-root': {
+          : options?.map(({ children, key, danger, icon, onClick, divider }) =>
+              divider ? (
+                <Divider key={key} />
+              ) : (
+                <MenuItem
+                  key={key}
+                  onClick={(e) => {
+                    onClick?.(e);
+                    handleClose();
+                  }}
+                  sx={{
                     color: danger ? 'error.main' : null,
-                  },
-                }}
-              >
-                {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-                {children}
-              </MenuItem>
-            ))}
+                    '& .MuiSvgIcon-root': {
+                      color: danger ? 'error.main' : null,
+                    },
+                  }}
+                >
+                  {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+                  {children}
+                </MenuItem>
+              ),
+            )}
       </Menu>
     </div>
   );

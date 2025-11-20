@@ -24,20 +24,26 @@ const meta: Meta<typeof Field.Select<UserSchema>> = {
   },
   component: Field.Select,
   decorators: (Story, ctx) => {
+    const isMultiple = ctx.name.includes('Multiple');
     return (
       <DetailPage
         schema={z.object({
-          userId:
-            ctx.name === 'Multiple' ? z.number().array() : z.number({ message: 'User is missing' }),
+          userId: isMultiple ? z.number().array() : z.number({ message: 'User is missing' }),
         })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ userId: ctx.name === 'Multiple' ? [1, 2] : 1 }}
+        defaultValues={{ userId: isMultiple ? [1, 2] : 1 }}
         showHeader={false}
       >
         <Page.Content>
           <Stack direction="row" spacing={3}>
             <Story />
-            <Field.Button onClick={(form) => form.setValue('userId', 3, { shouldValidate: true })}>
+            <Field.Button
+              onClick={(form) =>
+                form.setValue('userId', isMultiple ? [1, 2] : 1, {
+                  shouldValidate: true,
+                })
+              }
+            >
               Reset
             </Field.Button>
           </Stack>
@@ -144,6 +150,21 @@ export const Grouping: SelectStory = {
     groupBy(option) {
       return option.position!.title;
     },
+  },
+};
+
+export const MultipleGrouping: SelectStory = {
+  args: {
+    ...Grouping.args,
+    multiple: true,
+  },
+};
+
+export const MultipleGroupingWithCheckBox: SelectStory = {
+  args: {
+    ...MultipleGrouping.args,
+    showCheckBox: true,
+    dropDownHeight: 350,
   },
 };
 

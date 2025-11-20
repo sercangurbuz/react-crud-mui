@@ -2,8 +2,10 @@ import { forwardRef, ReactNode, Ref, useMemo } from 'react';
 import { FieldValues, Path } from 'react-hook-form';
 
 import ClearRounded from '@mui/icons-material/ClearRounded';
+import { FormControlLabel } from '@mui/material';
 import Avatar, { AvatarProps } from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
+import Checkbox from '@mui/material/Checkbox';
 import FormControl, { FormControlProps } from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import IconButton from '@mui/material/IconButton';
@@ -11,13 +13,13 @@ import InputLabel from '@mui/material/InputLabel';
 import ListSubheader from '@mui/material/ListSubheader';
 import MenuItem from '@mui/material/MenuItem';
 import MuiSelect, { SelectProps as MuiSelectProps, SelectChangeEvent } from '@mui/material/Select';
-import { get, groupBy } from 'lodash';
+import { get, groupBy, pull, union } from 'lodash';
 
 import { DEFAULT_OPTION_TEMPLATE } from '../combobox/ComboBox';
 import useComboboxTemplate, { ComboboxTemplate } from '../combobox/hooks/useComboboxTemplate';
 import { FlexBox } from '../flexbox';
 import useFormInitEffect from '../form/hooks/useFormInitEffect';
-import { toNull } from '../misc';
+import { reactNodeToString, toNull } from '../misc';
 import isNil from '../misc/isNil';
 import { Tiny } from '../typography';
 
@@ -42,6 +44,7 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<
   size?: SelectSize;
   selectInitialOption?: boolean | ((model: T) => boolean);
   labelWrapperProps?: Omit<FormControlProps, 'children'>;
+  showCheckBox?: boolean;
 };
 
 function Select<T extends FieldValues = FieldValues>({
@@ -66,6 +69,7 @@ function Select<T extends FieldValues = FieldValues>({
   readOnly,
   selectInitialOption,
   selectRef,
+  showCheckBox,
   sx,
   value,
   valueField = 'id',
@@ -79,7 +83,7 @@ function Select<T extends FieldValues = FieldValues>({
 
   const { renderDisplay, renderOption, renderDescription } = useComboboxTemplate({
     optionTemplate,
-    displayTemplate,
+    displayTemplate: multiple && !displayTemplate ? optionTemplate : displayTemplate,
     descriptionTemplate,
   });
 
@@ -108,7 +112,54 @@ function Select<T extends FieldValues = FieldValues>({
   }, [data]);
 
   /* -------------------------------------------------------------------------- */
+  /*                                    Utils                                   */
+  /* -------------------------------------------------------------------------- */
+
+  const getOptionsCheckedStatus = (collection?: T[]) => {
+    if (!collection || !collection.length) {
+      return { checked: false, indeterminate: false };
+    }
+
+    const selectedCount = collection.reduce((count, item) => {
+      const idValue = get(item, valueField);
+      const isSelected = multiple
+        ? (selectedValue as unknown[])?.includes(idValue)
+        : selectedValue === idValue;
+      return isSelected ? count + 1 : count;
+    }, 0);
+
+    return {
+      checked: selectedCount === collection.length,
+      indeterminate: selectedCount > 0 && selectedCount < collection.length,
+    };
+  };
+
+  const findModelByKey = (key: number | string | number[] | string[]): T | T[] => {
+    return Array.isArray(key)
+      ? (key.map(findModelByKey) as T[])
+      : (data?.find((item) => get(item, valueField) === key) as T);
+  };
+
+  /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
+  /* -------------------------------------------------------------------------- */
+
+  const handleChange = (e: SelectChangeEvent<unknown>, child: React.ReactNode) => {
+    const selValue = e.target.value;
+
+    if (optionAsValue) {
+      if (selValue) {
+        const selectedModel = findModelByKey(selValue as number | string | number[] | string[]);
+        onChange?.({ target: { value: selectedModel } } as unknown as SelectChangeEvent, child);
+        return;
+      }
+    }
+
+    onChange?.(e, child);
+  };
+
+  /* -------------------------------------------------------------------------- */
+  /*                               Render Helpers                               */
   /* -------------------------------------------------------------------------- */
 
   const renderGroupOptions = (collection?: T[]) => {
@@ -117,8 +168,57 @@ function Select<T extends FieldValues = FieldValues>({
     return Object.keys(groupCollection)
       .sort()
       .reduce<ReactNode[]>((result, groupName) => {
-        result.push(<ListSubheader key={groupName}>{groupName}</ListSubheader>);
-        const items = renderOptions(groupCollection[groupName], 3);
+        const options = groupCollection[groupName];
+
+        if (showCheckBox) {
+          // get group checked status
+          const { checked, indeterminate } = getOptionsCheckedStatus(options);
+          // group option
+          result.push(
+            <ListSubheader key={groupName}>
+              <FormControlLabel
+                sx={{
+                  userSelect: 'none',
+                  m: 0,
+                  gap: 0.5,
+                  '& .MuiFormControlLabel-label': {
+                    fontWeight: 500,
+                    fontSize: '14px',
+                  },
+                }}
+                control={
+                  <Checkbox
+                    checked={checked}
+                    indeterminate={indeterminate}
+                    onChange={(_e, checked) => {
+                      // select / deselect all options in group
+                      const optionValues = options.map((item) => get(item, valueField));
+                      const newSelectedValues = checked
+                        ? union(selectedValue as unknown[], optionValues)
+                        : pull(selectedValue as unknown[], ...optionValues);
+
+                      handleChange(
+                        {
+                          target: { value: newSelectedValues },
+                        } as SelectChangeEvent<unknown>,
+                        null,
+                      );
+                    }}
+                    size="small"
+                    sx={{ p: 0 }}
+                    tabIndex={-1}
+                    disableRipple
+                  />
+                }
+                label={groupName}
+              />
+            </ListSubheader>,
+          );
+        } else {
+          result.push(<ListSubheader key={groupName}>{groupName}</ListSubheader>);
+        }
+        // group child options
+        const items = renderOptions(options, 3);
         if (items) {
           result.push(...items);
         }
@@ -127,11 +227,14 @@ function Select<T extends FieldValues = FieldValues>({
   };
 
   const renderOptions = (collection?: T[], indent?: number) => {
-    return collection?.map((item, index) => {
+    return collection?.map((item) => {
       const idValue = get(item, valueField);
       const textNode = renderOption(item);
       const descNode = renderDescription?.(item);
       const imgNode = optionImg ? get(item, optionImg) : null;
+      const isSelected = multiple
+        ? (selectedValue as unknown[])?.includes(idValue)
+        : selectedValue === idValue;
 
       let optionNode = multiple ? (
         textNode
@@ -164,46 +267,41 @@ function Select<T extends FieldValues = FieldValues>({
         );
       }
 
+      if (showCheckBox) {
+        optionNode = (
+          <FlexBox alignItems="center" gap={1}>
+            <Checkbox
+              size="small"
+              disableRipple
+              sx={{ p: 0 }}
+              checked={isSelected}
+              tabIndex={-1}
+              inputProps={{ 'aria-labelledby': idValue }}
+            />
+            {optionNode}
+          </FlexBox>
+        );
+      }
+
       return (
-        <MenuItem
-          value={idValue}
-          key={idValue}
-          sx={{ paddingLeft: indent }}
-          autoFocus={value ? value === idValue : index === 0}
-        >
+        <MenuItem value={idValue} key={idValue} sx={{ paddingLeft: indent }} autoFocus={isSelected}>
           {optionNode}
         </MenuItem>
       );
     });
   };
 
-  const findModelByKey = (key: number | string) => {
-    return data?.find((item) => get(item, valueField) === key) as T;
-  };
-
   const renderValue = (value: number | string | T) => {
     if (!value) {
       return null;
     }
+
     const model = optionAsValue ? value : findModelByKey(value as number | string);
-    return model ? renderDisplay?.(model as T) : null;
-  };
-
-  const handleChange = (e: SelectChangeEvent<unknown>, child: React.ReactNode) => {
-    const selValue = e.target.value;
-
-    if (optionAsValue) {
-      if (selValue) {
-        const selectedModel = Array.isArray(selValue)
-          ? selValue.map((record) => findModelByKey(record))
-          : findModelByKey(selValue as number);
-
-        onChange?.({ target: { value: selectedModel } } as unknown as SelectChangeEvent, child);
-        return;
-      }
-    }
-
-    onChange?.(e, child);
+    return model
+      ? Array.isArray(model)
+        ? model.map((item) => renderDisplay?.(item)).join(', ')
+        : renderDisplay?.(model as T)
+      : null;
   };
 
   const renderSelect = () => {
@@ -219,6 +317,7 @@ function Select<T extends FieldValues = FieldValues>({
         id={`${id}-select`}
         label={label}
         value={selectedValue}
+        title={multiple ? reactNodeToString(renderValue(value as number | string | T)) || '' : ''}
         onChange={handleChange}
         disabled={disabled}
         MenuProps={{
@@ -262,7 +361,7 @@ function Select<T extends FieldValues = FieldValues>({
         renderValue={
           isNil(value)
             ? () => null
-            : displayTemplate
+            : displayTemplate || showCheckBox
               ? () => renderValue(value as number | string | T)
               : undefined
         }
