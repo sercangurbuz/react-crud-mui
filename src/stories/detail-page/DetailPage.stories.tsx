@@ -106,18 +106,22 @@ export const WithAlerts: DetailPageStory = {
   args: {
     alerts: [
       {
+        title: 'Success',
         message: 'Success message',
         type: 'success',
       },
       {
+        title: 'Info',
         message: 'Info message',
         type: 'info',
       },
       {
+        title: 'Warning',
         message: 'Warning message',
         type: 'warning',
       },
       {
+        title: 'Error',
         message: 'Error message',
         type: 'error',
       },

@@ -4,6 +4,7 @@ import type { AlertProps } from '@mui/material/Alert';
 import groupBy from 'lodash.groupby';
 
 export type TypeMessage = {
+  title?: React.ReactNode;
   message: React.ReactNode;
   type: AlertProps['severity'];
 };
