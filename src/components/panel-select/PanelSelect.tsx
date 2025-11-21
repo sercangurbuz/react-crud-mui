@@ -120,4 +120,5 @@ function PanelSelect({
   );
 }
 
+PanelSelect.Item = PanelSelectItem;
 export default PanelSelect;

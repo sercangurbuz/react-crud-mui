@@ -132,6 +132,12 @@ export {
   type SidePanelProps,
   type SidePanelItem,
 } from './components/side-panel/SidePanel';
+export {
+  default as PanelSelect,
+  type PanelSelectProps,
+} from './components/panel-select/PanelSelect';
+
+export { type PanelSelectItemProps } from './components/panel-select/PanelSelectItem';
 export * from './components/typography';
 export * from './components/utils';
 export * from './components/theme/colors';
