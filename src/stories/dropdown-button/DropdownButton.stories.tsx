@@ -60,3 +60,20 @@ export const Warning: DropdownButtonStory = {
     color: 'warning',
   },
 };
+
+export const Loading: DropdownButtonStory = {
+  args: {
+    loading: true,
+    options: [],
+  },
+};
+
+export const LongList: DropdownButtonStory = {
+  args: {
+    dropDownHeight: 300,
+    options: Array.from({ length: 20 }).map((_, index) => ({
+      label: `Option ${index + 1}`,
+      value: `option${index + 1}`,
+    })),
+  },
+};

@@ -15,17 +15,21 @@ import {
 } from '@mui/material';
 import { ArrowDropDownIcon } from '@mui/x-date-pickers/icons';
 
+import useTranslation from '../i18n/hooks/useTranslation';
 import { Tiny } from '../typography';
 
 export interface DropdownButtonProps extends ButtonProps {
   options: DropdownOption[];
   buttonGroupProps?: React.ComponentProps<typeof ButtonGroup>;
+  onDropdownVisibilityChange?: (open: boolean) => void;
+  loading?: boolean;
+  dropDownHeight?: string | number;
 }
 
 export type DropdownOption = {
-  label: string;
+  label: React.ReactNode;
   icon?: React.ReactNode;
-  value: string;
+  value: string | number;
   helperText?: string;
   disabled?: boolean;
   onClick?: (event: React.MouseEvent<HTMLLIElement>) => void;
@@ -34,17 +38,22 @@ export type DropdownOption = {
 function DropdownButton({
   options,
   disabled,
+  dropDownHeight,
   size,
+  loading,
   buttonGroupProps,
   color,
   variant = 'contained',
+  onDropdownVisibilityChange,
   ...buttonProps
 }: DropdownButtonProps) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    onDropdownVisibilityChange?.(!open);
     setOpen((prevOpen) => !prevOpen);
   };
 
@@ -78,7 +87,7 @@ function DropdownButton({
         </Button>
       </ButtonGroup>
       <Popper
-        sx={{ zIndex: 1 }}
+        sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
         open={open}
         anchorEl={anchorRef.current}
         role={undefined}
@@ -99,8 +108,15 @@ function DropdownButton({
                   autoFocusItem
                   sx={{
                     textAlign: 'left',
+                    maxHeight: dropDownHeight,
+                    overflowY: dropDownHeight ? 'auto' : 'visible',
                   }}
                 >
+                  {loading && (
+                    <MenuItem key="loading" disabled>
+                      {t('tags.loading')}
+                    </MenuItem>
+                  )}
                   {options.map((option) => (
                     <MenuItem
                       key={option.value}
