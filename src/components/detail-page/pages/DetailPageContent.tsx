@@ -518,27 +518,47 @@ function DetailPageContent<TModel extends FieldValues>({
       <StepHeaders items={steps} activeStep={activeSegmentIndex} {...stepsProps} />
     );
 
-    const stepContents = steps.map(
-      ({ children, name, schema, validationOptions, defaultValues, key }) =>
-        name ? (
-          <DetailPageStepForm
-            key={key}
-            name={name}
-            schema={schema}
-            defaultValues={defaultValues}
-            validationOptions={validationOptions}
-          >
-            {children}
-          </DetailPageStepForm>
-        ) : (
-          children
-        ),
-    );
+    const renderStep = ({
+      children,
+      name,
+      schema,
+      validationOptions,
+      defaultValues,
+      key,
+    }: StepPane) => {
+      return name ? (
+        <DetailPageStepForm
+          key={key}
+          name={name}
+          schema={schema}
+          defaultValues={defaultValues}
+          validationOptions={validationOptions}
+        >
+          {children}
+        </DetailPageStepForm>
+      ) : (
+        children
+      );
+    };
 
     return (
       <>
         {stepHeaders}
-        {stepContents[activeSegmentIndex]}
+        {steps.map((step, index) => {
+          /* Active Step Content */
+          if (index === activeSegmentIndex) {
+            return <Box key={step.key}>{renderStep(step)}</Box>;
+          }
+
+          /* Render hidden step contents for forceRender steps */
+          if (step.forceRender) {
+            return (
+              <Box key={step.key} sx={{ display: 'none' }}>
+                {renderStep(step)}
+              </Box>
+            );
+          }
+        })}
       </>
     );
   };

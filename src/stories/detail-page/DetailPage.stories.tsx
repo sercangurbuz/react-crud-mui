@@ -559,6 +559,7 @@ export const WithSteps: StoryObj<typeof DetailPage<StepSchema>> = {
               alertVisibility: 'all',
             },
             children: <Step2 />,
+            forceRender: true,
           },
           {
             key: 'overview',

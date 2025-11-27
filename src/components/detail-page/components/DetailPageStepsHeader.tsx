@@ -30,6 +30,7 @@ export type StepPane<
   label: ReactNode;
   children: ReactNode;
   validationOptions?: ValidationOptions;
+  forceRender?: boolean;
 };
 export type StepStatus = 'wait' | 'process' | 'finish' | 'error';
 
