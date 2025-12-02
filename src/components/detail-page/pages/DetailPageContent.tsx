@@ -189,6 +189,9 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    * Optional steps props
    */
   stepsProps?: Partial<DetailPageStepsHeaderProps>;
+  /**
+   * Extra content to be placed in tab bar area
+   */
   tabExtraContent?: ReactNode | ((data?: TModel) => ReactNode);
 }
 

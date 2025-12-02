@@ -509,6 +509,17 @@ export const WithCustomTabs: DetailPageStory = {
   },
 };
 
+export const WithTabsSuccessPanel: DetailPageStory = {
+  ...WithTabs,
+  args: {
+    ...WithTabs.args,
+    successPanelProps: {
+      title: 'User saved successfully!',
+      helperText: 'You have successfully saved the user.',
+    },
+  },
+};
+
 export const WithSteps: StoryObj<typeof DetailPage<StepSchema>> = {
   render(args) {
     return (
@@ -579,6 +590,28 @@ export const WithSteps: StoryObj<typeof DetailPage<StepSchema>> = {
         </Page.Content>
       </DetailPage>
     );
+  },
+};
+
+export const WithStepsSuccessResultPanel: StoryObj<typeof DetailPage<StepSchema>> = {
+  ...WithSteps,
+  args: {
+    ...WithSteps.args,
+    successPanelProps: {
+      title: 'User saved successfully!',
+      helperText: 'You have successfully completed all steps and saved the user.',
+      onCommands: (model) => (
+        <Button
+          variant="outlined"
+          fullWidth
+          onClick={() => {
+            alert(`User ${model?.main?.name} saved successfully!`);
+          }}
+        >
+          Back to list
+        </Button>
+      ),
+    },
   },
 };
 

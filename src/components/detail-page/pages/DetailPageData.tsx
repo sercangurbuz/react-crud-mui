@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
@@ -8,7 +8,9 @@ import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
 import normalizeServerError from '../../misc/normalizeError';
 import { Message } from '../../page/hooks/useNormalizeMessages';
+import Page from '../../page/Page';
 import { ServerError } from '../../utils';
+import SuccessPanel, { SuccessPanelProps } from '../components/SuccessPanel';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -86,6 +88,10 @@ export interface DetailPageDataProps<TModel extends FieldValues>
    */
   showSuccessMessages?: boolean;
   /**
+   * Show success panel on create/save (Default false)
+   */
+  successPanelProps?: SuccessPanelProps;
+  /**
    * Event called after succesfull save
    */
   onAfterSave?: (
@@ -114,11 +120,13 @@ function DetailPageData<TModel extends FieldValues>({
   onClose,
   onDelete,
   onDiscardChanges,
+  onLayout,
   onReasonChange,
   onNavigate,
   onSave,
   reason = 'create',
   showSuccessMessages = true,
+  successPanelProps,
   ...dpProps
 }: DetailPageDataProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -129,6 +137,7 @@ function DetailPageData<TModel extends FieldValues>({
   const [runAsync, { loading: loadingState, error: errorState, reset: resetState }] = useRunAsync<
     TModel | void | undefined
   >();
+  const [successPanelVisible, setSuccessPanelVisibility] = useState(false);
 
   /* -------------------------------------------------------------------------- */
   /*                                Form Methods                                */
@@ -195,6 +204,10 @@ function DetailPageData<TModel extends FieldValues>({
       toast.success(t('savedsuccesfully'));
     }
 
+    if (reason === 'create' && successPanelProps && !autoSave) {
+      setSuccessPanelVisibility(true);
+    }
+
     onAfterSave?.(result as Awaited<DataResult<TModel>>, variables, form);
   };
 
@@ -245,6 +258,7 @@ function DetailPageData<TModel extends FieldValues>({
   const handleCreate = (reason: NeedDataReason = 'create') => {
     onReasonChange?.(reason);
     resetState();
+    setSuccessPanelVisibility(false);
   };
 
   const handleNavigate = (direction: NavigationDirection) => {
@@ -277,6 +291,25 @@ function DetailPageData<TModel extends FieldValues>({
       onNavigate={(direction) => void handleNavigate(direction)}
       onDiscardChanges={handleDiscard}
       onClose={onClose}
+      onLayout={(props) => {
+        let pageLayoutProps = props;
+
+        if (successPanelVisible) {
+          const model = getValues();
+
+          pageLayoutProps = {
+            ...props,
+            tabsContent: null,
+            tabsHeaderContent: null,
+            footerContent: null,
+            content: (
+              <SuccessPanel title={t('savedsuccesfully')} {...successPanelProps} model={model} />
+            ),
+          };
+        }
+
+        return onLayout ? onLayout(pageLayoutProps) : <Page.Layout {...pageLayoutProps} />;
+      }}
     />
   );
 }

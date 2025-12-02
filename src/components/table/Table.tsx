@@ -236,6 +236,7 @@ function Table<TData extends FieldValues>({
           header: ({ table }) =>
             table.options.enableMultiRowSelection ? (
               <Checkbox
+                size={size}
                 {...{
                   checked: table.getIsAllRowsSelected(),
                   indeterminate: table.getIsSomeRowsSelected(),
@@ -247,6 +248,7 @@ function Table<TData extends FieldValues>({
             const isMultiSelect = row.getCanMultiSelect();
             return isMultiSelect ? (
               <Checkbox
+                size={size}
                 checked={row.getIsSelected()}
                 disabled={!row.getCanSelect()}
                 indeterminate={row.getIsSomeSelected()}
@@ -254,6 +256,7 @@ function Table<TData extends FieldValues>({
               />
             ) : (
               <Radio
+                size={size}
                 disableRipple
                 checked={row.getIsSelected()}
                 onChange={row.getToggleSelectedHandler()}
@@ -301,7 +304,7 @@ function Table<TData extends FieldValues>({
     }
 
     return result;
-  }, [columns, enableNestedComponent, onSubTreeRows, tableProps.enableRowSelection]);
+  }, [columns, enableNestedComponent, onSubTreeRows, size, tableProps.enableRowSelection]);
 
   /* ---------------------------- Expandable props ---------------------------- */
 
