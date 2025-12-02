@@ -1,5 +1,4 @@
 import React from 'react';
-import { FieldValues } from 'react-hook-form';
 
 import { Box } from '@mui/material';
 
@@ -8,31 +7,14 @@ import OvalCheckedIcon from '../../icons/OvalCheckedIcon';
 import Page from '../../page/Page';
 import { H6, Small } from '../../typography';
 
-type CommandsOptions<T extends FieldValues> = {
-  onCreate: () => void;
-  onClose: () => void;
-  model?: T;
-};
-
-export interface SuccessPanelProps<T extends FieldValues = FieldValues> {
+export interface SuccessPanelProps {
   title: string;
   helperText?: string;
-  onCommands?: (options: CommandsOptions<T>) => React.ReactNode;
-  model?: T;
+  commands?: React.ReactNode;
   icon?: React.ReactNode;
-  onCreate: () => void;
-  onClose: () => void;
 }
 
-function SuccessPanel<T extends FieldValues = FieldValues>({
-  icon,
-  title,
-  helperText,
-  onCommands,
-  onCreate,
-  onClose,
-  model,
-}: SuccessPanelProps<T>) {
+function SuccessPanel({ icon, title, helperText, commands }: SuccessPanelProps) {
   return (
     <Page.Content>
       <FlexBox flexDirection="column" justifyContent="center" alignItems="center" minHeight="300px">
@@ -57,7 +39,7 @@ function SuccessPanel<T extends FieldValues = FieldValues>({
             {helperText}
           </Small>
         </Box>
-        <Box>{onCommands?.({ model, onCreate, onClose })}</Box>
+        <Box>{commands}</Box>
       </FlexBox>
     </Page.Content>
   );

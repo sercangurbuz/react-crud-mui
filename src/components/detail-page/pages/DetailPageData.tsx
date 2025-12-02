@@ -90,7 +90,19 @@ export interface DetailPageDataProps<TModel extends FieldValues>
   /**
    * Show success panel on create/save (Default false)
    */
-  successPanelProps?: Omit<SuccessPanelProps<TModel>, 'onCreate' | 'onClose' | 'model'>;
+  successPanelProps?:
+    | SuccessPanelProps
+    | ((
+        model: TModel,
+        events: Pick<DetailPageContentProps<TModel>, 'onCreate' | 'onClose'>,
+      ) => SuccessPanelProps);
+  /**
+   * Custom render for success panel
+   */
+  onSuccessPanel?: (
+    model: TModel,
+    events: Pick<DetailPageContentProps<TModel>, 'onCreate' | 'onClose'>,
+  ) => React.ReactNode;
   /**
    * Event called after succesfull save
    */
@@ -124,6 +136,7 @@ function DetailPageData<TModel extends FieldValues>({
   onReasonChange,
   onNavigate,
   onSave,
+  onSuccessPanel,
   reason = 'create',
   showSuccessMessages = true,
   successPanelProps,
@@ -295,21 +308,26 @@ function DetailPageData<TModel extends FieldValues>({
         let pageLayoutProps = props;
 
         if (successPanelVisible) {
-          const model = getValues();
+          const successPanelPropsResolved =
+            typeof successPanelProps === 'object'
+              ? successPanelProps
+              : successPanelProps?.(getValues(), {
+                  onCreate: () => handleCreate(),
+                  onClose: () => onClose?.('close-button'),
+                });
 
           pageLayoutProps = {
             ...props,
             tabsContent: null,
             tabsHeaderContent: null,
             footerContent: null,
-            content: (
-              <SuccessPanel
-                title={t('savedsuccesfully')}
-                {...successPanelProps}
-                model={model}
-                onCreate={() => handleCreate()}
-                onClose={() => onClose?.('close-button')}
-              />
+            content: onSuccessPanel ? (
+              onSuccessPanel(getValues(), {
+                onCreate: () => handleCreate(),
+                onClose: () => onClose?.('close-button'),
+              })
+            ) : (
+              <SuccessPanel title={t('savedsuccesfully')} {...successPanelPropsResolved} />
             ),
           };
         }

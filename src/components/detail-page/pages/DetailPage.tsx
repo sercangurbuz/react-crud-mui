@@ -36,6 +36,7 @@ function DetailPage<TModel extends FieldValues>({
   const handleReasonChange = (reason: NeedDataReason) => {
     setReason(reason);
     onReasonChange?.(reason);
+    setActiveSegmentIndex(defaultSegmentIndex);
   };
 
   return (

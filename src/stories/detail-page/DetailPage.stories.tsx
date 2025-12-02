@@ -460,6 +460,7 @@ export const WithTabs: DetailPageStory = {
         }, 2000);
       });
     },
+    defaultReason: 'fetch',
     children: undefined,
     tabExtraContent(data) {
       return data?.name ? <Tag>{data?.name}</Tag> : null;
@@ -597,10 +598,10 @@ export const WithStepsSuccessResultPanel: StoryObj<typeof DetailPage<StepSchema>
   ...WithSteps,
   args: {
     ...WithSteps.args,
-    successPanelProps: {
+    successPanelProps: (model) => ({
       title: 'User saved successfully!',
       helperText: 'You have successfully completed all steps and saved the user.',
-      onCommands: ({ model }) => (
+      onCommands: (
         <Button
           variant="outlined"
           fullWidth
@@ -611,7 +612,7 @@ export const WithStepsSuccessResultPanel: StoryObj<typeof DetailPage<StepSchema>
           Back to list
         </Button>
       ),
-    },
+    }),
   },
 };
 
