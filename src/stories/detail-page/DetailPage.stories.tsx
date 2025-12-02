@@ -600,7 +600,7 @@ export const WithStepsSuccessResultPanel: StoryObj<typeof DetailPage<StepSchema>
     successPanelProps: {
       title: 'User saved successfully!',
       helperText: 'You have successfully completed all steps and saved the user.',
-      onCommands: (model) => (
+      onCommands: ({ model }) => (
         <Button
           variant="outlined"
           fullWidth

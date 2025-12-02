@@ -90,7 +90,7 @@ export interface DetailPageDataProps<TModel extends FieldValues>
   /**
    * Show success panel on create/save (Default false)
    */
-  successPanelProps?: SuccessPanelProps;
+  successPanelProps?: Omit<SuccessPanelProps<TModel>, 'onCreate' | 'onClose' | 'model'>;
   /**
    * Event called after succesfull save
    */
@@ -303,7 +303,13 @@ function DetailPageData<TModel extends FieldValues>({
             tabsHeaderContent: null,
             footerContent: null,
             content: (
-              <SuccessPanel title={t('savedsuccesfully')} {...successPanelProps} model={model} />
+              <SuccessPanel
+                title={t('savedsuccesfully')}
+                {...successPanelProps}
+                model={model}
+                onCreate={() => handleCreate()}
+                onClose={() => onClose?.('close-button')}
+              />
             ),
           };
         }

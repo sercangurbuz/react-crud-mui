@@ -8,12 +8,20 @@ import OvalCheckedIcon from '../../icons/OvalCheckedIcon';
 import Page from '../../page/Page';
 import { H6, Small } from '../../typography';
 
+type CommandsOptions<T extends FieldValues> = {
+  onCreate: () => void;
+  onClose: () => void;
+  model?: T;
+};
+
 export interface SuccessPanelProps<T extends FieldValues = FieldValues> {
   title: string;
   helperText?: string;
-  onCommands?: (model?: T) => React.ReactNode;
+  onCommands?: (options: CommandsOptions<T>) => React.ReactNode;
   model?: T;
   icon?: React.ReactNode;
+  onCreate: () => void;
+  onClose: () => void;
 }
 
 function SuccessPanel<T extends FieldValues = FieldValues>({
@@ -21,6 +29,8 @@ function SuccessPanel<T extends FieldValues = FieldValues>({
   title,
   helperText,
   onCommands,
+  onCreate,
+  onClose,
   model,
 }: SuccessPanelProps<T>) {
   return (
@@ -47,7 +57,7 @@ function SuccessPanel<T extends FieldValues = FieldValues>({
             {helperText}
           </Small>
         </Box>
-        <Box>{onCommands?.(model)}</Box>
+        <Box>{onCommands?.({ model, onCreate, onClose })}</Box>
       </FlexBox>
     </Page.Content>
   );
