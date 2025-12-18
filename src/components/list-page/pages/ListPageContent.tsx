@@ -472,6 +472,7 @@ function ListPageContent<TModel extends FieldValues>({
     return (
       <CardList<TModel>
         {...cardProps}
+        loading={loading}        
         onActionCommandProps={(data, index) => ({
           onDelete: () => onActionClick?.('delete', data),
           onView: () => triggerAction('view', data),

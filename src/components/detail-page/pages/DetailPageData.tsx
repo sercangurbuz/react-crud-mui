@@ -8,9 +8,7 @@ import useTranslation from '../../i18n/hooks/useTranslation';
 import { isPromise } from '../../misc/isPromise';
 import normalizeServerError from '../../misc/normalizeError';
 import { Message } from '../../page/hooks/useNormalizeMessages';
-import Page from '../../page/Page';
 import { ServerError } from '../../utils';
-import SuccessPanel, { SuccessPanelProps } from '../components/SuccessPanel';
 import DetailPageContent, { DetailPageContentProps, NeedDataReason } from './DetailPageContent';
 
 /* -------------------------------------------------------------------------- */
@@ -88,22 +86,6 @@ export interface DetailPageDataProps<TModel extends FieldValues>
    */
   showSuccessMessages?: boolean;
   /**
-   * Show success panel on create/save (Default false)
-   */
-  successPanelProps?:
-    | SuccessPanelProps
-    | ((
-        model: TModel,
-        events: Pick<DetailPageContentProps<TModel>, 'onCreate' | 'onClose'>,
-      ) => SuccessPanelProps);
-  /**
-   * Custom render for success panel
-   */
-  onSuccessPanel?: (
-    model: TModel,
-    events: Pick<DetailPageContentProps<TModel>, 'onCreate' | 'onClose'>,
-  ) => React.ReactNode;
-  /**
    * Event called after succesfull save
    */
   onAfterSave?: (
@@ -132,11 +114,9 @@ function DetailPageData<TModel extends FieldValues>({
   onClose,
   onDelete,
   onDiscardChanges,
-  onLayout,
   onReasonChange,
   onNavigate,
   onSave,
-  onSuccessPanel,
   reason = 'create',
   showSuccessMessages = true,
   successPanelProps,
@@ -217,7 +197,7 @@ function DetailPageData<TModel extends FieldValues>({
       toast.success(t('savedsuccesfully'));
     }
 
-    if (reason === 'create' && successPanelProps && !autoSave) {
+    if (reason === 'create' && successPanelProps && !autoSave && mode === 'save') {
       setSuccessPanelVisibility(true);
     }
 
@@ -304,36 +284,8 @@ function DetailPageData<TModel extends FieldValues>({
       onNavigate={(direction) => void handleNavigate(direction)}
       onDiscardChanges={handleDiscard}
       onClose={onClose}
-      onLayout={(props) => {
-        let pageLayoutProps = props;
-
-        if (successPanelVisible) {
-          const successPanelPropsResolved =
-            typeof successPanelProps === 'object'
-              ? successPanelProps
-              : successPanelProps?.(getValues(), {
-                  onCreate: () => handleCreate(),
-                  onClose: () => onClose?.('close-button'),
-                });
-
-          pageLayoutProps = {
-            ...props,
-            tabsContent: null,
-            tabsHeaderContent: null,
-            footerContent: null,
-            content: onSuccessPanel ? (
-              onSuccessPanel(getValues(), {
-                onCreate: () => handleCreate(),
-                onClose: () => onClose?.('close-button'),
-              })
-            ) : (
-              <SuccessPanel title={t('savedsuccesfully')} {...successPanelPropsResolved} />
-            ),
-          };
-        }
-
-        return onLayout ? onLayout(pageLayoutProps) : <Page.Layout {...pageLayoutProps} />;
-      }}
+      successPanelVisible={successPanelVisible}
+      successPanelProps={successPanelProps}
     />
   );
 }

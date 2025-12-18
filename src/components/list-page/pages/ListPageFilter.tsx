@@ -78,11 +78,10 @@ export interface ListPageFilterProps<
    * Enable table sorting default true
    */
   enableSorting?: boolean;
-
-  cardProps?: Pick<
-    CardListProps<TModel>,
-    'cardColProps' | 'cardRowProps' | 'onCardMeta' | 'emptyTextProps' | 'cardWrapperProps'
-  >;
+  /**
+   * Card list props
+   */
+  cardProps?: Omit<CardListProps<TModel>, 'data' | 'loading' | 'onActionCommandProps'>;
 }
 
 /**

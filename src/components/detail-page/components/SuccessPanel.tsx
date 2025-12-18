@@ -8,7 +8,7 @@ import Page from '../../page/Page';
 import { H6, Small } from '../../typography';
 
 export interface SuccessPanelProps {
-  title: string;
+  title?: string;
   helperText?: string;
   commands?: React.ReactNode;
   icon?: React.ReactNode;

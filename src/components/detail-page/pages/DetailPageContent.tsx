@@ -31,6 +31,7 @@ import DetailPageStepsHeader, {
   DetailPageStepsHeaderProps,
   StepPane,
 } from '../components/DetailPageStepsHeader';
+import SuccessPanel, { SuccessPanelProps } from '../components/SuccessPanel';
 import { DETAILPAGE_HOTKEYS_SCOPE } from '../hooks/useDetailPageHotKeys';
 import { NavigationDirection, SaveMode } from './DetailPageData';
 
@@ -193,6 +194,26 @@ export interface DetailPageContentProps<TModel extends FieldValues>
    * Extra content to be placed in tab bar area
    */
   tabExtraContent?: ReactNode | ((data?: TModel) => ReactNode);
+  /**
+   * Show success panel on create/save (Default false
+   */
+  successPanelVisible?: boolean;
+  /**
+   * Show success panel on create/save (Default false)
+   */
+  successPanelProps?:
+    | SuccessPanelProps
+    | ((
+        model: TModel,
+        events: Pick<DetailPageContentProps<TModel>, 'onCreate' | 'onClose'>,
+      ) => SuccessPanelProps);
+  /**
+   * Custom render for success panel
+   */
+  onSuccessPanel?: (
+    model: TModel,
+    events: Pick<DetailPageContentProps<TModel>, 'onCreate' | 'onClose'>,
+  ) => React.ReactNode;
 }
 
 function DetailPageContent<TModel extends FieldValues>({
@@ -237,6 +258,9 @@ function DetailPageContent<TModel extends FieldValues>({
   showHeader = true,
   steps,
   stepsProps,
+  successPanelVisible,
+  successPanelProps,
+  onSuccessPanel,
   tabExtraContent,
   ...pageProps
 }: DetailPageContentProps<TModel>) {
@@ -269,7 +293,10 @@ function DetailPageContent<TModel extends FieldValues>({
     const content = renderContentLayout();
     const alertsContent = renderAlerts();
     const commandsContent = renderCommands();
-    const pageContent = renderPage(content, commandsContent, alertsContent);
+    const successPanelContent = renderSuccessPanel();
+    const pageContent = successPanelVisible
+      ? renderPage(successPanelContent, null, null)
+      : renderPage(content, commandsContent, alertsContent);
 
     const props: DetailPageWrapperLayoutProps<TModel> = {
       content,
@@ -563,6 +590,31 @@ function DetailPageContent<TModel extends FieldValues>({
           }
         })}
       </>
+    );
+  };
+
+  const renderSuccessPanel = () => {
+    if (!successPanelVisible || !successPanelProps) {
+      return null;
+    }
+
+    const successPanelPropsResolved =
+      typeof successPanelProps === 'object'
+        ? successPanelProps
+        : successPanelProps?.(form.getValues(), {
+            onCreate,
+            onClose: () => onClose?.('close-button'),
+          });
+
+    const helperEvents = {
+      onCreate,
+      onClose: () => onClose?.('close-button'),
+    };
+
+    return onSuccessPanel ? (
+      onSuccessPanel(form.getValues(), helperEvents)
+    ) : (
+      <SuccessPanel title={t('savedsuccesfully')} {...successPanelPropsResolved} />
     );
   };
 

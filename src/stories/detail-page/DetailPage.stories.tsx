@@ -598,15 +598,16 @@ export const WithStepsSuccessResultPanel: StoryObj<typeof DetailPage<StepSchema>
   ...WithSteps,
   args: {
     ...WithSteps.args,
-    successPanelProps: (model) => ({
+    successPanelProps: (model, { onCreate }) => ({
       title: 'User saved successfully!',
       helperText: 'You have successfully completed all steps and saved the user.',
-      onCommands: (
+      commands: (
         <Button
           variant="outlined"
           fullWidth
           onClick={() => {
             alert(`User ${model?.main?.name} saved successfully!`);
+            onCreate?.();
           }}
         >
           Back to list

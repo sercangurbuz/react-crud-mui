@@ -7,7 +7,7 @@ import Close from '@mui/icons-material/Close';
 import Done from '@mui/icons-material/Done';
 import Pending from '@mui/icons-material/Pending';
 import Search from '@mui/icons-material/Search';
-import { Avatar, Box, Checkbox } from '@mui/material';
+import { Avatar, Box, Checkbox, Skeleton } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Button from '@mui/material/Button';
@@ -193,6 +193,33 @@ export const WithCardList: ListPageStory = {
     },
     enableActionCommands: true,
     cardProps: {
+      onCardSkeleton() {
+        return (
+          <Box
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              border: '1px solid',
+              borderColor: 'divider',
+            }}
+          >
+            <Stack direction="row" alignItems="center" py={2} spacing={2}>
+              <Skeleton variant="circular">
+                <Avatar sx={{ borderRadius: '20%' }} />
+              </Skeleton>
+
+              <div>
+                <Skeleton width={100} height={20} sx={{ mb: 1 }} />
+                <Skeleton width={150} height={15} />
+              </div>
+            </Stack>
+
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Skeleton variant="rectangular" width={150} height={15} />
+            </Stack>
+          </Box>
+        );
+      },
       onCardMeta(model, actions) {
         return (
           <Box
