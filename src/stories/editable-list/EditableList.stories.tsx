@@ -23,6 +23,7 @@ const meta: Meta<typeof EditableList<MockUsers, UserSchema, 'users'>> = {
       helperText: 'Counted in Millions',
       icon: <User />,
     },
+    showNewRowButton: 'always',
     enableRowClickToDetails: 'fetch',
     detailPageProps: {
       schema: userSchema,

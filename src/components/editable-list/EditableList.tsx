@@ -385,6 +385,8 @@ function EditableList<
     return (
       <Table<TArrayModel>
         showEmptyImage={false}
+        onNewRow={() => onOpen()}
+        newRowButtonText={newItemTitle}
         {...tableProps}
         rowIdField={UNIQUE_IDENTIFIER_FIELD_NAME as Path<TArrayModel>}
         data={fields as TArrayModel[]}
