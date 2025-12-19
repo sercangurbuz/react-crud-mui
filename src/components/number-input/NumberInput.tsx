@@ -31,7 +31,12 @@ function NumberInput({ onChange, sx, getRef, ...numberProps }: NumberInputProps)
         ...sx,
       }}
       {...numberProps}
-      onValueChange={({ floatValue }) => onChange?.(floatValue ?? 0)}
+      onValueChange={({ floatValue }, { source }) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        if (source === 'event') {
+          onChange?.(floatValue ?? 0);
+        }
+      }}
     />
   );
 }
