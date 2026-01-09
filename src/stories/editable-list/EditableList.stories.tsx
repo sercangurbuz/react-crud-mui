@@ -75,3 +75,13 @@ export default meta;
 type Story = StoryObj<typeof EditableList<MockUsers, UserSchema, 'users'>>;
 
 export const Simple: Story = {};
+
+export const WithUniqueFields: Story = {
+  ...Simple,
+  args: {
+    uniqueFields: [
+      { fields: ['email'], message: 'Email must be unique' },
+      { fields: ['username'], message: 'Username must be unique' },
+    ],
+  },
+};

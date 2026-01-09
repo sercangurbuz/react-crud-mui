@@ -283,6 +283,7 @@ Page.Content = PageContent;
 Page.Divider = PageDivider;
 Page.Layout = DefaultLayout;
 Page.Tabs = DefaultTabs;
+Page.Panels = DefaultPanels;
 Page.Modal = PageModal;
 Page.Drawer = PageDrawer;
 Page.Provider = PageProvider;

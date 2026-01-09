@@ -325,7 +325,7 @@ function EditableList<
 
           if (messages.length) {
             // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-            return Promise.reject({ messages });
+            return Promise.reject({ errors: messages.map((message) => ({ message })) });
           }
         }
 

@@ -321,13 +321,13 @@ const componentsOverride = (theme: Theme): Components => {
           zIndex: 1300,
           '& .MuiDrawer-paper': {
             [theme.breakpoints.down('md')]: {
-              height: 'calc(100vh - 30px)',
+              maxHeight: 'calc(100vh - 30px)',
               top: '15px',
               right: '15px',
               borderRadius: '4px',
             },
             [theme.breakpoints.up('md')]: {
-              height: 'calc(100vh - 50px)',
+              maxHeight: 'calc(100vh - 50px)',
               top: '25px',
               right: '25px',
               borderRadius: '8px',

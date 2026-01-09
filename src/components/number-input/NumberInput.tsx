@@ -22,6 +22,7 @@ function NumberInput({ onChange, sx, getRef, ...numberProps }: NumberInputProps)
       decimalSeparator={decimalSeparator}
       allowedDecimalSeparators={[',']}
       fixedDecimalScale={true}
+      InputProps={{ inputProps: { inputMode: 'decimal' } }}
       getInputRef={getRef}
       sx={{
         '& .MuiInputBase-input': {
