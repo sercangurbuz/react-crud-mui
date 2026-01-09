@@ -41,7 +41,12 @@ function DetailPageDrawer<TModel extends FieldValues>({
       {...drawerProps}
     >
       <DetailPage<TModel>
-        style={{ width: 450, flex: 1, display: 'flex', flexDirection: 'column' }}
+        style={{ 
+          width: 450, 
+          height: '100%', 
+          display: 'flex', 
+          flexDirection: 'column'
+        }}
         defaultSaveMode="save-close"
         onCommands={(props) => <DetailPageDrawerCommands {...props} />}
         onLayout={(props) => (

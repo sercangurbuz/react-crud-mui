@@ -17,7 +17,15 @@ function DetailPageDrawerLayout({
   tabsHeaderContent,
 }: PageLayoutProps) {
   return (
-    <Card style={options?.style} sx={options?.sx}>
+    <Card 
+      style={options?.style} 
+      sx={{ 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        ...options?.sx 
+      }}
+    >
       {pageHeader}
       {progressContent}
       {alertsContent}

@@ -382,6 +382,12 @@ export const OpenInDrawer: DetailPageModalStory = {
           onClose={() => {
             setVisible(false);
           }}
+          commandsPosition="bottom"
+          onCommands={({ onSaveClose }) => (
+            <Button onClick={onSaveClose} startIcon={<Add />} fullWidth>
+              Save User
+            </Button>
+          )}
         >
           <FormContent />
           <FormContent />
@@ -390,32 +396,6 @@ export const OpenInDrawer: DetailPageModalStory = {
           <FormContent />
           <FormContent />
         </DetailPage.Drawer>
-      </>
-    );
-  },
-};
-
-export const OpenInDrawerWithCustomCommands: DetailPageModalStory = {
-  args: OpenInModal.args,
-  render: (args) => {
-    const [visible, setVisible] = useState<boolean>(true);
-    return (
-      <>
-        <Button onClick={() => setVisible(true)}>Toggle DetailPage Drawer</Button>
-        <DetailPage.Drawer
-          {...args}
-          enableDelete={false}
-          commandsPosition="bottom"
-          onCommands={({ onSaveClose }) => (
-            <Button onClick={onSaveClose} startIcon={<Add />} fullWidth>
-              Save User
-            </Button>
-          )}
-          open={visible}
-          onClose={() => {
-            setVisible(false);
-          }}
-        />
       </>
     );
   },
