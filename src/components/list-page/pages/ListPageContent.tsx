@@ -354,7 +354,7 @@ function ListPageContent<TModel extends FieldValues>({
         morePanelProps={{
           moreText: t('listpage.showmorefilter'),
           lessText: t('listpage.showlessfilter'),
-          sx: { pt: 0 },
+          sx: { pt: 0, justifyContent: 'center' },
           ...pageProps?.morePanelProps,
         }}
         disabled={disabled}
@@ -472,7 +472,7 @@ function ListPageContent<TModel extends FieldValues>({
     return (
       <CardList<TModel>
         {...cardProps}
-        loading={loading}        
+        loading={loading}
         onActionCommandProps={(data, index) => ({
           onDelete: () => onActionClick?.('delete', data),
           onView: () => triggerAction('view', data),
