@@ -27,7 +27,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   defaultFilter,
   defaultMeta,
   enableNestedSegments,
-  enableQueryStringFilter = true,
+  enableQueryStringFilter = false,
   enableSegmentRouting = true,
   fallbackSegmentIndex,
   onNeedData,

@@ -354,9 +354,9 @@ function Select<T extends FieldValues = FieldValues>({
           },
           ...sx,
         }}
-        size="small"
+        size={size as MuiSelectProps['size']}
         inputProps={{
-          size: 'small',
+          size,
         }}
         renderValue={
           isNil(value)
@@ -377,7 +377,12 @@ function Select<T extends FieldValues = FieldValues>({
   };
 
   const renderLabelWrapper = (content: ReactNode, errorMessage: ReactNode) => (
-    <FormControl fullWidth {...labelWrapperProps} error={!!error} size="small">
+    <FormControl
+      fullWidth
+      {...labelWrapperProps}
+      error={!!error}
+      size={size as FormControlProps['size']}
+    >
       <InputLabel
         shrink={multiple ? !!(value as Array<unknown>)?.length : !!value}
         id={`${id}-label`}

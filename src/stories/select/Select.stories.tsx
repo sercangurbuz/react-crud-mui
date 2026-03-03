@@ -116,6 +116,12 @@ export const WithSmallerSize: SelectStory = {
   },
 };
 
+export const WithLargeSize: SelectStory = {
+  args: {
+    size: 'medium',
+  },
+};
+
 export const WithExtraItem: SelectStory = {
   args: {
     allowClear: false,
