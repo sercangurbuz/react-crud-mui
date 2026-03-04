@@ -219,6 +219,7 @@ function ComboBox<T extends CreatableModel, Creatable extends boolean>({
         inputRef={selectRef}
         autoFocus={autoFocus}
         error={error}
+        size={size === 'smaller' ? 'small' : size}
         helperText={helperText}
         sx={{
           '& > .MuiFormLabel-root': {

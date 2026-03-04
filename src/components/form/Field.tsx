@@ -14,6 +14,7 @@ import {
 import isNil from '../misc/isNil';
 import usePage from '../page/hooks/usePage';
 import FieldGroupProvider from './components/FieldGroupProvider';
+import FieldSet from './components/FieldSet';
 import FieldWatch from './components/FieldWatch';
 import FieldWithProvider from './components/FieldWithProvider';
 import FormButton from './components/FormButton';
@@ -195,6 +196,7 @@ Field.Select = FormSelect;
 Field.RadioGroup = FormRadioGroup;
 Field.DatePicker = FormDatePicker;
 Field.PanelSelect = FormPanelSelect;
+Field.Set = FieldSet;
 
 Field.Button = FormButton;
 Field.Watch = FieldWatch;

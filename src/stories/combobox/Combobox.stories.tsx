@@ -90,6 +90,12 @@ export const WithSmallerSize: ComboboxStory = {
   },
 };
 
+export const WithLargeSize: ComboboxStory = {
+  args: {
+    size: 'medium',
+  },
+};
+
 export const WithCustomDisplay: ComboboxStory = {
   args: {
     ...WithDescription.args,
