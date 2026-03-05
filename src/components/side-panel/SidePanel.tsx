@@ -13,6 +13,7 @@ export type SidePanelItem = {
   name: React.ReactNode;
   icon?: React.ReactNode;
   endIcon?: React.ReactNode;
+  danger?: boolean;
 };
 
 export interface SidePanelProps extends BoxProps {
@@ -41,6 +42,7 @@ function SidePanel({ items, activeKey, onItemClick, drawerToggler, ...boxProps }
             variant="text"
             startIcon={item.icon}
             endIcon={item.endIcon}
+            danger={item.danger}
             active={activeKey === item.key}
             onClick={handleListItemBtn(item)}
           >

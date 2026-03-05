@@ -37,7 +37,7 @@ const meta: Meta<typeof SidePanel> = {
       { key: '10', name: 'Statements', icon: <FileOutlined /> },
       { key: '11', name: 'Referrals', icon: <PremiumOutlined /> },
       { key: '12', name: 'API Keys', icon: <Key /> },
-      { key: '13', name: 'Delete account', icon: <DeleteOutlined /> },
+      { key: '13', name: 'Delete account', icon: <DeleteOutlined />, danger: true },
     ],
   },
   component: SidePanel,
