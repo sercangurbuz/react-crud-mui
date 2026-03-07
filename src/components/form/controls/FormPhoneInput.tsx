@@ -1,3 +1,4 @@
+import { PropsWithoutRef } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import PhoneInput, { PhoneInputProps } from '../../phone-input/PhoneInput';
@@ -22,8 +23,8 @@ function FormPhoneInput<TFieldValues extends FieldValues = FieldValues>({
           sx={{
             width: '100%',
           }}
-          {...inputProps}
           {...field}
+          {...(inputProps as PropsWithoutRef<PhoneInputProps>)}
           error={invalid}
           helperText={error?.message}
           onChange={(e) => {
