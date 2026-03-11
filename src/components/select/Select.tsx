@@ -354,9 +354,9 @@ function Select<T extends FieldValues = FieldValues>({
           },
           ...sx,
         }}
-        size={size as MuiSelectProps['size']}
+        size={size === 'smaller' ? 'small' : size}
         inputProps={{
-          size,
+          size: size === 'smaller' ? 'small' : size,
         }}
         renderValue={
           isNil(value)
@@ -381,7 +381,7 @@ function Select<T extends FieldValues = FieldValues>({
       fullWidth
       {...labelWrapperProps}
       error={!!error}
-      size={size as FormControlProps['size']}
+      size={size === 'smaller' ? 'small' : size}
     >
       <InputLabel
         shrink={multiple ? !!(value as Array<unknown>)?.length : !!value}
