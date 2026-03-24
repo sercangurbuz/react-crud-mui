@@ -100,7 +100,7 @@ const componentsOverride = (theme: Theme): Components => {
     MuiDataGrid: DataGrid(theme),
     MuiBackdrop: Backdrop(theme),
     MuiBreadcrumbs: Breadcrumbs(theme),
-    MuiAutocomplete: Autocomplete(),
+    MuiAutocomplete: Autocomplete(theme),
     MuiSelect: Select(theme),
     // AVATAR
     MuiAvatar: Avatar(theme),
@@ -116,7 +116,7 @@ const componentsOverride = (theme: Theme): Components => {
     MuiAccordionSummary: AccordionSummery(theme),
     MuiAccordionDetails: AccordionDetails(theme),
     // PAGINATION
-    MuiPagination: Pagination(),
+    MuiPagination: Pagination(theme),
     MuiPaginationItem: PaginationItem(theme),
     MuiTablePagination: TablePagination(theme),
     // DIALOG

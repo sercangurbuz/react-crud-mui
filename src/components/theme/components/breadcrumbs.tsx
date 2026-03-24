@@ -1,9 +1,11 @@
-import { Theme } from '@mui/material/styles/createTheme'
-import { Components } from '@mui/material/styles/components'
-import { isDark } from '../theme.constants'
+import { Components } from '@mui/material/styles/components';
+import { Theme } from '@mui/material/styles/createTheme';
+
+import { isDark } from '../theme.constants';
 
 const Breadcrumbs = (theme: Theme): Components['MuiBreadcrumbs'] => {
   return {
+    ...(theme.components?.MuiBreadcrumbs as Components['MuiBreadcrumbs']),
     styleOverrides: {
       separator: {
         color: theme.palette.grey[isDark(theme) ? 100 : 400],
@@ -25,7 +27,7 @@ const Breadcrumbs = (theme: Theme): Components['MuiBreadcrumbs'] => {
         border: `1px solid ${theme.palette.grey[isDark(theme) ? 700 : 100]}`,
       },
     },
-  }
-}
+  };
+};
 
-export default Breadcrumbs
+export default Breadcrumbs;

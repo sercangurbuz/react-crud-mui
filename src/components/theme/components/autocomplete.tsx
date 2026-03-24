@@ -1,10 +1,12 @@
 // MUI ICON COMPONENT
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import { Theme } from '@mui/material/styles';
 import { Components } from '@mui/material/styles/components';
 
-const Autocomplete = (): Components['MuiAutocomplete'] => {
+const Autocomplete = (theme: Theme): Components['MuiAutocomplete'] => {
   return {
     defaultProps: {
+      ...theme.components?.MuiAutocomplete?.defaultProps,
       popupIcon: <ExpandMore />,
       slotProps: {
         paper: {

@@ -10,7 +10,7 @@ export interface DetailPagePopoverProps<TModel extends FieldValues = FieldValues
   extends DetailPageProps<TModel> {
   popoverOptions?: Partial<PopoverProps>;
   onClose: () => void;
-  anchorEl: HTMLElement | null;
+  anchorEl?: HTMLElement | null;
 }
 
 /* ------------------------ DetailPageModal Component ----------------------- */

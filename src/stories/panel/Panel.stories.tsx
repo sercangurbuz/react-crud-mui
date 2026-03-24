@@ -75,7 +75,7 @@ export const WithMoreOptions: PanelStory = {
   args: {
     moreOptions: [
       { key: 'edit', children: 'Edit row', icon: <Edit fontSize="small" /> },
-      { key: 'add', children: 'Add new row', icon: <Add fontSize="small" /> },
+      { key: 'add', children: 'Add new row', icon: <Add fontSize="small" />, disabled: true },
       { key: 'divider', divider: true },
       { key: 'delete', children: 'Delete', icon: <Delete fontSize="small" />, danger: true },
     ],

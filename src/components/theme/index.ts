@@ -1,3 +1,4 @@
+import { enUS, trTR } from '@mui/material/locale';
 import createTheme, { ThemeOptions } from '@mui/material/styles/createTheme';
 import responsiveFontSizes from '@mui/material/styles/responsiveFontSizes';
 import merge from 'lodash.merge';
@@ -18,6 +19,7 @@ export type ThemeSettings = {
   direction: 'ltr' | 'rtl';
   responsiveFontSizes?: boolean;
   themeOptions?: ThemeOptions;
+  lang?: 'en' | 'tr';
 };
 // ==============================================================
 
@@ -42,12 +44,12 @@ export const createCustomTheme = (settings: ThemeSettings) => {
     settings.themeOptions,
   );
 
-  let theme = createTheme(mergedThemeOptions as ThemeOptions);
-
+  let theme = createTheme(mergedThemeOptions as ThemeOptions, settings.lang === 'en' ? enUS : trTR);
   // OVERRIDE SHADOWS
   theme.shadows = shadows(theme);
 
   // OVERRIDE COMPONENTS
+
   theme.components = componentsOverride(theme);
 
   if (settings.responsiveFontSizes) {

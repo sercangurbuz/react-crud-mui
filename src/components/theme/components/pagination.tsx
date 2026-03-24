@@ -1,26 +1,33 @@
-import { Theme } from '@mui/material/styles/createTheme'
-import { Components } from '@mui/material/styles/components'
+import { Components } from '@mui/material/styles/components';
+import { Theme } from '@mui/material/styles/createTheme';
+
 // CUSTOM UTILS METHOD
 import { isDark } from '../theme.constants';
 
 export const TablePagination = (theme: Theme): Components['MuiTablePagination'] => {
   return {
+    ...(theme.components?.MuiTablePagination as Components['MuiTablePagination']),
     styleOverrides: {
       select: { ':focus': { borderRadius: 8 } },
       actions: { color: theme.palette.grey[600] },
       menuItem: { marginInline: 8, borderRadius: 8, justifyContent: 'center' },
     },
-  }
-}
+  };
+};
 
-export const Pagination = (): Components['MuiPagination'] => ({
-  defaultProps: { color: 'primary', size: 'medium' },
-})
+export const Pagination = (theme: Theme): Components['MuiPagination'] => ({
+  defaultProps: {
+    ...theme.components?.MuiPagination?.defaultProps,
+    color: 'primary',
+    size: 'medium',
+  },
+});
 
 export const PaginationItem = (theme: Theme): Components['MuiPaginationItem'] => {
-  const { primary, grey } = theme.palette
+  const { primary, grey } = theme.palette;
 
   return {
+    ...(theme.components?.MuiPaginationItem as Components['MuiPaginationItem']),
     styleOverrides: {
       rounded: { borderRadius: 8 },
 
@@ -76,5 +83,5 @@ export const PaginationItem = (theme: Theme): Components['MuiPaginationItem'] =>
         },
       },
     },
-  }
-}
+  };
+};

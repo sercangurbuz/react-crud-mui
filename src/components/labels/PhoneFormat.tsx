@@ -17,6 +17,7 @@ interface PhoneLabelProps extends BoxProps {
    * Message to show when date is undefined
    */
   unDefinedMessage?: string;
+  enablePhoneLink?: boolean;
 }
 
 function PhoneFormat({
@@ -24,6 +25,7 @@ function PhoneFormat({
   showIcon = true,
   showUndefinedMessage = false,
   unDefinedMessage = '-',
+  enablePhoneLink = true,
   ...rest
 }: PhoneLabelProps) {
   /* -------------------------------------------------------------------------- */
@@ -54,9 +56,13 @@ function PhoneFormat({
     <Box {...rest} onClick={handleClick}>
       <FlexBox gap={0.5} alignItems="center">
         {showIcon && <LocalPhone sx={{ fontSize: '1.2em', color: 'currentColor' }} />}
-        <a style={{ color: 'inherit' }} href={`tel:${phoneNumber}`}>
-          {formattedPhoneNumber}
-        </a>
+        {enablePhoneLink ? (
+          <a style={{ color: 'inherit' }} href={`tel:${phoneNumber}`}>
+            {formattedPhoneNumber}
+          </a>
+        ) : (
+          <span>{formattedPhoneNumber}</span>
+        )}
       </FlexBox>
     </Box>
   );

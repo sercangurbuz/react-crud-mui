@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Accordion, { AccordionProps } from '@mui/material/Accordion';
@@ -21,12 +21,32 @@ export interface DefaultAccordionsProps extends BoxProps {
 }
 
 function DefaultPanels({ panels, ...boxProps }: DefaultAccordionsProps) {
-  const panelContent = panels.map(({ detailsProps, ...panel }) => (
-    <Accordion {...panel} key={panel.key}>
-      <AccordionSummary expandIcon={<ExpandMore />}>{panel.label}</AccordionSummary>
-      <AccordionDetails {...detailsProps}>{panel.children}</AccordionDetails>
-    </Accordion>
-  ));
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(
+    panels.filter((panel) => panel.defaultExpanded).map((panel) => panel.key) || [],
+  );
+  const panelContent = panels.map(({ detailsProps, ...panel }) => {
+    const isExpanded = selectedKeys.includes(panel.key);
+    return (
+      <Accordion
+        {...panel}
+        key={panel.key}
+        expanded={isExpanded}
+        onChange={(_e, expanded) => {
+          setSelectedKeys((prev) => {
+            if (expanded) {
+              return [...prev, panel.key];
+            }
+            return prev.filter((key) => key !== panel.key);
+          });
+        }}
+      >
+        <AccordionSummary expandIcon={<ExpandMore />}>{panel.label}</AccordionSummary>
+        {isExpanded ? (
+          <AccordionDetails {...detailsProps}>{panel.children}</AccordionDetails>
+        ) : null}
+      </Accordion>
+    );
+  });
 
   return <Page.Content {...boxProps}>{panelContent}</Page.Content>;
 }

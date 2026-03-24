@@ -17,8 +17,6 @@ import 'simplebar-react/dist/simplebar.min.css';
 
 import { enableMapSet } from 'immer';
 
-import i18nInstance from '../i18n';
-
 enableMapSet();
 
 /* -------------------------------------------------------------------------- */
@@ -34,6 +32,7 @@ export type CrudMuiProviderProps = Partial<Settings>;
 function CrudMuiProvider({
   children,
   validationOptions,
+
   ...rest
 }: PropsWithChildren<CrudMuiProviderProps>) {
   /* -------------------------------------------------------------------------- */
@@ -41,16 +40,16 @@ function CrudMuiProvider({
   /* -------------------------------------------------------------------------- */
 
   const contextValue = merge(getDefaultSettings(), rest) as Settings;
-  const { theme, themeOptions, responsiveFontSizes, direction } = contextValue;
-
+  const { theme, themeOptions, responsiveFontSizes, direction, lang } = contextValue;
   return (
     <SettingsContext.Provider value={contextValue}>
-      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18nInstance.language}>
+      <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={lang}>
         <ThemeProvider
           theme={theme}
           themeOptions={themeOptions}
           responsiveFontSizes={responsiveFontSizes}
           direction={direction}
+          lang={lang}
         >
           <HotkeysProvider>
             <ValidationOptionsProvider {...validationOptions}>{children}</ValidationOptionsProvider>

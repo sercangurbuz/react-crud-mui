@@ -204,8 +204,7 @@ export const WithPanels: PageStory = {
       },
       {
         key: 'panel2',
-        label: 'Pending',
-        defaultExpanded: true,
+        label: 'Pending',        
         children: (
           <Page.Content>
             The vows and named is he seven his origin myself any is decision-making. The interface

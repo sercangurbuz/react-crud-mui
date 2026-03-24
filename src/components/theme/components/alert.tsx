@@ -34,6 +34,7 @@ export const Alert = (theme: Theme): Components['MuiAlert'] => {
 
   return {
     defaultProps: {
+      ...theme.components?.MuiAlert?.defaultProps,
       iconMapping: {
         info: <Info />,
         error: <Error />,

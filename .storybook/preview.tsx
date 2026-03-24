@@ -63,7 +63,6 @@ const preview: Preview = {
     (Story, context) => {
       useEffect(() => {
         if (context.globals.lang) {
-           
           void i18nInstance.changeLanguage(context.globals.lang);
         }
       }, [context.globals.lang]);
@@ -72,6 +71,7 @@ const preview: Preview = {
         <ConfirmProvider>
           <CrudMuiProvider
             theme={context.globals.theme}
+            lang={context.globals.lang}
             themeOptions={{ typography: { fontFamily: "'Inter', sans-serif" } }}
           >
             <Story />

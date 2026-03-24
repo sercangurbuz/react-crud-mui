@@ -15,6 +15,7 @@ const Rating = (theme: Theme): Components['MuiRating'] => ({
     iconEmpty: { color: theme.palette.grey[300] },
   },
   defaultProps: {
+    ...theme.components?.MuiRating?.defaultProps,
     icon: <Star fontSize="inherit" />,
     emptyIcon: <StarOutlined fontSize="inherit" />,
   },

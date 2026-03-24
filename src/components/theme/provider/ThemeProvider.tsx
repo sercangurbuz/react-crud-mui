@@ -12,8 +12,15 @@ function ThemeProvider({
   direction,
   responsiveFontSizes,
   children,
+  lang,
 }: PropsWithChildren<ThemeSettings>) {
-  const customTheme = createCustomTheme({ theme, themeOptions, direction, responsiveFontSizes });
+  const customTheme = createCustomTheme({
+    theme,
+    themeOptions,
+    direction,
+    responsiveFontSizes,
+    lang,
+  });
 
   const toasterOptions = {
     style: {
