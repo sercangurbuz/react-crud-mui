@@ -6,15 +6,15 @@ export interface ListPageHeaderProps extends HeaderProps {
   dataCount?: number;
 }
 
-function ListPageHeader(props: ListPageHeaderProps) {
+function ListPageHeader({ showDataCount, dataCount, ...props }: ListPageHeaderProps) {
   return (
     <Header
       {...props}
       header={
-        props.showDataCount && props.dataCount ? (
+        showDataCount && dataCount ? (
           <FlexBox alignItems="center" gap={0.5}>
             <span>{props.header}</span>
-            {`(${props.dataCount})`}
+            {`(${dataCount})`}
           </FlexBox>
         ) : (
           props.header

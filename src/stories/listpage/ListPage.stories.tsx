@@ -79,7 +79,7 @@ const meta: Meta<typeof ListPage<UserSchema>> = {
     ],
     defaultValues: UserDefaultValues,
     defaultMeta: {
-      pagination: { pageSize: 5 },
+      pagination: { pageSize: 15 },
     },
     enableCreateItem: false,
   },

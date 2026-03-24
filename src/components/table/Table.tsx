@@ -731,6 +731,7 @@ function Table<TData extends FieldValues>({
       return null;
     }
 
+    const { extraContent, ...restPaginationProps } = paginationProps || {};
     const { pageSize, pageIndex } = table.getState().pagination;
 
     const pager = (
@@ -742,14 +743,14 @@ function Table<TData extends FieldValues>({
         count={table.getRowCount()}
         onPageChange={(_, page) => table.setPageIndex(page)}
         onRowsPerPageChange={(e) => table.setPageSize(+e.target.value || 5)}
-        {...paginationProps}
+        {...restPaginationProps}
       />
     );
 
-    if (paginationProps?.extraContent) {
+    if (extraContent) {
       return (
         <FlexBetween sx={{ pl: 1 }}>
-          {paginationProps.extraContent}
+          {extraContent}
           {pager}
         </FlexBetween>
       );

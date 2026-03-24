@@ -32,7 +32,6 @@ export type CrudMuiProviderProps = Partial<Settings>;
 function CrudMuiProvider({
   children,
   validationOptions,
-
   ...rest
 }: PropsWithChildren<CrudMuiProviderProps>) {
   /* -------------------------------------------------------------------------- */

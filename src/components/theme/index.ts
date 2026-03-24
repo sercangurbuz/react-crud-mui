@@ -19,7 +19,7 @@ export type ThemeSettings = {
   direction: 'ltr' | 'rtl';
   responsiveFontSizes?: boolean;
   themeOptions?: ThemeOptions;
-  lang?: 'en' | 'tr';
+  lang?: string;
 };
 // ==============================================================
 
