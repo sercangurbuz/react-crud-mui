@@ -252,6 +252,7 @@ function DetailPageContent<TModel extends FieldValues>({
   onSave,
   onSaveClose,
   onSaveCreate,
+  onTabChanged,
   onWrapperLayout,
   readOnly,
   reason = 'create',
@@ -640,7 +641,10 @@ function DetailPageContent<TModel extends FieldValues>({
         onClose={onClose}
         loading={loading}
         alertsContent={alertsContent}
-        onTabChanged={({ selectedTabIndex }) => onSegmentChanged?.(selectedTabIndex)}
+        onTabChanged={({ selectedTabIndex, selectedTabValue }) => {
+          onSegmentChanged?.(selectedTabIndex);
+          onTabChanged?.({ selectedTabIndex, selectedTabValue });
+        }}
         selectedTabIndex={activeSegmentIndex}
       >
         {content}
