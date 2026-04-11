@@ -19,6 +19,7 @@ export type MoreButtonItem = {
   divider?: boolean;
   disabled?: boolean;
   onClick?: (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
+  render?: (func: () => void) => ReactNode;
 };
 
 export interface MoreButtonProps extends IconButtonProps {
@@ -62,9 +63,11 @@ export default function MoreButton({
       >
         {renderOptions
           ? renderOptions(handleClose)
-          : options?.map(({ children, key, danger, icon, onClick, divider, disabled }) =>
+          : options?.map(({ children, key, danger, icon, onClick, divider, disabled, render }) =>
               divider ? (
                 <Divider key={key} />
+              ) : render ? (
+                render(handleClose)
               ) : (
                 <MenuItem
                   key={key}
