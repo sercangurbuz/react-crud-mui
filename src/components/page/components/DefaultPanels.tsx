@@ -18,9 +18,10 @@ export type PanelPane = Omit<AccordionProps, 'children' | 'key'> & {
 
 export interface DefaultAccordionsProps extends BoxProps {
   panels: PanelPane[];
+  accordionMode?: boolean;
 }
 
-function DefaultPanels({ panels, ...boxProps }: DefaultAccordionsProps) {
+function DefaultPanels({ panels, accordionMode, ...boxProps }: DefaultAccordionsProps) {
   const [selectedKeys, setSelectedKeys] = useState<string[]>(
     panels.filter((panel) => panel.defaultExpanded).map((panel) => panel.key) || [],
   );
@@ -34,7 +35,7 @@ function DefaultPanels({ panels, ...boxProps }: DefaultAccordionsProps) {
         onChange={(_e, expanded) => {
           setSelectedKeys((prev) => {
             if (expanded) {
-              return [...prev, panel.key];
+              return accordionMode ? [panel.key] : [...prev, panel.key];
             }
             return prev.filter((key) => key !== panel.key);
           });

@@ -17,6 +17,7 @@ import GroupSenior from '../../components/icons/GroupSenior';
 import Page from '../../components/page/Page';
 import Panel from '../../components/panel/Panel';
 import { H1, Paragraph, Small } from '../../components/typography';
+import { MenuItem } from '@mui/material';
 
 const meta: Meta<typeof Panel> = {
   title: 'Components/Panel',
@@ -78,6 +79,13 @@ export const WithMoreOptions: PanelStory = {
       { key: 'add', children: 'Add new row', icon: <Add fontSize="small" />, disabled: true },
       { key: 'divider', divider: true },
       { key: 'delete', children: 'Delete', icon: <Delete fontSize="small" />, danger: true },
+      { key: 'divider2', divider: true },
+      {
+        key: 'dwdw',
+        render(func) {
+          return <MenuItem onClick={func}>Custom render option</MenuItem>;
+        },
+      },
     ],
   },
 };

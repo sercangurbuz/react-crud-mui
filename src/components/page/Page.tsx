@@ -8,7 +8,7 @@ import Header, { HeaderProps } from '../header/Header';
 import MorePanel, { MorePanelProps } from '../more-panel/MorePanel';
 import Progress, { ProgressProps } from '../progress/Progress';
 import DefaultLayout, { PageLayoutProps } from './components/DefaultLayout';
-import DefaultPanels, { PanelPane } from './components/DefaultPanels';
+import DefaultPanels, { DefaultAccordionsProps, PanelPane } from './components/DefaultPanels';
 import DefaultTabs, {
   DefaultTabsProps,
   TabChangedPayload,
@@ -62,6 +62,7 @@ export interface PageProps extends HeaderProps {
   onTabs?: (props: DefaultTabsProps) => ReactNode;
   bordered?: boolean;
   panels?: PanelPane[];
+  panelProps?: Partial<DefaultAccordionsProps>;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -93,6 +94,7 @@ function Page({
   onTabChanged,
   onTabs,
   panels,
+  panelProps,
   rightContent,
   selectedTabIndex = 0,
   showCommands = true,
@@ -235,7 +237,7 @@ function Page({
       return null;
     }
 
-    return <DefaultPanels panels={panels} sx={{ pt: bordered ? undefined : 0 }} />;
+    return <DefaultPanels panels={panels} sx={{ pt: bordered ? undefined : 0 }} {...panelProps} />;
   };
 
   const renderLayout = () => {
