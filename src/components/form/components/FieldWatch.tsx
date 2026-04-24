@@ -5,7 +5,6 @@ import type { BoxProps } from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import type { SxProps } from '@mui/material/styles';
 
-import isNil from '../../misc/isNil';
 import { Small } from '../../typography';
 
 interface FieldWatchProps<TFieldValues extends FieldValues = FieldValues> {
@@ -36,7 +35,7 @@ function FieldWatch<TFieldValues extends FieldValues = FieldValues>({
     return render(fieldValue);
   }
 
-  if (showAsJson && !isNil(fieldValue)) {
+  if (showAsJson) {
     return <code>{JSON.stringify(fieldValue)}</code>;
   }
 

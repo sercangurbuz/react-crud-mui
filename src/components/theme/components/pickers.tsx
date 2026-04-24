@@ -18,13 +18,17 @@ export const DatePicker = (): Components['MuiDatePicker'] => ({
     },
 
     slotProps: {
-      field: {
+      textField: {
         sx: {
-          '& .MuiInputAdornment-root.MuiInputAdornment-positionEnd': { ml: 0 },
-          '& .MuiInputBase-input.Mui-disabled': {
+          '& .MuiInputBase-input.MuiOutlinedInput-input.Mui-disabled': {
             color: (theme) => theme.palette.grey[500],
             WebkitTextFillColor: (theme) => theme.palette.grey[500],
           },
+        },
+      },
+      field: {
+        sx: {
+          '& .MuiInputAdornment-root.MuiInputAdornment-positionEnd': { ml: 0 },
         },
       },
     },

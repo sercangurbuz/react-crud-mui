@@ -604,7 +604,6 @@ function Table<TData extends FieldValues>({
           colSpan={visibleCols?.length}
           title={reactNodeToString(text)}
           size={size}
-          ellipsis
           sx={{ pt: 0 }}
         >
           <Small color="text.secondary">{text}</Small>
