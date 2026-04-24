@@ -424,7 +424,6 @@ function EditableList<
 
   const renderDetailPage = () => {
     const props: DetailPageModalProps<TArrayModel> = {
-      onClose,
       disabled,
       onDelete: deleteModel,
       enableCopy: canCopy,
@@ -435,6 +434,10 @@ function EditableList<
       header: disabled ? t('browse') : dpProps?.reason === 'fetch' ? t('edit') : t('newitem'),
       ...dpProps,
       ...detailPageProps,
+      onClose() {
+        onClose();
+        detailPageProps?.onClose?.();
+      },
     };
 
     return detailType === 'modal' ? (
