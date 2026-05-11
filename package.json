@@ -1,7 +1,7 @@
 {
   "name": "react-crud-mui",
   "private": false,
-  "version": "0.2.105",
+  "version": "0.2.106",
   "type": "module",
   "main": "./dist/coreui.js",
   "module": "./dist/coreui.js",
@@ -52,6 +52,7 @@
     "qs": "^6.13.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-draggable": "^4.5.0",
     "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.4.1",
     "react-hotkeys-hook": "^4.5.1",

@@ -1,11 +1,11 @@
-import Close from '@mui/icons-material/Close';
+import Draggable, { DraggableProps } from 'react-draggable';
+
 import type { BoxProps } from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
 import MuiModal, { ModalProps as MuiModalProps } from '@mui/material/Modal';
 
-import useTranslation from '../i18n/hooks/useTranslation';
+import ModalCommands from './components/ModalCommands';
 // STYLED COMPONENT
-import { ModalSize, StyledScrollbar, Wrapper } from './styles';
+import { ModalPosition, ModalSize, StyledScrollbar } from './styles';
 
 export interface ModalProps
   extends BoxProps,
@@ -22,11 +22,14 @@ export interface ModalProps
   onClose?: () => void;
   closable?: boolean;
   size?: ModalSize;
+  draggable?: boolean;
 }
 // ===========================================================================
 
+export const DRAGGABLE_HANDLE_CLASS = 'draggable-handle';
 export default function Modal({
   children,
+  draggable,
   open,
   onClose,
   closable,
@@ -38,7 +41,6 @@ export default function Modal({
   disableRestoreFocus,
   ...props
 }: ModalProps) {
-  const { t } = useTranslation();
   return (
     <MuiModal
       open={open}
@@ -50,28 +52,21 @@ export default function Modal({
       disableEscapeKeyDown={disableEscapeKeyDown}
       disableRestoreFocus={disableRestoreFocus}
     >
-      <Wrapper {...props}>
-        {closable && (
-          <IconButton
-            onClick={onClose}
-            title={t('close')}
-            disableRipple
-            sx={{
-              position: 'absolute',
-              right: 5,
-              top: 5,
-              color: 'grey.400',
-              '&:hover': {
-                color: 'grey.500',
-              },
-            }}
-          >
-            <Close />
-          </IconButton>
-        )}
-        {children}
-      </Wrapper>
+      <ModalPosition {...props}>
+        <DraggableModal disabled={!draggable}>
+          <ModalCommands closable={closable} onClose={onClose} />
+          {children}
+        </DraggableModal>
+      </ModalPosition>
     </MuiModal>
+  );
+}
+
+function DraggableModal({ children, ...props }: Partial<DraggableProps>) {
+  return (
+    <Draggable {...props} handle={`.${DRAGGABLE_HANDLE_CLASS}`}>
+      <div>{children}</div>
+    </Draggable>
   );
 }
 

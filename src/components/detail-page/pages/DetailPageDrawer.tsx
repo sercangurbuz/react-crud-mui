@@ -1,5 +1,6 @@
 import { FieldValues } from 'react-hook-form';
 
+import { Theme, useMediaQuery } from '@mui/material';
 import Drawer, { DrawerProps } from '@mui/material/Drawer';
 
 import FormDirtyTracker from '../../form/components/FormDirtyTracker';
@@ -16,17 +17,19 @@ export interface DetailPageDrawerProps<TModel extends FieldValues = FieldValues>
    */
   drawerProps?: DrawerProps;
 }
-
+const DEFAULT_WIDTH = 450;
 function DetailPageDrawer<TModel extends FieldValues>({
   drawerProps,
   open,
   onClose,
   promptOptions,
+  onLayout,
   ...dpProps
 }: DetailPageDrawerProps<TModel>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
+  const downSm = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Confirm dirty change either leave or stay on form
   const { setFormDirtyChange, handleCloseEvent } = useFormConfirmDirtyChange({
@@ -41,18 +44,18 @@ function DetailPageDrawer<TModel extends FieldValues>({
       {...drawerProps}
     >
       <DetailPage<TModel>
-        style={{ 
-          width: 450, 
-          height: '100%', 
-          display: 'flex', 
-          flexDirection: 'column'
+        style={{
+          width: downSm ? '100%' : DEFAULT_WIDTH,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
         }}
         defaultSaveMode="save-close"
         onCommands={(props) => <DetailPageDrawerCommands {...props} />}
         onLayout={(props) => (
           <>
             <FormDirtyTracker onDirtyStateChange={setFormDirtyChange} />
-            <DetailPageDrawerLayout {...props} />
+            {onLayout ? onLayout(props) : <DetailPageDrawerLayout {...props} />}
           </>
         )}
         enableCreate={false}

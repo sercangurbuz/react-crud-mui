@@ -139,6 +139,21 @@ export const WithAsyncData: DetailPageStory = {
   },
 };
 
+export const WithTooLongProcess: DetailPageStory = {
+  args: {
+    progressProps: {
+      showTooLongNotification: true,
+    },
+    onSave: async (payload) => {
+      await new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(payload.model);
+        }, 5000);
+      });
+    },
+  },
+};
+
 export const CustomCommandsLabel: DetailPageStory = {
   ...WithAsyncData,
   args: {
@@ -366,6 +381,14 @@ export const ClassicModal: DetailPageModalStory = {
     },
   },
   render: OpenInModal.render,
+};
+
+export const DraggableModal: DetailPageModalStory = {
+  ...ClassicModal,
+  args: {
+    ...ClassicModal.args,
+    draggable: true,
+  },
 };
 
 export const OpenInDrawer: DetailPageModalStory = {

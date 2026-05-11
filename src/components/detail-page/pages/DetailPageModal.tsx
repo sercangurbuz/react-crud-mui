@@ -1,7 +1,8 @@
 import { FieldValues } from 'react-hook-form';
 
 import FormDirtyTracker from '../../form/components/FormDirtyTracker';
-import Modal, { ModalProps } from '../../modal/Modal';
+import Modal, { DRAGGABLE_HANDLE_CLASS, ModalProps } from '../../modal/Modal';
+import DetailPageHeader from '../components/DetailPageHeader';
 import DetailPageModalLayout from '../components/DetailPageModalLayout';
 import useFormConfirmDirtyChange from '../hooks/useFormConfirmDirtyChange';
 import { UseFormPromptProps } from '../hooks/useFormPrompt';
@@ -25,14 +26,20 @@ export interface DetailPageModalProps<TModel extends FieldValues = FieldValues>
    * Whether to leave modal without saving when form is dirty,default true
    */
   promptOptions?: UseFormPromptProps;
+  /**
+   * Whether to show close button and allow closing modal, default false
+   */
+  draggable?: boolean;
 }
 
 function DetailPageModal<TModel extends FieldValues>({
   modalProps,
   onClose,
+  draggable,
   open,
   enableClose = true,
   promptOptions,
+  onLayout,
   ...dpProps
 }: DetailPageModalProps<TModel>) {
   /* -------------------------------------------------------------------------- */
@@ -50,6 +57,7 @@ function DetailPageModal<TModel extends FieldValues>({
       open={!!open}
       onClose={() => handleCloseEvent('backdrop')}
       closable={enableClose}
+      draggable={draggable}
       {...modalProps}
     >
       <DetailPage<TModel>
@@ -58,10 +66,19 @@ function DetailPageModal<TModel extends FieldValues>({
         enableDelete
         enableDiscardChanges={false}
         commandsPosition="bottom-right"
-        onLayout={(props) => (
+        onHeader={(props) =>
+          draggable ? (
+            <div className={DRAGGABLE_HANDLE_CLASS} style={{ cursor: 'move' }}>
+              <DetailPageHeader {...props} />
+            </div>
+          ) : (
+            <DetailPageHeader {...props} />
+          )
+        }
+        onLayout={(layoutProps) => (
           <>
             <FormDirtyTracker onDirtyStateChange={setFormDirtyChange} />
-            <DetailPageModalLayout {...props} />
+            {onLayout ? onLayout(layoutProps) : <DetailPageModalLayout {...layoutProps} />}
           </>
         )}
         bordered={!dpProps.tabs}

@@ -11,15 +11,13 @@ export const modalSizes: Record<ModalSize, number | string> = {
   large: 800,
 };
 
-export const Wrapper = styled(Box)<{ size?: ModalSize }>(({ theme, size = 'normal' }) => ({
+export const ModalPosition = styled(Box)<{ size?: ModalSize }>(({ theme, size = 'normal' }) => ({
   top: '50%',
   left: '50%',
   width: modalSizes[size],
   borderRadius: 16,
-  overflow: 'hidden',
   position: 'absolute',
   transform: 'translate(-50%, -50%)',
-  backgroundColor: theme.palette.background.paper,
   [theme.breakpoints.down(575)]: { maxWidth: '85dvw' },
 }));
 
