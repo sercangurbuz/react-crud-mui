@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef } from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef } from 'react';
 import { FieldValues, Path, PathValue } from 'react-hook-form';
 
 import { Box } from '@mui/material';
@@ -33,7 +33,7 @@ import DetailPageStepsHeader, {
 } from '../components/DetailPageStepsHeader';
 import SuccessPanel, { SuccessPanelProps } from '../components/SuccessPanel';
 import { DETAILPAGE_HOTKEYS_SCOPE } from '../hooks/useDetailPageHotKeys';
-import { NavigationDirection, SaveMode } from './DetailPageData';
+import { NavigationDirection, SaveMode, SaveOptions } from './DetailPageData';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -108,15 +108,15 @@ export interface DetailPageContentProps<TModel extends FieldValues>
   /**
    * Save event
    */
-  onSave: () => void;
+  onSave: (args?: unknown) => void;
   /**
    * Create new model after saving process has been finished
    */
-  onSaveCreate: () => void;
+  onSaveCreate: (args?: unknown) => void;
   /**
    * Close form after saving process has been finished
    */
-  onSaveClose: () => void;
+  onSaveClose: (args?: unknown) => void;
   /**
    * Undo all chnages and revert to originial form values
    */
@@ -655,6 +655,30 @@ function DetailPageContent<TModel extends FieldValues>({
   };
 
   /* -------------------------------------------------------------------------- */
+  /*                                Context Save                                */
+  /* -------------------------------------------------------------------------- */
+
+  const save = useCallback(
+    (options?: SaveOptions) => {
+      const mode = options?.mode ?? defaultSaveMode;
+      const args = options?.args;
+
+      switch (mode) {
+        case 'save-close':
+          onSaveClose(args);
+          break;
+        case 'save-create':
+          onSaveCreate(args);
+          break;
+        default:
+          onSave(args);
+          break;
+      }
+    },
+    [defaultSaveMode, onSave, onSaveClose, onSaveCreate],
+  );
+
+  /* -------------------------------------------------------------------------- */
   /*                                   Render                                   */
   /* -------------------------------------------------------------------------- */
 
@@ -671,7 +695,7 @@ function DetailPageContent<TModel extends FieldValues>({
       enableSave={enableSave}
       disabled={disabled}
       activeSegmentIndex={activeSegmentIndex}
-      onSave={onSave}
+      save={save}
       setActiveSegmentIndex={onSegmentChanged!}
     >
       {renderWrapperLayout()}

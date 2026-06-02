@@ -23,8 +23,14 @@ export interface DataEvent<TModel extends FieldValues, TVariables> {
 
 export type SaveMode = 'save' | 'save-close' | 'save-create';
 
+export type SaveOptions = {
+  mode?: SaveMode;
+  args?: unknown;
+};
+
 export interface BasePayload {
   reason: NeedDataReason;
+  args?: unknown;
 }
 
 export interface SavePayload<TModel extends FieldValues = FieldValues> extends BasePayload {
@@ -173,7 +179,7 @@ function DetailPageData<TModel extends FieldValues>({
   /*                                Model Methods                               */
   /* -------------------------------------------------------------------------- */
 
-  const save = async (mode: SaveMode = 'save') => {
+  const save = async ({ mode = 'save', args }: SaveOptions) => {
     resetState();
     // get data thru submission
     const model = await getFormModel();
@@ -183,6 +189,7 @@ function DetailPageData<TModel extends FieldValues>({
       model,
       data,
       mode,
+      args,
     };
 
     let result = onSave?.(variables, form);
@@ -204,17 +211,17 @@ function DetailPageData<TModel extends FieldValues>({
     onAfterSave?.(result as Awaited<DataResult<TModel>>, variables, form);
   };
 
-  const handleSave = async () => {
-    await save();
+  const handleSave = async (args?: unknown) => {
+    await save({ mode: 'save', args });
   };
 
-  const handleSaveAndCreate = async () => {
-    await save('save-create');
+  const handleSaveAndCreate = async (args?: unknown) => {
+    await save({ mode: 'save-create', args });
     handleCreate();
   };
 
-  const handleSaveClose = async () => {
-    await save('save-close');
+  const handleSaveClose = async (args?: unknown) => {
+    await save({ mode: 'save-close', args });
     onClose?.('action');
   };
 
@@ -277,9 +284,9 @@ function DetailPageData<TModel extends FieldValues>({
       reason={reason}
       onCreate={() => handleCreate()}
       onCopy={() => handleCreate('copy')}
-      onSaveCreate={() => void handleSaveAndCreate()}
-      onSaveClose={() => void handleSaveClose()}
-      onSave={() => void handleSave()}
+      onSaveCreate={(args) => void handleSaveAndCreate(args)}
+      onSaveClose={(args) => void handleSaveClose(args)}
+      onSave={(args) => void handleSave(args)}
       onDelete={() => void handleDelete()}
       onNavigate={(direction) => void handleNavigate(direction)}
       onDiscardChanges={handleDiscard}

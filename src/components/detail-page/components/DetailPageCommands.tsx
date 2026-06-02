@@ -42,14 +42,14 @@ export type CommandsProps = Partial<Record<keyof DetailPageCommandsFlag, ButtonP
 export type CommandsPropsFn = (reason: NeedDataReason) => CommandsProps;
 
 export type DetailPageStandartCommandsEvents = {
-  onSave?: () => void;
-  onSaveCreate?: () => void;
+  onSave?: (args?: unknown) => void;
+  onSaveCreate?: (args?: unknown) => void;
+  onSaveClose?: (args?: unknown) => void;
   onCreate?: () => void;
   onCopy?: () => void;
   onDiscardChanges?: () => void;
   onDelete?: () => void;
   onClose?: (reason?: CloseReason) => void;
-  onSaveClose?: () => void;
   onNavigate?: (direction: NavigationDirection) => void;
 };
 

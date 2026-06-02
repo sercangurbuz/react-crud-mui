@@ -2,6 +2,7 @@ import React, { PropsWithChildren, useMemo } from 'react';
 import { FieldValues } from 'react-hook-form';
 
 import { DetailPageContentProps } from '../pages/DetailPageContent';
+import { SaveOptions } from '../pages/DetailPageData';
 
 /* ---------------------------- DetailPage Context ---------------------------- */
 export type DetailPageContextType<TModel extends FieldValues = FieldValues> = Pick<
@@ -18,7 +19,7 @@ export type DetailPageContextType<TModel extends FieldValues = FieldValues> = Pi
   | 'data'
   | 'activeSegmentIndex'
 > & {
-  onSave: () => void;
+  save: (options?: SaveOptions) => void;
   setActiveSegmentIndex: (index: number) => void;
 };
 
@@ -34,7 +35,7 @@ function DetailPageProvider<TModel extends FieldValues = FieldValues>({
   enableClose,
   enableDiscardChanges,
   enableDelete,
-  onSave,
+  save,
   enableSave,
   disabled,
   activeSegmentIndex,
@@ -53,7 +54,7 @@ function DetailPageProvider<TModel extends FieldValues = FieldValues>({
       enableSave,
       disabled,
       activeSegmentIndex,
-      onSave,
+      save,
       setActiveSegmentIndex,
     }),
     [
@@ -68,7 +69,7 @@ function DetailPageProvider<TModel extends FieldValues = FieldValues>({
       enableSave,
       disabled,
       activeSegmentIndex,
-      onSave,
+      save,
       setActiveSegmentIndex,
     ],
   );

@@ -205,6 +205,22 @@ export const WithCustomCommands: DetailPageStory = {
   },
 };
 
+export const SaveArgs: DetailPageStory = {
+  args: {
+    onSave: ({ args }) => {
+      alert(`Saved with args: ${JSON.stringify(args)}`);
+    },
+    onCommands: (props) => (
+      <FlexBox gap={1}>
+        <Button onClick={() => props.onSave?.({ customArg: 'Custom value' })} startIcon={<Edit />}>
+          Save with custom args
+        </Button>
+        <DetailPage.Commands {...props} />
+      </FlexBox>
+    ),
+  },
+};
+
 export const WithErrorAsyncData: DetailPageStory = {
   args: {
     defaultReason: 'fetch',
