@@ -62,7 +62,11 @@ export default function Modal({
   );
 }
 
-function DraggableModal({ children, ...props }: Partial<DraggableProps>) {
+function DraggableModal({ children, disabled, ...props }: Partial<DraggableProps>) {
+  if (disabled) {
+    return children as JSX.Element;
+  }
+
   return (
     <Draggable {...props} handle={`.${DRAGGABLE_HANDLE_CLASS}`}>
       <div>{children}</div>
