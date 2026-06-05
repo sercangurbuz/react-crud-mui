@@ -494,6 +494,7 @@ function ListPageContent<TModel extends FieldValues>({
     const props: Partial<TableProps<TModel>> = {
       newRowButtonText: commandsProps?.create?.children ?? t('newitem'),
       onNewRow: () => triggerAction('create'),
+      highlightedRowIndex: detailPageProps?.index,
       ...tableProps,
       columns: enableActionCommands
         ? [

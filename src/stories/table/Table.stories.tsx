@@ -421,6 +421,12 @@ export const Footer: TableStory = {
   },
 };
 
+export const HighlightedRow: TableStory = {
+  args: {
+    highlightedRowIndex: 2,
+  },
+};
+
 export const Pinning: TableStory = {
   args: {
     size: 'small',

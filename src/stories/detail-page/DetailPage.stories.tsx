@@ -19,6 +19,7 @@ import { z } from 'zod';
 
 import DetailPage from '../../components/detail-page';
 import useDetailPageRouteParams from '../../components/detail-page/hooks/useDetailPageRouteParams';
+import { DetailPageRouteModalProps } from '../../components/detail-page/pages/DetailPageRouteModal';
 import { FlexBox } from '../../components/flexbox';
 import FormControl from '../../components/form/components/FormControl';
 import Field from '../../components/form/Field';
@@ -74,6 +75,7 @@ export default meta;
 type DetailPageStory = StoryObj<typeof DetailPage<UserSchema>>;
 type DetailPageModalStory = StoryObj<typeof DetailPage.Modal<UserSchema>>;
 type DetailPageRouteStory = StoryObj<typeof DetailPage.Route<UserSchema>>;
+type DetailPageRouteModalStory = StoryObj<typeof DetailPage.RouteModal<UserSchema>>;
 type DetailPagePopoverStory = StoryObj<typeof DetailPage.Popover<UserSchema>>;
 
 export const Simple: DetailPageStory = {};
@@ -744,12 +746,12 @@ export const RoutedTabs: DetailPageRouteStory = {
   },
 };
 
-export const InRouterModal: DetailPageRouteStory = {
-  ...InRouter,
+export const InRouterModal: DetailPageRouteModalStory = {
+  ...(InRouter as DetailPageRouteModalProps<UserSchema>),
   render(args) {
     const { id } = useDetailPageRouteParams();
     const [data, loading] = useFetchUserById(id);
-    return <DetailPage.RouteModal {...args} data={data} loading={loading} />;
+    return <DetailPage.RouteModal {...args} data={data} loading={loading} draggable />;
   },
 };
 

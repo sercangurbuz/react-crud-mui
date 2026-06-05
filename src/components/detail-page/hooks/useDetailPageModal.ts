@@ -83,8 +83,8 @@ function useDetailPageModal<
         open: true,
         disabled,
         // this is needed for array field usage
-        uid: pageReason === 'fetch' ? getUID(data) : undefined,
-        index: pageReason === 'fetch' ? findIndex(data) : undefined,
+        uid: pageReason === 'fetch' || pageReason === 'view' ? getUID(data) : undefined,
+        index: pageReason === 'fetch' || pageReason === 'view' ? findIndex(data) : undefined,
         onAfterDelete,
         onAfterSave,
       });

@@ -13,6 +13,7 @@ function EmbededDetailPage(props: DetailPageModalProps<UserSchema>) {
   const confirm = useConfirm();
   return (
     <DetailPage.Modal
+      draggable
       title="New Item"
       enableDelete
       defaultValues={UserDefaultValues}

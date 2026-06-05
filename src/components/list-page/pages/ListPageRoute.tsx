@@ -18,6 +18,7 @@ export interface ListPageRouteProps<
 > extends ListPageProps<TModel, TFilter>,
     Omit<UseSegmentParamsOptions, 'paths'> {
   enableQueryStringFilter?: boolean | MatchFields<TFilter>;
+  uniqueIdParamName?: string;
 }
 
 /**
@@ -33,14 +34,17 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   onNeedData,
   tabs,
   onActionClick,
+  uniqueIdParamName,
   ...listPageProps
 }: ListPageRouteProps<TModel, TFilter>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const { newItemParamValue, uniqueIdParamName } = useSettings();
+  const { newItemParamValue, uniqueIdParamName: defaultUniqueIdParamName } = useSettings();
   const navigate = useNavigate();
+
+  const uniqueIdParam = uniqueIdParamName || defaultUniqueIdParamName;
 
   /* -------------------------------------------------------------------------- */
   /*                                   Filter                                   */
@@ -114,7 +118,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   };
 
   const handleNavigate = (reason: NeedDataReason | 'delete', model?: TModel) => {
-    const pathname = `./${model?.[uniqueIdParamName]}`;
+    const pathname = `./${model?.[uniqueIdParam]}`;
     let search = '';
 
     if (reason === 'copy') {

@@ -112,6 +112,7 @@ export interface TableProps<TData extends FieldValues>
   enableRowClickSelect?: boolean;
   loading?: boolean;
   newRowButtonText?: ReactNode;
+  highlightedRowIndex?: number;
   onNewRow?: () => void;
   onRenderNestedComponent?: (props: RenderSubComponentProps<TData>) => React.ReactNode;
   onRowClick?: (e: React.MouseEvent<HTMLTableRowElement>, row: Row<TData>) => void;
@@ -167,6 +168,7 @@ function Table<TData extends FieldValues>({
   enableNestedComponent,
   enableSkeleton = true,
   headerSx,
+  highlightedRowIndex,
   loading,
   newRowButtonText,
   newRowButtonContent,
@@ -661,6 +663,7 @@ function Table<TData extends FieldValues>({
 
       const isCanNested = onRenderNestedComponent && row.getIsExpanded();
       const isSelected = row.getIsSelected();
+      const isHighlighted = highlightedRowIndex === row.index;
       const exRowProps = onRowProps?.(row, table);
 
       return (
@@ -669,7 +672,7 @@ function Table<TData extends FieldValues>({
             bordered={!descriptionText}
             indicatorColor={isSelected ? theme.palette.primary.main : undefined}
             bgColor={
-              isSelected
+              isSelected || isHighlighted
                 ? `${alpha(theme.palette.primary.main, 0.3)} !important`
                 : alternateColor && row.index % 2
                   ? theme.palette.action.hover
