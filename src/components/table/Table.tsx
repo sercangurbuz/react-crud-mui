@@ -144,7 +144,7 @@ export interface TableProps<TData extends FieldValues>
   paginationProps?: Partial<TablePaginationProps> & { extraContent?: ReactNode };
   headerSx?: TableRowProps['sx'];
   rowSx?: TableRowProps['sx'];
-  newRowButtonContent?: ReactNode;
+  newRowButtonContent?: (defaultButton: ReactNode) => ReactNode;
   alternateColor?: boolean;
   delayOptions?: SpinDelayOptions;
 }
@@ -623,7 +623,7 @@ function Table<TData extends FieldValues>({
       return null;
     }
 
-    const newRowContent = newRowButtonContent ?? (
+    const defaultButton = (
       <NewRowButton disableRipple onClick={onNewRow}>
         <Stack flexDirection="row" alignItems="center" gap={0.5} p={0.4}>
           <Add sx={{ fontSize: '14px' }} />
@@ -631,6 +631,8 @@ function Table<TData extends FieldValues>({
         </Stack>
       </NewRowButton>
     );
+
+    const newRowContent = newRowButtonContent ? newRowButtonContent(defaultButton) : defaultButton;
 
     const cols = table?.getVisibleFlatColumns();
     return (

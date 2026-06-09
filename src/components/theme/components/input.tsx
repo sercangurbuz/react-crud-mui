@@ -26,6 +26,9 @@ export const OutlinedInput = (theme: Theme): Components['MuiOutlinedInput'] => (
     },
     input: {
       color: theme.palette.text.primary,
+      '&.Mui-disabled': {
+        WebkitTextFillColor: theme.palette.grey[400],
+      },
     },
     adornedEnd: { color: theme.palette.grey[400] },
     adornedStart: { color: theme.palette.grey[400] },
