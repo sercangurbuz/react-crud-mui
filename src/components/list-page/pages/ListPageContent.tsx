@@ -46,7 +46,7 @@ export type ListPageWrapperLayoutProps = {
 type DetailPageRender<TDetailPageModel extends FieldValues> = (
   props: DetailPageModalProps<TDetailPageModel> | DetailPageDrawerProps<TDetailPageModel>,
   open: ReturnType<typeof useDetailPageModal<TDetailPageModel>>[0],
-  data?: TDetailPageModel[],
+  args?: unknown,
 ) => ReactNode;
 
 export type OnDetailPage<TDetailPageModel extends FieldValues> =
@@ -190,7 +190,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
   /**
    * Action click event.Its not get fired in case OnDetailPage provided for create,edit copy reasons
    */
-  onActionClick?: (reason: NeedDataReason | 'delete', model?: TModel) => void;
+  onActionClick?: (reason: NeedDataReason | 'delete', model?: TModel, args?: unknown) => void;
   /**
    * Open detailPage in view mode as default or in which reason provided
    */
@@ -279,7 +279,7 @@ function ListPageContent<TModel extends FieldValues>({
   });
 
   const triggerAction = useCallback(
-    (reason: NeedDataReason, data?: TModel) => {
+    (reason: NeedDataReason, data?: TModel, args?: unknown) => {
       const useDetailPage = typeof onDetailPage === 'function' ? true : !!onDetailPage?.[reason];
 
       if (useDetailPage) {
@@ -287,10 +287,11 @@ function ListPageContent<TModel extends FieldValues>({
           data,
           reason,
           disabled,
+          args,
         });
       }
       //call fallback action handler
-      onActionClick?.(reason, data);
+      onActionClick?.(reason, data, args);
     },
     [disabled, onActionClick, onDetailPage, openDetailPage],
   );
@@ -430,7 +431,7 @@ function ListPageContent<TModel extends FieldValues>({
     const props: ListPageCommandsProps = {
       onExcelExport,
       onSearch,
-      onCreateItem: () => triggerAction('create'),
+      onCreateItem: (args) => triggerAction('create', undefined, args),
       onClear,
       commandsProps,
     };
@@ -623,8 +624,8 @@ function ListPageContent<TModel extends FieldValues>({
 
     const detailPageContent =
       typeof onDetailPage === 'function'
-        ? onDetailPage(props, openDetailPage, data)
-        : onDetailPage[reason]?.(props, openDetailPage, data);
+        ? onDetailPage(props, openDetailPage, detailPageProps.args)
+        : onDetailPage[reason]?.(props, openDetailPage, detailPageProps.args);
     return detailPageContent;
   };
 

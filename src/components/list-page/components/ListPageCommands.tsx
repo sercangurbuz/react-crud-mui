@@ -19,7 +19,7 @@ import useListPageCommandStates, { ListPageCommandsFlag } from '../hooks/useList
 
 export type ListPageCommandsEvents = {
   onSearch: () => void;
-  onCreateItem?: () => void;
+  onCreateItem?: (args?: unknown) => void;
   onClear?: () => void;
   onExcelExport?: () => void;
 };

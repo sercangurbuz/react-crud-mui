@@ -100,11 +100,11 @@ export interface DetailPageContentProps<TModel extends FieldValues>
   /**
    * Create new record event
    */
-  onCreate?: () => void;
+  onCreate?: (args?: unknown) => void;
   /**
    * Copy existing model
    */
-  onCopy: () => void;
+  onCopy?: (args?: unknown) => void;
   /**
    * Save event
    */
@@ -451,17 +451,17 @@ function DetailPageContent<TModel extends FieldValues>({
         updateParentForm();
         onSegmentChanged?.(activeSegmentIndex - 1);
       },
-      onSave() {
+      onSave(args) {
         updateParentForm();
-        onSave();
+        onSave(args);
       },
-      onSaveCreate() {
+      onSaveCreate(args) {
         updateParentForm();
-        onSaveCreate();
+        onSaveCreate(args);
       },
-      onSaveClose() {
+      onSaveClose(args) {
         updateParentForm();
-        onSaveClose();
+        onSaveClose(args);
       },
       onClose: () => {
         resetSteps();

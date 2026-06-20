@@ -9,11 +9,12 @@ import { DetailPageModalProps } from '../pages/DetailPageModal';
 export type SelectedModelOptions<TModel extends FieldValues> = Pick<
   DetailPageModalProps<TModel>,
   'reason' | 'data' | 'disabled' | 'onAfterSave' | 'onAfterDelete'
->;
+> & { args?: unknown };
 
 type HelperModelFields = {
   uid?: string;
   index?: number;
+  args?: unknown;
 };
 
 export type UseDetailPageModalReturn<TModel extends FieldValues> = Pick<

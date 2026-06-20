@@ -86,7 +86,7 @@ export interface DetailPageDataProps<TModel extends FieldValues>
   /**
    * Called after reason changed
    */
-  onReasonChange?: (reason: NeedDataReason) => void;
+  onReasonChange?: (reason: NeedDataReason, args?: unknown) => void;
   /**
    * Enable to show success messages (Default true)
    */
@@ -217,7 +217,7 @@ function DetailPageData<TModel extends FieldValues>({
 
   const handleSaveAndCreate = async (args?: unknown) => {
     await save({ mode: 'save-create', args });
-    handleCreate();
+    handleCreate('create', args);
   };
 
   const handleSaveClose = async (args?: unknown) => {
@@ -255,8 +255,8 @@ function DetailPageData<TModel extends FieldValues>({
     onDiscardChanges?.();
   };
 
-  const handleCreate = (reason: NeedDataReason = 'create') => {
-    onReasonChange?.(reason);
+  const handleCreate = (reason: NeedDataReason = 'create', args?: unknown) => {
+    onReasonChange?.(reason, args);
     resetState();
     setSuccessPanelVisibility(false);
   };
@@ -282,8 +282,8 @@ function DetailPageData<TModel extends FieldValues>({
       autoSave={autoSave}
       loading={loading || loadingState || isDefaultValuesLoading}
       reason={reason}
-      onCreate={() => handleCreate()}
-      onCopy={() => handleCreate('copy')}
+      onCreate={(args) => handleCreate('create', args)}
+      onCopy={(args) => handleCreate('copy', args)}
       onSaveCreate={(args) => void handleSaveAndCreate(args)}
       onSaveClose={(args) => void handleSaveClose(args)}
       onSave={(args) => void handleSave(args)}

@@ -22,6 +22,7 @@ import FormControl, { FormControlProps } from './components/FormControl';
 import FormCheckbox from './controls/FormCheckbox';
 import FormComboBox from './controls/FormComboBox';
 import FormDatePicker from './controls/FormDatePicker';
+import FormDateRangePicker from './controls/FormDateRangePicker';
 import FormInput from './controls/FormInput';
 import FormMaskedInput from './controls/FormMaskedInput';
 import FormMoneyInput from './controls/FormMoneyInput';
@@ -195,6 +196,7 @@ Field.Combobox = FormComboBox;
 Field.Select = FormSelect;
 Field.RadioGroup = FormRadioGroup;
 Field.DatePicker = FormDatePicker;
+Field.DateRangePicker = FormDateRangePicker;
 Field.PanelSelect = FormPanelSelect;
 Field.Set = FieldSet;
 

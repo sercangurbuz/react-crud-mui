@@ -133,6 +133,22 @@ export const Creatable: TableStory = {
   },
 };
 
+export const CustomCreatable: TableStory = {
+  args: {
+    ...Creatable.args,
+    newRowButtonContent(defaultButton) {
+      return (
+        <FlexBox gap={3} alignItems="center" flexDirection="column">
+          {defaultButton}
+          <Button variant="text" size="small">
+            Custom create button
+          </Button>
+        </FlexBox>
+      );
+    },
+  },
+};
+
 export const CreatableAlways: TableStory = {
   args: {
     data: mockData.slice(0, 2),

@@ -55,6 +55,12 @@ export { type FormPanelSelectProps } from './components/form/controls/FormPanelS
 export { type FormCheckboxProps } from './components/form/controls/FormCheckbox';
 export { type FormComboBoxProps } from './components/form/controls/FormComboBox';
 export { type FormDatePickerProps } from './components/form/controls/FormDatePicker';
+export { type FormDateRangePickerProps } from './components/form/controls/FormDateRangePicker';
+export {
+  default as DateRangePicker,
+  type DateRangePickerProps,
+  type DateRangeValue,
+} from './components/date-range-picker/DateRangePicker';
 export { type FormInputProps } from './components/form/controls/FormInput';
 export { type FormMoneyInputProps } from './components/form/controls/FormMoneyInput';
 export { type FormNumberInputProps } from './components/form/controls/FormNumberInput';

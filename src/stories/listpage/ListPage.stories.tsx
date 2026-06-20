@@ -451,6 +451,25 @@ export const WithDetailPagesByReason: ListPageStory = {
   },
 };
 
+export const WithDetailPagesCustomArgs: ListPageStory = {
+  args: {
+    ...WithDetailPagesByReason.args,
+    onDetailPage: {
+      create: (props, _open, args) => {
+        alert('Custom args for create reason: ' + JSON.stringify(args));
+        return <EmbededDrawerDetailPage {...props} />;
+      },
+    },
+    onCommands(props) {
+      return (
+        <Button onClick={() => props?.onCreateItem?.('Custom Args')}>
+          Create With Custom args
+        </Button>
+      );
+    },
+  },
+};
+
 export const WithRowClickToDetails: ListPageStory = {
   ...WithDetailPagesByReason,
   args: {
