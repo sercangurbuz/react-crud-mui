@@ -72,6 +72,6 @@ export const Disabled: DateRangePickerStory = {
 
 export const AllowEmpty: DateRangePickerStory = {
   args: {
-    allowEmpty: [true, true],
+    allowEmpty: [true, false],
   },
 };

@@ -154,7 +154,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
           {props.detailPageContent}
           {props.autoSearchContent}
           {/* Placeholder here for possible DetailPageRouteModal */}
-          {enableNestedSegments ? <Outlet /> : null}
+          <Outlet />
         </>
       )}
       {...listPageProps}

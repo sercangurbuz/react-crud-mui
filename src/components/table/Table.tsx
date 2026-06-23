@@ -144,7 +144,7 @@ export interface TableProps<TData extends FieldValues>
   paginationProps?: Partial<TablePaginationProps> & { extraContent?: ReactNode };
   headerSx?: TableRowProps['sx'];
   rowSx?: TableRowProps['sx'];
-  newRowButtonContent?: (defaultButton: ReactNode) => ReactNode;
+  newRowButtonContent?: (defaultButton: ReactNode, onNewRow?: () => void) => ReactNode;
   alternateColor?: boolean;
   delayOptions?: SpinDelayOptions;
 }
@@ -632,7 +632,9 @@ function Table<TData extends FieldValues>({
       </NewRowButton>
     );
 
-    const newRowContent = newRowButtonContent ? newRowButtonContent(defaultButton) : defaultButton;
+    const newRowContent = newRowButtonContent
+      ? newRowButtonContent(defaultButton, onNewRow)
+      : defaultButton;
 
     const cols = table?.getVisibleFlatColumns();
     return (

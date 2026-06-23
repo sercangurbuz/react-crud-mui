@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ClearIcon from '@mui/icons-material/Clear';
 import Box from '@mui/material/Box';
 import Dialog from '@mui/material/Dialog';
@@ -75,6 +76,7 @@ function DateRangePicker({
   const [pendingStart, setPendingStart] = useState<Dayjs | null>(null);
   const [hoverDate, setHoverDate] = useState<Dayjs | null>(null);
   const [focused, setFocused] = useState(false);
+  const [iconHovered, setIconHovered] = useState(false);
 
   const [startDate, endDate] = value;
   const open = Boolean(anchorEl);
@@ -111,7 +113,7 @@ function DateRangePicker({
   const py = size === 'small' ? '12px' : '16.5px';
   const fontSize = size === 'small' ? '0.875rem' : '1rem';
   const inputHeight = size === 'small' ? 44 : 56;
-  const staticWidth = size === 'small' ? 280 : 320;
+  const staticWidth = size === 'small' ? 290 : 330;
 
   /* ----------------------------- Handlers ----------------------------------- */
   const openCalendar = () => {
@@ -341,21 +343,35 @@ function DateRangePicker({
           )}
         </Box>
 
-        {/* Global clear button – always rendered to prevent layout shift */}
-        {allowClear && !allowEmpty[0] && !allowEmpty[1] && !disabled && !readOnly && (
-          <IconButton
-            size="small"
-            onClick={handleClearAll}
-            edge="end"
-            sx={{
-              flexShrink: 0,
-              ml: 0.25,
-              visibility: startDate || endDate ? 'visible' : 'hidden',
-            }}
-          >
-            <ClearIcon fontSize="small" />
-          </IconButton>
-        )}
+        {/* Right icon: always calendar, swaps to clear on hover when value exists */}
+        <IconButton
+          size="small"
+          edge="end"
+          onMouseEnter={() => setIconHovered(true)}
+          onMouseLeave={() => setIconHovered(false)}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (allowClear && (startDate || endDate) && !disabled && !readOnly && iconHovered) {
+              handleClearAll(e);
+            } else if (open) {
+              handleClose();
+            } else {
+              openCalendar();
+            }
+          }}
+          sx={{
+            flexShrink: 0,
+            ml: 0.25,
+            color: open ? 'primary.main' : 'text.secondary',
+            transition: 'color 0.2s',
+          }}
+        >
+          {allowClear && (startDate || endDate) && !disabled && !readOnly && iconHovered ? (
+            <ClearIcon sx={{ fontSize: 16 }} />
+          ) : (
+            <CalendarTodayIcon sx={{ fontSize: 16 }} />
+          )}
+        </IconButton>
       </Box>
 
       {/* Error helper text */}
