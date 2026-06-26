@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
 
 import type { AlertProps } from '@mui/material/Alert';
+import { ButtonProps } from '@mui/material/Button';
 import groupBy from 'lodash.groupby';
 
 export type TypeMessage = {
   title?: React.ReactNode;
   message: React.ReactNode;
   type: AlertProps['severity'];
+  buttonProps?: ButtonProps;
 };
 export type Message = string | TypeMessage;
 

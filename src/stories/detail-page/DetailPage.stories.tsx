@@ -111,16 +111,28 @@ export const WithAlerts: DetailPageStory = {
         title: 'Success',
         message: 'Success message',
         type: 'success',
+        buttonProps: {
+          children: 'Success button',
+          onClick: () => alert('Success button clicked'),
+        },
       },
       {
         title: 'Info',
         message: 'Info message',
         type: 'info',
+        buttonProps: {
+          children: 'Info button',
+          onClick: () => alert('Info button clicked'),
+        },
       },
       {
         title: 'Warning',
         message: 'Warning message',
         type: 'warning',
+        buttonProps: {
+          children: 'Warning button',
+          onClick: () => alert('Warning button clicked'),
+        },
       },
       {
         title: 'Error',

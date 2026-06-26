@@ -243,6 +243,7 @@ function Table<TData extends FieldValues>({
                   checked: table.getIsAllRowsSelected(),
                   indeterminate: table.getIsSomeRowsSelected(),
                   onChange: table.getToggleAllRowsSelectedHandler(),
+                  onClick: (e) => e.stopPropagation(),
                 }}
               />
             ) : null,
@@ -255,6 +256,7 @@ function Table<TData extends FieldValues>({
                 disabled={!row.getCanSelect()}
                 indeterminate={row.getIsSomeSelected()}
                 onChange={row.getToggleSelectedHandler()}
+                onClick={(e) => e.stopPropagation()}
               />
             ) : (
               <Radio
@@ -262,6 +264,7 @@ function Table<TData extends FieldValues>({
                 disableRipple
                 checked={row.getIsSelected()}
                 onChange={row.getToggleSelectedHandler()}
+                onClick={(e) => e.stopPropagation()}
               />
             );
           },

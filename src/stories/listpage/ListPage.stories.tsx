@@ -501,6 +501,9 @@ export const MultiSelection: ListPageSelectionStory = {
         <ListPage.Selection
           {...args}
           defaultRowSelection={selectedKeys}
+          enableRowClickToDetails
+          enableActionCommands
+          onDetailPage={(props) => <EmbededDetailPage {...props} />}
           open={visible}
           onClose={() => setVisible(false)}
           onSelect={(selection) => {
