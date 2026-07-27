@@ -10,7 +10,7 @@ import { FlexBox } from '../../flexbox';
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
-export type TabPane = Omit<TabProps, 'children' | 'key'> & {
+export type TabPane = Omit<TabProps, 'children' | 'key' | 'hidden'> & {
   children?: ReactNode;
   key: string;
   hidden?: boolean;

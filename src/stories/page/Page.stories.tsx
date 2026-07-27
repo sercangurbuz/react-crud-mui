@@ -226,6 +226,22 @@ export const WithPanels: PageStory = {
   },
 };
 
+export const WithAccordionPanels: PageStory = {
+  args: {
+    ...WithPanels.args,
+    panels: [
+      ...WithPanels.args!.panels!.map((panel, index) => ({
+        ...panel,
+        defaultExpanded: index === 0,
+        hidden: index === 1,
+      })),
+    ],
+    panelProps: {
+      accordionMode: true,
+    },
+  },
+};
+
 export const OpenInModal: PageStory = {
   args: {
     ...TabsInSubRow.args,

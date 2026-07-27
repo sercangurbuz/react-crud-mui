@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Accordion, { AccordionProps } from '@mui/material/Accordion';
@@ -8,12 +8,13 @@ import { BoxProps } from '@mui/material/Box';
 
 import Page from '../Page';
 
-export type PanelPane = Omit<AccordionProps, 'children' | 'key'> & {
+export type PanelPane = Omit<AccordionProps, 'children' | 'key' | 'hidden'> & {
   children?: ReactNode;
   footer?: ReactNode;
   label?: ReactNode;
   key: string;
   detailsProps?: AccordionDetailsProps;
+  hidden?: boolean;
 };
 
 export interface DefaultAccordionsProps extends BoxProps {
@@ -22,32 +23,46 @@ export interface DefaultAccordionsProps extends BoxProps {
 }
 
 function DefaultPanels({ panels, accordionMode, ...boxProps }: DefaultAccordionsProps) {
-  const [selectedKeys, setSelectedKeys] = useState<string[]>(
-    panels.filter((panel) => panel.defaultExpanded).map((panel) => panel.key) || [],
+  const defaultExpandedKeys = useMemo(
+    () => panels.filter((panel) => panel.defaultExpanded).map((panel) => panel.key) || [],
+    [panels],
   );
-  const panelContent = panels.map(({ detailsProps, ...panel }) => {
-    const isExpanded = selectedKeys.includes(panel.key);
-    return (
-      <Accordion
-        {...panel}
-        key={panel.key}
-        expanded={isExpanded}
-        onChange={(_e, expanded) => {
-          setSelectedKeys((prev) => {
-            if (expanded) {
-              return accordionMode ? [panel.key] : [...prev, panel.key];
-            }
-            return prev.filter((key) => key !== panel.key);
-          });
-        }}
-      >
-        <AccordionSummary expandIcon={<ExpandMore />}>{panel.label}</AccordionSummary>
-        {isExpanded ? (
-          <AccordionDetails {...detailsProps}>{panel.children}</AccordionDetails>
-        ) : null}
-      </Accordion>
-    );
-  });
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(defaultExpandedKeys);
+  const panelContent = panels
+    .filter(({ hidden }) => hidden !== true)
+    .map(({ detailsProps, ...panel }) => {
+      const isExpanded = selectedKeys.includes(panel.key);
+      return (
+        <Accordion
+          {...panel}
+          key={panel.key}
+          expanded={isExpanded}
+          onChange={(_e, expanded) => {
+            setSelectedKeys((prev) => {
+              if (expanded) {
+                return accordionMode ? [panel.key] : [...prev, panel.key];
+              }
+              return prev.filter((key) => key !== panel.key);
+            });
+          }}
+        >
+          <AccordionSummary expandIcon={<ExpandMore />}>{panel.label}</AccordionSummary>
+          {isExpanded ? (
+            <AccordionDetails {...detailsProps}>{panel.children}</AccordionDetails>
+          ) : null}
+        </Accordion>
+      );
+    });
+
+  useEffect(() => {
+    if (accordionMode && selectedKeys.length > 1) {
+      const expandedPanel = panels.find((panel) => panel.key === selectedKeys[0]);
+
+      if (expandedPanel?.hidden) {
+        setSelectedKeys(defaultExpandedKeys);
+      }
+    }
+  }, [accordionMode, defaultExpandedKeys, panels, selectedKeys]);
 
   return <Page.Content {...boxProps}>{panelContent}</Page.Content>;
 }
