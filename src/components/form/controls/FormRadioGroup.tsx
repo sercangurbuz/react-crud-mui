@@ -77,6 +77,7 @@ function FormRadioGroup<TFieldValues extends FieldValues = FieldValues>({
               value={showAllOptionValue}
               control={<Radio />}
               label={t('all')}
+              disabled={field?.disabled}
             />
           )}
           {data?.map(({ label, value }) => (

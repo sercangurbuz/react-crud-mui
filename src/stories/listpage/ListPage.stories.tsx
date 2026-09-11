@@ -340,7 +340,9 @@ export const UseListPageHook: ListPageStory = {
 };
 
 export const WithErrorAsyncData: ListPageStory = {
-  args: {},
+  args: {
+    alertsScrollMarginTop: 50,
+  },
   render: (args) => {
     const [loading, setloading] = useState(true);
     const [error, setError] = useState<ServerError>();

@@ -214,11 +214,17 @@ export interface DetailPageContentProps<TModel extends FieldValues>
     model: TModel,
     events: Pick<DetailPageContentProps<TModel>, 'onCreate' | 'onClose'>,
   ) => React.ReactNode;
+  /**
+   * Offset (in px) reserved above the alerts section when scrolling it into view on error,
+   * useful when the consumer app has a sticky/fixed header that would otherwise cover it
+   */
+  alertsScrollMarginTop?: number;
 }
 
 function DetailPageContent<TModel extends FieldValues>({
   activeSegmentIndex = 0,
   alerts,
+  alertsScrollMarginTop = 0,
   autoSave,
   children,
   commandsPosition,
@@ -361,7 +367,7 @@ function DetailPageContent<TModel extends FieldValues>({
    */
   const renderAlerts = () => {
     return (
-      <Box ref={alertsContainerRef}>
+      <Box ref={alertsContainerRef} sx={{ scrollMarginTop: alertsScrollMarginTop }}>
         <Alerts messages={alerts} />
         <ValidationAlerts />
       </Box>
@@ -487,12 +493,16 @@ function DetailPageContent<TModel extends FieldValues>({
     };
 
     if (onCommands) {
-      return onCommands(props);
+      return <React.Fragment key={currentKey}>{onCommands(props)}</React.Fragment>;
     }
 
     const extraCommandContent = onExtraCommands?.();
 
-    return <DetailPageCommands {...props}>{extraCommandContent}</DetailPageCommands>;
+    return (
+      <DetailPageCommands key={currentKey} {...props}>
+        {extraCommandContent}
+      </DetailPageCommands>
+    );
   };
 
   /**
@@ -549,14 +559,10 @@ function DetailPageContent<TModel extends FieldValues>({
       <StepHeaders items={steps} activeStep={activeSegmentIndex} {...stepsProps} />
     );
 
-    const renderStep = ({
-      children,
-      name,
-      schema,
-      validationOptions,
-      defaultValues,
-      key,
-    }: StepPane) => {
+    const renderStep = (
+      { children, name, schema, validationOptions, defaultValues, key }: StepPane,
+      active: boolean,
+    ) => {
       return name ? (
         <DetailPageStepForm
           key={key}
@@ -564,6 +570,7 @@ function DetailPageContent<TModel extends FieldValues>({
           schema={schema}
           defaultValues={defaultValues}
           validationOptions={validationOptions}
+          active={active}
         >
           {children}
         </DetailPageStepForm>
@@ -578,14 +585,14 @@ function DetailPageContent<TModel extends FieldValues>({
         {steps.map((step, index) => {
           /* Active Step Content */
           if (index === activeSegmentIndex) {
-            return <Box key={step.key}>{renderStep(step)}</Box>;
+            return <Box key={step.key}>{renderStep(step, true)}</Box>;
           }
 
           /* Render hidden step contents for forceRender steps */
           if (step.forceRender) {
             return (
               <Box key={step.key} sx={{ display: 'none' }}>
-                {renderStep(step)}
+                {renderStep(step, false)}
               </Box>
             );
           }

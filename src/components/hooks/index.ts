@@ -12,3 +12,4 @@ export { default as useTemplate } from '../combobox/hooks/useComboboxTemplate';
 export { default as useUpdateEffect } from './useUpdateEffect';
 export { default as useZodRefine } from './useZodRefine';
 export { useSpinDelay } from './useSpinDelay';
+export { default as useScrollToTop } from './useScrollToTop';

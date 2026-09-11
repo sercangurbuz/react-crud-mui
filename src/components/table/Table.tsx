@@ -133,6 +133,10 @@ export interface TableProps<TData extends FieldValues>
     header: Header<TData, unknown>,
     table: TableType<TData>,
   ) => React.ComponentProps<typeof BodyTableCell> | undefined;
+  onDescriptionCellProps?: (
+    row: Row<TData>,
+    table: TableType<TData>,
+  ) => React.ComponentProps<typeof BodyTableCell> | undefined;
   onSubTreeRows?: Path<TData> | ((originalRow: TData) => unknown[] | undefined);
   rowIdField?: Path<TData>;
   scrollProps?: Partial<ScrollbarProps>;
@@ -173,6 +177,7 @@ function Table<TData extends FieldValues>({
   newRowButtonText,
   newRowButtonContent,
   onCellProps,
+  onDescriptionCellProps,
   onFooterCellProps,
   onHeadCellProps,
   onNewRow,
@@ -603,13 +608,15 @@ function Table<TData extends FieldValues>({
 
   const renderDescriptionRow = (text: string, row: Row<TData>, sx: TableRowProps['sx']) => {
     const visibleCols = row.getVisibleCells();
+    const exCellProps = onDescriptionCellProps?.(row, table);
     return (
       <BodyTableRow className="description-row" key={`description-${row.id}`} sx={sx}>
         <BodyTableCell
           colSpan={visibleCols?.length}
           title={reactNodeToString(text)}
           size={size}
-          sx={{ pt: 0 }}
+          {...exCellProps}
+          sx={{ pt: 0, ...exCellProps?.sx }}
         >
           <Small color="text.secondary">{text}</Small>
         </BodyTableCell>

@@ -1,9 +1,16 @@
 import { PropsWithChildren } from 'react';
-import { DefaultValues, FieldValues, Path, useFormState, useWatch } from 'react-hook-form';
+import {
+  DefaultValues,
+  FieldValues,
+  FormProvider,
+  Path,
+  useFormState,
+  useWatch,
+} from 'react-hook-form';
 
 import { z } from 'zod';
 
-import FormProvider from '../../form/components/FormProvider';
+//import FormProvider from '../../form/components/FormProvider';
 import ValidationAlerts from '../../form/components/ValidationAlerts';
 import ValidationOptionsProvider from '../../form/components/ValidationOptionsProvider';
 import { useFormInitEffect } from '../../form/hooks';
@@ -26,7 +33,8 @@ function DetailPageStepForm<TModel extends FieldValues>({
   children,
   defaultValues,
   validationOptions,
-}: DetailPageStepContentProps<TModel> & PropsWithChildren) {
+  active,
+}: DetailPageStepContentProps<TModel> & PropsWithChildren<{ active: boolean }>) {
   /**
    * Get model slice from parent model schema
    */
@@ -37,6 +45,8 @@ function DetailPageStepForm<TModel extends FieldValues>({
    *  Create form for the current step
    */
   const form = useForm<TModel>({
+    context: name,
+    disabled: !active,
     schema,
     values: stepModel,
     defaultValues: (defaultValues ??
@@ -52,13 +62,13 @@ function DetailPageStepForm<TModel extends FieldValues>({
    * Ensure to trigger the form validation when the component is mounted
    */
   useFormInitEffect(() => {
-    if (validationOptions?.runValidationsOnDataChange !== false) {
+    if (validationOptions?.runValidationsOnDataChange !== false && active) {
       void form.trigger();
     }
-  });
+  }, [active]);
 
   return (
-    <FormProvider form={form}>
+    <FormProvider {...form}>
       <ValidationOptionsProvider {...validationOptions}>
         <ValidationAlerts />
         {children}

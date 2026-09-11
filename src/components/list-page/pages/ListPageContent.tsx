@@ -207,6 +207,11 @@ export interface ListPageContentProps<TModel extends FieldValues>
    * List type @default table
    */
   listType?: ListType;
+  /**
+   * Offset (in px) reserved above the alerts section when scrolling it into view on error,
+   * useful when the consumer app has a sticky/fixed header that would otherwise cover it
+   */
+  alertsScrollMarginTop?: number;
 }
 
 function ListPageContent<TModel extends FieldValues>({
@@ -214,6 +219,7 @@ function ListPageContent<TModel extends FieldValues>({
   actionCommandsProps,
   actionColumnProps,
   alerts,
+  alertsScrollMarginTop = 0,
   autoSearch = true,
   cardProps,
   children,
@@ -234,7 +240,7 @@ function ListPageContent<TModel extends FieldValues>({
   filterContent,
   hotkeyScopes,
   listType = 'table',
-  loading,
+  loading,  
   onActionClick,
   onActionCommands,
   onClear,
@@ -456,7 +462,7 @@ function ListPageContent<TModel extends FieldValues>({
     }
 
     return (
-      <Box ref={alertsContainerRef}>
+      <Box ref={alertsContainerRef} sx={{ scrollMarginTop: alertsScrollMarginTop }}>
         <Alerts messages={messages} />
         <ValidationAlerts />
       </Box>
