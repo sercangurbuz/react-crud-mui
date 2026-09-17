@@ -69,7 +69,7 @@ export interface EditableListProps<
   TModel extends FieldValues,
   TArrayModel extends FieldArray<TModel, TFieldArrayName> & FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
-> extends Omit<ActionTableProps<TArrayModel>, 'data'> {
+> extends Omit<ActionTableProps<TArrayModel>, 'data' | 'onActionClick'> {
   /**,
     PropsWithChildren {
   /**
