@@ -11,6 +11,7 @@ import {
 import { getSortedRowModel, SortingState } from '@tanstack/react-table';
 
 import ActionCommands, { ActionCommandsProps } from '../action-commands/ActionCommands';
+import ActionTable, { Action, ActionTableProps } from '../action-table/ActionTable';
 import useSettings from '../crud-mui-provider/hooks/useSettings';
 import { DETAILPAGE_HOTKEYS_SCOPE } from '../detail-page/hooks/useDetailPageHotKeys';
 import useDetailPageModal, {
@@ -30,7 +31,6 @@ import useValidationOptionsContext from '../form/hooks/useValidationOptionsConte
 import { HeaderProps } from '../header/Header';
 import useTranslation from '../i18n/hooks/useTranslation';
 import usePage from '../page/hooks/usePage';
-import Table, { TableColumn, TableProps } from '../table/Table';
 import DefaultEditableListLayout, {
   DefaultEditableListControlLayoutProps,
 } from './components/DefaultEditableListLayout';
@@ -69,11 +69,7 @@ export interface EditableListProps<
   TModel extends FieldValues,
   TArrayModel extends FieldArray<TModel, TFieldArrayName> & FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
-> extends Omit<TableProps<TArrayModel>, 'data'>,
-    Pick<
-      ActionCommandsProps<TArrayModel>,
-      'canCopy' | 'canDelete' | 'canEdit' | 'showCopy' | 'showDelete' | 'showEdit'
-    > {
+> extends Omit<ActionTableProps<TArrayModel>, 'data'> {
   /**,
     PropsWithChildren {
   /**
@@ -146,14 +142,6 @@ export interface EditableListProps<
    */
   showCommands?: boolean;
   /**
-   * Custom commands when needed to override the default buttons
-   */
-  onRowCommands?: (props: EditingListCommandsProps<TArrayModel>) => ReactNode;
-  /**
-   * Column props of commands
-   */
-  commandColProps?: Partial<TableColumn<TArrayModel>>;
-  /**
    * DetailPage content
    */
   children?: ReactNode;
@@ -164,15 +152,7 @@ function EditableList<
   TArrayModel extends FieldArray<TModel, TFieldArrayName> & FieldValues,
   TFieldArrayName extends FieldArrayPath<TModel> = FieldArrayPath<TModel>,
 >({
-  canCopy = true,
-  canDelete = true,
-  canEdit = true,
-  showCopy = true,
-  showDelete = true,
-  showEdit = true,
   children,
-  columns,
-  commandColProps,
   onCommands,
   onLayout,
   detailPageProps,
@@ -185,7 +165,6 @@ function EditableList<
   newItemTitle,
   onDelete,
   onSave,
-  onRowCommands,
   showCommands = true,
   uniqueFields,
   ...tableProps
@@ -244,66 +223,6 @@ function EditableList<
   const [onOpen, { onClose, uid, ...dpProps }] = useDetailPageModal<TArrayModel>({
     models: fields as TArrayModel[],
   });
-
-  /* --------------------------------- Columns -------------------------------- */
-
-  // normalize columns adding action buttons
-  const normalizedCols = useMemo<TableColumn<TArrayModel>[]>(() => {
-    return [
-      ...columns,
-      {
-        id: 'commands',
-        align: 'center',
-        header: () => null,
-        enableSorting: false,
-        cell(cell) {
-          const data = cell.row.original;
-
-          const props: EditingListCommandsProps<TArrayModel> = {
-            onDelete: () => {
-              // get current index by current uid
-              const index = findIndex(data);
-              remove(index);
-            },
-            onCopy: () => onOpen({ data, reason: 'copy' }),
-            onView: () => onOpen({ data, disabled: true }),
-            onEdit: () => onOpen({ data }),
-            model: data,
-            canCopy,
-            canDelete,
-            canEdit,
-            showCopy,
-            showDelete,
-            showEdit,
-            showView: !!disabledProp.disabled,
-            index: cell.row.index,
-            ...disabledProp,
-          };
-
-          if (onRowCommands) {
-            return onRowCommands(props);
-          }
-
-          return <ActionCommands {...props} />;
-        },
-        ...commandColProps,
-      },
-    ];
-  }, [
-    canCopy,
-    canDelete,
-    canEdit,
-    columns,
-    commandColProps,
-    disabledProp,
-    findIndex,
-    onOpen,
-    remove,
-    onRowCommands,
-    showCopy,
-    showDelete,
-    showEdit,
-  ]);
 
   /* -------------------------------------------------------------------------- */
   /*                                    Utils                                   */
@@ -377,13 +296,32 @@ function EditableList<
     [findIndexByUID, onClose, onDelete, remove, uid],
   );
 
+  function actionClickHandler(action: Action, data?: TArrayModel) {
+    switch (action) {
+      case 'fetch':
+        onOpen({ data });
+        break;
+      case 'copy':
+        onOpen({ data, reason: 'copy' });
+        break;
+      case 'view':
+        onOpen({ data, disabled: true });
+        break;
+      case 'delete': {
+        const index = findIndex(data);
+        remove(index);
+        break;
+      }
+    }
+  }
+
   /* -------------------------------------------------------------------------- */
   /*                               Render Helpers                               */
   /* -------------------------------------------------------------------------- */
 
   const renderTable = () => {
     return (
-      <Table<TArrayModel>
+      <ActionTable<TArrayModel>
         showEmptyImage={false}
         onNewRow={() => onOpen()}
         newRowButtonText={newItemTitle}
@@ -396,7 +334,6 @@ function EditableList<
         }}
         onSortingChange={setSorting}
         getSortedRowModel={getSortedRowModel()}
-        columns={normalizedCols}
         onRowClick={(_e, row) => {
           if (!enableRowClickToDetails || disabled) {
             return;
@@ -418,6 +355,10 @@ function EditableList<
             disabled: reason === 'view',
           });
         }}
+        actionCommandsProps={{
+          showView: !!disabledProp.disabled,
+        }}
+        onActionClick={actionClickHandler}
       />
     );
   };
@@ -426,7 +367,8 @@ function EditableList<
     const props: DetailPageModalProps<TArrayModel> = {
       disabled,
       onDelete: deleteModel,
-      enableCopy: canCopy,
+      enableCopy: tableProps?.actionCommandsProps?.showCopy,
+      enableDelete: tableProps?.actionCommandsProps?.showDelete,
       onSave: saveModel,
       hotkeyScopes: `${name}-${DETAILPAGE_HOTKEYS_SCOPE}`,
       children,

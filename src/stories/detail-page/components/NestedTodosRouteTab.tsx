@@ -59,7 +59,9 @@ function NestedTodosRouteTab() {
       ]}
       header="User Details"
       icon={<UserOutlined />}
-      enableActionCommands
+      actionProps={{
+        enableActionCommands: true,
+      }}
       enableSearch={false}
       enableClear={false}
       enableCreateItem

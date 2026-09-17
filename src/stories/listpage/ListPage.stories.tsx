@@ -191,7 +191,9 @@ export const WithCardList: ListPageStory = {
     onDetailPage(props) {
       return <EmbededDetailPage {...props} />;
     },
-    enableActionCommands: true,
+    actionProps: {
+      enableActionCommands: true,
+    },
     cardProps: {
       onCardSkeleton() {
         return (
@@ -422,30 +424,34 @@ export const TemporaryFilter: ListPageStory = {
 export const WithDetailPage: ListPageStory = {
   args: {
     enableCreateItem: true,
-    enableActionCommands: true,
-    onDetailPage: (props) => <EmbededDetailPage {...props} />,
     commandsProps: {
       create: { children: 'New User' },
     },
-    onActionClick(reason) {
-      alert(`Fallback event for reason ${reason}`);
+    actionProps: {
+      enableActionCommands: true,
+      onActionClick(reason) {
+        alert(`Fallback event for reason ${reason}`);
+      },
+      onActionCommands(props) {
+        return <CustomActionCommands {...props} />;
+      },
     },
-    onActionCommands(props) {
-      return <CustomActionCommands {...props} />;
-    },
+    onDetailPage: (props) => <EmbededDetailPage {...props} />,
   },
 };
 
 export const WithDetailPagesByReason: ListPageStory = {
   args: {
     enableCreateItem: true,
-    enableActionCommands: true,
+    actionProps: {
+      enableActionCommands: true,
+      onActionClick(reason) {
+        alert(`Fallback event for reason ${reason}`);
+      },
+    },
     onDetailPage: {
       fetch: (props) => <EmbededDetailPage {...props} />,
       create: (props) => <EmbededDrawerDetailPage {...props} />,
-    },
-    onActionClick(reason) {
-      alert(`Fallback event for reason ${reason}`);
     },
     commandsProps: {
       create: { children: 'New User' },
@@ -484,7 +490,9 @@ export const WithDetailPageDrawer: ListPageStory = {
   name: 'With DetailPage (Drawer)',
   args: {
     enableCreateItem: true,
-    enableActionCommands: true,
+    actionProps: {
+      enableActionCommands: true,
+    },
     onDetailPage: (props) => <EmbededDrawerDetailPage {...props} />,
     commandsProps: {
       create: { children: 'New User' },
@@ -504,7 +512,9 @@ export const MultiSelection: ListPageSelectionStory = {
           {...args}
           defaultRowSelection={selectedKeys}
           enableRowClickToDetails
-          enableActionCommands
+          actionProps={{
+            enableActionCommands: true,
+          }}
           onDetailPage={(props) => <EmbededDetailPage {...props} />}
           open={visible}
           onClose={() => setVisible(false)}
@@ -662,7 +672,9 @@ export const WithRoutedDetailPage: ListPageStory = {
     commandsProps: {
       create: { children: 'New User' },
     },
-    enableActionCommands: true,
+    actionProps: {
+      enableActionCommands: true,
+    },
   },
   render: (args) => {
     return (
@@ -670,7 +682,10 @@ export const WithRoutedDetailPage: ListPageStory = {
         <Routes>
           <Route path="customers">
             <Route index element={<ListPageWithRoute {...args} />} />
-            <Route path=":id" element={<h1>Create Detail Page</h1>} />
+            <Route path="view/:id" element={<h1>Detail Page View Mode</h1>} />
+            <Route path="fetch/:id" element={<h1>Detail Page Fetch Mode</h1>} />
+            <Route path="create/:id" element={<h1>Detail Page Create Mode</h1>} />
+            <Route path="copy/:id" element={<h1>Detail Page Copy Mode</h1>} />
           </Route>
         </Routes>
       </MemoryRouter>

@@ -289,7 +289,10 @@ function Table<TData extends FieldValues>({
             const isExpanded = row.getIsExpanded();
             return row.getCanExpand() ? (
               <ExpandMore
-                onClick={row.getToggleExpandedHandler()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  return row.getToggleExpandedHandler();
+                }}
                 expand={isExpanded}
                 sx={{
                   p: 1,

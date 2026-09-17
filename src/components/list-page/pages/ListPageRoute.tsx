@@ -2,12 +2,11 @@ import { useMemo } from 'react';
 import { DeepPartial, FieldValues } from 'react-hook-form';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+import { Action } from '../../action-table/ActionTable';
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
 import useSegmentParams, {
   UseSegmentParamsOptions,
 } from '../../detail-page/hooks/useSegmentParams';
-import { NeedDataReason } from '../../detail-page/pages/DetailPageContent';
-import { updateQueryString } from '../../misc';
 import useURLSearchFilter, { MatchFields } from '../hooks/useURLSearchFilter';
 import ListPage, { ListPageProps } from './ListPage';
 import { ListPageMeta } from './ListPageFilter';
@@ -19,21 +18,27 @@ export interface ListPageRouteProps<
     Omit<UseSegmentParamsOptions, 'paths'> {
   enableQueryStringFilter?: boolean | MatchFields<TFilter>;
   uniqueIdParamName?: string;
+  onGetNavigatePathName?: (
+    action: Action,
+    model: TModel | undefined,
+    defaultPath: string,
+  ) => string;
 }
 
 /**
  * ListPage with routing based on react-router
  */
 function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
+  actionProps,
   defaultFilter,
   defaultMeta,
   enableNestedSegments,
   enableQueryStringFilter = false,
   enableSegmentRouting = true,
   fallbackSegmentIndex,
+  onGetNavigatePathName,
   onNeedData,
   tabs,
-  onActionClick,
   uniqueIdParamName,
   ...listPageProps
 }: ListPageRouteProps<TModel, TFilter>) {
@@ -107,7 +112,11 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   };
 
   const handleNavigateCreate = () => {
-    const pathname = `./${newItemParamValue}`;
+    let pathname = `./${newItemParamValue}`;
+
+    if (onGetNavigatePathName) {
+      pathname = onGetNavigatePathName('create', undefined, pathname);
+    }
 
     navigate(
       {
@@ -117,22 +126,16 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
     );
   };
 
-  const handleNavigate = (reason: NeedDataReason | 'delete', model?: TModel) => {
-    const pathname = `./${model?.[uniqueIdParam]}`;
-    let search = '';
+  const handleNavigate = (action: Action, model?: TModel) => {
+    let pathname = `./${action}/${model?.[uniqueIdParam]}`;
 
-    if (reason === 'copy') {
-      search = updateQueryString(search, { copy: '' });
-    }
-
-    if (reason === 'view') {
-      search = updateQueryString(search, { disabled: '' });
+    if (onGetNavigatePathName) {
+      pathname = onGetNavigatePathName(action, model, pathname);
     }
 
     navigate(
       {
         pathname,
-        search,
       },
       { relative: 'path' },
     );
@@ -140,12 +143,22 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
 
   return (
     <ListPage
-      onActionClick={(reason, model) => {
-        if (reason !== 'delete') {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          reason === 'create' ? handleNavigateCreate() : handleNavigate(reason, model);
-        }
-        onActionClick?.(reason, model);
+      actionProps={{
+        ...actionProps,
+        onActionClick(action, model, args, props) {
+          switch (action) {
+            case 'create':
+              handleNavigateCreate();
+              break;
+            case 'fetch':
+            case 'view':
+            case 'copy':
+              handleNavigate(action, model);
+              break;
+          }
+
+          actionProps?.onActionClick?.(action, model, args, props);
+        },
       }}
       activeSegmentIndex={segment}
       onWrapperLayout={(props) => (

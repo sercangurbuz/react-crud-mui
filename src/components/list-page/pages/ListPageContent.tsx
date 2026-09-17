@@ -3,7 +3,7 @@ import { FieldValues } from 'react-hook-form';
 
 import { Box } from '@mui/material';
 
-import ActionCommands, { ActionCommandsProps } from '../../action-commands/ActionCommands';
+import ActionTable, { ActionProps, ActionTableProps } from '../../action-table/ActionTable';
 import useDetailPageModal from '../../detail-page/hooks/useDetailPageModal';
 import { NeedDataReason } from '../../detail-page/pages/DetailPageContent';
 import { DetailPageDrawerProps } from '../../detail-page/pages/DetailPageDrawer';
@@ -130,6 +130,10 @@ export interface ListPageContentProps<TModel extends FieldValues>
    */
   onClear?: () => void;
   /**
+   * Event called when user clicks delete action on table or card list
+   */
+  onDelete?: (model: TModel) => void;
+  /**
    * Automatically call onNeedData when any value of filter get changed
    */
   autoSearch?: boolean;
@@ -172,26 +176,6 @@ export interface ListPageContentProps<TModel extends FieldValues>
    */
   onDetailPage?: OnDetailPage<TModel>;
   /**
-   * Render action commands used with detailPage on every row
-   */
-  enableActionCommands?: boolean;
-  /**
-   * Actionm commands extra props
-   */
-  actionCommandsProps?: Partial<ActionCommandsProps<TModel>>;
-  /**
-   * Action column extra props
-   */
-  actionColumnProps?: Partial<TableColumn<TModel>>;
-  /**
-   * Custom render function for action commands
-   */
-  onActionCommands?: (props: ActionCommandsProps<TModel>) => ReactNode;
-  /**
-   * Action click event.Its not get fired in case OnDetailPage provided for create,edit copy reasons
-   */
-  onActionClick?: (reason: NeedDataReason | 'delete', model?: TModel, args?: unknown) => void;
-  /**
    * Open detailPage in view mode as default or in which reason provided
    */
   enableRowClickToDetails?: boolean | NeedDataReason | ((model: TModel) => boolean);
@@ -212,12 +196,15 @@ export interface ListPageContentProps<TModel extends FieldValues>
    * useful when the consumer app has a sticky/fixed header that would otherwise cover it
    */
   alertsScrollMarginTop?: number;
+  /**
+   * Action table related props
+   */
+  actionProps?: Partial<ActionProps<TModel>>;
 }
 
 function ListPageContent<TModel extends FieldValues>({
   activeSegmentIndex,
-  actionCommandsProps,
-  actionColumnProps,
+  actionProps,
   alerts,
   alertsScrollMarginTop = 0,
   autoSearch = true,
@@ -229,7 +216,6 @@ function ListPageContent<TModel extends FieldValues>({
   dataCount,
   disabled,
   disableShortCuts,
-  enableActionCommands,
   enableRowClickToDetails,
   enableClear,
   enableCreateItem = true,
@@ -240,13 +226,12 @@ function ListPageContent<TModel extends FieldValues>({
   filterContent,
   hotkeyScopes,
   listType = 'table',
-  loading,  
-  onActionClick,
-  onActionCommands,
+  loading,
   onClear,
   onClose,
   onCommands,
   onCustomTable,
+  onDelete,
   onDetailPage,
   onExcelExport,
   onExtraCommands,
@@ -297,9 +282,9 @@ function ListPageContent<TModel extends FieldValues>({
         });
       }
       //call fallback action handler
-      onActionClick?.(reason, data, args);
+      actionProps?.onActionClick?.(reason, data, args);
     },
-    [disabled, onActionClick, onDetailPage, openDetailPage],
+    [actionProps, disabled, onDetailPage, openDetailPage],
   );
 
   /* -------------------------------------------------------------------------- */
@@ -482,7 +467,7 @@ function ListPageContent<TModel extends FieldValues>({
         {...cardProps}
         loading={loading}
         onActionCommandProps={(data, index) => ({
-          onDelete: () => onActionClick?.('delete', data),
+          onDelete: () => actionProps?.onActionClick?.('delete', data),
           onView: () => triggerAction('view', data),
           onEdit: () => triggerAction('fetch', data),
           onCopy: () => triggerAction('copy', data),
@@ -490,7 +475,7 @@ function ListPageContent<TModel extends FieldValues>({
           index,
         })}
         data={data}
-        enableActionCommands={enableActionCommands}
+        enableActionCommands={actionProps?.enableActionCommands}
       />
     );
   };
@@ -499,47 +484,24 @@ function ListPageContent<TModel extends FieldValues>({
    * Render table either using List component or fallback to default Table component
    */
   const renderTable = () => {
-    const props: Partial<TableProps<TModel>> = {
+    const props: ActionTableProps<TModel> = {
       newRowButtonText: commandsProps?.create?.children ?? t('newitem'),
       onNewRow: () => triggerAction('create'),
       highlightedRowIndex: detailPageProps?.index,
       ...tableProps,
-      columns: enableActionCommands
-        ? [
-            ...(columns ?? []),
-            {
-              id: 'commands',
-              align: 'center',
-              header: () => null,
-              size: 70,
-              ...actionColumnProps,
-              enableSorting: false,
-              cell(cell) {
-                const data = cell.row.original;
-
-                const props: ActionCommandsProps<TModel> = {
-                  onDelete: () => onActionClick?.('delete', data),
-                  onView: () => triggerAction('view', data),
-                  onEdit: () => triggerAction('fetch', data),
-                  onCopy: () => triggerAction('copy', data),
-                  model: data,
-                  index: cell.row.index,
-                  disabled,
-                  ...actionCommandsProps,
-                };
-
-                if (onActionCommands) {
-                  return onActionCommands(props);
-                }
-
-                return <ActionCommands {...props} />;
-              },
-            },
-          ]
-        : columns,
+      columns,
+      ...actionProps,
+      onActionClick: (action, data, args, props) => {
+        if (action === 'delete') {
+          actionProps?.onActionClick?.('delete', data, args, props);
+          onDelete?.(data!);
+        } else {
+          triggerAction(action, data, args);
+        }
+      },
       // this is for manual server pagination
       rowCount: dataCount || data?.length || 0,
-      data,
+      data: data ?? [],
       loading,
     };
 
@@ -561,8 +523,10 @@ function ListPageContent<TModel extends FieldValues>({
 
     const tableNode = onCustomTable ? (
       onCustomTable(props as TableProps<TModel>)
+    ) : actionProps ? (
+      <ActionTable {...props} />
     ) : (
-      <Table {...(props as TableProps<TModel>)} />
+      <Table {...props} />
     );
 
     return tableNode;
