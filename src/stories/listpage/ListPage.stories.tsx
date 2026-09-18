@@ -627,7 +627,7 @@ export const AutoSearch: ListPageStory = {
 
 export const FilterFromQuerystring: ListPageRouteStory = {
   args: {
-    enableQueryStringFilter: { username: true },
+    enableQueryStringFilter: { username: true, name: true },
     enableClear: true,
     defaultMeta: {
       sorting: [{ id: 'name', desc: true }],

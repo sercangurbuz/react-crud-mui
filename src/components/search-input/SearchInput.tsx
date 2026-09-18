@@ -16,7 +16,7 @@ export interface SearchInputProps extends InputBaseProps {
 // ========================================================================
 
 export default forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ onSearch, onChange, value = '', bordered = true, ...props }, ref) => {
+  ({ onSearch, value = '', bordered = true, ...props }, ref) => {
     const [keyword, setKeyword] = useState<string>(value);
     const ADORNMENT = <SearchIcon sx={{ mr: 1, fontSize: 18, color: 'text.secondary' }} />;
     const { t } = useTranslation();
@@ -43,7 +43,6 @@ export default forwardRef<HTMLInputElement, SearchInputProps>(
         value={keyword}
         onChange={(e) => {
           setKeyword(e.target.value);
-          onChange?.(e);
           lazyOnChange(e.target.value);
         }}
       />
