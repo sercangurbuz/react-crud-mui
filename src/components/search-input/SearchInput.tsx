@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState } from 'react';
+import { forwardRef, useEffect, useMemo, useState } from 'react';
 
 import { InputBaseProps } from '@mui/material/InputBase';
 import debounce from 'lodash.debounce';
@@ -11,14 +11,24 @@ import { StyledInputBase } from './styles';
 export interface SearchInputProps extends InputBaseProps {
   bordered?: boolean;
   onSearch: (keyword: string) => void;
+  value?: string;
 }
 // ========================================================================
 
 export default forwardRef<HTMLInputElement, SearchInputProps>(
-  ({ onSearch, onChange, defaultValue = '', bordered = true, ...props }, ref) => {
-    const [keyword, setKeyword] = useState<string>(defaultValue as string);
+  ({ onSearch, onChange, value = '', bordered = true, ...props }, ref) => {
+    const [keyword, setKeyword] = useState<string>(value);
     const ADORNMENT = <SearchIcon sx={{ mr: 1, fontSize: 18, color: 'text.secondary' }} />;
     const { t } = useTranslation();
+
+    useEffect(() => {
+      setKeyword((p) => {
+        if (p !== value) {
+          return value;
+        }
+        return p;
+      });
+    }, [value, setKeyword]);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const lazyOnChange = useMemo(() => debounce(onSearch, 400), []);

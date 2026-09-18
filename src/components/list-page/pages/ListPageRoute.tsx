@@ -81,9 +81,9 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
     }
 
     return { defaultFilter, defaultMeta };
-    // We don't want to re-calculate defaultFilterProps when defaultFilter or defaultMeta changes
+    // We intentionally leave the dependency array empty to calculate defaultFilterProps only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enableQueryStringFilter, getFiltersInQS]);
+  }, []);
 
   /* -------------------------------------------------------------------------- */
   /*                                   Events                                   */
