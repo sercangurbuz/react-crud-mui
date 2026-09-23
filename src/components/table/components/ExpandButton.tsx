@@ -7,8 +7,16 @@ interface ExpandMoreProps extends IconButtonProps {
 
 export const ExpandMore = styled((props: ExpandMoreProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { expand, ...other } = props;
-  return <IconButton {...other} />;
+  const { expand, onClick, ...other } = props;
+  return (
+    <IconButton
+      {...other}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick?.(e);
+      }}
+    />
+  );
 })(({ theme }) => ({
   transition: theme.transitions.create('transform', {
     duration: theme.transitions.duration.shortest,

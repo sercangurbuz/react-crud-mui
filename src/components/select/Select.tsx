@@ -322,7 +322,6 @@ function Select<T extends FieldValues = FieldValues>({
         disabled={disabled}
         MenuProps={{
           PaperProps: { sx: { maxHeight: dropDownHeight } },
-          autoFocus: false,
         }}
         endAdornment={
           <IconButton

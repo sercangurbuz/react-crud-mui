@@ -515,6 +515,11 @@ export const MultiSelection: ListPageSelectionStory = {
           actionProps={{
             enableActionCommands: true,
           }}
+          defaultMeta={{
+            pagination: {
+              pageSize: 5,
+            },
+          }}
           onDetailPage={(props) => <EmbededDetailPage {...props} />}
           open={visible}
           onClose={() => setVisible(false)}

@@ -31,6 +31,7 @@ export interface ListPageRouteProps<
 function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues = FieldValues>({
   actionProps,
   defaultFilter,
+  defaultValues,
   defaultMeta,
   enableNestedSegments,
   enableQueryStringFilter = false,
@@ -70,6 +71,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
       const { filter, meta } = getFiltersInQS();
       return {
         defaultFilter: {
+          ...defaultValues,
           ...defaultFilter,
           ...filter,
         },
@@ -173,6 +175,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
       {...listPageProps}
       tabs={tabs}
       onNeedData={handleNeedData}
+      defaultValues={defaultValues}
       {...defaultFilterProps}
     />
   );

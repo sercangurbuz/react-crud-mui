@@ -7,7 +7,7 @@ const meta: Meta<typeof Labels.NumberFormat> = {
   component: Labels.NumberFormat,
   args: {
     value: 1535.98,
-    suffix: ' kg.',
+    suffix: 'kg.',
   },
 };
 export default meta;

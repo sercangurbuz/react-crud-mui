@@ -34,8 +34,18 @@ function CurrencyFormat(
     <NumberFormat
       decimalDigit={decimalDigit}
       ref={ref}
-      prefix={`${prefix} ${currPrefix}`}
-      suffix={`${currSuffix} ${suffix}`}
+      prefix={
+        <>
+          {prefix}
+          {currPrefix}
+        </>
+      }
+      suffix={
+        <>
+          {currSuffix}
+          {suffix}
+        </>
+      }
       value={value}
       sx={{
         color: value ? undefined : 'text.secondary',

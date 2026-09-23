@@ -24,7 +24,7 @@ export const Zero: Story = {
 export const Custom: Story = {
   args: {
     component: H5,
-    suffix: '(C)',
+    suffix: ' (C)',
     sx: {
       color: 'warning.main',
     },

@@ -53,7 +53,11 @@ function DefaultTabs({
   }
 
   return (
-    <FlexBox sx={wrapperSx} alignItems="center">
+    <FlexBox
+      sx={wrapperSx}
+      alignItems={{ xs: 'flex-start', sm: 'center' }}
+      flexDirection={{ xs: 'column', sm: 'row' }}
+    >
       <TabListWrapper variant="scrollable" {...tabsProps} sx={{ flexGrow: 1, ...sx }}>
         {filteredTabs}
       </TabListWrapper>

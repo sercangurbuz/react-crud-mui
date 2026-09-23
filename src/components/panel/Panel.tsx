@@ -70,6 +70,8 @@ function Panel({
     return selTab?.children;
   };
 
+  const hasRightContent = Boolean(rightContent || (moreOptions?.length ?? 0));
+
   return (
     <Card {...cardProps}>
       {tabs ? (
@@ -86,10 +88,12 @@ function Panel({
               </BoxWrapper>
             ))}
           </Stack>
-          <Stack direction="row" alignItems="center" gap={2}>
-            {rightContent}
-            {moreOptions?.length ? <MoreButton options={moreOptions} sx={{ mr: 2 }} /> : null}
-          </Stack>
+          {hasRightContent && (
+            <Stack direction="row" alignItems="center" gap={2}>
+              {rightContent}
+              {moreOptions?.length ? <MoreButton options={moreOptions} sx={{ mr: 2 }} /> : null}
+            </Stack>
+          )}
         </TabContentWrapper>
       ) : (
         <Header

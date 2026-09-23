@@ -1,4 +1,4 @@
-import { forwardRef, Ref, useMemo } from 'react';
+import { forwardRef, ReactNode, Ref, useMemo } from 'react';
 
 import Box, { BoxProps } from '@mui/material/Box';
 import numeral from 'numeral';
@@ -9,10 +9,10 @@ import useSettings from '../crud-mui-provider/hooks/useSettings';
 /*                                    Types                                   */
 /* -------------------------------------------------------------------------- */
 
-export interface NumberFormatProps extends BoxProps {
+export interface NumberFormatProps extends Omit<BoxProps, 'prefix' | 'suffix'> {
   value?: number | string;
-  suffix?: string;
-  prefix?: string;
+  suffix?: ReactNode;
+  prefix?: ReactNode;
   format?: string;
   decimalDigit?: number;
 }
@@ -36,13 +36,14 @@ function NumberFormat(
 
   const text = useMemo(() => {
     const num = numeral(value).format(format ?? numFormat);
-    const formattedValue = [prefix, num, suffix].filter(Boolean).join('');
-    return formattedValue;
-  }, [prefix, suffix, numFormat, value, format]);
+    return num;
+  }, [numFormat, value, format]);
 
   return (
     <Box title={text} {...rest} ref={ref}>
+      {prefix}
       {text}
+      {suffix}
     </Box>
   );
 }
