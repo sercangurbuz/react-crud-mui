@@ -321,6 +321,7 @@ export const CopyingMode: DetailPageStory = {
 
 export const AutoSave: DetailPageStory = {
   args: {
+    autoSave: true,
     showHeader: false,
     onSave() {
       alert('Auto saved');

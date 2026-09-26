@@ -280,7 +280,7 @@ function DetailPageData<TModel extends FieldValues>({
       error={error}
       data={(data ?? initialValues) as TModel}
       autoSave={autoSave}
-      loading={loading || loadingState || isDefaultValuesLoading}
+      loading={loading || (!autoSave && loadingState) || isDefaultValuesLoading}
       reason={reason}
       onCreate={(args) => handleCreate('create', args)}
       onCopy={(args) => handleCreate('copy', args)}

@@ -159,7 +159,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         key={saveCommandMenus[saveMode].key}
         color="success"
         startIcon={<Save />}
-        disabled={mode === 'steps' ? !isCurrentStepValid : disabled.save}
+        disabled={mode === 'steps' && currentForm ? !isCurrentStepValid : disabled.save}
         loading={loading}
         {...commandsProps?.save}
       />
@@ -275,7 +275,7 @@ function DetailPageCommands(props: DetailPageCommandsProps) {
         onClick={onNextClick}
         color="primary"
         loading={loading}
-        disabled={!isCurrentStepValid || loading}
+        disabled={currentForm ? !isCurrentStepValid || loading : loading}
         endIcon={<ArrowRight />}
         title={`${t('nextstep')}\n(${SHORTCUT_NEXT_STEP.toUpperCase()})`}
         // eslint-disable-next-line react/no-children-prop

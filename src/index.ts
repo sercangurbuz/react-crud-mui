@@ -47,6 +47,17 @@ export {
   default as EditableList,
   type EditableListProps,
 } from './components/editable-list/EditableList';
+export {
+  default as ActionTable,
+  type ActionTableProps,
+  type ActionProps,
+  type Action,
+} from './components/action-table/ActionTable';
+export {
+  default as SwitcherAutoComplete,
+  SwitcherOption,
+  type SwitcherProps,
+} from './components/switch-select';
 export { default as useEditableListContext } from './components/editable-list/hooks/useEditableListContext';
 export * from './components/flexbox';
 export { type FlexBoxProps } from './components/flexbox/FlexBox';
