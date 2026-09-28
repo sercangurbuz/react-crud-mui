@@ -6,7 +6,9 @@ import ClickAwayListener, { type ClickAwayListenerProps } from '@mui/material/Cl
 
 import { StyledPopper } from './styled';
 
-interface SwitcherPopperProps extends PopperProps, Pick<ClickAwayListenerProps, 'onClickAway'> {}
+export interface SwitcherPopperProps
+  extends PopperProps,
+    Pick<ClickAwayListenerProps, 'onClickAway'> {}
 
 function SwitcherPopper({
   onClickAway,

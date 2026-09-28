@@ -1,17 +1,24 @@
 import React, { useState, type PropsWithChildren } from 'react';
 
 import SwitcherAutoComplete, { type SwitcherAutoCompleteProps } from './SwitcherAutoComplete';
-import SwitcherLabel from './SwitcherLabel';
-import SwitcherPopper from './SwitcherPopper';
+import SwitcherLabel, { SwitcherLabelProps } from './SwitcherLabel';
+import SwitcherPopper, { SwitcherPopperProps } from './SwitcherPopper';
 
 export type SwitcherProps<TData> = {
   data: TData[];
   isLoading?: boolean;
   onRenderOption: (props: React.HTMLAttributes<HTMLLIElement>, data: TData) => React.ReactNode;
+  onRenderCreateOption?: () => React.ReactNode;
   onNavigate: (data: TData) => void;
   onDropdownVisibilityChange?: (open: boolean) => void;
   onSearch?: SwitcherAutoCompleteProps<TData>['filterOptions'];
   placeholder?: string;
+  noOptionsText?: string;
+  slots?: {
+    label?: SwitcherLabelProps;
+    popper?: SwitcherPopperProps;
+    autocomplete?: SwitcherAutoCompleteProps<TData>;
+  };
 } & PropsWithChildren;
 
 function Switcher<TData>({
@@ -19,10 +26,13 @@ function Switcher<TData>({
   children,
   isLoading,
   onRenderOption,
+  onRenderCreateOption,
   onNavigate,
   onDropdownVisibilityChange,
   onSearch,
   placeholder,
+  noOptionsText,
+  slots,
 }: SwitcherProps<TData>) {
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
@@ -49,10 +59,10 @@ function Switcher<TData>({
 
   return (
     <>
-      <SwitcherLabel onClick={handleClick} open={open}>
+      <SwitcherLabel onClick={handleClick} open={open} {...slots?.label}>
         {children}
       </SwitcherLabel>
-      <SwitcherPopper open={open} anchorEl={anchorEl} onClickAway={handleClose}>
+      <SwitcherPopper open={open} anchorEl={anchorEl} onClickAway={handleClose} {...slots?.popper}>
         <SwitcherAutoComplete
           loading={isLoading}
           data={data}
@@ -61,6 +71,9 @@ function Switcher<TData>({
           onRender={onRenderOption}
           filterOptions={onSearch}
           placeholder={placeholder}
+          noOptionsText={noOptionsText}
+          onRenderCreateOption={onRenderCreateOption}
+          {...slots?.autocomplete}
         />
       </SwitcherPopper>
     </>

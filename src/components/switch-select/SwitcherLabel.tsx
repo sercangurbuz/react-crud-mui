@@ -7,7 +7,7 @@ import { Card, type CardProps } from '@mui/material';
 import { FlexBox } from '../flexbox';
 import { ExpandMore } from '../table/components/ExpandButton';
 
-interface SwitcherLabelProps extends CardProps {
+export interface SwitcherLabelProps extends CardProps {
   open?: boolean;
   cardRef?: React.Ref<HTMLDivElement>;
 }

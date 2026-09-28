@@ -1,7 +1,7 @@
 import React, { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Box } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import Autocomplete, {
   type AutocompleteCloseReason,
   type AutocompleteProps,
@@ -13,9 +13,14 @@ export interface SwitcherAutoCompleteProps<TData>
   extends Partial<Omit<AutocompleteProps<TData, false, false, false>, 'onClose'>> {
   data?: TData[];
   onClose?: () => void;
-  onRender: (props: React.HTMLAttributes<HTMLLIElement>, data: TData) => ReactNode;
+  onRender: (
+    props: React.HTMLAttributes<HTMLLIElement>,
+    data: TData,
+    onClose?: () => void,
+  ) => ReactNode;
   placeholder?: string;
-  noOptionText?: string;
+  noOptionsText?: string;
+  onRenderCreateOption?: () => ReactNode;
 }
 
 function SwitcherAutoComplete<TData>({
@@ -24,8 +29,9 @@ function SwitcherAutoComplete<TData>({
   loading,
   data,
   onRender,
+  onRenderCreateOption,
   placeholder,
-  noOptionText,
+  noOptionsText,
   ...autoCompleteProps
 }: SwitcherAutoCompleteProps<TData>) {
   /* -------------------------------------------------------------------------- */
@@ -60,13 +66,21 @@ function SwitcherAutoComplete<TData>({
         //redirect
         onChange?.(event, newValue, reason);
       }}
-      noOptionsText={noOptionText ?? t('nodatafound')}
+      noOptionsText={noOptionsText ?? t('nodatafound')}
       renderOption={(props, option) => {
-        return onRender(props, option);
+        return onRender(props, option, onClose);
       }}
       options={data || []}
       slots={{
         popper: PopperComponent,
+        paper(props) {
+          return (
+            <Paper {...props}>
+              {props.children}
+              {onRenderCreateOption?.()}
+            </Paper>
+          );
+        },
       }}
       getOptionLabel={() => ''}
       renderInput={(params) => (
