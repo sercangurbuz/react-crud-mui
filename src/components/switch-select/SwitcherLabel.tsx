@@ -1,4 +1,3 @@
- 
 import { forwardRef } from 'react';
 
 import { KeyboardArrowDown } from '@mui/icons-material';
@@ -25,6 +24,7 @@ function SwitcherLabel({ cardRef, open, children, ...cardProps }: SwitcherLabelP
         borderBottomLeftRadius: open ? 0 : undefined,
         borderBottomRightRadius: open ? 0 : undefined,
         minHeight: 60,
+        ...cardProps.sx,
       }}
     >
       <FlexBox justifyContent="space-between" alignItems="center" gap={2}>
