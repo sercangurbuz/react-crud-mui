@@ -1,4 +1,9 @@
 import React, { useState, type PropsWithChildren } from 'react';
+import { createPortal } from 'react-dom';
+
+import { useTheme } from '@mui/material';
+import type { BackdropProps } from '@mui/material/Backdrop';
+import Backdrop from '@mui/material/Backdrop';
 
 import SwitcherAutoComplete, { type SwitcherAutoCompleteProps } from './SwitcherAutoComplete';
 import SwitcherLabel, { SwitcherLabelProps } from './SwitcherLabel';
@@ -7,17 +12,12 @@ import SwitcherPopper, { SwitcherPopperProps } from './SwitcherPopper';
 export type SwitcherProps<TData> = {
   data: TData[];
   isLoading?: boolean;
-  onRenderOption: (props: React.HTMLAttributes<HTMLLIElement>, data: TData) => React.ReactNode;
-  onRenderCreateOption?: () => React.ReactNode;
-  onNavigate: (data: TData) => void;
   onDropdownVisibilityChange?: (open: boolean) => void;
-  onSearch?: SwitcherAutoCompleteProps<TData>['filterOptions'];
-  placeholder?: string;
-  noOptionsText?: string;
   slots?: {
     label?: SwitcherLabelProps;
     popper?: SwitcherPopperProps;
     autocomplete?: SwitcherAutoCompleteProps<TData>;
+    backdrop?: BackdropProps;
   };
 } & PropsWithChildren;
 
@@ -25,15 +25,10 @@ function Switcher<TData>({
   data,
   children,
   isLoading,
-  onRenderOption,
-  onRenderCreateOption,
-  onNavigate,
   onDropdownVisibilityChange,
-  onSearch,
-  placeholder,
-  noOptionsText,
   slots,
 }: SwitcherProps<TData>) {
+  const theme = useTheme();
   /* -------------------------------------------------------------------------- */
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
@@ -59,7 +54,25 @@ function Switcher<TData>({
 
   return (
     <>
-      <SwitcherLabel onClick={handleClick} open={open} {...slots?.label}>
+      {createPortal(
+        <Backdrop
+          open={open}
+          sx={{
+            backdropFilter: 'blur(3px)',
+            background: 'transparent',
+            zIndex: theme.zIndex.drawer + 1,
+          }}
+          {...slots?.backdrop}
+        />,
+        document.body,
+      )}
+
+      <SwitcherLabel
+        onClick={handleClick}
+        open={open}
+        {...slots?.label}
+        data-site-switcher-open={open}
+      >
         {children}
       </SwitcherLabel>
       <SwitcherPopper open={open} anchorEl={anchorEl} onClickAway={handleClose} {...slots?.popper}>
@@ -67,13 +80,7 @@ function Switcher<TData>({
           loading={isLoading}
           data={data}
           onClose={handleClose}
-          onChange={(_event, newValue) => onNavigate(newValue!)}
-          onRender={onRenderOption}
-          filterOptions={onSearch}
-          placeholder={placeholder}
-          noOptionsText={noOptionsText}
-          onRenderCreateOption={onRenderCreateOption}
-          {...slots?.autocomplete}
+          {...(slots?.autocomplete as SwitcherAutoCompleteProps<TData>)}
         />
       </SwitcherPopper>
     </>

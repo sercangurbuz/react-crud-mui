@@ -45,7 +45,7 @@ export const StyledPopper = styled(Popper)(({ theme, open }) => ({
   borderRadius: 16,
   borderTopLeftRadius: open ? 0 : undefined,
   overflow: 'hidden',
-  zIndex: theme.zIndex.modal,
+  zIndex: theme.zIndex.modal + 1,
   fontSize: 13,
 }));
 
