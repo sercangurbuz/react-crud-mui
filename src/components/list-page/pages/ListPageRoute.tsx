@@ -18,11 +18,7 @@ export interface ListPageRouteProps<
     Omit<UseSegmentParamsOptions, 'paths'> {
   enableQueryStringFilter?: boolean | MatchFields<TFilter>;
   uniqueIdParamName?: string;
-  onGetNavigatePathName?: (
-    action: Action,
-    model: TModel | undefined,
-    defaultPath: string,
-  ) => string;
+  onNavigateRoute?: (action: Action, model: TModel | undefined, defaultPath: string) => string;
 }
 
 /**
@@ -37,7 +33,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   enableQueryStringFilter = false,
   enableSegmentRouting = true,
   fallbackSegmentIndex,
-  onGetNavigatePathName,
+  onNavigateRoute,
   onNeedData,
   tabs,
   uniqueIdParamName,
@@ -47,7 +43,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const { newItemParamValue, uniqueIdParamName: defaultUniqueIdParamName } = useSettings();
+  const { uniqueIdParamName: defaultUniqueIdParamName } = useSettings();
   const navigate = useNavigate();
 
   const uniqueIdParam = uniqueIdParamName || defaultUniqueIdParamName;
@@ -113,26 +109,11 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
     onNeedData?.(filter, meta);
   };
 
-  const handleNavigateCreate = () => {
-    let pathname = `./${newItemParamValue}`;
-
-    if (onGetNavigatePathName) {
-      pathname = onGetNavigatePathName('create', undefined, pathname);
-    }
-
-    navigate(
-      {
-        pathname,
-      },
-      { relative: 'path' },
-    );
-  };
-
   const handleNavigate = (action: Action, model?: TModel) => {
-    let pathname = `./${action}/${model?.[uniqueIdParam]}`;
+    let pathname = `./${action}${model ? `/${model?.[uniqueIdParam]}` : ''}`;
 
-    if (onGetNavigatePathName) {
-      pathname = onGetNavigatePathName(action, model, pathname);
+    if (onNavigateRoute) {
+      pathname = onNavigateRoute(action, model, pathname);
     }
 
     navigate(
@@ -148,17 +129,7 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
       actionProps={{
         ...actionProps,
         onActionClick(action, model, args, props) {
-          switch (action) {
-            case 'create':
-              handleNavigateCreate();
-              break;
-            case 'fetch':
-            case 'view':
-            case 'copy':
-              handleNavigate(action, model);
-              break;
-          }
-
+          handleNavigate(action, model);
           actionProps?.onActionClick?.(action, model, args, props);
         },
       }}

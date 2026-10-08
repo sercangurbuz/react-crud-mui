@@ -1,35 +1,27 @@
 import { FieldValues } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 
-import useSettings from '../../crud-mui-provider/hooks/useSettings';
-import { CloseReason } from '../../page/Page';
+import { Action } from '../../action-table/ActionTable';
 import DetailPageDefaultLayout from '../components/DetailPageDefaultLayout';
 import Prompt from '../components/Prompt';
 import useDetailPageRouteParams from '../hooks/useDetailPageRouteParams';
 import { UseFormPromptProps } from '../hooks/useFormPrompt';
 import { SegmentModel } from '../hooks/useMatchedSegment';
 import { UseSegmentParamsOptions } from '../hooks/useSegmentParams';
-import { NeedDataReason } from './DetailPageContent';
-import { DataResult } from './DetailPageData';
 import DetailPageForm, { DetailPageFormProps } from './DetailPageForm';
 
 export interface DetailPageRouteProps<TModel extends FieldValues = FieldValues>
   extends Omit<DetailPageFormProps<TModel>, 'reason'>,
     Omit<UseSegmentParamsOptions, 'paths'> {
-  enableRedirectToCreated?: boolean;
-  enableRedirectToList?: boolean;
   promptOptions?: UseFormPromptProps;
   uniqueIdParamName?: string;
+  onNavigateRoute?: (action: Action, model: TModel | undefined, defaultPath: string) => string;
 }
 
 function DetailPageRoute<TModel extends FieldValues>({
-  enableRedirectToCreated = true,
-  enableRedirectToList = false,
-  promptOptions,
-  enableSegmentRouting,
   enableNestedSegments,
+  enableSegmentRouting,
   fallbackSegmentIndex,
-  onReasonChange,
+  promptOptions,
   uniqueIdParamName,
   ...dpProps
 }: DetailPageRouteProps<TModel>) {
@@ -37,16 +29,13 @@ function DetailPageRoute<TModel extends FieldValues>({
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const navigate = useNavigate();
-  const { newItemParamValue } = useSettings();
-
   const { tabs, steps } = dpProps;
 
   /**
    * Get id from route param and determine the reason
    * Also segment index is managed by search params (tabs or steps) or matched route (nested route)
    */
-  const { reason, segment, setSegment, disabled, readonly } = useDetailPageRouteParams({
+  const { reason, segment, setSegment } = useDetailPageRouteParams({
     uniqueIdParamName,
     enableSegmentRouting,
     enableNestedSegments,
@@ -54,76 +43,9 @@ function DetailPageRoute<TModel extends FieldValues>({
     paths: (tabs ?? steps) as SegmentModel[],
   });
 
-  /* -------------------------------------------------------------------------- */
-  /*                                   Events                                   */
-  /* -------------------------------------------------------------------------- */
-
-  const handleCreate = (reason: NeedDataReason) => {
-    let pathname = `../${newItemParamValue}`;
-    const search = new URLSearchParams();
-
-    if (enableNestedSegments) {
-      pathname = `../${pathname}`;
-    }
-
-    if (reason === 'copy') {
-      search.set('copy', '');
-      pathname = './';
-    }
-
-    navigate(
-      {
-        pathname,
-        search: search.toString(),
-      },
-      { relative: 'path' },
-    );
-
-    onReasonChange?.(reason);
-  };
-
-  const handleClose = (reason?: CloseReason) => {
-    navigate(enableNestedSegments ? '../../' : '../', {
-      state: { noBlock: reason === 'action' },
-      relative: 'path',
-    });
-  };
-
-  const handleAfterSave = (data: Awaited<DataResult<TModel>>) => {
-    if (enableRedirectToCreated && reason !== 'fetch' && data?.id) {
-      let pathname = `../${data.id}`;
-
-      if (enableNestedSegments) {
-        pathname = `../${pathname}`;
-      }
-      /**
-       * Navigate created item if enabled
-       */
-      navigate(pathname, { state: { noBlock: true }, relative: 'path' });
-    }
-  };
-
-  const handleAfterDelete = () => {
-    if (enableRedirectToList) {
-      let pathname = `../`;
-
-      if (enableNestedSegments) {
-        pathname = `../${pathname}`;
-      }
-      /**
-       * Navigate list page
-       */
-      navigate(pathname, { state: { noBlock: true }, relative: 'path' });
-    }
-  };
-
   return (
     <DetailPageForm
       reason={reason}
-      onReasonChange={handleCreate}
-      onAfterSave={handleAfterSave}
-      onAfterDelete={handleAfterDelete}
-      onClose={handleClose}
       activeSegmentIndex={segment}
       onSegmentChanged={setSegment}
       onContentLayout={(props) => (
@@ -133,7 +55,6 @@ function DetailPageRoute<TModel extends FieldValues>({
           <DetailPageDefaultLayout {...props} />
         </>
       )}
-      disabled={disabled || readonly}
       {...dpProps}
     />
   );

@@ -30,6 +30,7 @@ export type Settings = {
   enableDevTool?: boolean;
   appTitle?: string;
   uniqueIdParamName: string;
+  reasonParamName: string;
   segmentParamName: string;
   keyFieldName: string;
   hotkeys: CommonHotKeys;
@@ -92,6 +93,7 @@ export default (): Settings => ({
     tabchangePrev: 'shift+pagedown',
   },
   uniqueIdParamName: 'id',
+  reasonParamName: 'reason',
   segmentParamName: 's',
   keyFieldName: 'id',
   pageSize: 25,

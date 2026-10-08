@@ -1,10 +1,18 @@
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import useSettings from '../../crud-mui-provider/hooks/useSettings';
+import {
+  NeedDataReasonValues,
+  type NeedDataReason,
+} from '../../detail-page/pages/DetailPageContent';
 import useSegmentParams, { UseSegmentParamsOptions } from './useSegmentParams';
 
 type UseDetailPageRouteParamsOptions = UseSegmentParamsOptions & {
   uniqueIdParamName?: string;
+};
+
+const validateReason = (reason: string | undefined): reason is NeedDataReason => {
+  return !!(reason && reason in NeedDataReasonValues);
 };
 
 function useDetailPageRouteParams<
@@ -17,31 +25,23 @@ function useDetailPageRouteParams<
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const { uniqueIdParamName, newItemParamValue } = useSettings();
+  const { uniqueIdParamName, reasonParamName } = useSettings();
   const params = useParams<Params>();
-  const [currentQueryParameters] = useSearchParams();
   const [segment, setSegment] = useSegmentParams(segmentOptions);
-  const { state } = useLocation();
   const id = (params as Record<string, string | undefined>)[
     customUniqueIdParamName ?? uniqueIdParamName
   ];
 
-  const hasRouteValue = (key: string) =>
-    currentQueryParameters.has(key) || (state?.[key] as boolean);
-
   /* ---------------------------- Determine reason ---------------------------- */
 
-  const reason = hasRouteValue('copy') ? 'copy' : id === newItemParamValue ? 'create' : 'fetch';
-  const disabled = !!hasRouteValue('disabled');
-  const readonly = !!hasRouteValue('readonly');
+  const reasonParam = (params as Record<string, string | undefined>)[reasonParamName];
+  const reason = validateReason(reasonParam) ? reasonParam : NeedDataReasonValues.create;
 
   return {
     reason,
     id,
     segment,
     setSegment,
-    disabled,
-    readonly,
     params,
   } as const;
 }

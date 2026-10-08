@@ -40,6 +40,12 @@ import { NavigationDirection, SaveMode, SaveOptions } from './DetailPageData';
 /* -------------------------------------------------------------------------- */
 
 export type NeedDataReason = 'create' | 'fetch' | 'copy' | 'view';
+export const NeedDataReasonValues: Record<NeedDataReason, NeedDataReason> = {
+  create: 'create',
+  fetch: 'fetch',
+  copy: 'copy',
+  view: 'view',
+};
 
 export type DetailPageWrapperLayoutProps<TModel extends FieldValues = FieldValues> = {
   content: ReactNode;

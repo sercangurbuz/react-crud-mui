@@ -1,6 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from 'react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import {
+  createMemoryRouter,
+  createRoutesFromElements,
+  MemoryRouter,
+  Route,
+  RouterProvider,
+  Routes,
+} from 'react-router-dom';
 
 import Assignment from '@mui/icons-material/Assignment';
 import Close from '@mui/icons-material/Close';
@@ -16,6 +23,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { RowSelectionState } from '@tanstack/react-table';
 import { z } from 'zod';
 
+import DetailPage from '../../components/detail-page';
 import { FlexBetween } from '../../components/flexbox';
 import Field from '../../components/form/Field';
 import Email from '../../components/icons/Email';
@@ -682,18 +690,31 @@ export const WithRoutedDetailPage: ListPageStory = {
     },
   },
   render: (args) => {
-    return (
-      <MemoryRouter initialEntries={['/customers']}>
-        <Routes>
-          <Route path="customers">
-            <Route index element={<ListPageWithRoute {...args} />} />
-            <Route path="view/:id" element={<h1>Detail Page View Mode</h1>} />
-            <Route path="fetch/:id" element={<h1>Detail Page Fetch Mode</h1>} />
-            <Route path="create/:id" element={<h1>Detail Page Create Mode</h1>} />
-            <Route path="copy/:id" element={<h1>Detail Page Copy Mode</h1>} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
+    const router = createMemoryRouter(
+      createRoutesFromElements(
+        <Route path="customers">
+          <Route index element={<ListPageWithRoute {...args} />} />
+          <Route
+            path="view/:id"
+            element={<DetailPage.Route>Detail Page View Mode</DetailPage.Route>}
+          />
+          <Route
+            path="fetch/:id"
+            element={<DetailPage.Route>Detail Page Fetch Mode</DetailPage.Route>}
+          />
+          <Route
+            path="copy/:id"
+            element={<DetailPage.Route>Detail Page Copy Mode</DetailPage.Route>}
+          />
+          <Route
+            path="create"
+            element={<DetailPage.Route>Detail Page Create Mode</DetailPage.Route>}
+          />
+        </Route>,
+      ),
+      { initialEntries: ['/customers'] },
     );
+
+    return <RouterProvider router={router} />;
   },
 };
