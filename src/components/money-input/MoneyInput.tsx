@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 
+import useSettings from '../crud-mui-provider/hooks/useSettings';
 import { Currency, DEFAULT_CURRENCY, getCurrencySymbolProps } from '../misc/getCurrencySymbolProps';
 import NumberInput, { NumberInputProps } from '../number-input/NumberInput';
 
@@ -9,9 +10,16 @@ export type MoneyInputProps = NumberInputProps & { currency?: Currency };
 
 /* -------------------------- MoneyInput Component -------------------------- */
 
-function MoneyInput({ getRef, currency = DEFAULT_CURRENCY, ...rest }: MoneyInputProps) {
+function MoneyInput({ getRef, currency, ...rest }: MoneyInputProps) {
+  const { defaultCurrency } = useSettings();
+
   return (
-    <NumberInput decimalScale={2} {...getCurrencySymbolProps(currency)} {...rest} ref={getRef} />
+    <NumberInput
+      decimalScale={2}
+      {...getCurrencySymbolProps(currency ?? defaultCurrency ?? DEFAULT_CURRENCY)}
+      {...rest}
+      ref={getRef}
+    />
   );
 }
 

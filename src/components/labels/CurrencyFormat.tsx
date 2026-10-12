@@ -1,5 +1,6 @@
 import { forwardRef, Ref } from 'react';
 
+import useSettings from '../crud-mui-provider/hooks/useSettings';
 import { Currency, DEFAULT_CURRENCY, getCurrencySymbolProps } from '../misc/getCurrencySymbolProps';
 import NumberFormat, { NumberFormatProps } from './NumberFormat';
 
@@ -16,19 +17,15 @@ export interface CurrencyFormatProps extends NumberFormatProps {
 /* -------------------------------------------------------------------------- */
 
 function CurrencyFormat(
-  {
-    decimalDigit = 2,
-    currency = DEFAULT_CURRENCY,
-    prefix = '',
-    suffix = '',
-    value,
-    sx,
-    ...rest
-  }: CurrencyFormatProps,
+  { decimalDigit = 2, currency, prefix = '', suffix = '', value, sx, ...rest }: CurrencyFormatProps,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref: Ref<any>,
 ) {
-  const { prefix: currPrefix = '', suffix: currSuffix = '' } = getCurrencySymbolProps(currency);
+  const { defaultCurrency } = useSettings();
+
+  const { prefix: currPrefix = '', suffix: currSuffix = '' } = getCurrencySymbolProps(
+    currency ?? defaultCurrency ?? DEFAULT_CURRENCY,
+  );
 
   return (
     <NumberFormat

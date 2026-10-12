@@ -129,7 +129,9 @@ function ListPageRoute<TModel extends FieldValues, TFilter extends FieldValues =
       actionProps={{
         ...actionProps,
         onActionClick(action, model, args, props) {
-          handleNavigate(action, model);
+          if (action !== 'delete') {
+            handleNavigate(action, model);
+          }
           actionProps?.onActionClick?.(action, model, args, props);
         },
       }}

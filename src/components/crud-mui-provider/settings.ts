@@ -1,4 +1,5 @@
 import { ValidationOptions } from '../form/hooks/useForm';
+import { Currency, DEFAULT_CURRENCY } from '../misc/getCurrencySymbolProps';
 import { ThemeSettings } from '../theme';
 import { THEMES } from '../theme/theme.constants';
 
@@ -51,6 +52,7 @@ export type Settings = {
   decimalSeparator?: string;
   disableValidationTooltip?: boolean;
   validationOptions?: ValidationOptions;
+  defaultCurrency?: Currency;
 } & ThemeSettings;
 
 export default (): Settings => ({
@@ -101,4 +103,5 @@ export default (): Settings => ({
   debounceTime: 400,
   rowKey: 'id',
   pageSizes: [25, 50, 75, 150],
+  defaultCurrency: DEFAULT_CURRENCY,
 });

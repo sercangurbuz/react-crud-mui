@@ -140,6 +140,7 @@ export {
   default as CrudMuiProvider,
   type CrudMuiProviderProps as SettingsProviderProps,
 } from './components/crud-mui-provider/CrudMuiProvider';
+export { default as useSettings } from './components/crud-mui-provider/hooks/useSettings';
 export { default as Table } from './components/table/Table';
 export { default as EmptyText } from './components/table/components/EmptyText';
 export type { CellAlignment, TableProps, TableColumn } from './components/table/Table';
@@ -154,6 +155,7 @@ export {
   default as PanelSelect,
   type PanelSelectProps,
 } from './components/panel-select/PanelSelect';
+export type { Currency } from './components/misc/getCurrencySymbolProps';
 
 export { type PanelSelectItemProps } from './components/panel-select/PanelSelectItem';
 export * from './components/typography';

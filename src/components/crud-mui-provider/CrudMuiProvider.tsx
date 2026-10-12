@@ -1,7 +1,5 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useMemo, useState } from 'react';
 import { HotkeysProvider } from 'react-hotkeys-hook';
-
-import merge from 'lodash.merge';
 
 import '../dayjs';
 
@@ -38,8 +36,24 @@ function CrudMuiProvider({
   /*                                    Hooks                                   */
   /* -------------------------------------------------------------------------- */
 
-  const contextValue = merge(getDefaultSettings(), rest) as Settings;
-  const { theme, themeOptions, responsiveFontSizes, direction, lang } = contextValue;
+  const [settings, setSettings] = useState<Settings>(() => ({
+    ...getDefaultSettings(),
+    ...rest,
+  }));
+
+  const contextValue = useMemo(
+    () => ({
+      ...settings,
+      setSettings: (newSettings: Partial<Settings>) =>
+        setSettings((currentSettings) => ({
+          ...currentSettings,
+          ...newSettings,
+        })),
+    }),
+    [settings],
+  );
+
+  const { theme, themeOptions, responsiveFontSizes, direction, lang } = settings;
   return (
     <SettingsContext.Provider value={contextValue}>
       <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={lang}>

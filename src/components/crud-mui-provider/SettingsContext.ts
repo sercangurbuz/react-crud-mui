@@ -1,7 +1,9 @@
-import getSettings, { Settings } from './settings';
 import React from 'react';
 
-const defaultSettings = getSettings();
-const context = React.createContext<Settings>(defaultSettings);
+import { Settings } from './settings';
+
+type SettingsContextType = Settings & { setSettings: (settings: Partial<Settings>) => void };
+
+const context = React.createContext<SettingsContextType | null>(null);
 
 export default context;

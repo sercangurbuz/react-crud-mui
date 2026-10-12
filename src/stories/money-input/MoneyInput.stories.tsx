@@ -10,6 +10,7 @@ import DetailPage from '../../components/detail-page';
 import Field from '../../components/form/Field';
 import { CurrencySymbols, DEFAULT_CURRENCY } from '../../components/misc/getCurrencySymbolProps';
 import Page from '../../components/page/Page';
+import CurrencySwitcher from '../labels/components/CurrencySwitcher';
 
 const meta: Meta<typeof Field.MoneyInput> = {
   title: 'Components/MoneyInput',
@@ -37,6 +38,8 @@ const meta: Meta<typeof Field.MoneyInput> = {
             <Field.Button onClick={(form) => form.setValue('value', 0, { shouldValidate: true })}>
               Reset
             </Field.Button>
+
+            <CurrencySwitcher />
           </Stack>
         </Page.Content>
         <Page.Divider />
