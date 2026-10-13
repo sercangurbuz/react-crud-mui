@@ -160,7 +160,7 @@ export interface ListPageContentProps<TModel extends FieldValues>
   /**
    * Custom list region component
    */
-  onCustomTable?: (props: TableProps<TModel>) => ReactNode;
+  onCustomTable?: (props: ActionTableProps<TModel>) => ReactNode;
   /**
    * Custom header function
    */
@@ -522,7 +522,7 @@ function ListPageContent<TModel extends FieldValues>({
     }
 
     const tableNode = onCustomTable ? (
-      onCustomTable(props as TableProps<TModel>)
+      onCustomTable(props)
     ) : actionProps ? (
       <ActionTable {...props} />
     ) : (

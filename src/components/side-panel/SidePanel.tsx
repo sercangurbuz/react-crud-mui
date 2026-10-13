@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 
 import { Apps } from '@mui/icons-material';
-import { Box, BoxProps, Card, CardProps, Drawer, Theme, Typography } from '@mui/material';
+import { Box, BoxProps, Card, CardProps, Divider, Drawer, Theme, Typography } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { FlexBox } from '../flexbox';
@@ -10,10 +10,12 @@ import { StyledButton } from './styles';
 
 export type SidePanelItem = {
   key: string;
-  name: React.ReactNode;
+  name?: React.ReactNode;
   icon?: React.ReactNode;
   endIcon?: React.ReactNode;
   danger?: boolean;
+  disabled?: boolean;
+  divider?: boolean;
 };
 
 export interface SidePanelProps extends BoxProps {
@@ -36,19 +38,24 @@ function SidePanel({ items, activeKey, onItemClick, drawerToggler, ...boxProps }
   const renderItems = () => {
     return (
       <FlexBox flexDirection="column">
-        {items?.map((item) => (
-          <StyledButton
-            key={item.key}
-            variant="text"
-            startIcon={item.icon}
-            endIcon={item.endIcon}
-            danger={item.danger}
-            active={activeKey === item.key}
-            onClick={handleListItemBtn(item)}
-          >
-            <span style={{ flexGrow: '1', textAlign: 'left' }}>{item.name}</span>
-          </StyledButton>
-        ))}
+        {items?.map((item) =>
+          item.divider ? (
+            <Divider key={`divider-${item.key}`} />
+          ) : (
+            <StyledButton
+              key={item.key}
+              variant="text"
+              startIcon={item.icon}
+              endIcon={item.endIcon}
+              disabled={item.disabled}
+              danger={item.danger}
+              active={activeKey === item.key}
+              onClick={handleListItemBtn(item)}
+            >
+              <span style={{ flexGrow: '1', textAlign: 'left' }}>{item.name}</span>
+            </StyledButton>
+          ),
+        )}
       </FlexBox>
     );
   };

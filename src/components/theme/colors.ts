@@ -122,7 +122,7 @@ export const actionLight = {
   focusOpacity: 0.12,
   hoverOpacity: 0.04,
   selected: grey[50],
-  disabled: grey[200],
+  disabled: grey[400],
   disabledOpacity: 0.38,
   selectedOpacity: 0.08,
   activatedOpacity: 0.12,
