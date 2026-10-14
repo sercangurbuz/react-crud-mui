@@ -11,7 +11,7 @@ function CurrencySwitcher() {
       allowClear={false}
       onChange={(e) => setSettings({ defaultCurrency: e.target.value as Currency })}
       data={[
-        { id: 'TL', name: 'TL' },
+        { id: 'TRY', name: 'TRY' },
         { id: 'USD', name: 'USD' },
         { id: 'EUR', name: 'EUR' },
       ]}

@@ -27,7 +27,7 @@ const meta: Meta<typeof Field.MoneyInput> = {
           currency: z.string(),
         })}
         validationOptions={{ callOutVisibility: 'all' }}
-        defaultValues={{ value: 0, currency: DEFAULT_CURRENCY }}
+        defaultValues={{ value: 123.90, currency: DEFAULT_CURRENCY }}
         showHeader={false}
       >
         <Page.Content>

@@ -28,6 +28,11 @@ export const Zero: Story = {
     value: 0,
   },
 };
+export const Negative: Story = {
+  args: {
+    value: -1535.98,
+  },
+};
 export const Custom: Story = {
   args: {
     component: H5,

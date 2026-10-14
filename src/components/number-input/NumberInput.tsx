@@ -1,4 +1,4 @@
-import { forwardRef, Ref } from 'react';
+import { forwardRef, MouseEvent, Ref } from 'react';
 import { NumericFormat, NumericFormatProps } from 'react-number-format';
 
 import TextField, { StandardTextFieldProps } from '@mui/material/TextField';
@@ -10,7 +10,7 @@ export type NumberInputProps = Omit<NumericFormatProps<StandardTextFieldProps>, 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ControlledFormProps<number | undefined> & { getRef?: Ref<any> };
 
-function NumberInput({ onChange, sx, getRef, ...numberProps }: NumberInputProps) {
+function NumberInput({ onChange, onClick, sx, getRef, ...numberProps }: NumberInputProps) {
   const { decimalSeparator, thousandSeparator } = useSettings();
 
   return (
@@ -37,6 +37,14 @@ function NumberInput({ onChange, sx, getRef, ...numberProps }: NumberInputProps)
         if (source === 'event') {
           onChange?.(floatValue ?? 0);
         }
+      }}
+      onClick={(event: MouseEvent<HTMLDivElement>) => {
+        onClick?.(event);
+        const input =
+          event.currentTarget instanceof HTMLInputElement
+            ? event.currentTarget
+            : event.currentTarget.querySelector('input');
+        input?.select();
       }}
     />
   );

@@ -9,8 +9,28 @@ import type { Preview } from '@storybook/react';
 import { ConfirmProvider } from 'material-ui-confirm';
 
 import CrudMuiProvider from '../src/components/crud-mui-provider/CrudMuiProvider';
+import useSettings from '../src/components/crud-mui-provider/hooks/useSettings';
+import type { Settings } from '../src/components/crud-mui-provider/settings';
 import i18nInstance from '../src/components/i18n';
 import { THEMES } from '../src/components/theme/theme.constants';
+
+function StorybookSettingsSync({ theme, lang }: Pick<Settings, 'theme' | 'lang'>) {
+  const { theme: activeTheme, lang: activeLang, setSettings } = useSettings();
+
+  useEffect(() => {
+    if (activeTheme !== theme || activeLang !== lang) {
+      setSettings({ theme, lang });
+    }
+  }, [activeLang, activeTheme, lang, setSettings, theme]);
+
+  useEffect(() => {
+    if (lang) {
+      void i18nInstance.changeLanguage(lang);
+    }
+  }, [lang]);
+
+  return null;
+}
 
 const preview: Preview = {
   globalTypes: {
@@ -61,12 +81,6 @@ const preview: Preview = {
   },
   decorators: [
     (Story, context) => {
-      useEffect(() => {
-        if (context.globals.lang) {
-          void i18nInstance.changeLanguage(context.globals.lang);
-        }
-      }, [context.globals.lang]);
-
       return (
         <ConfirmProvider>
           <CrudMuiProvider
@@ -74,6 +88,7 @@ const preview: Preview = {
             lang={context.globals.lang}
             themeOptions={{ typography: { fontFamily: "'Inter', sans-serif" } }}
           >
+            <StorybookSettingsSync theme={context.globals.theme} lang={context.globals.lang} />
             <Story />
           </CrudMuiProvider>
         </ConfirmProvider>
