@@ -26,9 +26,9 @@ function FormSelect<T extends FieldValues, TFieldValues extends FieldValues = Fi
           id={name}
           error={invalid}
           helperText={error?.message}
-          onChange={(e, child) => {
+          onChange={(e, model, child) => {
             field.onChange(e.target.value);
-            selectProps?.onChange?.(e, child);
+            selectProps?.onChange?.(e, model, child);
           }}
           onBlur={(e) => {
             selectProps?.onBlur?.(e);

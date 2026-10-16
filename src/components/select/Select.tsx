@@ -26,7 +26,7 @@ import { Tiny } from '../typography';
 export type SelectSize = MuiSelectProps['size'] | 'smaller';
 
 export type SelectProps<T extends FieldValues = FieldValues> = Partial<
-  Omit<MuiSelectProps, 'size'>
+  Omit<MuiSelectProps, 'size' | 'onChange'>
 > & {
   dropDownHeight?: number;
   allowClear?: boolean;
@@ -45,6 +45,7 @@ export type SelectProps<T extends FieldValues = FieldValues> = Partial<
   selectInitialOption?: boolean | ((model: T) => boolean);
   labelWrapperProps?: Omit<FormControlProps, 'children'>;
   showCheckBox?: boolean;
+  onChange?: (event: SelectChangeEvent<unknown>, model: T | T[] | null, child: ReactNode) => void;
 };
 
 function Select<T extends FieldValues = FieldValues>({
@@ -146,16 +147,15 @@ function Select<T extends FieldValues = FieldValues>({
 
   const handleChange = (e: SelectChangeEvent<unknown>, child: React.ReactNode) => {
     const selValue = e.target.value;
+    const selectedModel = selValue
+      ? findModelByKey(selValue as number | string | number[] | string[])
+      : null;
 
-    if (optionAsValue) {
-      if (selValue) {
-        const selectedModel = findModelByKey(selValue as number | string | number[] | string[]);
-        onChange?.({ target: { value: selectedModel } } as unknown as SelectChangeEvent, child);
-        return;
-      }
-    }
-
-    onChange?.(e, child);
+    onChange?.(
+      optionAsValue ? ({ target: { value: selectedModel } } as unknown as SelectChangeEvent) : e,
+      selectedModel,
+      child,
+    );
   };
 
   /* -------------------------------------------------------------------------- */
@@ -333,6 +333,7 @@ function Select<T extends FieldValues = FieldValues>({
             onClick={() =>
               onChange?.(
                 { target: { value: multiple ? [] : null } } as unknown as SelectChangeEvent,
+                null,
                 null,
               )
             }
