@@ -14,3 +14,11 @@ export default meta;
 type Story = StoryObj<typeof Labels.MailFormat>;
 
 export const Simple: Story = {};
+
+export const WithUndefinedMessage: Story = {
+  args: {
+    value: undefined,
+    showUndefinedMessage: true,
+    unDefinedMessage: 'No email provided',
+  },
+};

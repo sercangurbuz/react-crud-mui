@@ -40,8 +40,15 @@ function PhoneFormat({
     return phone.formatInternational();
   }, [phoneNumber]);
 
-  if (!formattedPhoneNumber) {
-    return showUndefinedMessage ? unDefinedMessage : null;
+  if (!formattedPhoneNumber && showUndefinedMessage) {
+    return showIcon ? (
+      <FlexBox gap={0.5} alignItems="center">
+        <LocalPhone sx={{ fontSize: '1.2em', color: 'currentColor' }} />
+        <span style={{ color: 'inherit' }}>{unDefinedMessage}</span>
+      </FlexBox>
+    ) : (
+      unDefinedMessage
+    );
   }
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {

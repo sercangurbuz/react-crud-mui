@@ -3,11 +3,8 @@ import type { ReactNode } from 'react';
 
 import type { BoxProps } from '@mui/material/Box';
 import Box from '@mui/material/Box';
-import numeral from 'numeral';
 
-import { Currency } from '../..';
-import useSettings from '../crud-mui-provider/hooks/useSettings';
-import { DEFAULT_CURRENCY } from '../misc/getCurrencySymbolProps';
+import { Currency, useMoneyFormatter } from '../..';
 
 /* -------------------------------------------------------------------------- */
 /*                                    Types                                   */
@@ -27,42 +24,16 @@ export interface CurrencyFormatProps extends Omit<BoxProps, 'prefix' | 'suffix'>
 /* -------------------------------------------------------------------------- */
 
 function CurrencyFormat(
-  {
-    decimalDigit = 2,
-    currency,
-    prefix = '',
-    suffix = '',
-    value,
-    format,
-    sx,
-    ...rest
-  }: CurrencyFormatProps,
+  { decimalDigit = 2, currency, prefix = '', suffix = '', value, sx, ...rest }: CurrencyFormatProps,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ref: Ref<any>,
 ) {
-  const { defaultCurrency, lang } = useSettings();
-  const selectedCurrency = currency ?? defaultCurrency ?? DEFAULT_CURRENCY;
-
-  const formatter = useMemo(
-    () =>
-      new Intl.NumberFormat(lang ?? 'tr', {
-        style: 'currency',
-        currency: selectedCurrency,
-        currencyDisplay: 'symbol',
-        minimumFractionDigits: decimalDigit,
-        maximumFractionDigits: decimalDigit,
-      }),
-    [decimalDigit, lang, selectedCurrency],
-  );
+  const formatter = useMoneyFormatter({ currency, decimalDigit });
 
   const text = useMemo(() => {
-    if (format) {
-      return numeral(value).format(format);
-    }
-
     const formattedValue = formatter.format(Number(value ?? 0) || 0);
     return formattedValue;
-  }, [format, formatter, value]);
+  }, [formatter, value]);
 
   return (
     <Box

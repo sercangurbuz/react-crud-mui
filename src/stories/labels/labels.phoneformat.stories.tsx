@@ -14,3 +14,11 @@ export default meta;
 type Story = StoryObj<typeof Labels.PhoneFormat>;
 
 export const Simple: Story = {};
+
+export const WithUndefinedMessage: Story = {
+  args: {
+    value: undefined,
+    showUndefinedMessage: true,
+    unDefinedMessage: 'No phone number provided',
+  },
+};

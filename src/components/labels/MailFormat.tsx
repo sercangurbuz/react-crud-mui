@@ -23,8 +23,15 @@ function MailFormat({
   unDefinedMessage = '-',
   ...rest
 }: MailLabelProps) {
-  if (!email) {
-    return showUndefinedMessage ? unDefinedMessage : null;
+  if (!email && showUndefinedMessage) {
+    return showIcon ? (
+      <FlexBox gap={0.8} alignItems="center">
+        <Email sx={{ fontSize: '1.2em', color: 'currentColor' }} />
+        <span style={{ color: 'inherit' }}>{unDefinedMessage}</span>
+      </FlexBox>
+    ) : (
+      unDefinedMessage
+    );
   }
 
   return (
